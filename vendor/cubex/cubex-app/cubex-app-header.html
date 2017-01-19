@@ -30,7 +30,10 @@
         z-index: 3;
 
         transition: background 400ms;
-        background: var(--cube-app-header-background, transparent)
+      }
+
+      :host-context(cubex-app:not([hero-header])) #topHeader {
+        background: var(--theme-50-color);
       }
 
       .flexchild {
@@ -49,51 +52,45 @@
         padding: 0;
       }
 
-      :host cube-action {
-        color: var(--text-color-secondary);
-        padding: 15px;
-        line-height: normal;
+      #actions {
+        display: flex;
       }
 
-      :host cube-action:hover {
+      :host cube-action {
+        color: var(--text-color-secondary);
+        background: var(--theme-200-color);
+        padding: 15px;
+        line-height: normal;
+        transition: background 400ms, color 400ms;
+      }
+
+      #actions cube-action:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        transition: background 400ms;
+        background: transparent;
+      }
+
+      #actions cube-action:hover {
         color: var(--text-color-primary);
       }
 
-      :host #actions cube-action:before {
-        content: '';
-        display: block;
-        background: var(--theme-200-color);
-        border-left: 1px solid var(--theme-600-color);
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        right: 0;
+      #actions cube-action:hover:before {
+        background: rgba(255, 255, 255, 0.12);
       }
 
-      :host #actions {
-        display: -webkit-inline-flex;
-        display: inline-flex;
-        -webkit-flex-direction: row;
-        flex-direction: row;
-      }
-
-      :host #actions #more-actions {
-        @apply --accent-400-text;
-      }
-
-      :host #actions #more-actions:before {
+      #actions #more-actions {
         @apply --accent-400;
       }
 
-      :host #actions #more-actions:hover:before {
-        @apply --accent-200;
-      }
-
-      :host cube-action:hover:before {
-        background: var(--theme-50-color);
+      :host-context(cubex-app[hero-header]) #actions cube-action,
+      :host-context(cubex-app[hero-header]) #actions #more-actions {
+        background: transparent;
+        color: var(--theme-50-color);
       }
 
       cube-list-menu {
@@ -230,6 +227,7 @@
                              {
                                return actions.slice(0).filter(this._filter(small, 0), this).length > 0;
                              }
+                             return false;
                            }
     }
   )</script>
