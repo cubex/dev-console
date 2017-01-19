@@ -38,7 +38,7 @@
       }
     </style>
     <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
+    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
 
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/quickactions/actions.json"
                    headers="[[_headers]]" data="{{actions}}" ttl="3600"></cube-resource>
@@ -48,7 +48,7 @@
         <cube-action icon="icons:add" slot="trigger"></cube-action>
         <cube-list-menu>
           <template is="dom-repeat" items="[[actions.Actions]]" as="action">
-            <a href="/[[routeData.org]]/[[action.GlobalAppID]]/[[action.Path]]" on-tap="_tap">
+            <a href="/[[routeData.project]]/[[action.GlobalAppID]]/[[action.Path]]" on-tap="_tap">
               <cube-li title="[[action.Name]]">
                 <cube-icon slot="icon" icon="[[action.Icon]]"></cube-icon>
                 [[action.Name]]
@@ -66,14 +66,14 @@
         is: 'cubex-quick-actions',
 
         properties: {
-          _headers: {type: Object, computed: '_refreshHeaders(routeData.org)'}
+          _headers: {type: Object, computed: '_refreshHeaders(routeData.project)'}
         },
 
-        _refreshHeaders: function (org)
+        _refreshHeaders: function (project)
                          {
-                           if(org)
+                           if(project)
                            {
-                             return {'x-cube-org': org};
+                             return {'x-cube-project': project};
                            }
                            return undefined;
                          },

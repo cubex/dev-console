@@ -59,7 +59,7 @@
           <cube-li on-tap="_openCustomerAgreement">{{i18n('cust_agree')}}</cube-li>
         </cube-list-group>
         <cube-list-group>
-          <cube-li on-tap="_openOrganisationInfo">{{i18n('org_info')}}</cube-li>
+          <cube-li on-tap="_openProjectInfo">{{i18n('project_info')}}</cube-li>
           <cube-li on-tap="_openSupport">{{i18n('support')}}</cube-li>
         </cube-list-group>
         <cube-list-group>
@@ -74,7 +74,7 @@
 
       <cube-list zebra border border-group>
         <cube-list-group title="{{i18n('navigation')}}">
-          <cube-li>{{i18n('show_apps_orgs')}} <span slot="secondary">.</span></cube-li>
+          <cube-li>{{i18n('show_apps_projects')}} <span slot="secondary">.</span></cube-li>
           <cube-li>{{i18n('launch_search')}} <span slot="secondary">/</span></cube-li>
         </cube-list-group>
         <cube-list-group title="{{i18n('general')}}">
@@ -104,13 +104,13 @@
                 "general":            "General",
                 "navigation":         "Navigation",
                 "keyboard_shortcuts": "Keyboard Shortcuts",
-                "show_apps_orgs":     "Show Applications & Organisation",
+                "show_apps_projects":     "Show Applications & Project",
                 "launch_search":      "Launch Search",
                 "open_shortcut_help": "Open Shortcut Help",
                 "close":              "Close",
                 "search":             "Search",
                 "terms_service":      "Terms of Service",
-                "org_info":           "Organisation Info",
+                "project_info":           "Project Info",
                 "cust_agree":         "Customer Agreement",
                 "support":            "Support",
                 "logout":             "Logout"
@@ -119,13 +119,13 @@
                 "general":            "Général",
                 "navigation":         "La navigation",
                 "keyboard_shortcuts": "Raccourcis clavier",
-                "show_apps_orgs":     "Voir Applications & Organisation",
+                "show_apps_projects":     "Voir Applications & Projet",
                 "launch_search":      "Lancer la recherche",
                 "open_shortcut_help": "Ouvrir Aide Raccourci",
                 "close":              "Fermer",
                 "search":             "Chercher",
                 "terms_service":      "Conditions d'utilisation",
-                "org_info":           "Organisation Infos",
+                "project_info":           "Projet Infos",
                 "cust_agree":         "Accord client",
                 "support":            "Soutien",
                 "logout":             "Se déconnecter"
@@ -156,7 +156,7 @@
                                   this.$.additional.close();
                                   window.location = "/_/cubex/legal/customer-agreement";
                                 },
-        _openOrganisationInfo:  function ()
+        _openProjectInfo:  function ()
                                 {
                                   this.$.additional.close();
                                   alert('coming soon');

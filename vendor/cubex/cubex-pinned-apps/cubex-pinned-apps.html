@@ -37,11 +37,11 @@
       }
     </style>
     <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
+    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
     <cube-websocket auto vendor="cubex" app="pinnedapps" on-subscribe="_pinnedSub"
                     on-message="_pinnedMsg"></cube-websocket>
     <template is="dom-repeat" items="[[pinnedApps]]">
-      <a href="/[[routeData.org]]/[[item.GlobalAppID]]">
+      <a href="/[[routeData.project]]/[[item.GlobalAppID]]">
         <cube-action id="pinned-[[item.ID]]" icon="[[item.Icon]]"></cube-action>
       </a>
       <paper-tooltip for="pinned-[[item.ID]]" position="center" animation-delay="100"><strong>[[item.Name]]</strong>

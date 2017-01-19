@@ -1,0 +1,53 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-websocket/cube-websocket.html">
+<link rel="import" href="../../app-route/app-location.html">
+<link rel="import" href="../../app-route/app-route.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <cubex-project project="{{project}}"></cubex-project>
+
+@demo demo/index.html
+-->
+
+<dom-module id="cubex-project" attributes="project projects">
+  <template>
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:project" data="{{routeData}}"></app-route>
+    <cube-websocket vendor="cubex" app="projects" auto
+                    on-subscribe="_projectSubscribed" on-message="_projectUpdate"></cube-websocket>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:                 'cubex-project',
+        properties:         {
+          project:  {type: Object, notify: true},
+          projects: {type: Object, notify: true, readOnly: true}
+        },
+        observers:          ['_projectChanged(projects,routeData.project)'],
+        _projectSubscribed: function (e, message)
+                            {
+                              this._setProjects(JSON.parse(message).projects);
+                            },
+        _projectUpdate:     function (e, message)
+                            {
+                              if(message.action == 'create')
+                              {
+                                this.set('projects.' + message.payload.id, message.payload);
+                              }
+                            },
+        _projectChanged:    function ()
+                            {
+                              if(this.projects && this.routeData.project)
+                              {
+                                this.set('project', this.projects[this.routeData.project]);
+                              }
+                            }
+      }
+    );
+  </script>
+</dom-module>

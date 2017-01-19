@@ -120,7 +120,7 @@
     </style>
 
     <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
+    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
 
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/searchactions/search.json"
                    headers="[[_headers]]" data="{{_search}}" ttl="3600"></cube-resource>
@@ -135,7 +135,7 @@
     <iron-dropdown vertical-align="top" id="results">
       <cube-list-menu id="searchmenu" zebra>
         <template is="dom-repeat" items="{{_filterActions(searchQuery,_search.Actions)}}">
-          <a href="/[[routeData.org]]/[[item.GlobalAppID]]/[[item.Path]]">
+          <a href="/[[routeData.project]]/[[item.GlobalAppID]]/[[item.Path]]">
             <cube-li>
               <template restamp is="dom-if" if="[[item.Icon]]">
                 <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
@@ -160,7 +160,7 @@
             value:              false,
             reflectToAttribute: true
           },
-          _headers:    {type: Object, computed: '_refreshHeaders(routeData.org)'},
+          _headers:    {type: Object, computed: '_refreshHeaders(routeData.project)'},
           resources:   {
             type:  Object,
             value: {
@@ -285,11 +285,11 @@
                           return filtered.sort(function (a, b) {return a.Weight < b.Weight});
                         },
 
-        _refreshHeaders: function (org)
+        _refreshHeaders: function (project)
                          {
-                           if(org)
+                           if(project)
                            {
-                             return {'x-cube-org': org};
+                             return {'x-cube-project': project};
                            }
                            return undefined;
                          },

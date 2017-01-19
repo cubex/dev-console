@@ -257,7 +257,7 @@ Example:
     <iron-media-query query="(min-width: 1000px)" query-matches="{{_peek}}"></iron-media-query>
     <iron-media-query query="(min-width: 1300px)" query-matches="{{_lock}}"></iron-media-query>
 
-    <cubex-organisation organisation="{{organisation}}"></cubex-organisation>
+    <cubex-project project="{{project}}"></cubex-project>
 
     <cube-preferences name="appDrawerPosition" value="{{appDrawerState}}"></cube-preferences>
     <cubex-drawer id="appDrawer" hover-popout swipe-open position="left" preferred-state="{{appDrawerState}}">
@@ -358,7 +358,7 @@ Example:
           narrow:              {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:             {type: Object, observer: '_updateResources'},
           pageData:            {type: Object, observer: '_resetLayout'},
-          breadcrumbs:         {type: Object, computed: '_updateCrumbs(pageData,organisation)'},
+          breadcrumbs:         {type: Object, computed: '_updateCrumbs(pageData,project)'},
           drawerDisabled:      {
             type:               Boolean,
             value:              false,
@@ -446,9 +446,9 @@ Example:
         _updateCrumbs:   function (pageData)
                          {
                            var bc = pageData && pageData.breadcrumb ? JSON.parse(pageData.breadcrumb) : [];
-                           if(this.appData && pageData && this.organisation)
+                           if(this.appData && pageData && this.project)
                            {
-                             var prefix = '/' + this.organisation.id + '/' + this.appData.GlobalAppID;
+                             var prefix = '/' + this.project.id + '/' + this.appData.GlobalAppID;
                              for(var i in bc)
                              {
                                if(bc.hasOwnProperty(i))
@@ -468,7 +468,7 @@ Example:
                                bc.unshift(
                                  {
                                    Title: this.appData.Group,
-                                   Url:   '/' + this.organisation.id + '/' + this.appData.Vendor + '/' + this.appData.Group
+                                   Url:   '/' + this.project.id + '/' + this.appData.Vendor + '/' + this.appData.Group
                                  }
                                );
                              }

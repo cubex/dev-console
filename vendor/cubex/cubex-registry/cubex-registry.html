@@ -4,13 +4,13 @@
 <link rel="import" href="../../cube-resource/cube-resource.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 
-<dom-module id="cubex-registry" attributes="org-data user-data">
+<dom-module id="cubex-registry" attributes="project-data user-data">
   <template>
     <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
+    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
 
-    <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/registry/organisation.json"
-                   data="{{orgData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
+    <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/registry/project.json"
+                   data="{{projectData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/registry/user.json"
                    data="{{userData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
   </template>
@@ -19,15 +19,15 @@
       {
         is:              'cubex-registry',
         properties:      {
-          orgData:  {type: Object, notify: true},
-          userData: {type: Object, notify: true},
-          _headers: {type: Object, computed: '_refreshHeaders(routeData.org)'}
+          projectData: {type: Object, notify: true},
+          userData:    {type: Object, notify: true},
+          _headers:    {type: Object, computed: '_refreshHeaders(routeData.project)'}
         },
-        _refreshHeaders: function (org)
+        _refreshHeaders: function (project)
                          {
-                           if(org)
+                           if(project)
                            {
-                             return {'x-cube-org': org};
+                             return {'x-cube-project': project};
                            }
                            return undefined;
                          },

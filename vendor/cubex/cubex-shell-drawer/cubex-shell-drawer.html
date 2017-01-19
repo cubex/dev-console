@@ -1,7 +1,7 @@
 <link href="../../polymer/polymer.html" rel="import">
 <link href="../cubex-registry/cubex-registry.html" rel="import">
 <link href="../cubex-category/cubex-category.html" rel="import">
-<link href="../cubex-organisation/cubex-organisation.html" rel="import">
+<link href="../cubex-project/cubex-project.html" rel="import">
 <link href="../../iron-selector/iron-selector.html" rel="import">
 <link href="../../paper-button/paper-button.html" rel="import">
 <link href="../../cube-animbg/cube-animbg.html" rel="import">
@@ -105,9 +105,9 @@
       }
     </style>
 
-    <cubex-organisation organisation="{{organisation}}" organisations="{{_organisations}}"></cubex-organisation>
+    <cubex-project project="{{project}}" projects="{{_projects}}"></cubex-project>
 
-    <cubex-registry org-data="{{_orgRegistryData}}"></cubex-registry>
+    <cubex-registry project-data="{{_projectRegistryData}}"></cubex-registry>
 
     <cube-animbg id="user-view" size="80">
       <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/whoami/whoami.json"
@@ -117,7 +117,7 @@
       <strong>[[whoami.FirstName]] [[whoami.LastName]]</strong>
       <span>[[whoami.Username]]</span>
       <paper-button on-tap="toggleDrawer" class="toggle" selected-drawer="{{selectedItem}}">
-        [[organisation.name]]
+        [[project.name]]
         <iron-icon icon="[[_icon]]"></iron-icon>
       </paper-button>
     </cube-animbg>
@@ -126,11 +126,11 @@
         <slot></slot>
         <cubex-shell-drawer-panel>
           <cube-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
-            <template is="dom-repeat" items="[[__appGroups(_orgRegistryData)]]" as="group">
+            <template is="dom-repeat" items="[[__appGroups(_projectRegistryData)]]" as="group">
               <cube-list-group>
                 <cubex-category key="[[group.name]]" slot="title"></cubex-category>
                 <template is="dom-repeat" items="[[group.apps]]" as="app">
-                  <a href="/[[organisation.id]]/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
+                  <a href="/[[project.id]]/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
                     <cube-li>
                       <cube-icon slot="icon" icon="[[app.icon]]"></cube-icon>
                       [[app.name]]
@@ -142,9 +142,9 @@
           </cube-list-menu>
         </cubex-shell-drawer-panel>
         <cubex-shell-drawer-panel>
-          <cube-list-menu show-filter filter-label="{{i18n('filter_orgs')}}">
-            <cube-list-group title="{{i18n('all_organisations')}}">
-              <template is="dom-repeat" items="[[organisations]]">
+          <cube-list-menu show-filter filter-label="{{i18n('filter_projects')}}">
+            <cube-list-group title="{{i18n('all_projects')}}">
+              <template is="dom-repeat" items="[[projects]]">
                 <a href="/[[item.id]]">
                   <cube-li>
                     <cube-icon slot="icon" icon="communication:business"></cube-icon>
@@ -162,59 +162,59 @@
   <script>
     Polymer(
       {
-        is:          'cubex-shell-drawer',
-        properties:  {
-          resources:        {
+        is:              'cubex-shell-drawer',
+        properties:      {
+          resources:            {
             type:  Object,
             value: {
               "en": {
-                "filter_apps":       "Filter Applications",
-                "filter_orgs":       "Filter Organisations",
-                "all_organisations": "All Organisations"
+                "filter_apps":     "Filter Applications",
+                "filter_projects": "Filter Projects",
+                "all_projects":    "All Projects"
               },
               "fr": {
-                "filter_apps":       "Filtre Applications",
-                "filter_orgs":       "Filtre les organisations",
-                "all_organisations": "Toutes les organisations"
+                "filter_apps":     "Filtre Applications",
+                "filter_projects": "Filtre les projects",
+                "all_projects":    "Toutes les projects"
               }
             }
           },
-          selectedItem:     {
+          selectedItem:         {
             type:  Number,
             value: 0
           },
-          _icon:            {
+          _icon:                {
             type:  String,
             value: "icons:arrow-drop-down"
           },
-          _orgRegistryData: {type: Object},
-          organisation:     {type: Object},
-          organisations:    {type: Array},
-          avatar:           {
+          _projectRegistryData: {type: Object},
+          project:              {type: Object},
+          projects:             {type: Array},
+          avatar:               {
             type:  String,
             value: "resources/images/avatar/default-64.png"
           },
-          headColor:        {
+          headColor:            {
             type: String
           }
         },
-        behaviors:   [
+        behaviors:       [
           Polymer.IronA11yKeysBehavior,
           Polymer.CubeI18nBehavior,
           Polymer.CubeServiceBehavior
         ],
-        keyBindings: {
+        keyBindings:     {
           ',': 'toggleDrawer'
         },
-        attached:    function ()
-                     {
-                       this.keyEventTarget = document.body;
-                     },
-        observers:   ['_updateOrgs(_organisations)'],
-        _updateOrgs: function (orgs)
-                     {
-                       this.organisations = Object.keys(orgs).map(function (key) { return orgs[key]; });
-                     },
+        attached:        function ()
+                         {
+                           this.keyEventTarget = document.body;
+                         },
+        observers:       ['_updateProjects(_projects)'],
+        _updateProjects: function (projects)
+                         {
+                           this.projects = Object.keys(projects).map(function (key) { return projects[key]; });
+                         },
 
         _toggleParent: function ()
                        {
@@ -234,16 +234,16 @@
                          }
                        },
 
-        __appGroups: function (orgRegistry)
+        __appGroups: function (projectRegistry)
                      {
                        var groups = {};
-                       if(orgRegistry)
+                       if(projectRegistry)
                        {
-                         for(var idx in orgRegistry.AppSummary)
+                         for(var idx in projectRegistry.AppSummary)
                          {
-                           if(orgRegistry.AppSummary.hasOwnProperty(idx))
+                           if(projectRegistry.AppSummary.hasOwnProperty(idx))
                            {
-                             var app = orgRegistry.AppSummary[idx];
+                             var app = projectRegistry.AppSummary[idx];
                              if(!groups[app.category])
                              {
                                groups[app.category] = {name: app.category, apps: []};

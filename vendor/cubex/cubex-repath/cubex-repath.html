@@ -6,7 +6,7 @@
 <dom-module id="cubex-repath" attributes="in service gaid out">
   <template>
     <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}" tail="{{routeTail}}"></app-route>
+    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}" tail="{{routeTail}}"></app-route>
     <app-route route="[[routeTail]]" pattern="/:category" data="{{catData}}"></app-route>
     <app-route route="[[routeTail]]" pattern="/:vendor/:app" data="{{gaidData}}"></app-route>
   </template>
@@ -22,22 +22,22 @@
           'out':     {
             type:     String,
             notify:   true,
-            computed: '_computePath(in,service,gaid,routeData.org,gaidData.vendor,gaidData.app,catData.category)'
+            computed: '_computePath(in,service,gaid,routeData.project,gaidData.vendor,gaidData.app,catData.category)'
           }
         },
 
-        _computePath: function (inPath, service, gaid, org, vendor, app, category)
+        _computePath: function (inPath, service, gaid, project, vendor, app, category)
                       {
-                        if(inPath && (service || org) && (category || gaid !== undefined || (vendor && app)))
+                        if(inPath && (service || project) && (category || gaid !== undefined || (vendor && app)))
                         {
                           var paths = [];
                           if(service)
                           {
                             paths.push('/' + this.getServiceHost(service));
                           }
-                          else if(org)
+                          else if(project)
                           {
-                            paths.push(org);
+                            paths.push(project);
                           }
 
                           if((gaid === undefined) && vendor && app)
