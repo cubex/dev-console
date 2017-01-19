@@ -1,0 +1,172 @@
+<link href="../../polymer/polymer.html" rel="import">
+<link href="../cubex-quick-actions/cubex-quick-actions.html" rel="import">
+<link href="../../paper-dialog/paper-dialog.html" rel="import">
+<link href="../../paper-button/paper-button.html" rel="import">
+<link href="../../cube-dropdown/cube-dropdown.html" rel="import">
+<link href="../../cube-action/cube-action.html" rel="import">
+<link href="../../cube-list/cube-list.html" rel="import">
+<link href="../../cube-list/cube-list-menu.html" rel="import">
+<link href="../../cube-list/cube-list-group.html" rel="import">
+<link href="../../cube-list/cube-li.html" rel="import">
+<link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+
+
+<dom-module id="cubex-toolbar">
+  <template>
+    <style>
+      cube-dropdown cube-list-menu {
+        @apply(--shadow-elevation-4dp);
+      }
+
+      cube-list-menu {
+        @apply(--primary-800);
+        min-width: 200px;
+        opacity: 1;
+      }
+
+      cube-action {
+        @apply(--primary-700-text-secondary);
+        line-height: normal;
+        margin: 10px 0;
+      }
+
+      paper-icon-button:hover,
+      cube-action:hover {
+        @apply(--primary-700-text);
+      }
+
+      #keyhelp {
+        padding-top: 20px;
+        width: 500px;
+        text-align: left;
+
+        --cube-li-style: {
+          background: var(--theme-2-color);
+        }
+      }
+    </style>
+
+    <cubex-quick-actions></cubex-quick-actions>
+
+    <cube-dropdown id="additional">
+      <cube-action icon="icons:more-vert" slot="trigger"></cube-action>
+      <cube-list-menu border>
+        <cube-list-group>
+          <cube-li on-tap="openKeyboardHelp">{{i18n('keyboard_shortcuts')}}</cube-li>
+        </cube-list-group>
+        <cube-list-group>
+          <cube-li on-tap="_openTerms">{{i18n('terms_service')}}</cube-li>
+          <cube-li on-tap="_openCustomerAgreement">{{i18n('cust_agree')}}</cube-li>
+        </cube-list-group>
+        <cube-list-group>
+          <cube-li on-tap="_openOrganisationInfo">{{i18n('org_info')}}</cube-li>
+          <cube-li on-tap="_openSupport">{{i18n('support')}}</cube-li>
+        </cube-list-group>
+        <cube-list-group>
+          <cube-li on-tap="_logout">{{i18n('logout')}}</cube-li>
+        </cube-list-group>
+      </cube-list-menu>
+
+    </cube-dropdown>
+
+    <paper-dialog id="keyhelp" with-backdrop>
+      <h2>{{i18n('keyboard_shortcuts')}}</h2>
+
+      <cube-list zebra border border-group>
+        <cube-list-group title="{{i18n('navigation')}}">
+          <cube-li>{{i18n('show_apps_orgs')}} <span slot="secondary">.</span></cube-li>
+          <cube-li>{{i18n('launch_search')}} <span slot="secondary">/</span></cube-li>
+        </cube-list-group>
+        <cube-list-group title="{{i18n('general')}}">
+          <cube-li>{{i18n('open_shortcut_help')}} <span slot="secondary">?</span></cube-li>
+        </cube-list-group>
+      </cube-list>
+
+      <div class="buttons">
+        <paper-button dialog-dismiss>{{i18n('close')}}</paper-button>
+      </div>
+    </paper-dialog>
+
+
+  </template>
+  <script>
+    Polymer(
+      {
+        is:                     'cubex-toolbar',
+        behaviors:              [
+          Polymer.CubeI18nBehavior
+        ],
+        properties:             {
+          resources: {
+            type:  Object,
+            value: {
+              "en": {
+                "general":            "General",
+                "navigation":         "Navigation",
+                "keyboard_shortcuts": "Keyboard Shortcuts",
+                "show_apps_orgs":     "Show Applications & Organisation",
+                "launch_search":      "Launch Search",
+                "open_shortcut_help": "Open Shortcut Help",
+                "close":              "Close",
+                "search":             "Search",
+                "terms_service":      "Terms of Service",
+                "org_info":           "Organisation Info",
+                "cust_agree":         "Customer Agreement",
+                "support":            "Support",
+                "logout":             "Logout"
+              },
+              "fr": {
+                "general":            "Général",
+                "navigation":         "La navigation",
+                "keyboard_shortcuts": "Raccourcis clavier",
+                "show_apps_orgs":     "Voir Applications & Organisation",
+                "launch_search":      "Lancer la recherche",
+                "open_shortcut_help": "Ouvrir Aide Raccourci",
+                "close":              "Fermer",
+                "search":             "Chercher",
+                "terms_service":      "Conditions d'utilisation",
+                "org_info":           "Organisation Infos",
+                "cust_agree":         "Accord client",
+                "support":            "Soutien",
+                "logout":             "Se déconnecter"
+              }
+            }
+          }
+        },
+        openKeyboardHelp:       function ()
+                                {
+                                  this.$.additional.close();
+                                  this.$.keyhelp.open();
+                                },
+        _openTerms:             function ()
+                                {
+                                  this.$.additional.close();
+                                  window.location = "/_/cubex/legal/terms";
+                                },
+        _logout:                function ()
+                                {
+                                  this.$.additional.close();
+                                  if(confirm("Are you sure you wish to logout?"))
+                                  {
+                                    window.location = '/logout';
+                                  }
+                                },
+        _openCustomerAgreement: function ()
+                                {
+                                  this.$.additional.close();
+                                  window.location = "/_/cubex/legal/customer-agreement";
+                                },
+        _openOrganisationInfo:  function ()
+                                {
+                                  this.$.additional.close();
+                                  alert('coming soon');
+                                },
+        _openSupport:           function ()
+                                {
+                                  this.$.additional.close();
+                                  window.open('http://support.cubex.io');
+                                }
+      }
+    );
+  </script>
+</dom-module>

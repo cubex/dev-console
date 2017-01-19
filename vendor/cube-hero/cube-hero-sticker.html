@@ -1,0 +1,67 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-styles/shadow.html">
+<dom-module id="cube-hero-sticker" attributes="src color">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        align-items: center;
+        width: 124px;
+        height: 124px;
+        border-radius: 124px;
+        border: 2px solid white;
+        @apply --shadow-elevation-12dp;
+        margin: 20px 30px;
+
+        background-color: var(--hero-sticker-background-color, #f50f0f);
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        background-image: var(--hero-sticker-background-image);
+
+        color: #FFFFFF;
+      }
+
+      #wrapper {
+        margin: auto;
+        text-align: center;
+      }
+
+      :host ::slotted(h1) {
+        margin: 0;
+        font-weight: normal;
+        font-size: 20px;
+      }
+    </style>
+    <div id="wrapper">
+      <slot></slot>
+    </div>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:         'cube-hero-sticker',
+        properties: {
+          'src':   {
+            type: String
+          },
+          'color': {
+            type: String
+          }
+        },
+        ready:      function ()
+                    {
+                      if(this.src)
+                      {
+                        this.updateStyles({'--hero-sticker-background-image': 'url(' + this.src + ')'});
+                      }
+                      else if(this.color)
+                      {
+                        this.updateStyles({'--hero-sticker-background-color': this.color});
+                      }
+                    }
+      }
+    );
+  </script>
+</dom-module>

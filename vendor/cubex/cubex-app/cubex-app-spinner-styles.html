@@ -1,0 +1,72 @@
+<dom-module id="cubex-app-spinner-styles">
+<template>
+<style>
+@keyframes preload-cycle {
+  0% {
+    opacity: 0.8;
+  }
+  40% {
+    opacity: 0.1;
+  }
+  80% {
+    opacity: 0.8;
+  }
+}
+
+.preloader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: block;
+  transform-origin: bottom left;
+}
+
+.preloader .slice {
+  position: absolute;
+  border: 33px solid transparent;
+  border-top-color: var(--cubex-app-spinner-slice-color, #FAFAFA);
+  opacity: 0.8;
+  top: 4px;
+  left: -1px;
+}
+
+.preloader .slice:nth-child(1) {
+  transform: rotateZ(30deg) rotateY(54.6deg) rotateX(0deg);
+  animation: 2s preload-cycle linear infinite;
+  animation-delay: 0s;
+}
+
+.preloader .slice:nth-child(2) {
+  transform: rotateZ(90deg) rotateY(54.6deg) rotateX(0deg);
+  animation: 2s preload-cycle linear infinite;
+  animation-delay: 0.33333s;
+}
+
+.preloader .slice:nth-child(3) {
+  transform: rotateZ(150deg) rotateY(54.6deg) rotateX(0deg);
+  animation: 2s preload-cycle linear infinite;
+  animation-delay: 0.66667s;
+}
+
+.preloader .slice:nth-child(4) {
+  transform: rotateZ(210deg) rotateY(54.6deg) rotateX(0deg);
+  animation: 2s preload-cycle linear infinite;
+  animation-delay: 1s;
+}
+
+.preloader .slice:nth-child(5) {
+  transform: rotateZ(270deg) rotateY(54.6deg) rotateX(0deg);
+  animation: 2s preload-cycle linear infinite;
+  animation-delay: 1.33333s;
+}
+
+.preloader .slice:nth-child(6) {
+  transform: rotateZ(330deg) rotateY(54.6deg) rotateX(0deg);
+  animation: 2s preload-cycle linear infinite;
+  animation-delay: 1.66667s;
+}
+</style>
+</template>
+</dom-module>

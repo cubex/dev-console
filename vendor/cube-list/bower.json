@@ -1,0 +1,60 @@
+{
+  "name": "cube-list",
+  "version": "1.0.0",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "private": true,
+  "main": "cube-list.html",
+  "license": "MIT",
+  "homepage": "https://github.com/CubexElements/cube-list/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#2.0-preview",
+    "cube-elements": "git@github.com:CubexElements/cube-elements.git",
+    "cube-behavior": "git@github.com:CubexElements/cube-behavior.git",
+    "paper-item": "PolymerElements/paper-item#2.0-preview",
+    "paper-input": "PolymerElements/paper-input#2.0-preview",
+    "iron-icon": "PolymerElements/iron-icon#2.0-preview"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^4.0.0"
+  },
+  "resolutions": {
+    "polymer": "2.0-preview",
+    "webcomponentsjs": "v1",
+    "paper-elements": "2.0-preview",
+    "iron-flex-layout": "2.0-preview",
+    "paper-styles": "2.0-preview",
+    "iron-behaviors": "2.0-preview",
+    "iron-a11y-keys-behavior": "2.0-preview",
+    "paper-item": "2.0-preview",
+    "paper-input": "2.0-preview",
+    "iron-validatable-behavior": "2.0-preview",
+    "iron-a11y-announcer": "2.0-preview",
+    "iron-meta": "2.0-preview",
+    "iron-autogrow-textarea": "2.0-preview",
+    "iron-input": "2.0-preview",
+    "iron-icon": "2.0-preview",
+    "paper-ripple": "2.0-preview",
+    "iron-selector": "2.0-preview",
+    "neon-animation": "2.0-preview",
+    "iron-resizable-behavior": "2.0-preview",
+    "iron-ajax": "2.0-preview",
+    "iron-fit-behavior": "2.0-preview",
+    "iron-dropdown": "2.0-preview",
+    "iron-overlay-behavior": "2.0-preview"
+  }
+}

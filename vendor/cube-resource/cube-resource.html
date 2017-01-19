@@ -1,0 +1,157 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="cube-resource" attributes="auto auth url data headers ttl xhr">
+  <script>
+    Polymer(
+      {
+        is:         'cube-resource',
+        properties: {
+          auto:           {type: Boolean, value: false},
+          auth:           {type: Boolean, value: false},
+          /**
+           * ttl: time to live (in seconds)
+           */
+          ttl:            {type: Number, value: 0},
+          url:            {type: String},
+          headers:        {type: Object, value: function () {return {};}},
+          data:           {type: String, readOnly: true, notify: true},
+          xhr:            {type: String, readOnly: true, notify: true},
+          /**
+           * resource cache, shared object between instances (value not wrapped with function)
+           */
+          _resourceCache: {type: Object, value: {}}
+        },
+        observers:  ['_updateResource(auto,ttl,url,headers)'],
+        attached:   function ()
+                    {
+                      document.addEventListener(this._NOTIFY_EVENT_NAME, this._resourceUpdated.bind(this));
+                    },
+
+        _resourceUpdated: function (e)
+                          {
+                            var key = this._cacheKey();
+                            if(key && e.detail.key == key)
+                            {
+                              this._setExportsFromStruct(e.detail);
+                            }
+                          },
+
+        update: function (ignoreCache)
+                {
+                  this._updateResource(true, ignoreCache ? 0 : this.ttl);
+                },
+
+        _setExportsFromStruct: function (dataStruct)
+                               {
+                                 if(this.xhr !== dataStruct.xhr)
+                                 {
+                                   this._setPendingProperty('xhr', dataStruct.xhr);
+                                 }
+                                 if(this.data !== dataStruct.data)
+                                 {
+                                   this._setPendingProperty('data', dataStruct.data);
+                                 }
+                                 this._invalidateProperties();
+                               },
+
+        _updateResource: function (request, ttl)
+                         {
+                           if(request && this.url)
+                           {
+                             var key = this._cacheKey();
+                             if(ttl && this._resourceCache[key] && this._resourceCache[key].expires > Date.now())
+                             {
+                               this._setExportsFromStruct(this._resourceCache[key]);
+                             }
+                             else
+                             {
+                               this._debounceTriggerRequest();
+                             }
+                           }
+                           else
+                           {
+                             this._setExportsFromStruct(this._makeCache(null));
+                           }
+                         },
+
+        _debounceTriggerRequest: function ()
+                                 {
+                                   this.debounce('_triggerRequest', this._triggerRequest);
+                                 },
+
+        _triggerRequest: function ()
+                         {
+                           var self = this, key = self._cacheKey(), oReq = new XMLHttpRequest();
+                           if(!this._resourceCache[key])
+                           {
+                             this._resourceCache[key] = this._makeCache(key);
+                           }
+                           else
+                           {
+                             this._resourceCache[key].pending = true;
+                           }
+                           oReq.addEventListener(
+                             "load", function ()
+                             {
+                               if(this.status == '200')
+                               {
+                                 var data = null;
+                                 switch(this.getResponseHeader('content-type'))
+                                 {
+                                   case 'application/json':
+                                     data = JSON.parse(this.responseText);
+                                     break;
+                                   default:
+                                     data = this.responseText;
+                                     break;
+                                 }
+                                 self._resourceCache[key] = self._makeCache(key, this, data, false);
+                                 document.dispatchEvent(
+                                   new CustomEvent(
+                                     self._NOTIFY_EVENT_NAME, {detail: self._resourceCache[key]}
+                                   )
+                                 );
+                               }
+                             }
+                           );
+                           oReq.open('GET', this.url);
+                           if(this.headers)
+                           {
+                             var keys = Object.keys(this.headers);
+                             for(var idx in keys)
+                             {
+                               if(keys.hasOwnProperty(idx))
+                               {
+                                 oReq.setRequestHeader(keys[idx], this.headers[keys[idx]]);
+                               }
+                             }
+                           }
+                           oReq.withCredentials = Boolean(this.auth);
+                           oReq.send();
+                         },
+
+        _cacheKey: function ()
+                   {
+                     if(this.url)
+                     {
+                       return JSON.stringify([this.url, this.headers]);
+                     }
+                     return null;
+                   },
+
+        _makeCache: function (key, xhr, data, pending)
+                    {
+                      return {
+                        key:     key,
+                        xhr:     xhr,
+                        data:    data,
+                        pending: pending,
+                        expires: (this.ttl * 1000) + Date.now()
+                      };
+                    },
+
+        _NOTIFY_EVENT_NAME: 'cubex-resource-updated'
+      }
+    );
+  </script>
+</dom-module>

@@ -1,0 +1,124 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../cube-pagelet/cube-pagelet.html">
+<link rel="import" href="../../paper-ripple/paper-ripple.html">
+
+<dom-module id="cubex-link" attributes="mode href hash match">
+  <template>
+    <style>
+      :host {
+        display: inline;
+        position: relative;
+      }
+
+      :host a {
+        @apply --cubex-link-style;
+      }
+
+      :host([active]) a {
+        @apply --cubex-link-active-style;
+      }
+
+      :host(:hover) a {
+        @apply --cubex-link-hover-style;
+      }
+
+      paper-ripple {
+        @apply --cubex-link-style;
+      }
+    </style>
+
+    <iron-location path="{{__path}}" query="{{__query}}" hash="{{__hash}}"></iron-location>
+
+    <template is="dom-if" if="[[_isMode('page',mode)]]">
+      <a href="[[href]]">
+        <slot></slot>
+      </a>
+    </template>
+
+    <template is="dom-if" if="[[_isMode('dialog',mode)]]">
+      <paper-dialog id="dialog" with-backdrop>
+        <cube-pagelet id="pagelet" auth url="[[href]]"></cube-pagelet>
+      </paper-dialog>
+      <div on-tap="_tapDialog">
+        <slot></slot>
+      </div>
+    </template>
+    <paper-ripple center class="circle"></paper-ripple>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:         'cubex-link',
+        properties: {
+          active:   {type: Boolean, reflectToAttribute: true, value: false},
+          match:    {type: Boolean, value: false},
+          mode:     {type: String, value: 'page'},
+          href:     {type: String},
+          hash:     {type: String},
+          _dlg:     {type: Object},
+          _pagelet: {type: Object}
+        },
+
+        observers: ['_activeState(__path,__query,__hash,hash,href,mode,match)'],
+
+        _activeState: function (path, query, urlHash)
+                      {
+                        if(this.mode == 'page')
+                        {
+                          var concat = (path ? path : '') + (query ? '?' + query : '') + (urlHash ? '#' + urlHash : '');
+                          if(concat.indexOf(this.match) == 0)
+                          {
+                            this.active = true;
+                          }
+                          else if(this.href == concat)
+                          {
+                            this.active = true;
+                          }
+                          else if(this.href == '#' + urlHash)
+                          {
+                            this.active = true;
+                          }
+                          else if(this.href == '?' + query)
+                          {
+                            this.active = true;
+                          }
+                          else if(this.href && concat.indexOf(this.href) == 0)
+                          {
+                            this.active = true;
+                          }
+                          else
+                          {
+                            this.active = false;
+                          }
+                        }
+                        else
+                        {
+                          this.active = false;
+                        }
+                      },
+
+        _isMode:    function (test, mode)
+                    {
+                      return test == mode;
+                    },
+        _tapDialog: function ()
+                    {
+                      if(!this._pagelet)
+                      {
+                        this._pagelet = Polymer.dom(this.root).querySelector('#pagelet');
+                      }
+                      this._pagelet.update();
+
+                      if(!this._dlg)
+                      {
+                        this._dlg = Polymer.dom(this.root).querySelector('#dialog');
+                        document.body.appendChild(this._dlg);
+                      }
+
+                      this._dlg.open();
+                    }
+      }
+    );
+  </script>
+</dom-module>

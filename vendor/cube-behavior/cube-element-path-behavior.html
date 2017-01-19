@@ -1,0 +1,16 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+  /** @polymerBehavior */
+  Polymer.CubeElementPathBehavior = {
+    getPath: function (element)
+             {
+               var node = element, path = [];
+               do {
+                 path.push(node);
+               }
+               while(node = node.parentElement);
+               return path;
+             }
+  }
+</script>

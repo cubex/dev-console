@@ -1,0 +1,115 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../cube-dropdown/cube-dropdown.html">
+<link rel="import" href="../cube-action/cube-action.html">
+<link rel="import" href="../cube-list/cube-list.html">
+<link rel="import" href="../cube-icon/cube-icon.html">
+<link rel="import" href="../cube-behavior/cube-iterator-behavior.html">
+<link rel="import" href="cubex-notification.html">
+
+<dom-module id="cubex-notifications" attributes="notifications horizontal-align">
+  <template>
+    <style>
+      :host {
+        --paper-spinner-color: var(--accent-400-color);
+        --paper-spinner-stroke-width: 3px;
+      }
+
+      :host .dropdown-trigger cube-action {
+        @apply --primary-700-text-secondary;
+        width: 40px;
+        height: 40px;
+      }
+
+      :host .dropdown-trigger cube-action:hover {
+        @apply --primary-700-text;
+      }
+
+      :host .dropdown-trigger paper-spinner-lite {
+        position: absolute;
+        margin: -2px;
+      }
+
+      :host([running]) .dropdown-trigger cube-icon {
+        transform: scale(0.8);
+      }
+
+      :host cube-list.dropdown-content {
+        min-width: 350px;
+      }
+
+      :host cube-list.dropdown-content cube-action {
+        margin-right: -10px;
+        margin-left: 10px;
+      }
+
+      :host cube-list.dropdown-content cube-li[unread] {
+        background-color: var(--primary-700-color);
+      }
+    </style>
+
+    <cube-dropdown horizontal-align="[[horizontalAlign]]">
+      <div class="dropdown-trigger">
+        <cube-action>
+          <paper-spinner-lite active="[[running]]"></paper-spinner-lite>
+          <cube-icon icon="social:notifications"></cube-icon>
+        </cube-action>
+      </div>
+      <cube-list class="dropdown-content" custom>
+        <template is="dom-repeat" items="[[notifications]]" sort="__sortNotifications">
+          <cubex-notification notification="[[item]]"></cubex-notification>
+        </template>
+      </cube-list>
+    </cube-dropdown>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:         'cubex-notifications',
+        properties: {
+          running: {type: Boolean, reflectToAttribute: true, computed: '__hasRunning(notifications)'}
+        },
+
+        __sortNotifications: function (a, b)
+                             {
+                               if(a.percent == b.percent)
+                               {
+                                 if(a.percent == 100)
+                                 {
+                                   return a.endTime < b.endTime;
+                                 }
+                                 return a.startTime < b.startTime;
+                               }
+                               if(a.percent < 100 && b.percent < 100)
+                               {
+                                 return a.percent < b.percent;
+                               }
+                               if(a.percent < 100)
+                               {
+                                 return -1;
+                               }
+                               if(b.percent < 100)
+                               {
+                                 return 1;
+                               }
+                               return a.startTime < b.startTime;
+                             },
+
+        __hasRunning: function ()
+                      {
+                        return !!this.iterate(
+                          this.notifications, function (item)
+                          {
+                            if(item.percentage < 100)
+                            {
+                              return true;
+                            }
+                          }
+                        );
+                      },
+
+        behaviors: [Polymer.CubeIteratorBehavior]
+      }
+    );
+  </script>
+</dom-module>

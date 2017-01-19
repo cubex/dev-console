@@ -1,0 +1,19 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+  /** @polymerBehavior */
+  Polymer.CubeTouchEnabledBehavior = {
+    _touchEnabled: function ()
+                   {
+                     try
+                     {
+                       document.createEvent("TouchEvent");
+                       return true;
+                     }
+                     catch(e)
+                     {
+                       return false;
+                     }
+                   }
+  }
+</script>

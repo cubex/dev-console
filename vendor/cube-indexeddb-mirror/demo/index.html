@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>cube-indexeddb-mirror Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="../cube-indexeddb-mirror.html">
+</head>
+<body unresolved>
+
+<template id="t" is="dom-bind">
+  <cube-indexeddb-mirror session="" key="test-key"
+                         data="{{testData}}" persisted-data="{{testPersistedData}}"></cube-indexeddb-mirror>
+  <test-ele data="{{testData}}"></test-ele>
+  <div>Persisted: {{testPersistedData}}</div>
+</template>
+
+<dom-module id="test-ele">
+  <template>
+    <div>Data: [[data]]</div>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:         'test-ele',
+        properties: {
+          data: {type: Object, notify: true}
+        },
+        attached:   function ()
+                    {
+                      this._refresh();
+                      setInterval(this._refresh.bind(this), 2000);
+                    },
+        _refresh:   function ()
+                    {
+                      this.data = 'test ' + Math.random();
+                    }
+      }
+    );
+  </script>
+</dom-module>
+
+</body>
+</html>

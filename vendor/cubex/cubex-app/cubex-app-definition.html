@@ -1,0 +1,37 @@
+<link href="../../polymer/polymer.html" rel="import">
+<link href="../../cube-behavior/cube-service-behavior.html" rel="import">
+
+<dom-module id="cubex-app-definition" attributes="gaid app-data">
+  <template>
+    <cube-resource auto url="[[_url]]" data="{{appData}}"></cube-resource>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:         'cubex-app-definition',
+        properties: {
+          gaid:    {type: String},
+          appData: {type: Object, notify: true},
+          _url:    {type: String}
+        },
+        observers:  ['_updateUrl(gaid)'],
+
+        _updateUrl: function ()
+                    {
+                      var url = null;
+                      if(this.gaid && this.gaid !== '/')
+                      {
+                        url = '//' + this.getServiceHost('cdn') + '/_apps/' + this.gaid + '/definition.json';
+                      }
+
+                      if(this._url !== url)
+                      {
+                        this._url = url;
+                      }
+                    },
+
+        behaviors: [Polymer.CubeServiceBehavior]
+      }
+    );
+  </script>
+</dom-module>

@@ -1,0 +1,207 @@
+<link href="../../polymer/polymer.html" rel="import">
+<link href="../../iron-flex-layout/iron-flex-layout.html" rel="import">
+<link href="cubex-user-drawer-items.html" rel="import">
+<link rel="import" href="../../cube-nudge/cube-nudge.html">
+<link rel="import" href="../../cube-action/cube-action.html">
+<link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-element-path-behavior.html">
+<link rel="import" href="../../cube-pagelet/cube-pagelet.html">
+
+
+<dom-module id="cubex-user-drawer">
+  <template>
+    <style>
+      :host {
+        --cube-list-style: {
+          background: var(--theme-50-color, white);
+          border-bottom: 1px solid var(--cube-list-border-color, rgba(0, 0, 0, 0.06));
+        }
+      }
+
+      :host > #contentContainer {
+        display: block;
+        overflow: hidden;
+        padding-right: var(--cubex-drawer-peek-width);
+        width: calc(var(--cubex-drawer-width) - var(--cubex-drawer-peek-width) - 2px);
+        background: var(--theme-100-color);
+      }
+
+      :host ::slotted(cubex-user-drawer) {
+        position: relative;
+        min-width: 100%;
+        min-height: 100%;
+        width: var(--cubex-drawer-peek-width);
+        display: block;
+        padding-right: var(--cubex-drawer-peek-width);
+      }
+
+      cubex-user-drawer-items {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        max-width: var(--cubex-drawer-peek-width);
+        z-index: 1;
+        background: var(--primary-800-color);
+        color: white
+      }
+
+      cubex-user-drawer-items cube-action {
+        padding: 12px
+      }
+
+      #lockUserDrawer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        color: var(--text-color-secondary);
+        cursor: pointer;
+        padding: 10px;
+      }
+
+      #lockUserDrawer[hidden] {
+        display: none;
+      }
+
+      cube-action#addUserAppAction {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+
+      :host-context([is-open],[state="2"]) cubex-user-drawer-items cube-action[active] {
+        background: var(--theme-100-color);
+        color: var(--accent-700-color);
+      }
+    </style>
+
+    <cubex-registry user-data="{{_userRegistryData}}"></cubex-registry>
+
+    <cube-preferences name="selectedUserApp" value="{{_selectedApp}}"></cube-preferences>
+    <cubex-user-drawer-items>
+      <template is="dom-repeat" items="[[__appGroups(_userRegistryData)]]" as="app">
+        <cube-action active$="[[_isSelectedApp(app.vendor_id,app.id,_selectedApp)]]" icon="[[app.icon]]"
+                     on-tap="_openUserDrawerApp" gaid$="[[app.vendor_id]]/[[app.id]]"></cube-action>
+      </template>
+      <cube-action icon="icons:add" id="addUserAppAction" on-tap="_addUserApp"></cube-action>
+    </cubex-user-drawer-items>
+
+    <div id="contentContainer">
+      <cube-pagelet auto auth id="pagelet" url="[[_getPageletUrl(_selectedApp,_drawerOpen)]]">Loading...</cube-pagelet>
+      <cube-action icon="icons:chrome-reader-mode" id="lockUserDrawer" on-tap="_lockUserDrawer"></cube-action>
+    </div>
+  </template>
+  <script>Polymer(
+    {
+      is:                 'cubex-user-drawer',
+      properties:         {
+        _drawer:           {type: Object},
+        _drawerOpen:       {type: Object},
+        _userRegistryData: {type: Object},
+        _selectedApp:      {type: String, observer: '_appChange'}
+      },
+      _isSelectedApp:     function ()
+                          {
+                            return Array.prototype.slice.call(arguments, -1).join('/') == this._selectedApp;
+                          },
+      _getPageletUrl:     function (page)
+                          {
+                            if(page)
+                            {
+                              return '//' + this.getServiceHost('apps') + '/' + page;
+                            }
+                            return undefined;
+                          },
+      attached:           function ()
+                          {
+                            this._drawer = this._getDrawer();
+                            document.addEventListener(
+                              'cubex-drawer-state-changed', function (e)
+                              {
+                                if(this._drawer == e.detail.drawer)
+                                {
+                                  if(e.detail.state !== 2 && e.detail.isOpen == false)
+                                  {
+                                    this._selectedApp = null;
+                                  }
+                                }
+                              }.bind(this)
+                            );
+                          },
+      _getDrawer:         function ()
+                          {
+                            var drawer = null;
+                            this.iterate(
+                              this.getPath(this), function (parent)
+                              {
+                                if(parent.tagName == 'CUBEX-DRAWER')
+                                {
+                                  drawer = parent;
+                                  return true;
+                                }
+                              }
+                            );
+                            return drawer;
+                          },
+      _addUserApp:        function ()
+                          {
+                            console.error("Adding User App Method Missing");
+                          },
+      _openUserDrawerApp: function (e)
+                          {
+                            if(e.currentTarget.getAttribute('gaid') == this._selectedApp)
+                            {
+                              this._selectedApp = null;
+                            }
+                            else
+                            {
+                              this._selectedApp = e.currentTarget.getAttribute('gaid');
+                            }
+
+                            if(this._drawer.state == 2)
+                            {
+                              this._drawer.setMaxState(1);
+                            }
+                          },
+      _appChange:         function ()
+                          {
+                            if(this._selectedApp)
+                            {
+                              this._drawer.open();
+                            }
+                            else
+                            {
+                              this._drawer.close();
+                            }
+                          },
+      _lockUserDrawer:    function ()
+                          {
+                            this._drawer.setMaxState(this._drawer.state == 2 ? 1 : 2);
+                            this._drawer.setState(this._drawer.maxState);
+                          },
+
+      __appGroups: function (userRegistry)
+                   {
+                     var apps = [];
+                     if(userRegistry)
+                     {
+                       for(var idx in userRegistry.AppSummary)
+                       {
+                         if(userRegistry.AppSummary.hasOwnProperty(idx))
+                         {
+                           apps.push(userRegistry.AppSummary[idx]);
+                         }
+                       }
+                     }
+                     return apps;
+                   },
+
+      behaviors: [
+        Polymer.CubeElementPathBehavior,
+        Polymer.CubeIteratorBehavior,
+        Polymer.CubeServiceBehavior
+      ]
+    }
+  )</script>
+</dom-module>

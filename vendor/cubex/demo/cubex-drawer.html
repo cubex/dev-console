@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>cube-drawer Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../cubex-drawer/cubex-drawer.html">
+</head>
+<body unresolved>
+
+
+<cubex-drawer id="drawer" hover-popout swipe-open min-state="1">
+  <cubex-drawer-content slot="drawer-content">
+    <div>drawer content here</div>
+    <cube-action id="close">close</cube-action>
+  </cubex-drawer-content>
+  <cube-action id="open">open</cube-action>
+  main content here
+</cubex-drawer>
+
+<script>
+  document.getElementById('close').addEventListener(
+    'click', function ()
+    {
+      document.getElementById('drawer').close();
+    }
+  );
+  document.getElementById('open').addEventListener(
+    'click', function ()
+    {
+      document.getElementById('drawer').open();
+    }
+  );
+</script>
+
+</body>
+</html>

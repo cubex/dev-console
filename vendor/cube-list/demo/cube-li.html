@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>cube-li Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../cube-li.html">
+  <link rel="import" href="../../cube-action/cube-action.html">
+  <link rel="import" href="../../cube-icon/cube-icon.html">
+</head>
+<body unresolved>
+<cube-li multi-line>
+  <cube-icon icon="icons:android" slot="icon" size="48"></cube-icon>
+  Brunch <strong>this</strong> weekend?
+  <div slot="secondary">
+    <strong>Ali Connors</strong>
+    - I'll be in your neighbourhood doing errands this weekend. Do you want to get a cup of tea
+  </div>
+  <cube-action icon="icons:build" slot="actions"></cube-action>
+  <div slot="footer">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus esse exercitationem impedit in
+                     perspiciatis similique, temporibus. Assumenda at commodi eligendi error impedit perspiciatis quia
+                     quo reprehenderit! Corporis excepturi nesciunt voluptatibus?
+  </div>
+</cube-li>
+<cube-li>
+  <cube-icon icon="icons:more-vert" slot="icon"></cube-icon>
+  This is a list item
+  <div slot="secondary">Line Two</div>
+  <div slot="footer">This is a footer line</div>
+  <cube-action icon="icons:build" slot="actions"></cube-action>
+  <cube-action icon="icons:star" slot="actions"></cube-action>
+</cube-li>
+<cube-li>
+  <cube-icon icon="icons:star" slot="icon"></cube-icon>
+  This is a list item
+  <div slot="secondary">Line Two</div>
+  <cube-action icon="icons:build" slot="actions"></cube-action>
+  <cube-action icon="icons:star" slot="actions"></cube-action>
+</cube-li>
+<cube-li>
+  <cube-icon icon="icons:remove-circle" slot="icon" size="40"></cube-icon>
+  This is a list item
+  <cube-action icon="icons:build" slot="actions"></cube-action>
+  <cube-action icon="icons:star" slot="actions"></cube-action>
+</cube-li>
+<cube-li>
+  <div slot="icon">
+    <cube-icon icon="icons:remove-circle" size="20" style="padding:5px 0"></cube-icon>
+    <cube-icon icon="icons:remove-circle" size="20" style="padding:5px 0"></cube-icon>
+  </div>
+  some text here
+</cube-li>
+<cube-li>
+  <cube-icon icon="icons:remove-circle" slot="icon" size="40"></cube-icon>
+  some text here
+</cube-li>
+<cube-li>
+  some text here
+</cube-li>
+</body>
+</html>

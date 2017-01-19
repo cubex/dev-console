@@ -1,0 +1,69 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../cube-list/cube-li.html">
+<link rel="import" href="../cube-icon/cube-icon.html">
+<link rel="import" href="../cube-behavior/cube-iterator-behavior.html">
+<link rel="import" href="../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="../cube-app/cube-app-definition.html">
+<link rel="import" href="../moment-element/moment-element.html">
+<link rel="import" href="cubex-notification-state.html">
+<link rel="import" href="cubex-notification-definition.html">
+
+<dom-module id="cubex-notification" attributes="notification">
+  <template>
+    <cubex-notification-definition notification="[[notification]]"
+                                  definition="{{definition}}"></cubex-notification-definition>
+
+    <cube-li multi-line unread="[[notification.unread]]">
+      <cube-icon icon="[[definition.Icon]]"></cube-icon>
+      [[i18n_c4t(definition.ID,'_name')]]
+      <div secondary>
+        <moment-element datetime$="[[_dateTime(notification)]]" from="now">[[_dateTime(notification)]]</moment-element>
+        by Tom Kay
+      </div>
+      <cube-action>
+        <cubex-notification-state notification="[[notification]]"></cubex-notification-state>
+      </cube-action>
+    </cube-li>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:         'cubex-notification',
+        properties: {
+          notification: {type: Object},
+          definition:   {type: Object, observer: '_resetResources'},
+          resources:    {type: Object, value: this._resetResources}
+        },
+
+        _dateTime: function (n)
+                   {
+                     if(n.percentage < 100)
+                     {
+                       return (new Date(n.startTime * 1000)).toISOString();
+                     }
+                     return (new Date(n.endTime * 1000)).toISOString();
+                   },
+
+        _resetResources: function (def)
+                         {
+                           var self = this,
+                             res = {};
+
+                           if(def)
+                           {
+                             res = self.hydrateResources(res, def.ID + '_name', def.Name);
+                             res = self.hydrateResources(res, def.ID + '_description', def.Description);
+                           }
+
+                           this.resources = res;
+                         },
+
+        behaviors: [
+          Polymer.CubeIteratorBehavior,
+          Polymer.CubeI18nBehavior
+        ]
+      }
+    );
+  </script>
+</dom-module>

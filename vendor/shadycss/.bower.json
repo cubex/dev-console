@@ -1,0 +1,35 @@
+{
+  "name": "shadycss",
+  "main": "shadycss.min.js",
+  "authors": [
+    "The Polymer Authors"
+  ],
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "webcomponents"
+  ],
+  "homepage": "https://github.com/webcomponents/shadycss",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "custom-elements": "webcomponents/custom-elements#master"
+  },
+  "devDependencies": {
+    "web-component-tester": "^4.3.5",
+    "shadydom": "webcomponents/shadydom"
+  },
+  "_release": "2bd64180cf",
+  "_resolution": {
+    "type": "branch",
+    "branch": "issue-21",
+    "commit": "2bd64180cfe5bcf8c6413864959d81c71ef0fd3d"
+  },
+  "_source": "https://github.com/TomK/shadycss.git",
+  "_target": "issue-21",
+  "_originalSource": "TomK/shadycss"
+}

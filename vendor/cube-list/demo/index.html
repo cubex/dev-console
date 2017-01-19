@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>cube-list Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../cube-list.html">
+  <link rel="import" href="../cube-list-menu.html">
+  <link rel="import" href="../cube-list-group.html">
+  <link rel="import" href="../cube-li.html">
+</head>
+<body unresolved>
+
+<dom-bind>
+  <template>
+
+    <custom-style>
+      <style>
+        html {
+          --cube-li-focus-color: green;
+          --cube-li-hover-color: blue;
+          --cube-li-active-color: red;
+        }
+      </style>
+    </custom-style>
+
+    <h2>Grouped Zebra Border List</h2>
+    <cube-list zebra border border-group show-filter>
+      <cube-list-group title="The Pigs">
+        <cube-li>Daddy Pig
+          <div slot="secondary">Parent</div>
+        </cube-li>
+        <a href="#mummy">
+          <cube-li>Mummy Pig
+            <div slot="secondary">Parent</div>
+          </cube-li>
+        </a>
+        <div>invalid item due to no cube-li</div>
+        <cube-li multi-line>Peppa Pig
+          <a href="#peppa" slot="secondary">Child<br>multiline<br>3rd line</a>
+        </cube-li>
+        <cube-li>George Pig
+        </cube-li>
+      </cube-list-group>
+      <cube-list-group title="The Rabbits">
+        <cube-li>Rebecca Rabbit
+          <div slot="secondary">Child</div>
+        </cube-li>
+        <cube-li>Richard Rabbit
+          <div slot="secondary">Child</div>
+        </cube-li>
+        <cube-li>Mr Rabbit
+          <div slot="secondary">Parent</div>
+        </cube-li>
+        <cube-li>Mrs Rabbit
+          <div slot="secondary">Parent</div>
+        </cube-li>
+        <cube-li>Miss Rabbit
+          <div slot="secondary">Worker</div>
+        </cube-li>
+      </cube-list-group>
+    </cube-list>
+
+    <h2>MENU Grouped Zebra Border List</h2>
+    <cube-list-menu zebra border border-group show-filter>
+      <cube-list-group title="The Pigs">
+        <cube-li>Daddy Pig
+          <div slot="secondary">Parent</div>
+        </cube-li>
+        <cube-li>Mummy Pig
+          <div slot="secondary">Parent</div>
+        </cube-li>
+        <cube-li>Peppa Pig
+          <div slot="secondary">Child</div>
+        </cube-li>
+        <cube-li>George Pig
+          <div slot="secondary">Child</div>
+        </cube-li>
+      </cube-list-group>
+      <cube-list-group title="The Rabbits">
+        <cube-li>Rebecca Rabbit
+          <div slot="secondary">Child</div>
+        </cube-li>
+        <cube-li>Richard Rabbit
+          <div slot="secondary">Child</div>
+        </cube-li>
+        <cube-li>Mr Rabbit
+          <div slot="secondary">Parent</div>
+        </cube-li>
+        <cube-li>Mrs Rabbit
+          <div slot="secondary">Parent</div>
+        </cube-li>
+        <cube-li disabled>Miss Rabbit
+          <div slot="secondary">Worker</div>
+        </cube-li>
+      </cube-list-group>
+    </cube-list-menu>
+
+
+    <h2>Double Border List</h2>
+    <cube-list double-border show-filter filter-label="Search Characters">
+      <cube-li>Danny Dog
+        <div slot="secondary">Brown</div>
+      </cube-li>
+      <cube-li>Candy Cat
+        <div slot="secondary">Orange</div>
+      </cube-li>
+      <cube-li>Suzy Sheep
+        <div slot="secondary">White</div>
+      </cube-li>
+      <cube-li>Zoe Zebra
+        <div slot="secondary">Black and White</div>
+      </cube-li>
+    </cube-list>
+
+    <cube-list zebra double-border show-filter filter-label="Search Characters">
+      <template is="dom-repeat" items='[{"name":"test1"},{"name":"test2"}]'>
+        <cube-li>[[item.name]]</cube-li>
+      </template>
+    </cube-list>
+
+    <cube-list-menu zebra double-border show-filter filter-label="Search Characters">
+      <template is="dom-repeat" items='[{"name":"test1"},{"name":"test2"}]'>
+        <cube-li>[[item.name]]</cube-li>
+      </template>
+    </cube-list-menu>
+
+  </template>
+</dom-bind>
+
+</body>
+</html>

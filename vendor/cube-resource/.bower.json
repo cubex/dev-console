@@ -1,0 +1,42 @@
+{
+  "name": "cube-resource",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "private": true,
+  "main": "cube-resource.html",
+  "license": "MIT",
+  "homepage": "https://github.com/CubexElements/cube-resource/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#2.0-preview"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
+    "web-component-tester": "^5.0.0"
+  },
+  "resolutions": {
+    "polymer": "2.0-preview",
+    "webcomponentsjs": "v1"
+  },
+  "_release": "4e5a9a68d9",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "4e5a9a68d93ff87470280c234b0e6657587a25a6"
+  },
+  "_source": "https://github.com/CubexElements/cube-resource.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-resource"
+}

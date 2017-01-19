@@ -1,0 +1,38 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../app-route/app-location.html">
+<link rel="import" href="../../app-route/app-route.html">
+<link rel="import" href="../../cube-resource/cube-resource.html">
+<link rel="import" href="../../cube-behavior/cube-service-behavior.html">
+
+<dom-module id="cubex-registry" attributes="org-data user-data">
+  <template>
+    <app-location route="{{route}}"></app-location>
+    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
+
+    <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/registry/organisation.json"
+                   data="{{orgData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
+    <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/registry/user.json"
+                   data="{{userData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:              'cubex-registry',
+        properties:      {
+          orgData:  {type: Object, notify: true},
+          userData: {type: Object, notify: true},
+          _headers: {type: Object, computed: '_refreshHeaders(routeData.org)'}
+        },
+        _refreshHeaders: function (org)
+                         {
+                           if(org)
+                           {
+                             return {'x-cube-org': org};
+                           }
+                           return undefined;
+                         },
+        behaviors:       [Polymer.CubeServiceBehavior]
+      }
+    );
+  </script>
+</dom-module>

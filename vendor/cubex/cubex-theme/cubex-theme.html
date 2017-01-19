@@ -1,0 +1,116 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="cubex-theme-style.html">
+
+<!--
+An element to set the page theme
+
+Example:
+
+    <cubex-theme primary="cubex-blue" accent="cubex-navy" theme="dark"></cubex-theme>
+
+@demo demo/index.html
+-->
+
+<dom-module id="cubex-theme">
+  <template>
+    <style>
+      :host {
+        color: var(--theme-text);
+      }
+
+      :host::before {
+        display: block;
+        position: absolute;
+        right: 0;
+        left: 0;
+        height: 236px;
+        content: "";
+        background: var(--theme-400-color);
+      }
+
+      :host::after {
+        display: block;
+        position: fixed;
+        z-index: -1;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        content: "";
+        background: var(--theme-700-color);
+      }
+    </style>
+    <slot></slot>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:             'cubex-theme',
+        properties:     {
+          primary: {type: String, value: 'cubex-navy', observer: '_updatePrimary'},
+          accent:  {type: String, value: 'cubex-blue', observer: '_updateAccent'},
+          theme:   {type: String, value: 'light', observer: '_updateTheme'}
+        },
+        _doc:           (function ()
+        {
+          var script = document._currentScript || document.currentScript;
+          return script && script.ownerDocument || document;
+        }()),
+        _regex:         /[^a-z0-9\-]/,
+        _import:        function (type, name)
+                        {
+                          if(!name)
+                          {
+                            return;
+                          }
+                          var dom = this,
+                            prefix = 'cubex-theme-' + type,
+                            cs = dom.querySelector('#' + prefix),
+                            fullName = prefix + '-' + name;
+
+                          if(!cs)
+                          {
+                            cs = document.createElement('custom-style');
+                            cs.id = prefix;
+                            dom.appendChild(cs);
+                          }
+
+                          var s = cs.querySelector('style');
+                          if(s && s.getAttribute('include') === fullName)
+                          {
+                            return;
+                          }
+
+                          this.importHref(
+                            this.resolveUrl('styles/' + type + '/' + fullName + '.html'),
+                            function ()
+                            {
+                              while(e = cs.firstChild)
+                              {
+                                cs.removeChild(e);
+                              }
+
+                              s = document.createElement('style');
+                              s.setAttribute('include', fullName);
+                              cs.appendChild(s);
+                              CustomStyle.processHook(s);
+                              Polymer.updateStyles();
+                            }, null, true
+                          );
+                        },
+        _updatePrimary: function (v)
+                        {
+                          this._import('primary', v.replace(this._regex, ''));
+                        },
+        _updateAccent:  function (v)
+                        {
+                          this._import('accent', v.replace(this._regex, ''));
+                        },
+        _updateTheme:   function (v)
+                        {
+                          this._import('theme', v.replace(this._regex, ''));
+                        }
+      }
+    );
+  </script>
+</dom-module>

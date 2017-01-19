@@ -1,0 +1,90 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="cubex-app-spinner-styles.html">
+<link rel="import" href="../../iron-scroll-target-behavior/iron-scroll-target-behavior.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <cubex-app-spinner></cubex-app-spinner>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="cubex-app-spinner">
+  <template>
+    <style include="cubex-app-spinner-styles">
+      :host {
+        background: rgba(255, 255, 255, 0.5);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      #spinner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 64px;
+        height: 74px;
+      }
+
+      #spinner svg {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+
+    <div id="spinner">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 770 889">
+        <polygon style="fill: #424e63;"
+                 points="0 667 385 889 770 667 770 222 385 0 0 222 0 667"></polygon>
+        <path style="fill: #fff;"
+              d="M674 278l-100-57V282l-100-42v-78L385 111l-89 51v78l-100 42V221L96 278V611l111 64V578c0-34 15-59 33-56s33 33 33 67V714L385 778v0h0v0l289-167V278Z"></path>
+        <polygon style="fill: #000; opacity: 0.1;"
+                 points="385 889 770 667 770 222 385 0"></polygon>
+      </svg>
+      <div class="preloader">
+        <span class="slice"></span>
+        <span class="slice"></span>
+        <span class="slice"></span>
+        <span class="slice"></span>
+        <span class="slice"></span>
+        <span class="slice"></span>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is: 'cubex-app-spinner',
+
+        properties: {hidden: {type: Boolean, observer: '_scrollHandler'}},
+
+        _scrollHandler: function ()
+                        {
+                          if(this.offsetHeight > this._scrollTargetHeight)
+                          {
+                            this.$.spinner.style.marginTop = ( (this._scrollTargetHeight / 2) + this._scrollTop - 150 ) + 'px';
+                          }
+                          else
+                          {
+                            this.$.spinner.style.marginTop = '';
+                          }
+                        },
+
+        behaviors: [Polymer.IronScrollTargetBehavior]
+      }
+    );
+  </script>
+</dom-module>

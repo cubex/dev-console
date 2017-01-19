@@ -1,0 +1,31 @@
+{
+  "name": "cube-indexeddb-mirror",
+  "version": "1.0.0",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "indexeddb"
+  ],
+  "private": true,
+  "main": "cube-indexeddb-mirror.html",
+  "license": "MIT",
+  "homepage": "https://github.com/CubexElements/cube-indexeddb-mirror/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.6.0",
+    "app-storage": "PolymerElements/app-storage#^0.9.4"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^4.0.0"
+  }
+}

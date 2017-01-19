@@ -1,0 +1,61 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+An element to bind html content to a container
+
+Example:
+
+    <cube-pagelet-content html="this is some <strong>bold</strong> content"></cube-pagelet-content>
+
+@demo demo/cube-pagelet-content.html
+-->
+
+<dom-module id="cube-pagelet-content" attributes="html">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <slot></slot>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:           'cube-pagelet-content',
+        properties:   {
+          html:        {type: String, observer: '_htmlChanged'},
+          _hasChanged: {type: Boolean, value: true}
+        },
+        _htmlChanged: function ()
+                      {
+                        if(this.html !== null || this._hasChanged)
+                        {
+                          this._hasChanged = true;
+                          var frag = document.createRange().createContextualFragment(this.html || ''),
+                            imports = frag.querySelectorAll('link[rel="import"]');
+
+                          for(var idx in imports)
+                          {
+                            if(imports.hasOwnProperty(idx))
+                            {
+                              this.importHref(imports[idx].getAttribute('href'));
+                              frag.removeChild(imports[idx]);
+                            }
+                          }
+
+                          while(this.firstChild)
+                          {
+                            this.removeChild(this.firstChild);
+                          }
+                          if(frag)
+                          {
+                            this.appendChild(frag);
+                          }
+                        }
+                      }
+      }
+    );
+  </script>
+</dom-module>

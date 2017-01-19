@@ -1,0 +1,40 @@
+@keyframes preload-cycle {
+  #{0%} {
+    opacity: 0.8;
+  }
+  #{40%} {
+    opacity: 0.1;
+  }
+  #{80%} {
+    opacity: 0.8;
+  }
+}
+
+.preloader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: block;
+  transform-origin: bottom left;
+
+  .slice {
+    position: absolute;
+    border: 33px solid transparent;
+    border-top-color: var(--cubex-app-spinner-slice-color, #FAFAFA);
+    opacity: 0.8;
+    top: 4px;
+    left: -1px;
+  }
+
+  & {
+    @for $i from 1 through 6 {
+      .slice:nth-child(#{$i}) {
+        transform: rotateZ(30+(60* ($i - 1)) + deg) rotateY(54.6deg) rotateX(0deg);
+        animation: 2s preload-cycle linear infinite;
+        animation-delay: #{($i - 1)*(2/6)}s;
+      }
+    }
+  }
+}

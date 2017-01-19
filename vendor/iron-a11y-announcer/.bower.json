@@ -1,0 +1,46 @@
+{
+  "name": "iron-a11y-announcer",
+  "description": "A singleton element that simplifies announcing text to screen readers.",
+  "keywords": [
+    "web-components",
+    "polymer",
+    "a11y",
+    "live"
+  ],
+  "authors": [
+    "The Polymer Authors"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PolymerElements/iron-a11y-announcer.git"
+  },
+  "main": "iron-a11y-announcer.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "dependencies": {
+    "polymer": "polymer/polymer#2.0-preview"
+  },
+  "devDependencies": {
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#2.0-preview",
+    "iron-test-helpers": "PolymerElements/iron-test-helpers#2.0-preview",
+    "paper-button": "PolymerElements/paper-button#2.0-preview",
+    "test-fixture": "PolymerElements/test-fixture#^2.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#v1",
+    "web-component-tester": "^4.0.0"
+  },
+  "ignore": [],
+  "resolutions": {
+    "test-fixture": "^2.0.0",
+    "webcomponentsjs": "v1",
+    "polymer": "2.0-preview"
+  },
+  "homepage": "https://github.com/PolymerElements/iron-a11y-announcer",
+  "_release": "eb602e9cbe",
+  "_resolution": {
+    "type": "branch",
+    "branch": "2.0-preview",
+    "commit": "eb602e9cbe351ea9cfd9ca5bee3d5d545891d0b1"
+  },
+  "_source": "https://github.com/PolymerElements/iron-a11y-announcer.git",
+  "_target": "2.0-preview",
+  "_originalSource": "PolymerElements/iron-a11y-announcer"
+}

@@ -1,0 +1,73 @@
+{
+  "name": "cube-elements",
+  "homepage": "https://github.com/CubexElements/cube-elements",
+  "authors": [],
+  "description": "The cube elements enable building full cubex apps out of modular custom elements.",
+  "main": "cube-elements.html",
+  "moduleType": [],
+  "keywords": [
+    "web-components",
+    "polymer",
+    "cubex",
+    "cube"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "cube-resource": "CubexElements/cube-resource",
+    "cube-time": "CubexElements/cube-time",
+    "cube-behavior": "CubexElements/cube-behavior",
+    "cube-pagelet": "CubexElements/cube-pagelet",
+    "cube-animbg": "CubexElements/cube-animbg",
+    "cube-icon": "CubexElements/cube-icon",
+    "cube-action": "CubexElements/cube-action",
+    "cube-list": "CubexElements/cube-list",
+    "cube-dropdown": "CubexElements/cube-dropdown",
+    "cube-touch-enabled": "CubexElements/cube-touch-enabled",
+    "cube-websocket": "CubexElements/cube-websocket",
+    "cube-indexeddb-mirror": "CubexElements/cube-indexeddb-mirror",
+    "cube-preferences": "CubexElements/cube-preferences",
+    "cube-nudge": "CubexElements/cube-nudge",
+    "cube-hero": "CubexElements/cube-hero",
+    "cube-title": "CubexElements/cube-title"
+  },
+  "resolutions": {
+    "iron-ajax": "2.0-preview",
+    "polymer": "2.0-preview",
+    "iron-icon": "2.0-preview",
+    "neon-animation": "2.0-preview",
+    "paper-styles": "2.0-preview",
+    "paper-item": "2.0-preview",
+    "paper-ripple": "2.0-preview",
+    "paper-input": "2.0-preview",
+    "iron-meta": "2.0-preview",
+    "iron-flex-layout": "2.0-preview",
+    "webcomponentsjs": "v1",
+    "iron-dropdown": "2.0-preview",
+    "iron-resizable-behavior": "2.0-preview",
+    "iron-selector": "2.0-preview",
+    "iron-behaviors": "2.0-preview",
+    "iron-autogrow-textarea": "2.0-preview",
+    "iron-a11y-keys-behavior": "2.0-preview",
+    "iron-input": "2.0-preview",
+    "iron-overlay-behavior": "2.0-preview",
+    "iron-validatable-behavior": "2.0-preview",
+    "iron-fit-behavior": "2.0-preview",
+    "iron-a11y-announcer": "2.0-preview"
+  },
+  "_release": "0cd0e35ced",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "0cd0e35ceda21b86f85846e1d26a05ebb150f97f"
+  },
+  "_source": "https://github.com/CubexElements/cube-elements.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-elements"
+}

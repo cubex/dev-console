@@ -1,0 +1,50 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../cube-behavior/cube-iterator-behavior.html">
+
+<!--
+A List
+
+Example:
+
+    <cube-list-group title="Group Name">
+      <cube-li></cube-li>
+    </cube-list-group>
+
+@demo demo/index.html
+-->
+
+<dom-module id="cube-list-group" attributes="title">
+  <template strip-whitespace>
+    <style>
+      :host(:focus) {
+        outline: 0;
+      }
+
+      h2 {
+        padding: 0 16px;
+        @apply --cube-header;
+        @apply --cube-list-group-title;
+      }
+
+      :host-context([border-group]) .list-group {
+        border: 1px solid var(--cube-list-border-color, rgba(0, 0, 0, 0.12));
+      }
+    </style>
+
+    <h2>[[title]]
+      <slot name="title"></slot>
+    </h2>
+    <div class="list-group">
+      <slot></slot>
+    </div>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:         'cube-list-group',
+        properties: {title: String}
+      }
+    );
+  </script>
+</dom-module>

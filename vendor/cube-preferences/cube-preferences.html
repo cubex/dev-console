@@ -1,0 +1,99 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-request.html">
+<link rel="import" href="../cube-indexeddb-mirror/cube-indexeddb-mirror.html">
+<link rel="import" href="../cube-behavior/cube-service-behavior.html">
+
+<dom-module id="cube-preferences" attributes="name value cache">
+  <template>
+    <template is="dom-if" if="[[cache]]">
+      <cube-indexeddb-mirror data="{{value}}" persisted-data="{{persistedValue}}"
+                             key="[[name]]"></cube-indexeddb-mirror>
+    </template>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:            'cube-preferences',
+        behaviors:     [Polymer.CubeServiceBehavior],
+        properties:    {
+          gaid:  {type: String, readonly: true},
+          name:  {type: String},
+          value: {type: String, notify: true},
+          cache: {type: Boolean},
+          _url:  {type: String, computed: '_computeUrl(name)', readonly: true}
+        },
+        _oldValue:     null,
+        observers:     ['_valueChanged(value.*)'],
+        _initialized:  false,
+        _computeUrl:   function (name)
+                       {
+                         return '//' + this.getServiceHost('apps') + '/cubex/preferences/'
+                           + (this.gaid ? this.gaid + ':' : '') + name;
+                       },
+        ready:         function ()
+                       {
+                         var self = this, oReq = new XMLHttpRequest();
+                         this.async(
+                           function ()
+                           {
+                             oReq.addEventListener(
+                               "load", function ()
+                               {
+                                 if(this.status == '200')
+                                 {
+                                   try
+                                   {
+                                     var response = JSON.parse(this.responseText);
+                                     if(response.status == '200')
+                                     {
+                                       self.value = JSON.parse(response.value);
+                                     }
+                                     else
+                                     {
+                                       self.value = null;
+                                     }
+                                   }
+                                   catch(e)
+                                   {
+                                     console.error(e);
+                                   }
+                                   finally
+                                   {
+                                     self._initialized = true;
+                                   }
+                                 }
+                               }
+                             );
+                             oReq.open('GET', this._url, true);
+                             oReq.withCredentials = true;
+                             oReq.send();
+                           }
+                         );
+                       },
+        _valueChanged: function ()
+                       {
+                         if(this._initialized)
+                         {
+                           var oReq = new XMLHttpRequest();
+                           oReq.addEventListener(
+                             "load", function ()
+                             {
+                               if(this.status == '200')
+                               {
+                                 var response = JSON.parse(this.responseText);
+                                 if(response.status != '200')
+                                 {
+                                   console.error(this.statusText);
+                                 }
+                               }
+                             }
+                           );
+                           oReq.open(this.value === undefined ? 'DELETE' : 'PUT', this._url, true);
+                           oReq.withCredentials = true;
+                           oReq.send(this.value === undefined ? null : JSON.stringify(this.value));
+                         }
+                       }
+      }
+    );
+  </script>
+</dom-module>

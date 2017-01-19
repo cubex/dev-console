@@ -1,0 +1,38 @@
+{
+  "name": "cube-touch-enabled",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "touchscreen"
+  ],
+  "private": true,
+  "main": "cube-touch-enabled.html",
+  "license": "MIT",
+  "homepage": "https://github.com/CubexElements/cube-touch-enabled/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.6.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^4.0.0"
+  },
+  "_release": "067881f070",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "067881f070175848dc2a465f43fdf5fb458f7e44"
+  },
+  "_source": "https://github.com/CubexElements/cube-touch-enabled.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-touch-enabled"
+}

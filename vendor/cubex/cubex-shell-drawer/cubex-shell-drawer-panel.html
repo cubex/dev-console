@@ -1,0 +1,29 @@
+<link href="../../polymer/polymer.html" rel="import">
+
+<dom-module id="cubex-shell-drawer-panel">
+  <template>
+    <style>
+      :host {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      :host(.iron-selected) {
+        display: block;
+      }
+    </style>
+    <slot></slot>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is: 'cubex-shell-drawer-panel'
+      }
+    );
+  </script>
+</dom-module>

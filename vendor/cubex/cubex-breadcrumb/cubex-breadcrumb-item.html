@@ -1,0 +1,36 @@
+<link rel="import" href="../../polymer/polymer.html"/>
+
+<dom-module id="cubex-breadcrumb-item" attributes="href">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: inline-block;
+        white-space: nowrap;
+        user-select: none;
+      }
+
+      :host(:first-of-type) > i {
+        display: none;
+      }
+
+      :host > i {
+        padding: 0 4px;
+        cursor: default;
+        @apply --text-secondary;
+      }
+
+      :host > a {
+        text-decoration: none;
+        text-transform: capitalize;
+        color: var(--accent-400-color);
+      }
+    </style>
+    <i>/</i>
+    <a href="[[href]]">
+      <slot></slot>
+    </a>
+  </template>
+  <script>
+    Polymer({is: 'cubex-breadcrumb-item'});
+  </script>
+</dom-module>

@@ -1,0 +1,556 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../iron-media-query/iron-media-query.html">
+<link rel="import" href="../../cube-behavior/cube-touch-enabled-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-service-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="../../app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../../app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../../app-layout/app-header/app-header.html">
+<link rel="import" href="../../app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../cube-list/cube-list.html">
+<link rel="import" href="../../cube-list/cube-li.html">
+<link rel="import" href="../../cube-pagelet/cube-pagelet.html">
+<link rel="import" href="../cubex-drawer/cubex-drawer.html">
+<link rel="import" href="../cubex-drawer/cubex-drawer-content.html">
+<link rel="import" href="../cubex-breadcrumb/cubex-breadcrumb.html">
+<link rel="import" href="../cubex-app/cubex-app-definition.html">
+<link rel="import" href="../cubex-app/cubex-app-header.html">
+<link rel="import" href="../cubex-effects/displace-element.html">
+<link rel="import" href="../cubex-link/cubex-link.html">
+<link rel="import" href="../cubex-hash/cubex-hash.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <cubex-app>
+    </cubex-app>
+
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="cubex-app"
+            attributes="app-data page-data header-menu header-actions page-menu page-actions panels back-path page-path has-hero">
+  <template>
+    <style>
+      :host {
+        display: block;
+        --cubex-drawer-peek-width: 56px;
+      }
+
+      cubex-app-header {
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        overflow: hidden;
+      }
+
+      app-header-layout {
+        min-width: 100px;
+        @apply --shadow-elevation-2dp;
+        margin: calc(60px + var(--cubex-drawer-offset-top, 0)) 24px 24px;
+        border-radius: 3px;
+      }
+
+      @media (max-width: 1000px) {
+        app-header-layout {
+          margin-left: 16px;
+          margin-right: 16px;
+        }
+      }
+
+      #app-container {
+        margin-top: calc(-1 * var(--cubex-drawer-offset-top, 0));
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        @apply --theme-600;
+        overflow: hidden;
+      }
+
+      #app-content {
+        margin: 32px;
+        min-height: 50px;
+      }
+
+      #app-content-main {
+        display: block;
+      }
+
+      #app-sidebar {
+        display: none;
+        float: left;
+        width: 192px;
+        flex-direction: column;
+      }
+
+      :host([has-sidebar]) #app-sidebar {
+        display: flex;
+      }
+
+      :host([has-sidebar]) #app-content-main {
+        margin-left: 224px;
+      }
+
+      cubex-breadcrumb {
+        margin: 0 -24px;
+        color: var(--theme-text);
+      }
+
+      :host app-toolbar {
+        padding: 0;
+        height: auto;
+      }
+
+      :host app-header {
+        margin-top: var(--cubex-drawer-offset-top, 0);
+        transition: left ease 0.2s, right ease 0.2s !important;
+      }
+
+      :host app-header::after {
+        @apply --shadow-elevation-2dp;
+        bottom: 1px;
+        height: 1px;
+      }
+
+      :host #hero {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        @apply --accent-700;
+      }
+
+      :host([drawer-disabled]) {
+        --cubex-drawer-peek-width: 0;
+        --cubex-drawer-width: 0;
+      }
+
+      #app-page-actions cube-action {
+        display: block;
+        @apply --paper-font-body2;
+        background: var(--theme-100-color);
+        color: var(--accent-400-color);
+        text-align: center;
+        border-radius: 3px;
+        border: 1px solid var(--theme-700-color);
+        text-transform: uppercase;
+        padding: 2px 10px 2px 2px;
+      }
+
+      #app-sidebar .sidebar-group {
+        margin: 5px 0;
+      }
+
+      #app-sidebar .sidebar-group:first-child {
+        margin-top: 0;
+      }
+
+      #app-sidebar .sidebar-group:last-child {
+        margin-bottom: 0;
+      }
+
+      #app-page-actions > cubex-link {
+        margin-bottom: 5px;
+      }
+
+      #app-page-actions > cubex-link:last-of-type {
+        margin-bottom: 0 !important;
+      }
+
+      #app-page-menu, #app-page-panels {
+        background: var(--theme-400-color);
+        border-radius: 3px;
+        border: 1px solid var(--theme-700-color);
+        --cube-li-content-style: {
+          @apply --paper-font-body2;
+          @apply --text-secondary;
+        };
+      }
+
+      #app-page-menu cubex-link {
+        --cubex-link-style: {
+          @apply --text-secondary;
+          color: var(--theme-text);
+        };
+        --cubex-link-active-style: {
+          @apply --text-primary;
+          color: var(--accent-400-color);
+        };
+        --cubex-link-hover-style: {
+          @apply --text-primary;
+          color: var(--accent-400-color);
+        };
+      }
+
+      #app-page-menu cubex-link[active] {
+        --cube-list-border-color: transparent;
+        --cube-list-double-border-color: transparent;
+        --cube-li-style: {
+          background: var(--accent-50-color) !important;
+        };
+        --cube-li-content-style: {
+          @apply --paper-font-body2;
+          @apply --text-primary;
+        }
+      }
+
+      #app-page-menu cubex-link:hover {
+        --cube-li-content-style: {
+          @apply --text-primary;
+          @apply --paper-font-body2;
+        };
+      }
+
+      @media (max-width: 1000px) {
+        #app-content {
+          margin: 16px;
+        }
+
+        :host([has-sidebar]) #app-content-main {
+          margin-left: 212px;
+        }
+      }
+
+      #app-back {
+        margin-left: -24px;
+        margin-right: 8px;
+        color: var(--accent-400-color);
+      }
+
+      #app-back cube-action {
+        padding: 15px;
+      }
+
+      #app-heading {
+        @apply --paper-font-title;
+        font-weight: normal;
+        line-height: 64px;
+        margin: 0;
+        padding: 0;
+      }
+
+      #app-heading a {
+        @apply --paper-font-title;
+        font-weight: normal;
+
+        text-decoration: none;
+        color: var(--theme-text);
+      }
+
+      #app-back, #app-heading a {
+        transition: color 400ms;
+      }
+
+      :host([hero-header]) #app-back {
+        color: white;
+      }
+
+      :host([hero-header]) #app-heading a {
+        color: white;
+      }
+    </style>
+
+    <iron-media-query query="(max-width: 375px)" query-matches="{{narrow}}"></iron-media-query>
+    <iron-media-query query="(min-width: 1000px)" query-matches="{{_peek}}"></iron-media-query>
+    <iron-media-query query="(min-width: 1300px)" query-matches="{{_lock}}"></iron-media-query>
+
+    <cubex-organisation organisation="{{organisation}}"></cubex-organisation>
+
+    <cube-preferences name="appDrawerPosition" value="{{appDrawerState}}"></cube-preferences>
+    <cubex-drawer id="appDrawer" hover-popout swipe-open position="left" preferred-state="{{appDrawerState}}">
+      <slot slot="drawer-content" name="drawer-content"></slot>
+      <app-header-layout id="ahl">
+        <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
+          <cubex-breadcrumb crumbs="[[breadcrumbs]]" category="[[appData.Category]]"></cubex-breadcrumb>
+          <app-toolbar sticky>
+            <cubex-app-header actions="[[headerActions]]" menu="[[headerMenu]]">
+
+              <template is="dom-if" if="[[backPath]]" strip-whitespace>
+                <a slot="header" id="app-back" href="[[backPath]]">
+                  <cube-action icon="icons:arrow-back" size="24"></cube-action>
+                </a>
+              </template>
+
+              <template is="dom-if" if="[[pageData.icon]]">
+                <cube-icon slot="header" src="[[pageData.icon]]"></cube-icon>
+              </template>
+
+              <h1 id="app-heading" slot="header"><a href="[[pagePath]]" id="page-title">[[pageData.title]]</a></h1>
+
+              <div displace id="hero" slot="hero">
+                <slot name="hero"></slot>
+              </div>
+
+            </cubex-app-header>
+          </app-toolbar>
+        </app-header>
+        <slot slot="header" name="spinner"></slot>
+
+        <div id="app-container">
+          <div id="app-content">
+            <div id="app-sidebar">
+              <template is="dom-if" if="[[pageActions.length]]">
+                <div id="app-page-actions" class="sidebar-group">
+                  <template is="dom-repeat" items="[[pageActions]]">
+                    <cubex-link hash="a-[[_hash32(item.GlobalAppID,'/',item.ID)]]"
+                                  href="//[[getServiceHost('apps')]][[item.Path]]"
+                                  mode="[[item.Mode]]" title="[[item.Description]]">
+                      <cube-action icon="[[item.Icon]]">[[item.Title]]</cube-action>
+                    </cubex-link>
+                  </template>
+                </div>
+              </template>
+
+              <template is="dom-if" if="[[pageMenu.length]]">
+                <cube-list id="app-page-menu" class="sidebar-group" border double-border bottom-border>
+                  <template is="dom-repeat" items="[[pageMenu]]">
+                    <cubex-link hash="[[item.Hash]]" href="[[item.Path]]"
+                                  mode="[[item.Mode]]" title="[[item.Description]]">
+                      <cube-li>[[item.Title]]</cube-li>
+                    </cubex-link>
+                  </template>
+                </cube-list>
+              </template>
+
+              <template is="dom-if" if="[[panels.length]]">
+                <cube-list id="app-page-panels" class="sidebar-group" border double-border bottom-border>
+                  <template is="dom-repeat" items="[[panels]]">
+                    <cube-li>
+                      <cube-pagelet auto auth url="//[[getServiceHost('apps')]][[item.Path]]"></cube-pagelet>
+                    </cube-li>
+                  </template>
+                </cube-list>
+              </template>
+            </div>
+
+            <div id="app-content-main">
+              <slot></slot>
+            </div>
+
+            <div style="clear:both"></div>
+          </div>
+        </div>
+      </app-header-layout>
+    </cubex-drawer>
+
+  </template>
+  <script>
+    Polymer(
+      {
+        is:         'cubex-app',
+        properties: {
+          hasSidebar:          {
+            type:               Boolean,
+            reflectToAttribute: true,
+            computed:           '_computeHasSidebar(pageMenu,pageActions,panels)'
+          },
+          hasHero:             {type: Boolean},
+          heroHeader:          {
+            type:               Boolean, computed: '_computeHeroHeader(hasHero,_heroHeaderFraction)',
+            reflectToAttribute: true
+          },
+          _heroHeaderFraction: {type: Boolean, value: 1},
+          backPath:            {type: String},
+          pagePath:            {type: String},
+          narrow:              {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
+          appData:             {type: Object, observer: '_updateResources'},
+          pageData:            {type: Object, observer: '_resetLayout'},
+          breadcrumbs:         {type: Object, computed: '_updateCrumbs(pageData,organisation)'},
+          drawerDisabled:      {
+            type:               Boolean,
+            value:              false,
+            reflectToAttribute: true
+          },
+          _lock:               {type: Boolean, value: false},
+          _peek:               {type: Boolean, value: false}
+        },
+        observers:  [
+          '_viewChanged(_lock,_peek,narrow)',
+          '_updateDrawer(appData)'
+        ],
+        listeners:  {'cube-displace-changed': '_displaceChanged'},
+
+        _displaceChanged: function (e)
+                          {
+                            this._heroHeaderFraction = e.detail.fraction;
+                          },
+
+        _computeHeroHeader: function (hasHero, fraction)
+                            {
+                              if(hasHero)
+                              {
+                                if(fraction < 1)
+                                {
+                                  this.updateStyles({'--cube-app-header-background': 'white'});
+                                  return false;
+                                }
+                                else
+                                {
+                                  this.updateStyles({'--cube-app-header-background': null});
+                                }
+                              }
+                              return hasHero;
+                            },
+
+        ready: function ()
+               {
+                 HTMLImports.whenReady(function () {this._resetLayout();}.bind(this));
+                 document.addEventListener(
+                   'cubex-drawer-state-changed', function (e)
+                   {
+                     if(e.detail.position == 'left')
+                     {
+                       this.$.ah.style.left = (e.detail.offset + 24) + 'px';
+                     }
+                     else if(e.detail.position == 'right')
+                     {
+                       this.$.ah.style.right = (e.detail.offset + 24) + 'px';
+                     }
+                   }.bind(this)
+                 );
+                 this.async(function () {this._viewChanged(this._lock, this._peek);});
+               },
+
+        _computeHasSidebar: function (pageMenu, pageActions, panels)
+                            {
+                              var items = 0;
+                              if(pageMenu)
+                              {
+                                items += pageMenu.length;
+                              }
+                              if(pageActions)
+                              {
+                                items += pageActions.length;
+                              }
+                              if(panels)
+                              {
+                                items += panels.length;
+                              }
+                              return items > 0;
+                            },
+
+        _updateDrawer:   function (appData)
+                         {
+                           if(!(appData && appData.Navigation && appData.Navigation.length))
+                           {
+                             this.$.appDrawer.setMaxState(0);
+                           }
+                           else
+                           {
+                             this.$.appDrawer.setMaxState(2);
+                           }
+                         },
+        _updateCrumbs:   function (pageData)
+                         {
+                           var bc = pageData && pageData.breadcrumb ? JSON.parse(pageData.breadcrumb) : [];
+                           if(this.appData && pageData && this.organisation)
+                           {
+                             var prefix = '/' + this.organisation.id + '/' + this.appData.GlobalAppID;
+                             for(var i in bc)
+                             {
+                               if(bc.hasOwnProperty(i))
+                               {
+                                 bc[i].Url = prefix + '/' + bc[i].Url.replace(/^\//, '');
+                               }
+                             }
+
+                             bc.unshift(
+                               {
+                                 Title: this.i18n('app_name'),
+                                 Url:   prefix
+                               }
+                             );
+                             if(this.appData.Group)
+                             {
+                               bc.unshift(
+                                 {
+                                   Title: this.appData.Group,
+                                   Url:   '/' + this.organisation.id + '/' + this.appData.Vendor + '/' + this.appData.Group
+                                 }
+                               );
+                             }
+                           }
+                           return bc;
+                         },
+        _resetLayout:    function ()
+                         {
+                           Polymer.RenderStatus.afterNextRender(
+                             this, function ()
+                             {
+                               this.$.ahl.resetLayout();
+                             }
+                           );
+                         },
+        _viewChanged:    function (lock, peek, narrow)
+                         {
+                           var drawer = this.drawer;
+                           if(drawer)
+                           {
+                             if(this._touchEnabled())
+                             {
+                               drawer.setMinState(0);
+                             }
+                             else
+                             {
+                               drawer.setMinState(1);
+                             }
+
+                             if(lock)
+                             {
+                               drawer.setState(2);
+                             }
+                             else if(((narrow && !this._touchEnabled()) || peek) && (drawer.state < 1 || narrow))
+                             {
+                               drawer.setState(1);
+                             }
+                           }
+                         },
+        _updateMaxState: function (narrow)
+                         {
+                           if(this.drawer)
+                           {
+                             this.drawer.maxState = narrow ? 1 : 2;
+                           }
+                         },
+
+        setDrawerState: function (state)
+                        {
+                          var drawer = this.drawer;
+                          drawer.setState(state);
+                          if(state == 1)
+                          {
+                            drawer.close();
+                          }
+                        },
+
+        _updateResources: function (appData)
+                          {
+                            this.resources = [];
+                            if(appData)
+                            {
+                              this.hydrateResources(this.resources, 'app_name', appData.Name);
+                            }
+                          },
+
+        /**
+         * Retrieve the drawer element for this app
+         * @returns {Element}
+         */
+        get drawer()
+        {
+          return this.querySelector('#appDrawer') || this.root.querySelector('#appDrawer');
+        },
+
+        behaviors: [
+          Polymer.CubeTouchEnabledBehavior,
+          Polymer.CubeServiceBehavior,
+          Polymer.CubeI18nBehavior,
+          Polymer.CubeHashBehavior
+        ]
+      }
+    )
+  </script>
+</dom-module>

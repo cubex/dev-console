@@ -1,0 +1,42 @@
+{
+  "name": "cube-hero",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "private": true,
+  "main": "cube-hero.html",
+  "license": "MIT",
+  "homepage": "https://github.com/CubexElements/cube-hero/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#2.0-preview"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
+    "web-component-tester": "^5.0.0"
+  },
+  "resolutions": {
+    "polymer": "2.0-preview",
+    "webcomponentsjs": "v1"
+  },
+  "_release": "f41b150b9c",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "f41b150b9c0df47abf16775f349681a83aa785b6"
+  },
+  "_source": "https://github.com/CubexElements/cube-hero.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-hero"
+}

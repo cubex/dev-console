@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Cubex Pagelet Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../cube-pagelet.html">
+</head>
+<body unresolved>
+
+<li>[auto] [url="./ajax.html"]
+  <cube-pagelet auto url="./ajax.html">[auto] Load ajax.html with 3 second refresh ...</cube-pagelet>
+</li>
+<li>
+  [url="./ajax.html"]
+  <cube-pagelet url="./ajax.html">Loading ajax.html content</cube-pagelet>
+  - Because the previous has the same url (and is auto), the data is reflected here too
+</li>
+
+<li>
+  [url="./random.html"] [refresh="5"]
+  <cube-pagelet url="./random.html" refresh="5">
+    <button onclick="this.parentNode.update()">Load random.html every 5 seconds</button>
+  </cube-pagelet>
+</li>
+
+<li>
+  [auto] [url="./remover.html"]
+  <cube-pagelet auto url="./remover.html"></cube-pagelet>
+</li>
+</body>
+</html>

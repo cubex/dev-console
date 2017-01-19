@@ -1,0 +1,261 @@
+<link href="../../polymer/polymer.html" rel="import">
+<link href="../cubex-registry/cubex-registry.html" rel="import">
+<link href="../cubex-category/cubex-category.html" rel="import">
+<link href="../cubex-organisation/cubex-organisation.html" rel="import">
+<link href="../../iron-selector/iron-selector.html" rel="import">
+<link href="../../paper-button/paper-button.html" rel="import">
+<link href="../../cube-animbg/cube-animbg.html" rel="import">
+<link href="../../cube-list/cube-list-menu.html" rel="import">
+<link href="../../cube-list/cube-list-group.html" rel="import">
+<link href="../../cube-list/cube-li.html" rel="import">
+<link href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html" rel="import">
+<link href="../../cube-behavior/cube-i18n-behavior.html" rel="import">
+<link href="../../cube-behavior/cube-service-behavior.html" rel="import">
+
+<dom-module id="cubex-shell-drawer">
+  <template>
+    <style>
+      :host {
+        display: block;
+        overflow: auto;
+        height: 100%;
+        --cube-animbg-background-color: var(--accent-700-color);
+      }
+
+      #user-view {
+        position: relative;
+        width: 100%;
+        height: 146px;
+        @apply(--paper-font-body2);
+        color: var(--accent-700-text-color);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      }
+
+      #user-view strong,
+      #user-view span {
+        padding-left: 98px;
+        display: block;
+        padding-top: 26px;
+      }
+
+      #user-view span {
+        padding-top: 0;
+        opacity: var(--light-secondary-opacity);
+      }
+
+      #user-view img {
+        border-radius: 50%;
+        border: solid 3px rgba(255, 255, 255, 0.4);
+        width: 64px;
+        height: 64px;
+        position: absolute;
+        top: 17px;
+        left: 13px;
+      }
+
+      .toggle {
+
+        display: block;
+        position: absolute;
+        top: 90px;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 0 16px;
+        cursor: pointer;
+        text-align: left;
+
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        text-transform: none;
+        @apply(--paper-font-body2);
+        height: 56px;
+        line-height: 56px;
+      }
+
+      .toggle iron-icon {
+        float: right;
+        top: 18px;
+      }
+
+      .closer {
+        position: absolute;
+        z-index: 100;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 90px;
+      }
+
+      #drawerPanels {
+        height: 100%;
+        width: 100%;
+      }
+
+      :host cube-list-menu {
+        --cube-list-filter-color: var(--primary-800-text-secondary-color);
+        --cube-list-filter-focus-color: var(--primary-800-text-color);
+      }
+
+      :host cube-li {
+        @apply --primary-700;
+      }
+    </style>
+
+    <cubex-organisation organisation="{{organisation}}" organisations="{{_organisations}}"></cubex-organisation>
+
+    <cubex-registry org-data="{{_orgRegistryData}}"></cubex-registry>
+
+    <cube-animbg id="user-view" size="80">
+      <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/whoami/whoami.json"
+                     data="{{whoami}}"></cube-resource>
+      <paper-button on-tap="_toggleParent" class="closer"></paper-button>
+      <img src="../demo/resources/images/avatar/default-64.png">
+      <strong>[[whoami.FirstName]] [[whoami.LastName]]</strong>
+      <span>[[whoami.Username]]</span>
+      <paper-button on-tap="toggleDrawer" class="toggle" selected-drawer="{{selectedItem}}">
+        [[organisation.name]]
+        <iron-icon icon="[[_icon]]"></iron-icon>
+      </paper-button>
+    </cube-animbg>
+    <div style="position: relative;">
+      <iron-selector selected="0" id="drawerPanels">
+        <slot></slot>
+        <cubex-shell-drawer-panel>
+          <cube-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
+            <template is="dom-repeat" items="[[__appGroups(_orgRegistryData)]]" as="group">
+              <cube-list-group>
+                <cubex-category key="[[group.name]]" slot="title"></cubex-category>
+                <template is="dom-repeat" items="[[group.apps]]" as="app">
+                  <a href="/[[organisation.id]]/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
+                    <cube-li>
+                      <cube-icon slot="icon" icon="[[app.icon]]"></cube-icon>
+                      [[app.name]]
+                    </cube-li>
+                  </a>
+                </template>
+              </cube-list-group>
+            </template>
+          </cube-list-menu>
+        </cubex-shell-drawer-panel>
+        <cubex-shell-drawer-panel>
+          <cube-list-menu show-filter filter-label="{{i18n('filter_orgs')}}">
+            <cube-list-group title="{{i18n('all_organisations')}}">
+              <template is="dom-repeat" items="[[organisations]]">
+                <a href="/[[item.id]]">
+                  <cube-li>
+                    <cube-icon slot="icon" icon="communication:business"></cube-icon>
+                    [[item.name]]
+                  </cube-li>
+                </a>
+              </template>
+            </cube-list-group>
+          </cube-list-menu>
+        </cubex-shell-drawer-panel>
+      </iron-selector>
+    </div>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:          'cubex-shell-drawer',
+        properties:  {
+          resources:        {
+            type:  Object,
+            value: {
+              "en": {
+                "filter_apps":       "Filter Applications",
+                "filter_orgs":       "Filter Organisations",
+                "all_organisations": "All Organisations"
+              },
+              "fr": {
+                "filter_apps":       "Filtre Applications",
+                "filter_orgs":       "Filtre les organisations",
+                "all_organisations": "Toutes les organisations"
+              }
+            }
+          },
+          selectedItem:     {
+            type:  Number,
+            value: 0
+          },
+          _icon:            {
+            type:  String,
+            value: "icons:arrow-drop-down"
+          },
+          _orgRegistryData: {type: Object},
+          organisation:     {type: Object},
+          organisations:    {type: Array},
+          avatar:           {
+            type:  String,
+            value: "resources/images/avatar/default-64.png"
+          },
+          headColor:        {
+            type: String
+          }
+        },
+        behaviors:   [
+          Polymer.IronA11yKeysBehavior,
+          Polymer.CubeI18nBehavior,
+          Polymer.CubeServiceBehavior
+        ],
+        keyBindings: {
+          ',': 'toggleDrawer'
+        },
+        attached:    function ()
+                     {
+                       this.keyEventTarget = document.body;
+                     },
+        observers:   ['_updateOrgs(_organisations)'],
+        _updateOrgs: function (orgs)
+                     {
+                       this.organisations = Object.keys(orgs).map(function (key) { return orgs[key]; });
+                     },
+
+        _toggleParent: function ()
+                       {
+                         this.fire('closeParent', {});
+                       },
+        toggleDrawer:  function ()
+                       {
+                         this.$.drawerPanels.selectNext();
+                         this.selectedItem = this.$.drawerPanels.selected;
+                         if(this.selectedItem == 1)
+                         {
+                           this._icon = "icons:arrow-drop-up";
+                         }
+                         else if(this.selectedItem == 0)
+                         {
+                           this._icon = "icons:arrow-drop-down";
+                         }
+                       },
+
+        __appGroups: function (orgRegistry)
+                     {
+                       var groups = {};
+                       if(orgRegistry)
+                       {
+                         for(var idx in orgRegistry.AppSummary)
+                         {
+                           if(orgRegistry.AppSummary.hasOwnProperty(idx))
+                           {
+                             var app = orgRegistry.AppSummary[idx];
+                             if(!groups[app.category])
+                             {
+                               groups[app.category] = {name: app.category, apps: []};
+                             }
+                             var group = groups[app.category];
+                             group.apps.push(app);
+                           }
+                         }
+                       }
+                       return Object.keys(groups).map(function (i) {return groups[i];});
+                     }
+      }
+    );
+  </script>
+</dom-module>

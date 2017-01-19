@@ -1,0 +1,59 @@
+{
+  "name": "cube-dropdown",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to dropdowns.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "private": true,
+  "main": "cube-dropdown.html",
+  "license": "MIT",
+  "homepage": "https://github.com/CubexElements/cube-dropdown/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#2.0-preview",
+    "iron-dropdown": "PolymerElements/iron-dropdown#2.0-preview",
+    "neon-animation": "PolymerElements/neon-animation#2.0-preview",
+    "web-animations-js": "web-animations/web-animations-js#~2.2.2",
+    "paper-styles": "PolymerElements/paper-styles#2.0-preview"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "paper-item": "PolymerElements/paper-item#2.0-preview"
+  },
+  "resolutions": {
+    "iron-flex-layout": "2.0-preview",
+    "paper-styles": "2.0-preview",
+    "iron-dropdown": "2.0-preview",
+    "neon-animation": "2.0-preview",
+    "iron-selector": "2.0-preview",
+    "iron-a11y-keys-behavior": "2.0-preview",
+    "iron-resizable-behavior": "2.0-preview",
+    "iron-behaviors": "2.0-preview",
+    "iron-fit-behavior": "2.0-preview",
+    "iron-meta": "2.0-preview",
+    "iron-overlay-behavior": "2.0-preview",
+    "polymer": "2.0-preview",
+    "webcomponentsjs": "v1",
+    "paper-item": "2.0-preview"
+  },
+  "_release": "6b7387b18d",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "6b7387b18d25005946e3550d13001eecba40f2e0"
+  },
+  "_source": "https://github.com/CubexElements/cube-dropdown.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-dropdown"
+}

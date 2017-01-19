@@ -1,0 +1,33 @@
+{
+  "name": "cube-preferences",
+  "version": "1.0.0",
+  "authors": [
+    "Tom Kay <oridan82@gmail.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "user",
+    "preferences"
+  ],
+  "private": true,
+  "main": "cube-preferences.html",
+  "license": "MIT",
+  "homepage": "https://github.com/CubexElements/cube-preferences/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.6.0",
+    "cube-indexeddb-mirror": "git://github.com/CubexElements/cube-indexeddb-mirror",
+    "cube-behavior": "git@github.com:CubexElements/cube-behavior"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^4.0.0"
+  }
+}

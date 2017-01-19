@@ -1,0 +1,75 @@
+<link rel="import" href="../../app-layout/app-scroll-effects/app-scroll-effects-behavior.html">
+
+<script>
+  /**
+   * Vertically displace elements based on a factor of the scroll position.
+   * Effectively hiding certain elements from your sticky header.
+   */
+  Polymer.AppLayout.registerEffect(
+    'displace-element', {
+      setUp:    function setUp(config)
+                {
+                  if((!this._fxDisplaceElements) && this.offsetHeight)
+                  {
+                    var elements = this.querySelectorAll('[displace]');
+                    if(elements.length > 0)
+                    {
+                      var fx = {height: this.offsetHeight, elements: []};
+                      for(var i in elements)
+                      {
+                        if(elements.hasOwnProperty(i))
+                        {
+                          fx.elements.push({element: elements[i], height: elements[i].offsetHeight});
+                        }
+                      }
+                      this._fxDisplaceElements = fx;
+                    }
+                    this._notifyLayoutChanged();
+                  }
+                },
+      run:      function run(p, y)
+                {
+                  if(this._fxDisplaceElements)
+                  {
+                    var fx = this._fxDisplaceElements, changed = false;
+                    p = Math.max(0, this._scrollTop) / this._stickyElTop;
+
+                    for(var i in fx.elements)
+                    {
+                      if(fx.elements.hasOwnProperty(i))
+                      {
+                        var ele = fx.elements[i],
+                          oldHeight = ele.element.style.maxHeight,
+                          overlap = document.body.scrollHeight - window.innerHeight,
+                          newHeightFraction = (overlap > this.offsetHeight)
+                            ? (1 - Math.min(1, p)) : 1,
+                          newHeight = (ele.height * newHeightFraction);
+
+                        if(p == 0)
+                        {
+                          ele.element.style.maxHeight = '';
+                        }
+                        else
+                        {
+                          ele.element.style.maxHeight = newHeight + 'px';
+                        }
+                        if(ele.element.style.maxHeight !== oldHeight)
+                        {
+                          this.fire('cube-displace-changed', {height: newHeight, fraction: newHeightFraction});
+                          changed = true;
+                        }
+                      }
+                    }
+                    if(changed)
+                    {
+                      this._notifyLayoutChanged();
+                    }
+                  }
+                },
+      tearDown: function tearDown()
+                {
+                  delete this._fxDisplaceElements;
+                }
+    }
+  );
+</script>

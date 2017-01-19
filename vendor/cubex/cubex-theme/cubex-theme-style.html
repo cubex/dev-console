@@ -1,0 +1,212 @@
+<link rel="import" href="../../paper-styles/default-theme.html">
+
+<custom-style>
+  <style>
+    html {
+      --dark-text: rgba(0, 0, 0, 0.87);
+      --dark-text-secondary: rgba(0, 0, 0, 0.54);
+      --dark-text-disabled: rgba(0, 0, 0, 0.38);
+      --light-text: rgba(255, 255, 255, 0.95);
+      --light-text-secondary: rgba(255, 255, 255, 0.70);
+      --light-text-disabled: rgba(255, 255, 255, 0.50);
+      --text-color: var(--theme-text, var(--dark-text));
+      --text-color-secondary: var(--theme-text-secondary, var(--dark-text-secondary));
+      --text-color-disabled: var(--theme-text-disabled, var(--dark-text-disabled));
+
+      /*
+       * Primary and accent colors. Also see color.html for more colors.
+       */
+      --primary-color: var(--primary-500-color);
+      --light-primary-color: var(--primary-100-color);
+      --dark-primary-color: var(--primary-700-color);
+      --accent-color: var(--accent-200-color);
+      --light-accent-color: var(--accent-100-color);
+      --dark-accent-color: var(--accent-400-color);
+
+      /*
+       * Material Design Light background theme
+       */
+      --light-theme-background-color: #ffffff;
+      --light-theme-base-color: #000000;
+      --light-theme-text-color: var(--paper-grey-900);
+      --light-theme-secondary-color: #737373; /* for secondary text and icons */
+      --light-theme-disabled-color: #9b9b9b; /* disabled/hint text */
+      --light-theme-divider-color: #dbdbdb;
+
+      /*
+       * Material Design Dark background theme
+       */
+      --dark-theme-background-color: var(--paper-grey-900);
+      --dark-theme-base-color: #ffffff;
+      --dark-theme-text-color: #ffffff;
+      --dark-theme-secondary-color: #bcbcbc; /* for secondary text and icons */
+      --dark-theme-disabled-color: #646464; /* disabled/hint text */
+      --dark-theme-divider-color: #3c3c3c;
+
+      --light-divider-primary-color: rgba(255, 255, 255, 1);
+      --light-divider-secondary-color: rgba(0, 0, 0, 0.09);
+
+      --dark-divider-primary-color: rgba(255, 255, 255, 0.09);
+      --dark-divider-secondary-color: rgba(0, 0, 0, 0.23);
+
+      --text-primary: {
+        opacity: 1;
+      };
+
+      --text-secondary: {
+        opacity: .54;
+      };
+      --text-disabled: {
+        opacity: .38;
+      };
+
+      --cube-header: {
+        @apply --paper-font-caption;
+        text-transform: uppercase;
+        line-height: 48px;
+        @apply --text-secondary;
+        margin: 0;
+      };
+    }
+
+    .P50 {
+      @apply --primary-50;
+    }
+
+    .TP50 {
+      color: var(--primary-50-color);
+    }
+
+    .P100 {
+      @apply --primary-100;
+    }
+
+    .TP100 {
+      color: var(--primary-100-color);
+    }
+
+    .P200 {
+      @apply --primary-200;
+    }
+
+    .TP200 {
+      color: var(--primary-200-color);
+    }
+
+    .P300 {
+      @apply --primary-300;
+    }
+
+    .TP300 {
+      color: var(--primary-300-color);
+    }
+
+    .P400 {
+      @apply --primary-400;
+    }
+
+    .TP400 {
+      color: var(--primary-400-color);
+    }
+
+    .P500 {
+      @apply --primary-500;
+    }
+
+    .TP500 {
+      color: var(--primary-500-color);
+    }
+
+    .P600 {
+      @apply --primary-600;
+    }
+
+    .TP600 {
+      color: var(--primary-600-color);
+    }
+
+    .P700 {
+      @apply --primary-700;
+    }
+
+    .TP700 {
+      color: var(--primary-700-color);
+    }
+
+    .P800 {
+      @apply --primary-800;
+    }
+
+    .TP800 {
+      color: var(--primary-800-color);
+    }
+
+    .P900 {
+      @apply --primary-900;
+    }
+
+    .TP900 {
+      color: var(--primary-900-color);
+    }
+
+    .A100 {
+      @apply --accent-100;
+    }
+
+    .TA100 {
+      color: var(--accent-100-color);
+    }
+
+    .A200 {
+      @apply --accent-200;
+    }
+
+    .TA200 {
+      color: var(--accent-200-color);
+    }
+
+    .A400 {
+      @apply --accent-400;
+    }
+
+    .TA400 {
+      color: var(--accent-400-color);
+    }
+
+    .A700 {
+      @apply --accent-700;
+    }
+
+    .TA700 {
+      color: var(--accent-700-color);
+    }
+
+    .T1 {
+      background: var(--theme-1-color);
+      color: var(--theme-1-text);
+    }
+
+    .T2 {
+      background: var(--theme-2-color);
+      color: var(--theme-2-text);
+    }
+
+    .T3 {
+      background: var(--theme-3-color);
+      color: var(--theme-3-text);
+    }
+
+    .T4 {
+      background: var(--theme-4-color);
+      color: var(--theme-4-text);
+    }
+
+    .txts {
+      opacity: .54;
+    }
+
+    .txtd {
+      opacity: 0.38;
+    }
+  </style>
+</custom-style>

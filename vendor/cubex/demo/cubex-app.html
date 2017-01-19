@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>cubex-app Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../cubex-app/cubex-app.html">
+  <link rel="import" href="../cubex-app/cubex-app-title.html">
+  <link rel="import" href="../cubex-app/cubex-app-header.html">
+  <link rel="import" href="../cubex-app/cubex-app-menu.html">
+  <link rel="import" href="../cubex-theme/cubex-theme.html">
+  <link rel="import" href="../cubex-drawer/cubex-drawer-content.html">
+  <link rel="import" href="../../cube-action/cube-action.html">
+  <link rel="import" href="../../cube-icon/cube-icon.html">
+  <link rel="import" href="../../cube-list/cube-li.html">
+</head>
+<body unresolved>
+
+<dom-bind>
+  <template is="dom-bind">
+    <dom-module id="x-app-data" attributes="app-data">
+      <script>
+        Polymer(
+          {
+            is: 'x-app-data', properties: {
+            appData: {
+              type:   Object,
+              notify: true,
+              value:  {
+                "Name":               {"en": "My Test App"},
+                "Icon":               "communication:email",
+                "GlobalAppID":        "vendor/appname",
+                "Vendor":             "Test Vendor",
+                "Navigation":         [
+                  {
+                    "ID":   "nav1",
+                    "Name": {"en": "Menu Item 1"},
+                    "Icon": "icons:change-history",
+                    "Path": "/nav1"
+                  },
+                  {
+                    "ID":   "nav2",
+                    "Name": {"en": "Menu Item 2"},
+                    "Icon": "icons:check-box-outline-blank",
+                    "Path": "/nav2"
+                  },
+                  {
+                    "ID":   "nav3",
+                    "Name": {"en": "Menu Item 3"},
+                    "Icon": "icons:label-outline",
+                    "Path": "/nav3"
+                  }
+                ],
+                "actions":            [
+                  {title: 'Email', icon: 'communication:email', primary: true},
+                  {title: 'Phone', icon: 'communication:phone', primary: true},
+                  {title: 'aspect', icon: 'icons:aspect-ratio'},
+                  {title: 'alarm', icon: 'icons:alarm-add'},
+                  {title: 'alarm2', icon: 'icons:alarm-add'}
+                ],
+                "AdvancedConfigPath": '/my/config/path'
+              }
+            }
+          }
+          }
+        );
+      </script>
+    </dom-module>
+
+    <cubex-theme primary="cubex-navy" accent="cubex-blue" theme="light">
+      <x-app-data app-data="{{appData}}"></x-app-data>
+
+      <cubex-app drawer-min-state="1">
+        <cubex-drawer-content slot="drawer-content">
+          <cubex-app-menu app-data="[[appData]]"></cubex-app-menu>
+        </cubex-drawer-content>
+
+        <cubex-app-header slot="app-header" actions="[[appData.actions]]">
+          <cube-icon slot="icon" src="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg"></cube-icon>
+          <h1 slot="header">Hannah Smith</h1>
+        </cubex-app-header>
+
+        <cube-icon src="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg"></cube-icon>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+        <p>some content</p>
+      </cubex-app>
+
+    </cubex-theme>
+  </template>
+</dom-bind>
+</body>
+</html>

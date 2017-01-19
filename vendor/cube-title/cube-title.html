@@ -1,0 +1,48 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="cube-title" attributes="background no-border">
+  <template>
+    <style>
+      :host {
+        display: block;
+        height: 48px;
+        padding: 0 16px;
+        text-transform: uppercase;
+        @apply --paper-font-menu;
+        line-height: 48px;
+        color: var(--theme-text-secondary);
+        border-bottom: 1px solid var(--light-divider-secondary-color);
+        border-top: 1px solid var(--theme-50-color);
+      }
+
+      :host([no-border]) {
+        border-bottom: none;
+        border-top: none;
+      }
+
+      :host([background]) {
+        background: var(--theme-400-color);
+      }
+    </style>
+    <slot></slot>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is: 'cube-title', properties: {
+        background: {
+          type:               Boolean,
+          value:              false,
+          reflectToAttribute: true
+        },
+        noBorder:   {
+          type:               Boolean,
+          value:              false,
+          reflectToAttribute: true
+        }
+      }
+      }
+    );
+  </script>
+</dom-module>

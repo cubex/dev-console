@@ -1,0 +1,39 @@
+{
+  "name": "cube-time",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "private": true,
+  "main": "cube-time.html",
+  "license": "MIT",
+  "homepage": "https://github.com/CubexElements/cube-time/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.7.0",
+    "time-elements": "git://github.com/github/time-elements#^0.6.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.1.7",
+    "web-component-tester": "^4.3.5"
+  },
+  "_release": "2bae5a1c6a",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "2bae5a1c6a6bb8920503772576e38f9f689ccb07"
+  },
+  "_source": "https://github.com/CubexElements/cube-time.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-time"
+}

@@ -1,0 +1,45 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-styles/typography.html">
+
+<dom-module id="cube-hero-bar-item" attributes="title value">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        flex-direction: column;
+        height: 64px;
+        flex-shrink: 0;
+      }
+
+      h1, p {
+        margin: 0;
+        font-weight: normal;
+        @apply --paper-font-body1;
+      }
+
+      h1 {
+        font-size: 18px;
+        margin-top: 12px;
+        margin-bottom: 2px;
+      }
+
+      p {
+        font-size: 13px;
+      }
+    </style>
+    <h1>[[value]]</h1>
+    <p>[[title]]</p>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:         'cube-hero-bar-item',
+        properties: {
+          'title': {type: String},
+          'value': {type: String}
+        }
+      }
+    );
+  </script>
+</dom-module>

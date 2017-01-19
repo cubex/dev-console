@@ -1,0 +1,42 @@
+{
+  "name": "cube-nudge",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "private": true,
+  "main": "cube-nudge.html",
+  "license": "MIT",
+  "homepage": "https://github.com/CubexElements/cube-nudge/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#2.0-preview"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^4.0.0"
+  },
+  "resolutions": {
+    "polymer": "2.0-preview",
+    "webcomponentsjs": "v1"
+  },
+  "_release": "bc945eb65a",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "bc945eb65abb84f23324ca44f501cf72bbb73942"
+  },
+  "_source": "https://github.com/CubexElements/cube-nudge.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-nudge"
+}

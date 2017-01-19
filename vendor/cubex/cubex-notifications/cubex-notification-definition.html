@@ -1,0 +1,42 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../cube-app/cube-app-definition.html">
+
+<dom-module id="cubex-notification-definition" attributes="notification definition">
+  <template>
+    <cube-app-definition gaid="[[notification.gaid]]" app-data="{{appData}}"></cube-app-definition>
+  </template><time></time>
+
+  <script>
+    Polymer(
+      {
+        is:         'cubex-notification-definition',
+        properties: {
+          appData:      {type: Object},
+          notification: {type: Object, notify: true},
+          definition:   {type: Object, notify: true}
+        },
+        observers:  ['_mergeData(notification,appData)'],
+
+        _mergeData: function (notification, appData)
+                    {
+                      if(!appData.Notifications)
+                      {
+                        return;
+                      }
+
+                      for(var defIdx in appData.Notifications)
+                      {
+                        if(appData.Notifications.hasOwnProperty(defIdx))
+                        {
+                          if(appData.Notifications[defIdx].ID == notification['notifi-id'])
+                          {
+                            this.definition = appData.Notifications[defIdx];
+                            return;
+                          }
+                        }
+                      }
+                    }
+      }
+    );
+  </script>
+</dom-module>

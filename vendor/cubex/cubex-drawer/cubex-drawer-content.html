@@ -1,0 +1,17 @@
+<link href="../../polymer/polymer.html" rel="import">
+<link href="cubex-user-drawer.html" rel="import">
+
+<dom-module id="cubex-drawer-content">
+  <template>
+    <style>
+      #contentContainer {
+        display: block;
+        width: var(--cubex-drawer-width, 256px);
+      }
+    </style>
+    <div id="contentContainer">
+      <slot></slot>
+    </div>
+  </template>
+  <script>Polymer({is: 'cubex-drawer-content'})</script>
+</dom-module>

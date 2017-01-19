@@ -1,0 +1,237 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="cube-li.html">
+<link rel="import" href="cube-list-group.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../cube-icon/cube-icon.html">
+<link rel="import" href="../cube-behavior/cube-iterator-behavior.html">
+
+<!--
+A List
+
+Example:
+
+    <cube-list></cube-list>
+
+@demo demo/index.html
+-->
+
+<dom-module id="cube-list"
+            attributes="zebra border double-border border-group show-filter filter-value filter-label filter-icon autofocus no-results-content custom bottom-border">
+  <template>
+    <style>
+      :host {
+        display: block;
+
+        @apply --cube-list-style;
+
+        --paper-input-container: {
+          padding: 0;
+          height: 48px;
+        };
+        --paper-input-container-label: {
+          padding: 0;
+          line-height: 48px;
+        };
+        --paper-input-container-input: {
+          padding: 0;
+          line-height: 48px;
+        };
+      }
+
+      :host [prefix] {
+        margin-left: 16px;
+        margin-right: 32px;
+      }
+
+      :host .filter {
+        @apply --cube-list-filter;
+        display: none;
+      }
+
+      :host paper-input {
+        color: var(--cube-list-filter-color);
+        --primary-color: var(--cube-list-filter-color);
+        --primary-text-color: var(--cube-list-filter-color);
+        --secondary-text-color: var(--cube-list-filter-color);
+      }
+
+      :host paper-input:focus,
+      :host paper-input[focused] {
+        color: var(--cube-list-filter-focus-color);
+        --primary-color: var(--cube-list-filter-focus-color);
+        --primary-text-color: var(--cube-list-filter-focus-color);
+        --secondary-text-color: var(--cube-list-filter-focus-color);
+      }
+
+      :host([show-filter]) .filter {
+        display: block;
+      }
+
+      :host([bottom-border]) {
+        border-bottom: 1px solid var(--cube-list-border-color, rgba(0, 0, 0, 0.06));
+      }
+
+      :host #filterInput > cube-icon {
+        width: var(--paper-item-icon-width, 56px);
+        padding: 0;
+      }
+
+      :host > #itemsContainer {
+        @apply --cube-list-items-container;
+      }
+    </style>
+
+    <div class="filter">
+      <paper-input id="filterInput" autofocus$="[[autofocus]]" label="[[filterLabel]]" no-label-float
+                   value="{{filterValue}}">
+        <cube-icon icon="[[filterIcon]]" slot="prefix"></cube-icon>
+      </paper-input>
+    </div>
+    <div id="itemsContainer">
+      <cube-li hidden="[[!noResults]]">
+        [[noResultsContent]]&nbsp;<q class="filter-value">[[filterValue]]</q>
+      </cube-li>
+      <div id="itemsContentContainer">
+        <slot id="items"></slot>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:         'cube-list',
+        properties: {
+          filterValue:      {
+            type:     String,
+            notify:   true,
+            observer: '_debounceFilter'
+          },
+          showFilter:       {
+            type:               Boolean,
+            reflectToAttribute: true,
+            value:              false
+          },
+          filterLabel:      {
+            type:  String,
+            value: "Filter"
+          },
+          filterIcon:       {
+            type:  String,
+            value: "icons:filter-list"
+          },
+          zebra:            {
+            type:               Boolean,
+            value:              false,
+            reflectToAttribute: true
+          },
+          border:           {
+            type:               Boolean,
+            value:              false,
+            reflectToAttribute: true
+          },
+          borderBottom:     {
+            type:               Boolean,
+            value:              false,
+            reflectToAttribute: true
+          },
+          borderGroup:      {
+            type:               Boolean,
+            value:              false,
+            reflectToAttribute: true
+          },
+          doubleBorder:     {
+            type:               Boolean,
+            value:              false,
+            reflectToAttribute: true
+          },
+          custom:           {
+            type:               Boolean,
+            value:              false,
+            reflectToAttribute: true
+          },
+          noResults:        {type: Boolean, value: false},
+          noResultsContent: {type: String, value: "No Results Matching"}
+        },
+
+        listeners:       {'dom-change': '_debounceFilter'},
+        _debounceFilter: function ()
+                         {
+                           this.debounce('dom-changed', this._filterList, 50);
+                         },
+
+        attached:    function ()
+                     {
+                       Polymer.RenderStatus.afterNextRender(this, this._debounceFilter);
+                       this.$.filterInput.addEventListener(
+                         'keydown', function (e) { e.stopPropagation(); }
+                       )
+                     },
+        focus:       function ()
+                     {
+                       this.$.filterInput.focus();
+                     },
+        _filterList: function ()
+                     {
+                       var
+                         filterValue = this.filterValue || '',
+                         visibleCount = this._doFilter(filterValue, this.$.items.assignedNodes({flatten: true}));
+                       this.noResults = filterValue && visibleCount == 0;
+                     },
+        _doFilter:   function (filterValue, items)
+                     {
+                       items = Array.prototype.filter.call(
+                         items,
+                         function (a) {return a.nodeType === Node.ELEMENT_NODE}
+                       );
+
+                       var self = this, visibleCount = 0;
+                       this.iterate(
+                         items, function (item)
+                         {
+                           if(item.tagName == 'CUBE-LIST-GROUP')
+                           {
+                             var vc = self._doFilter(filterValue, item.children);
+                             item.hidden = vc <= 0;
+                             visibleCount += vc;
+                           }
+                           else
+                           {
+                             var noListItem = item.tagName !== 'CUBE-LI' && (!item.querySelector('CUBE-LI'));
+                             item.hidden = noListItem
+                               || (filterValue && (item.textContent.toLowerCase()
+                                                       .indexOf(filterValue.toLowerCase()) == -1));
+                             visibleCount += item.hidden ? 0 : 1;
+                           }
+                         }
+                       );
+
+                       var visible = Array.prototype.filter.call(
+                         items,
+                         function (a) {return (!a.hasAttribute('hidden')) && a.tagName != 'CUBE-LIST-GROUP'}
+                       );
+                       this.iterate(
+                         visible, function (item)
+                         {
+                           var idx = Array.prototype.indexOf.call(visible, item);
+                           var li = item;
+                           if(li.tagName !== 'CUBE-LI')
+                           {
+                             li = li.querySelector('cube-li');
+                           }
+                           if(li)
+                           {
+                             li.odd = self.zebra && idx > -1 && (idx % 2 !== 0);
+                             li.firstItem = idx == 0;
+                             li.lastItem = idx == visible.length - 1;
+                           }
+                         }
+                       );
+                       return visibleCount;
+                     },
+
+        behaviors: [Polymer.CubeIteratorBehavior]
+      }
+    );
+  </script>
+</dom-module>

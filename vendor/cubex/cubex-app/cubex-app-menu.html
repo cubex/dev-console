@@ -1,0 +1,325 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-list/cube-list.html">
+<link rel="import" href="../../cube-icon/cube-icon.html">
+<link rel="import" href="../../cube-behavior/cube-element-path-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="../../app-route/app-location.html">
+<link rel="import" href="../../app-route/app-route.html">
+
+<dom-module id="cubex-app-menu" attributes="app-data">
+  <template strip-whitespace>
+    <style>
+      :host {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        position: absolute;
+
+        --cube-li-style: {
+          @apply --paper-font-body2;
+        }
+      }
+
+      :host cubex-app-title {
+        align-self: flex-start;
+        min-height: 64px;
+      }
+
+      .flex {
+        flex: auto;
+      }
+
+      :host {
+        --cube-list-items-container: {
+          width: 100%;
+        }
+      }
+
+      :host > #content {
+        display: flex;
+        flex-direction: column;
+        align-content: flex-start;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      :host cube-list {
+        width: 100%;
+        display: flex;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        min-height: 100px;
+      }
+
+      :host cube-li {
+        cursor: pointer;
+
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        width: 100%;
+
+        color: var(--text-color-secondary);
+      }
+
+      :host cubex-link:hover {
+        --cube-li-style: {
+          @apply --paper-font-body2;
+          background: var(--theme-500-color);
+        };
+        --cube-li-content-style: {
+          color: var(--accent-400-color);
+        };
+      }
+
+      :host cubex-link[active] {
+        --cube-li-style: {
+          @apply --paper-font-body2;
+          background: var(--accent-50-color) !important;
+        };
+        --cube-li-content-style: {
+          color: var(--accent-400-color);
+        };
+      }
+
+      :host cube-li[active]:before {
+        content: ' ';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background: var(--accent-700-color);
+      }
+
+      #configure {
+        align-self: flex-end;
+        background: var(--theme-500-color);
+      }
+
+      #configure:hover {
+        background: var(--theme-600-color);
+        color: var(--accent-700-color);
+      }
+
+      #toggler {
+        @apply --accent-400;
+      }
+
+      #toggler:hover {
+        @apply --accent-700;
+      }
+
+      #toggler cube-icon {
+        position: relative;
+      }
+
+      #toggler cube-icon:before,
+      #toggler cube-icon:after {
+        content: '';
+        display: inline-block;
+        border: 5px solid transparent;
+        position: absolute;
+        top: 8px;
+      }
+
+      #toggler cube-icon:before {
+        left: -12px;
+      }
+
+      #toggler cube-icon:after {
+        right: -12px;
+      }
+
+      #toggler[drawer-open] cube-icon:before {
+        border-right-color: var(--accent-400-text-color);
+      }
+
+      #toggler:not([drawer-open]) cube-icon:after {
+        border-left-color: var(--accent-400-text-color);
+      }
+    </style>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
+
+    <div id="content">
+      <template restamp is="dom-if" if="[[appData.Name]]">
+        <a href="/[[routeData.org]]/[[appData.GlobalAppID]]" on-tap="_collapseDrawer">
+          <cubex-app-title icon="[[appData.Icon]]" title="[[i18n('app_name')]]" vendor="[[appData.Vendor]]"
+                             trusted-vendor="[[appData.TrustedVendor]]"></cubex-app-title>
+        </a>
+      </template>
+
+      <template restamp is="dom-if" if="[[appData.Navigation.length]]">
+        <cube-list>
+          <template is="dom-repeat" items="[[appData.Navigation]]">
+            <cubex-link href="/[[routeData.org]]/[[appData.GlobalAppID]]/[[_trimPath(item.Path)]]"
+                          on-tap="_collapseDrawer">
+              <cube-li>
+                <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
+                [[i18n_c4t('nav_', item.ID, '_name')]]
+                <paper-ripple></paper-ripple>
+              </cube-li>
+            </cubex-link>
+          </template>
+        </cube-list>
+      </template>
+
+      <div class="flex"></div>
+
+      <template is="dom-if" if="[[_configPath]]">
+        <a href="/[[routeData.org]]/[[appData.GlobalAppID]]/[[_trimPath(_configPath)]]" on-tap="_collapseDrawer">
+          <cube-li id="configure" primary="[[i18n('configure')]]">
+            <cube-icon slot="icon" icon="icons:settings"></cube-icon>
+            [[i18n('configure')]]
+            <paper-ripple></paper-ripple>
+          </cube-li>
+        </a>
+      </template>
+
+      <cube-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]">
+        <cube-icon icon="icons:chrome-reader-mode" slot="icon"></cube-icon>
+        <template restamp is="dom-if" if="[[_drawerOpen]]">
+          [[i18n('collapse')]]
+        </template>
+        <template restamp is="dom-if" if="[[!_drawerOpen]]">
+          [[i18n('keep_out')]]
+        </template>
+        <paper-ripple></paper-ripple>
+      </cube-li>
+    </div>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is: 'cubex-app-menu',
+
+        properties: {
+          appData:     {type: Object, notify: true, observer: '_resetResources'},
+          _configPath: {type: String, computed: '_calculateConfigure(appData,routeData)'},
+          _drawerOpen: {type: Boolean, value: false}
+        },
+        attached:   function ()
+                    {
+                      this._resetResources();
+                      this._refreshDrawerState();
+                      document.addEventListener('cubex-drawer-state-changed', this._refreshDrawerState.bind(this));
+                    },
+
+        _refreshDrawerState: function ()
+                             {
+                               this._drawerOpen = this._getApp().drawer.state == 2;
+                             },
+
+        _getApp:         function ()
+                         {
+                           var app = null;
+                           this.iterate(
+                             this.getPath(this), function (parent)
+                             {
+                               if(parent.tagName == 'CUBEX-APP')
+                               {
+                                 app = parent;
+                                 return false;
+                               }
+                             }
+                           );
+                           return app;
+                         },
+        _setDrawerState: function (state)
+                         {
+                           this._getApp().setDrawerState(state);
+                         },
+        _collapseDrawer: function ()
+                         {
+                           var app = this._getApp();
+                           if(app.narrow)
+                           {
+                             app.drawer.close();
+                           }
+                           else if(app.drawer.state != 2)
+                           {
+                             this._setDrawerState(1);
+                           }
+                         },
+        _toggleDrawer:   function ()
+                         {
+                           var app = this._getApp();
+                           if(app.narrow)
+                           {
+                             app.drawer.toggle();
+                           }
+                           else if(app.drawer.state == 2)
+                           {
+                             this._setDrawerState(1);
+                           }
+                           else
+                           {
+                             this._setDrawerState(2);
+                           }
+                         },
+
+        _calculateConfigure: function ()
+                             {
+                               return (this.appData && this.appData.Config && '_configure')
+                                 || (this.appData && this.appData.AdvancedConfigPath)
+                                 || null;
+                             },
+        _trimPath:           function (path)
+                             {
+                               return (path || '').replace(/^\/+/, '');
+                             },
+        _resetResources:     function ()
+                             {
+                               var self = this,
+                                 res = {
+                                   "en": {
+                                     "configure": "Configure",
+                                     "collapse":  "Collapse Menu",
+                                     "keep_out":  "Keep Menu Out"
+                                   },
+                                   "fr": {
+                                     "configure": "Configurer",
+                                     "collapse":  "Réduire Menu",
+                                     "keep_out":  "Gardez Menu Out"
+                                   }
+                                 };
+
+                               if(this.appData && this.appData.Name)
+                               {
+                                 res = this.hydrateResources(res, 'app_name', this.appData.Name);
+                                 this.iterate(
+                                   this.appData.Navigation, function (nav)
+                                   {
+                                     res = self.hydrateResources(res, 'nav_' + nav.ID + '_name', nav.Name);
+                                     res = self.hydrateResources(
+                                       res,
+                                       'nav_' + nav.ID + '_description',
+                                       nav.Description
+                                     );
+                                   }
+                                 );
+
+                                 this.resources = res;
+                               }
+                               else
+                               {
+                                 this.async(function () { this.resources = res; });
+                               }
+                             },
+
+        behaviors: [
+          Polymer.CubeElementPathBehavior,
+          Polymer.CubeIteratorBehavior,
+          Polymer.CubeI18nBehavior
+        ]
+      }
+    )
+  </script>
+</dom-module>

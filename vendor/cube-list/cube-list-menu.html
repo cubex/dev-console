@@ -1,0 +1,90 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="cube-list.html">
+<link rel="import" href="../iron-menu-behavior/iron-menu-behavior.html">
+
+<dom-module id="cube-list-menu"
+            attributes="zebra border double-border border-group show-filter filter-value filter-label filter-icon autofocus no-results-content">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+        outline: none;
+      }
+    </style>
+
+    <div class="selectable-content">
+      <cube-list zebra="[[zebra]]" border="[[border]]" border-group="[[borderGroup]]" double-border="[[doubleBorder]]"
+                 show-filter="[[showFilter]]" filter-label="[[filterLabel]]" filter-icon="[[filterIcon]]"
+                 autofocus="[[autofocus]]" no-results-content="[[noResultsContent]]" filter-value="{{filterValue}}">
+        <slot></slot>
+      </cube-list>
+    </div>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:         'cube-list-menu',
+        properties: {
+          selectable:       {type: String, value: 'cube-li'},
+          showFilter:       {
+            type:               Boolean,
+            reflectToAttribute: true,
+            value:              false
+          },
+          filterValue:      {
+            type:               String,
+            reflectToAttribute: true
+          },
+          filterLabel:      {
+            type:  String,
+            value: "Filter"
+          },
+          filterIcon:       {
+            type:  String,
+            value: "icons:filter-list"
+          },
+          zebra:            {
+            type:  Boolean,
+            value: false
+          },
+          border:           {
+            type:  Boolean,
+            value: false
+          },
+          doubleBorder:     {
+            type:  Boolean,
+            value: false
+          },
+          noResultsContent: {type: String, value: "No Results Matching"}
+        },
+
+        keyBindings: {
+          'enter': '_mutateEnterToTap'
+        },
+
+        _mutateEnterToTap: function (e)
+                           {
+                             e.detail.keyboardEvent.target.fire('tap');
+                           },
+
+        // override _activateHandler to prevent it from stopping tap event propagation
+        _activateHandler: function (event)
+                          {
+                            Polymer.IronSelectableBehavior._activateHandler.call(this, event);
+                          },
+
+        _updateItems: function ()
+                      {
+                        var nodes = Polymer.dom(this).querySelectorAll(this.selectable || '*');
+                        nodes = Array.prototype.filter.call(nodes, this._bindFilterItem);
+                        this._setItems(nodes);
+                      },
+
+        behaviors: [
+          Polymer.IronMenuBehavior
+        ]
+      }
+    );
+  </script>
+</dom-module>

@@ -1,0 +1,108 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-styles/typography.html">
+<link rel="import" href="../../cube-icon/cube-icon.html">
+
+<dom-module id="cubex-app-title" attributes="icon title vendor trusted-vendor standalone">
+  <template strip-whitespace>
+    <style>
+      :host {
+        position: relative;
+        display: block;
+        width: 240px;
+        height: 64px;
+        padding-left: 16px;
+        color: var(--text-color-secondary);
+        background: var(--theme-50-color);
+        border-bottom: 1px solid var(--theme-600-color);
+      }
+
+      :host([standalone]) {
+        display: inline-block;
+      }
+
+      :host([standalone]):after {
+        content: ' ';
+        border-right: 2px solid var(--theme-600-color);
+        height: 44px;
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 10px;
+      }
+
+      :host h1,
+      :host h2,
+      :host cube-icon {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+      }
+
+      :host cube-icon {
+        left: 16px;
+        padding: 0;
+      }
+
+      :host h1,
+      :host h2 {
+        left: 72px;
+      }
+
+      :host([trusted-vendor]) h1 {
+        @apply --paper-font-title;
+        line-height: 64px;
+      }
+
+      :host([trusted-vendor]) h2 {
+        display: none;
+      }
+
+      :host(:not([trusted-vendor])) h1 {
+        @apply --paper-font-body2;
+        line-height: initial;
+        bottom: 36px;
+        top: auto;
+      }
+
+      :host h2 {
+        @apply --paper-font-caption;
+        line-height: initial;
+        top: 36px;
+        bottom: auto;
+      }
+    </style>
+    <cube-icon icon="[[icon]]"></cube-icon>
+    <h1>[[title]]</h1>
+    <template is="dom-if" if="[[!trustedVendor]]" strip-whitespace>
+      <h2>[[vendor]]</h2>
+    </template>
+  </template>
+  <script>Polymer(
+    {
+      is:         'cubex-app-title',
+      properties: {
+        vendor:        {
+          type: String
+        },
+        title:         {
+          type: String
+        },
+        icon:          {
+          type: String
+        },
+        trustedVendor: {
+          type:               Boolean,
+          value:              false,
+          reflectToAttribute: true
+        },
+        standalone:    {
+          type:               Boolean,
+          value:              false,
+          reflectToAttribute: true
+        }
+      }
+    }
+  )</script>
+</dom-module>

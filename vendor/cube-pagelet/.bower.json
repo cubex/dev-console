@@ -1,0 +1,27 @@
+{
+  "name": "cube-pagelet",
+  "main": "cube-pagelet.html",
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer#2.0-preview",
+    "cube-resource": "CubexElements/cube-resource"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^4.0.0"
+  },
+  "resolutions": {
+    "polymer": "2.0-preview",
+    "webcomponentsjs": "v1"
+  },
+  "homepage": "https://github.com/CubexElements/cube-pagelet",
+  "_release": "3ba30e5773",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "3ba30e5773a6e27cb9339aaae78493747d95b0f2"
+  },
+  "_source": "https://github.com/CubexElements/cube-pagelet.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-pagelet"
+}

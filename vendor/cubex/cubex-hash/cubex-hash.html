@@ -1,0 +1,18 @@
+<script src="../../murmurHash3js/murmurhash3js.min.js"></script>
+
+<script>
+  /** @polymerBehavior */
+  Polymer.CubeHashBehavior = {
+    _hash32:  function ()
+              {
+                var string = Array.prototype.slice.call(arguments).join('');
+                var hash = murmurHash3.x86.hash32(string);
+                return ("0000000" + (hash >>> 0).toString(16)).substr(-8);
+              },
+    _hash128: function ()
+              {
+                var string = Array.prototype.slice.call(arguments).join('');
+                return murmurHash3.x86.hash128(string);
+              }
+  };
+</script>

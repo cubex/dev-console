@@ -1,0 +1,80 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+
+<dom-module id="cubex-category" attributes="key short">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: inline;
+        @apply --cubex-category-style;
+      }
+    </style>
+    [[i18n(i18nKeys)]]
+  </template>
+  <script>
+    Polymer(
+      {
+        is:         'cubex-category',
+        properties: {
+          key:       {
+            type:  String,
+            value: ""
+          },
+          short:     {
+            type:  Boolean,
+            value: false
+          },
+          i18nKeys:  {
+            type:     Array,
+            computed: 'makekey(key,short)'
+          },
+          resources: {
+            type:  Object,
+            value: {
+              "en": {
+                "no_category": "Unsupported",
+                "support":     "Support",
+                "finance":     "Finance",
+                "crm":         "CRM",
+                "logistics":   "Logistics",
+                "purchasing":  "Purchasing",
+                "planning":    "Planning",
+                "research":    "Research",
+                "products":    "Products",
+                "it":          "Information Technology",
+                "short_it":    "IT",
+                "comms":       "Communications",
+                "short_comms": "Comms",
+                "admin":       "Administration",
+                "marketing":   "Marketing",
+                "sales":       "Sales",
+                "operations":  "Operations",
+                "developer":   "Developer",
+                "pr":          "Public Relations",
+                "short_pr":    "PR",
+                "hr":          "Human Resources",
+                "short_hr":    "HR",
+                "insights":    "Insights",
+                "reporting":   "Reporting",
+                "help":        "Help",
+                "other":       "Other"
+              },
+              "fr": {
+                "support": "Supporte"
+              }
+            }
+          }
+        },
+
+        makekey: function (key, short)
+                 {
+                   return short ? ['short_' + key, key, "no_category"] : [key, "no_category"]
+                 },
+
+        behaviors: [
+          Polymer.CubeI18nBehavior
+        ]
+      }
+    );
+  </script>
+</dom-module>

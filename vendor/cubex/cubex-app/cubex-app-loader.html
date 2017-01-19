@@ -1,0 +1,531 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../app-route/app-route.html">
+<link rel="import" href="../../cube-action/cube-action.html">
+<link rel="import" href="../../cube-list/cube-li.html">
+<link rel="import" href="../../cube-pagelet/cube-pagelet-content.html">
+<link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-service-behavior.html">
+<link rel="import" href="../../page-title/page-title.html">
+<link rel="import" href="../cubex-drawer/cubex-drawer.html">
+<link rel="import" href="../cubex-hash/cubex-hash.html">
+<link rel="import" href="../cubex-category/cubex-category.html">
+<link rel="import" href="cubex-app.html">
+<link rel="import" href="cubex-app-title.html">
+<link rel="import" href="cubex-app-header.html">
+<link rel="import" href="cubex-app-menu.html">
+<link rel="import" href="cubex-app-spinner.html">
+
+<dom-module id="cubex-app-loader" attributes="route vendor">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+        --cubex-drawer-width: 256px;
+      }
+
+      :link, :visited {
+        color: var(--accent-400-color);
+      }
+
+      :link:hover {
+        color: var(--accent-700-color);
+      }
+
+      #hero {
+        width: 100%;
+        align-self: flex-end;
+        margin-top: -64px;
+      }
+
+      #hero cube-hero {
+        padding-top: 112px;
+        overflow: visible;
+      }
+
+      #hero[hidden] {
+        display: none;
+      }
+    </style>
+
+    <app-route id="route" route="[[route]]" pattern="/:org/:vendor/:app" data="{{routeData}}"
+               tail="{{appPath}}" query-params="{{appQuery}}"></app-route>
+
+    <cubex-registry org-data="{{orgData}}"></cubex-registry>
+
+    <cubex-app-definition gaid="[[routeData.vendor]]/[[routeData.app]]"
+                            app-data="{{appData}}"></cubex-app-definition>
+
+    <cube-resource auto auth url="[[_integrationsPath]]" data="{{_integrations}}"
+                   headers="[[_pageDefinitionHeaders]]" ttl="3600"></cube-resource>
+    <cube-resource auto auth url="[[_pageDefinitionPath]]" data="{{_pageData}}" xhr="{{_pageXhr}}"
+                   headers="[[_pageDefinitionHeaders]]"></cube-resource>
+
+    <page-title page-title="[[pageData.title]]"></page-title>
+
+    <cubex-app id="app" app-data="[[appData]]" page-data="[[pageData]]"
+                 back-path="[[_backPath]]"
+                 page-path="[[_pagePath]]"
+                 header-menu="[[_headerMenus]]"
+                 header-actions="[[_integrations.HeaderActions]]"
+                 page-menu="[[_pageMenus]]"
+                 page-actions="[[_pageActions]]"
+                 panels="[[_panels]]"
+                 has-hero="[[_pageDefinitionContentHasHero]]">
+      <cubex-drawer-content slot="drawer-content" id="appDrawerContent">
+        <cubex-app-menu app-data="[[appData]]"></cubex-app-menu>
+      </cubex-drawer-content>
+      <cubex-app-spinner slot="spinner" hidden$="[[!_pageSpinnerVisible]]"></cubex-app-spinner>
+
+      <cube-pagelet-content id="hero" slot="hero" html="[[_pageDefinitionContent]]"
+                            hidden$="[[!_pageDefinitionContentHasHero]]"></cube-pagelet-content>
+      <cube-pagelet auto auth url="[[_pageContentPath]]" headers="[[_pageContentHeaders]]"></cube-pagelet>
+    </cubex-app>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:         'cubex-app-loader',
+        properties: {
+          _org: {type: String},
+
+          _pageDefinitionPath:    {type: String},
+          _pagePath:              {type: String},
+          _loadedPath:            {type: String, value: ''},
+          _pageXhr:               {type: Object},
+          _pageData:              {type: Object},
+          _pageDefinitionHeaders: {type: Object, computed: '_computeHeaders(_org,"page-definition")'},
+          _pageDefinitionContent: {type: String},
+          _pageSpinnerVisible:    {type: Boolean, value: false},
+          pageData:               {type: Object, notify: true},
+          appData:                {type: Object, notify: true},
+          _backPath:              {
+            type:     String,
+            computed: '_computedBackPath(routeData.org,appData.GlobalAppID,pageData.backPath)'
+          },
+
+          _pageContentPath:            {type: String},
+          _pageContentHeaders:         {type: Object, computed: '_computeHeaders(_org)'},
+          __pageContentSpinnerVisible: {type: Boolean, value: false},
+
+          _integrationsPath: {type: String},
+          _integration:      {type: Object, value: null},
+
+          _headerMenus: {type: Array},
+          _pageMenus:   {type: Array},
+          _pageActions: {type: Array},
+          _panels:      {type: Array}
+        },
+        observers:  [
+          '_updateOrg(routeData.org)',
+          '_pathChanged(route.path)',
+          '_updateData(_pageXhr,_pageData)',
+          '_updateIntegration(_integrations,appPath.path,_pageDefinitionPath,orgData)',
+          '_updateHeaderMenu(_integration,_integrations,appData,orgData)',
+          '_updateSidebar(_integration,_integrations,appPath,orgData)'
+        ],
+
+        _updateOrg: function (org)
+                    {
+                      if(this._org !== org)
+                      {
+                        this._org = org;
+                      }
+                    },
+
+        attached: function ()
+                  {
+                    this.async(this._pathChanged);
+                  },
+
+        _computeHeaders: function (org, resourceType)
+                         {
+                           var headers = {};
+                           if(org)
+                           {
+                             headers['X-CUBE-ORG'] = org;
+                           }
+                           if(resourceType)
+                           {
+                             headers['X-CUBE-RESOURCE-TYPE'] = resourceType;
+                           }
+                           return headers;
+                         },
+
+        _computedBackPath: function (org, gaid, path)
+                           {
+                             if(org && path && path.length > 0)
+                             {
+                               return '/' + org + '/' + gaid + path;
+                             }
+                             return '';
+                           },
+        _updateHeaderMenu: function (integration, integrations, appData)
+                           {
+                             if(integrations)
+                             {
+                               var headerMenu = this._integrations.HeaderMenuItems;
+                               var newMenu = [];
+                               var self = this;
+                               if(headerMenu && appData && this.orgData && this.orgData.AppSummary)
+                               {
+                                 headerMenu = headerMenu.sort(
+                                   function (a, b)
+                                   {
+                                     // if one item is within the current app and one isn't, move the current one up
+                                     if((a.Hook.indexOf(a.GlobalAppID) == 0) != (b.Hook.indexOf(b.GlobalAppID) == 0))
+                                     {
+                                       return (a.GlobalAppID == appData.GlobalAppID) ? -1 : 1;
+                                     }
+                                     var cA = a.Title, cB = b.Title;
+                                     // if not current app, use category
+                                     if(a.Hook.indexOf(a.GlobalAppID) !== 0 && b.Hook.indexOf(b.GlobalAppID) !== 0)
+                                     {
+                                       cA = self.orgData.AppSummary[a.GlobalAppID].category;
+                                       cB = self.orgData.AppSummary[b.GlobalAppID].category;
+                                     }
+                                     // comparisons match, no change
+                                     if(cA == cB)
+                                     {
+                                       return 0;
+                                     }
+                                     // A is less than B, move A up
+                                     return (cA < cB) ? -1 : 1;
+                                   }
+                                 );
+
+                                 var categoriesAdded = [];
+                                 for(var i in headerMenu)
+                                 {
+                                   if(headerMenu.hasOwnProperty(i))
+                                   {
+                                     if(headerMenu[i].Hook.indexOf(headerMenu[i].GlobalAppID) === 0)
+                                     {
+                                       newMenu.push(
+                                         {
+                                           Title: headerMenu[i].Title,
+                                           Path:  '/' + this.routeData.org + '/' + headerMenu[i].Hook + '/_/' + headerMenu[i].ID,
+                                           Mode:  'page'
+                                         }
+                                       );
+                                     }
+                                     else
+                                     {
+                                       var category = this.orgData.AppSummary[headerMenu[i].GlobalAppID].category;
+                                       if(categoriesAdded.indexOf(category) == -1)
+                                       {
+                                         newMenu.push(
+                                           {
+                                             Title:    category,
+                                             Category: true,
+                                             Path:     '/' + this.routeData.org + '/' + headerMenu[i].Hook + '/~/' + category
+                                                       + '/h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
+                                             Match:    '/' + this.routeData.org + '/' + headerMenu[i].Hook + '/~/' + category,
+                                             Mode:     'page'
+                                           }
+                                         );
+                                         categoriesAdded.push(category);
+                                       }
+                                     }
+                                   }
+                                 }
+                               }
+                             }
+                             this._headerMenus = newMenu;
+                           },
+
+        _updateSidebar: function (integration, integrations)
+                        {
+                          var pageMenus = [],
+                            pageActions = [],
+                            panels = [];
+
+                          if(integrations && this.orgData && this.orgData.AppSummary)
+                          {
+                            var pathMatches = this._parsePath(this.appPath.path);
+                            if(integration && pathMatches.type == '~')
+                            {
+                              var
+                                intData = this.orgData.AppSummary[integration.GlobalAppID],
+                                category = intData.category,
+                                headerMenu = this._integrations.HeaderMenuItems;
+
+                              headerMenu = headerMenu.sort(
+                                function (a, b)
+                                {
+                                  if(a.Title == b.Title)
+                                  {
+                                    return 0;
+                                  }
+                                  return (a.Title < b.Title) ? -1 : 1;
+                                }
+                              );
+
+                              for(var i in headerMenu)
+                              {
+                                if(headerMenu.hasOwnProperty(i))
+                                {
+                                  if(this.orgData.AppSummary[headerMenu[i].GlobalAppID].category == category)
+                                  {
+                                    pageMenus.push(
+                                      {
+                                        Title:       headerMenu[i].Title,
+                                        Description: headerMenu[i].Description,
+                                        Path:        this._getBasePath() + pathMatches.pagePath + '/~/' + category
+                                                     + '/h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
+                                        Mode:        'page'
+                                      }
+                                    );
+                                  }
+                                }
+                              }
+                              if(pageMenus.length === 1)
+                              {
+                                pageMenus = [];
+                              }
+                            }
+                            else
+                            {
+                              if(this._integrations.PageMenuItems)
+                              {
+                                var items = this._integrations.PageMenuItems.sort(
+                                  function (a, b)
+                                  {
+                                    if(a.Title == b.Title)
+                                    {
+                                      return 0;
+                                    }
+                                    return (a.Title < b.Title) ? -1 : 1;
+                                  }
+                                );
+                                for(var j in items)
+                                {
+                                  if(items.hasOwnProperty(j))
+                                  {
+                                    pageMenus.push(
+                                      {
+                                        Title:       items[j].Title,
+                                        Description: items[j].Description,
+                                        Href:        '//' + this.getServiceHost('apps') + '/' + items[j].Path,
+                                        Mode:        items[j].Mode
+                                      }
+                                    );
+                                  }
+                                }
+                              }
+
+                              pageActions = this._integrations.PageActions;
+                              panels = this._integrations.Panels;
+                            }
+                          }
+                          this._pageMenus = pageMenus;
+                          this._pageActions = pageActions;
+                          this._panels = panels;
+                        },
+
+        _pathChanged: function ()
+                      {
+                        if(this.$.route.active)
+                        {
+                          if(this.route.path !== this._loadedPath)
+                          {
+                            this._loadedPath = this.route.path;
+
+                            var self = this,
+                              pathMatches = this._parsePath(this.appPath.path),
+                              fullPath = '/' + this.routeData.vendor + '/' + this.routeData.app + pathMatches.pagePath,
+                              integrationPath = fullPath;
+                            this._pagePath = '/' + this.routeData.org + fullPath;
+
+                            if(pathMatches.type == '_')
+                            {
+                              integrationPath += '/_/' + pathMatches.typeId;
+                            }
+
+                            var ip = '//' + this.getServiceHost('apps') + '/cubex/integrations/integrations.json?hook=' + integrationPath;
+                            if(this._integrationsPath != ip)
+                            {
+                              this._integrationsPath = ip;
+                            }
+
+                            var pdp = '//' + this.getServiceHost('apps') + fullPath;
+                            if(this._pageDefinitionPath != pdp)
+                            {
+                              this._addPageSpinner = setTimeout(
+                                function () { self._pageSpinnerVisible = true; }, 50
+                              );
+                              this._pageDefinitionPath = pdp;
+
+                              if(!pathMatches.type)
+                              {
+                                this._pageContentPath = this._pageDefinitionPath;
+                              }
+                            }
+                          }
+                        }
+                        else
+                        {
+                          this._integrationsPath = null;
+                          this._pageDefinitionPath = null;
+                          this._loadedPath = null;
+                          this.routeData = {};
+                          this.pageData = null;
+                          this.appData = null;
+                        }
+                      },
+
+        _updateIntegration: function ()
+                            {
+                              var integration = null, contentPath = this._pageDefinitionPath;
+
+                              if(this._integrations && this.orgData && this.orgData.AppSummary
+                                && this.appPath && this.appPath.path)
+                              {
+                                var pathMatches = this._parsePath(this.appPath.path);
+                                var items = null;
+                                if(pathMatches.pageletId)
+                                {
+                                  var hashType = pathMatches.pageletId.substr(0, 2),
+                                    hash = pathMatches.pageletId.substr(2);
+                                  if(hashType == 'm-')
+                                  {
+                                    items = this._integrations.PageMenuItems;
+                                  }
+                                  else if(hashType == 'a-')
+                                  {
+                                    items = this._integrations.PageActions;
+                                  }
+                                  else if(hashType == 'h-')
+                                  {
+                                    items = this._integrations.HeaderMenuItems;
+                                  }
+                                }
+                                else if(pathMatches.type == '~' && pathMatches.typeId)
+                                {
+                                  items = this._integrations.HeaderMenuItems;
+                                }
+                                else if(pathMatches.type == '_' && pathMatches.typeId)
+                                {
+                                  items = this._integrations.HeaderMenuItems;
+                                }
+
+                                if(items)
+                                {
+                                  items = items.sort(
+                                    function (a, b)
+                                    {
+                                      if(a.Title == b.Title)
+                                      {
+                                        return 0;
+                                      }
+                                      return (a.Title < b.Title) ? -1 : 1;
+                                    }
+                                  );
+                                  for(var i in items)
+                                  {
+                                    if(items.hasOwnProperty(i))
+                                    {
+                                      var gaidHash = this._hash32(items[i].GlobalAppID + '/' + items[i].ID);
+                                      if(
+                                        ((!pathMatches.pageletId)
+                                          && (pathMatches.type == '~' && pathMatches.typeId == this.orgData.AppSummary[items[i].GlobalAppID].category)
+                                          || (pathMatches.type == '_' && items[i].GlobalAppID == this.appData.GlobalAppID && items[i].ID == pathMatches.typeId)
+                                        )
+                                        || (gaidHash == hash)
+                                      )
+                                      {
+                                        integration = items[i];
+                                        contentPath = '//' + this.getServiceHost('apps') + '/' + items[i].GlobalAppID + '/' + items[i].Path;
+                                        break;
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                              if(integration != this._integration)
+                              {
+                                this._integration = integration;
+                              }
+                              if(contentPath != this._pageContentPath)
+                              {
+                                this._pageContentPath = contentPath;
+                              }
+                              this.$.app._resetLayout();
+                            },
+
+        _updateData: function ()
+                     {
+                       var frag = document.createRange().createContextualFragment(this._pageData || ''),
+                         imports = frag.querySelectorAll('link[rel="import"]'),
+                         cubeHeaderRegex = /x-cube-([a-z\-]+): (.*)[\n\r]*/g,
+                         headers = {};
+
+                       if(this._pageXhr)
+                       {
+                         var fn = function (_, v) { return v.toUpperCase(); };
+                         while(matches = cubeHeaderRegex.exec(this._pageXhr.getAllResponseHeaders()))
+                         {
+                           headers[matches[1].replace(/-([a-z])/, fn)] = matches[2];
+                         }
+                       }
+
+                       for(var idx in imports)
+                       {
+                         if(imports.hasOwnProperty(idx))
+                         {
+                           this.importHref(imports[idx].getAttribute('href'));
+                           frag.removeChild(imports[idx]);
+                         }
+                       }
+
+                       if(this._addPageSpinner)
+                       {
+                         clearTimeout(this._addPageSpinner);
+                       }
+                       this._pageSpinnerVisible = false;
+
+                       var div = document.createElement('div');
+                       div.append(frag);
+                       this._pageDefinitionContent = div.innerHTML;
+                       this._pageDefinitionContentHasHero = !!div.querySelector('cube-hero');
+
+                       this.pageData = headers;
+                     },
+
+        _parsePath: function (path)
+                    {
+                      var matches = path.match(/(.+?)(\/(_|~)(\/([^\/]+)(\/([^\/]+))?(.*)))?$/);
+                      if(matches)
+                      {
+                        return {
+                          pagePath:  matches[1],
+                          type:      matches[3],
+                          typeId:    matches[5],
+                          pageletId: matches[7],
+                          subPath:   matches[8]
+                        };
+                      }
+                      return {
+                        pagePath:  path,
+                        type:      '',
+                        typeId:    '',
+                        pageletId: '',
+                        subPath:   ''
+                      };
+                    },
+
+        _getBasePath: function ()
+                      {
+                        return '/' + this.routeData.org + '/' + this.routeData.vendor + '/' + this.routeData.app;
+                      },
+
+        behaviors: [
+          Polymer.CubeIteratorBehavior,
+          Polymer.CubeServiceBehavior,
+          Polymer.CubeHashBehavior
+        ]
+      }
+    )
+  </script>
+</dom-module>

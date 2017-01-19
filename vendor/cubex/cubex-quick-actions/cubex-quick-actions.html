@@ -1,0 +1,91 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-dropdown/cube-dropdown.html">
+<link rel="import" href="../../cube-action/cube-action.html">
+<link rel="import" href="../../cube-list/cube-list-menu.html">
+<link rel="import" href="../../cube-list/cube-li.html">
+<link rel="import" href="../../cube-icon/cube-icon.html">
+<link rel="import" href="../../cube-resource/cube-resource.html">
+<link rel="import" href="../../cube-behavior/cube-service-behavior.html">
+<link rel="import" href="../cubex-theme/cubex-theme-style.html">
+
+<dom-module id="cubex-quick-actions">
+  <template>
+    <style>
+      cube-dropdown cube-list-menu {
+        @apply(--shadow-elevation-4dp);
+      }
+
+      cube-list-menu {
+        @apply(--primary-800);
+        min-width: 200px;
+        opacity: 1;
+
+        --cube-li-style: {
+          color: var(--theme-2-color);
+        }
+      }
+
+      :host cube-action[slot="trigger"] {
+        margin: 10px 0;
+      }
+
+      :host cube-action {
+        @apply --primary-700-text-secondary;
+      }
+
+      :host cube-action:hover {
+        @apply --primary-700-text;
+      }
+    </style>
+    <app-location route="{{route}}"></app-location>
+    <app-route route="[[route]]" pattern="/:org" data="{{routeData}}"></app-route>
+
+    <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/quickactions/actions.json"
+                   headers="[[_headers]]" data="{{actions}}" ttl="3600"></cube-resource>
+
+    <cube-dropdown horizontal-align="right" id="qadrop">
+      <template is="dom-if" if="[[actions.Actions]]">
+        <cube-action icon="icons:add" slot="trigger"></cube-action>
+        <cube-list-menu>
+          <template is="dom-repeat" items="[[actions.Actions]]" as="action">
+            <a href="/[[routeData.org]]/[[action.GlobalAppID]]/[[action.Path]]" on-tap="_tap">
+              <cube-li title="[[action.Name]]">
+                <cube-icon slot="icon" icon="[[action.Icon]]"></cube-icon>
+                [[action.Name]]
+              </cube-li>
+            </a>
+          </template>
+        </cube-list-menu>
+      </template>
+    </cube-dropdown>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is: 'cubex-quick-actions',
+
+        properties: {
+          _headers: {type: Object, computed: '_refreshHeaders(routeData.org)'}
+        },
+
+        _refreshHeaders: function (org)
+                         {
+                           if(org)
+                           {
+                             return {'x-cube-org': org};
+                           }
+                           return undefined;
+                         },
+        _tap:            function ()
+                         {
+                           this.$.qadrop.close();
+                         },
+
+        behaviors: [
+          Polymer.CubeServiceBehavior
+        ]
+      }
+    );
+  </script>
+</dom-module>

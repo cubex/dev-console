@@ -1,0 +1,39 @@
+{
+  "name": "cube-websocket",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "private": true,
+  "main": "cube-websocket.html",
+  "license": "MIT",
+  "homepage": "https://github.com/CubexElements/cube-websocket/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.6.0",
+    "cube-behavior": "ssh://git@github.com/CubexElements/cube-behavior.git"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^4.0.0"
+  },
+  "_release": "a7dd27c8fa",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "a7dd27c8faecc08d28393954b855f28fe27f8ec3"
+  },
+  "_source": "https://github.com/CubexElements/cube-websocket.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-websocket"
+}
