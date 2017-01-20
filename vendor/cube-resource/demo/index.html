@@ -11,12 +11,12 @@
 
 <dom-bind>
   <template>
-    <cube-resource auto url="resource1.json" data="{{data1}}"></cube-resource>
-    <div>JSON: [[data1.0]]</div>
-    <cube-resource auto ttl="10" url="resource2.txt" data="{{data2}}"></cube-resource>
-    <div>TEXT: [[data2]]</div>
-    <cube-resource auto ttl="10" url="resource2.txt" data="{{data3}}"></cube-resource>
-    <div>TEXT: [[data3]]</div>
+    <cube-resource auto url="resource1.json" data="{{data1}}" status="{{status1}}"></cube-resource>
+    <div>JSON: [[status1]] [[data1.0]]</div>
+    <cube-resource auto ttl="10" url="resource2.txt" data="{{data2}}" status="{{status2}}"></cube-resource>
+    <div>TEXT: [[status2]] [[data2]]</div>
+    <cube-resource auto ttl="10" url="resource2.txt" data="{{data3}}" status="{{status3}}"></cube-resource>
+    <div>TEXT: [[status3]] [[data3]]</div>
   </template>
 </dom-bind>
 

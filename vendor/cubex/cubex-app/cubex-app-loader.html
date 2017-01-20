@@ -64,12 +64,9 @@
     <page-title page-title="[[pageData.title]]"></page-title>
 
     <cubex-app id="app" app-data="[[appData]]" page-data="[[pageData]]"
-               back-path="[[_backPath]]"
-               page-path="[[_pagePath]]"
-               header-menu="[[_headerMenus]]"
-               header-actions="[[_integrations.HeaderActions]]"
-               page-menu="[[_pageMenus]]"
-               page-actions="[[_pageActions]]"
+               back-path="[[_backPath]]" page-path="[[_pagePath]]"
+               header-menu="[[_headerMenus]]" header-actions="[[_headerActions]]"
+               page-menu="[[_pageMenus]]" page-actions="[[_pageActions]]"
                panels="[[_panels]]"
                has-hero="[[_pageDefinitionContentHasHero]]">
       <cubex-drawer-content slot="drawer-content" id="appDrawerContent">
@@ -112,17 +109,18 @@
           _integrationsPath: {type: String},
           _integration:      {type: Object, value: null},
 
-          _headerMenus: {type: Array},
-          _pageMenus:   {type: Array},
-          _pageActions: {type: Array},
-          _panels:      {type: Array}
+          _headerMenus:   {type: Array},
+          _headerActions: {type: Array},
+          _pageMenus:     {type: Array},
+          _pageActions:   {type: Array},
+          _panels:        {type: Array}
         },
         observers:  [
           '_updateProject(routeData.project)',
           '_pathChanged(route.path)',
           '_updateData(_pageXhr,_pageData)',
           '_updateIntegration(_integrations,appPath.path,_pageDefinitionPath,projectData)',
-          '_updateHeaderMenu(_integration,_integrations,appData,projectData)',
+          '_updateHeader(_integration,_integrations,appData,projectData)',
           '_updateSidebar(_integration,_integrations,appPath,projectData)'
         ],
 
@@ -161,13 +159,15 @@
                              }
                              return '';
                            },
-        _updateHeaderMenu: function (integration, integrations, appData)
+        _updateHeader:     function (integration, integrations, appData)
                            {
                              if(integrations)
                              {
-                               var headerMenu = this._integrations.HeaderMenuItems;
-                               var newMenu = [];
                                var self = this;
+                               var headerActions = this._integrations.HeaderActions;
+                               var headerMenu = this._integrations.HeaderMenuItems;
+                               var newActions = [];
+                               var newMenu = [];
                                if(headerMenu && appData && this.projectData && this.projectData.AppSummary)
                                {
                                  headerMenu = headerMenu.sort(
@@ -231,8 +231,31 @@
                                    }
                                  }
                                }
+
+                               if(headerActions && appData && this.projectData && this.projectData.AppSummary)
+                               {
+                                 for(var j in headerActions)
+                                 {
+                                   if(headerActions.hasOwnProperty(j))
+                                   {
+                                     var action = headerActions[j];
+                                     newActions.push(
+                                       {
+                                         Title:       action.Title,
+                                         Path:        action.Mode == 'dialog'
+                                                        ? '//' + this.getServiceHost('apps') + '/' + action.GlobalAppID + '/' + action.Path
+                                                        : '/' + this.routeData.project + '/' + action.Hook + '/_/' + action.ID,
+                                         Icon:        action.Icon,
+                                         Mode:        action.Mode,
+                                         GlobalAppID: action.GlobalAppID
+                                       }
+                                     );
+                                   }
+                                 }
+                               }
                              }
                              this._headerMenus = newMenu;
+                             this._headerActions = newActions;
                            },
 
         _updateSidebar: function (integration, integrations)

@@ -156,7 +156,9 @@
       <div id="actions">
         <iron-media-query query="(max-width: 700px)" query-matches="{{_small}}"></iron-media-query>
         <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,1)}}" sort="_sort" observe="primary">
-          <cube-action icon="[[item.Icon]]"></cube-action>
+          <cubex-link href="[[item.Path]]" mode="[[item.Mode]]" match="[[item.Match]]">
+            <cube-action icon="[[item.Icon]]"></cube-action>
+          </cubex-link>
         </template>
         <cube-dropdown horizontal-align="right" hidden$="[[!_hasDropdownActions(actions,_small,1)}}">
           <cube-action icon="icons:more-vert" slot="trigger" id="more-actions"></cube-action>
@@ -177,7 +179,7 @@
 
     <div id="menu">
       <template is="dom-repeat" items="[[menu]]">
-        <cubex-link href="[[item.Path]]" hash="[[item.Hash]]" mode="[[item.Mode]]" match="[[item.Match]]">
+        <cubex-link href="[[item.Path]]" mode="[[item.Mode]]" match="[[item.Match]]">
           <template is="dom-if" if="[[!item.Category]]">
             [[item.Title]]
           </template>

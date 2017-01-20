@@ -17,14 +17,14 @@
     "container"
   ],
   "dependencies": {
-    "iron-resizable-behavior": "git@github.com:PolymerElements/iron-resizable-behavior.git#2.0-preview",
-    "iron-selector": "git@github.com:PolymerElements/iron-selector.git#2.0-preview",
-    "polymer": "git@github.com:Polymer/polymer.git#2.0-preview"
+    "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#2.0-preview",
+    "iron-selector": "PolymerElements/iron-selector#2.0-preview",
+    "polymer": "Polymer/polymer#2.0-preview"
   },
   "devDependencies": {
     "iron-component-page": "polymerelements/iron-component-page#2.0-preview",
-    "iron-demo-helpers": "git@github.com:PolymerElements/iron-demo-helpers.git#2.0-preview",
-    "paper-styles": "git@github.com:PolymerElements/paper-styles.git#2.0-preview",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#2.0-preview",
+    "paper-styles": "PolymerElements/paper-styles#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
     "web-component-tester": "^4.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
@@ -53,11 +53,11 @@
     "polymer": "2.0-preview"
   },
   "homepage": "https://github.com/PolymerElements/iron-pages",
-  "_release": "85285aa898",
+  "_release": "a89d288c01",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "85285aa898fe9b9a6631385613bc3ef3d510369c"
+    "commit": "a89d288c01cf572e060f49f5318b10fa5ad09581"
   },
   "_source": "https://github.com/PolymerElements/iron-pages.git",
   "_target": "2.0-preview",

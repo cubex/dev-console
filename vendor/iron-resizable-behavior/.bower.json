@@ -50,7 +50,7 @@
     "branch": "2.0-preview",
     "commit": "48b9c1c6e76bdec940334460638add28040031a7"
   },
-  "_source": "git@github.com:PolymerElements/iron-resizable-behavior.git",
+  "_source": "https://github.com/PolymerElements/iron-resizable-behavior.git",
   "_target": "2.0-preview",
-  "_originalSource": "git@github.com:PolymerElements/iron-resizable-behavior.git"
+  "_originalSource": "PolymerElements/iron-resizable-behavior"
 }

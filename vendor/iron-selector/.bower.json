@@ -60,7 +60,7 @@
     "branch": "2.0-preview",
     "commit": "acb2ba2de96a06b068ab6993c3ec928b7455cf3a"
   },
-  "_source": "git@github.com:PolymerElements/iron-selector.git",
+  "_source": "https://github.com/PolymerElements/iron-selector.git",
   "_target": "2.0-preview",
-  "_originalSource": "git@github.com:PolymerElements/iron-selector.git"
+  "_originalSource": "PolymerElements/iron-selector"
 }

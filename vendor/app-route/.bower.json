@@ -59,11 +59,11 @@
     "test-fixture": "^2.0.0",
     "webcomponentsjs": "v1"
   },
-  "_release": "fcf20f1771",
+  "_release": "6aa7f14631",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "fcf20f1771ad455e69d4681a31e4ec23fe6971cd"
+    "commit": "6aa7f14631bfba9e09497838fb8580711fce8d0b"
   },
   "_source": "https://github.com/PolymerElements/app-route.git",
   "_target": "2.0-preview",

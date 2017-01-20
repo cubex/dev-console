@@ -3,7 +3,7 @@
 <link rel="import" href="../../cube-pagelet/cube-pagelet.html">
 <link rel="import" href="../../paper-ripple/paper-ripple.html">
 
-<dom-module id="cubex-link" attributes="mode href hash match">
+<dom-module id="cubex-link" attributes="mode href match">
   <template>
     <style>
       :host {
@@ -38,7 +38,9 @@
 
     <template is="dom-if" if="[[_isMode('dialog',mode)]]">
       <paper-dialog id="dialog" with-backdrop>
-        <cube-pagelet id="pagelet" auth url="[[href]]"></cube-pagelet>
+        <cube-pagelet id="pagelet" auth url="[[href]]" status="{{_dialogStatus}}">
+          Loading...
+        </cube-pagelet>
       </paper-dialog>
       <div on-tap="_tapDialog">
         <slot></slot>
@@ -55,12 +57,14 @@
           match:    {type: Boolean, value: false},
           mode:     {type: String, value: 'page'},
           href:     {type: String},
-          hash:     {type: String},
           _dlg:     {type: Object},
           _pagelet: {type: Object}
         },
 
-        observers: ['_activeState(__path,__query,__hash,hash,href,mode,match)'],
+        observers: [
+          '_activeState(__path,__query,__hash,href,mode,match)',
+          '_dialogStatusChanged(_dialogStatus)'
+        ],
 
         _activeState: function (path, query, urlHash)
                       {
@@ -108,8 +112,6 @@
                       {
                         this._pagelet = Polymer.dom(this.root).querySelector('#pagelet');
                       }
-                      this._pagelet.update();
-
                       if(!this._dlg)
                       {
                         this._dlg = Polymer.dom(this.root).querySelector('#dialog');
@@ -117,7 +119,17 @@
                       }
 
                       this._dlg.open();
-                    }
+                      this._pagelet.update();
+                    },
+
+        _dialogStatusChanged: function (status)
+                                {
+                                  // refit dialog when pagelet loads
+                                  if(status > -1 && this._dlg)
+                                  {
+                                    this._dlg.refit()
+                                  }
+                                }
       }
     );
   </script>

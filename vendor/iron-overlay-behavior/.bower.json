@@ -56,11 +56,11 @@
   },
   "ignore": [],
   "homepage": "https://github.com/PolymerElements/iron-overlay-behavior",
-  "_release": "1e3d139d83",
+  "_release": "95c51e97ab",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "1e3d139d834816b57601e91b8b587eb4e7548648"
+    "commit": "95c51e97ab6a5c94ed2e2b33b866ca619e030096"
   },
   "_source": "https://github.com/PolymerElements/iron-overlay-behavior.git",
   "_target": "2.0-preview",

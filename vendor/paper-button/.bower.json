@@ -58,11 +58,11 @@
   "resolutions": {
     "test-fixture": "^2.0.0"
   },
-  "_release": "dfa3d58b17",
+  "_release": "a0adac0180",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "dfa3d58b17b46441460a9282520a24b0e7096868"
+    "commit": "a0adac01806f5d79f40655042e3d1b73ce304157"
   },
   "_source": "https://github.com/PolymerElements/paper-button.git",
   "_target": "2.0-preview",

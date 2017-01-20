@@ -295,9 +295,8 @@ Example:
               <template is="dom-if" if="[[pageActions.length]]">
                 <div id="app-page-actions" class="sidebar-group">
                   <template is="dom-repeat" items="[[pageActions]]">
-                    <cubex-link hash="a-[[_hash32(item.GlobalAppID,'/',item.ID)]]"
-                                  href="//[[getServiceHost('apps')]][[item.Path]]"
-                                  mode="[[item.Mode]]" title="[[item.Description]]">
+                    <cubex-link href="//[[getServiceHost('apps')]][[item.Path]]"
+                                mode="[[item.Mode]]" title="[[item.Description]]">
                       <cube-action icon="[[item.Icon]]">[[item.Title]]</cube-action>
                     </cubex-link>
                   </template>
@@ -307,8 +306,7 @@ Example:
               <template is="dom-if" if="[[pageMenu.length]]">
                 <cube-list id="app-page-menu" class="sidebar-group" border double-border bottom-border>
                   <template is="dom-repeat" items="[[pageMenu]]">
-                    <cubex-link hash="[[item.Hash]]" href="[[item.Path]]"
-                                  mode="[[item.Mode]]" title="[[item.Description]]">
+                    <cubex-link href="[[item.Path]]" mode="[[item.Mode]]" title="[[item.Description]]">
                       <cube-li>[[item.Title]]</cube-li>
                     </cubex-link>
                   </template>

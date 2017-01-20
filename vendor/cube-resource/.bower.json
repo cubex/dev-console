@@ -30,11 +30,11 @@
     "polymer": "2.0-preview",
     "webcomponentsjs": "v1"
   },
-  "_release": "4e5a9a68d9",
+  "_release": "4209d4c598",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "4e5a9a68d93ff87470280c234b0e6657587a25a6"
+    "commit": "4209d4c5980990964db55d3c835653a39f753feb"
   },
   "_source": "https://github.com/CubexElements/cube-resource.git",
   "_target": "*",
