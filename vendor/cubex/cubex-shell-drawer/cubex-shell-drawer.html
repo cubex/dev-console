@@ -143,7 +143,7 @@
         </cubex-shell-drawer-panel>
         <cubex-shell-drawer-panel>
           <cube-list-menu show-filter filter-label="{{i18n('filter_projects')}}">
-            <cube-list-group title="{{i18n('all_projects')}}">
+            <cube-list-group id="projectsGroup" title="{{i18n('all_projects')}}">
               <template is="dom-repeat" items="[[projects]]">
                 <a href="/[[item.id]]">
                   <cube-li>
@@ -209,6 +209,7 @@
         attached:        function ()
                          {
                            this.keyEventTarget = document.body;
+                           this.$.projectsGroup.addEventListener('click', function (e) { e.stopPropagation(); });
                          },
         observers:       ['_updateProjects(_projects)'],
         _updateProjects: function (projects)

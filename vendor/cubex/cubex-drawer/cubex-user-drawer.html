@@ -51,15 +51,6 @@
         padding: 12px
       }
 
-      #lockUserDrawer {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        color: var(--text-color-secondary);
-        cursor: pointer;
-        padding: 10px;
-      }
-
       #lockUserDrawer[hidden] {
         display: none;
       }
@@ -73,6 +64,46 @@
       :host-context([is-open],[state="2"]) cubex-user-drawer-items cube-action[active] {
         background: var(--theme-100-color);
         color: var(--accent-700-color);
+      }
+
+      #pageletContainer {
+        position: absolute;
+        top: 0;
+        right: var(--cubex-drawer-peek-width);
+        left: 0;
+        bottom: 0;
+        overflow: scroll;
+        padding-bottom: 47px;
+      }
+
+      #lockUserDrawer, #actionsContainer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+
+      #lockUserDrawer {
+        color: var(--text-color-secondary);
+        padding: 7px;
+      }
+
+      #actionsContainer {
+        height: 48px;
+        color: var(--text-color-secondary);
+        cursor: pointer;
+        border-top: 1px solid var(--cube-list-border-color, rgba(0, 0, 0, 0.06));
+      }
+
+      #actionsContainer:before {
+        background: var(--theme-200-color, white);
+        opacity: 0.8;
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
       }
     </style>
 
@@ -88,8 +119,13 @@
     </cubex-user-drawer-items>
 
     <div id="contentContainer">
-      <cube-pagelet auto auth id="pagelet" url="[[_getPageletUrl(_selectedApp,_drawerOpen)]]">Loading...</cube-pagelet>
-      <cube-action icon="icons:chrome-reader-mode" id="lockUserDrawer" on-tap="_lockUserDrawer"></cube-action>
+      <div id="pageletContainer">
+        <cube-pagelet auto auth id="pagelet" url="[[_getPageletUrl(_selectedApp,_drawerOpen)]]">Loading...
+        </cube-pagelet>
+      </div>
+      <div id="actionsContainer">
+        <cube-action icon="icons:chrome-reader-mode" id="lockUserDrawer" on-tap="_lockUserDrawer"></cube-action>
+      </div>
     </div>
   </template>
   <script>Polymer(

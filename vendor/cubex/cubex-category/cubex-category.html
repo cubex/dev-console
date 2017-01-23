@@ -8,6 +8,10 @@
         display: inline;
         @apply --cubex-category-style;
       }
+
+      :host([hidden]) {
+        display: none;
+      }
     </style>
     [[i18n(i18nKeys)]]
   </template>
@@ -16,18 +20,10 @@
       {
         is:         'cubex-category',
         properties: {
-          key:       {
-            type:  String,
-            value: ""
-          },
-          short:     {
-            type:  Boolean,
-            value: false
-          },
-          i18nKeys:  {
-            type:     Array,
-            computed: 'makekey(key,short)'
-          },
+          hidden:    {type: Boolean, reflectToAttribute: true, computed: '_computeHidden(key)'},
+          key:       {type: String, value: ''},
+          short:     {type: Boolean, value: false},
+          i18nKeys:  {type: Array, computed: '_makeKey(key,short)'},
           resources: {
             type:  Object,
             value: {
@@ -66,10 +62,20 @@
           }
         },
 
-        makekey: function (key, short)
-                 {
-                   return short ? ['short_' + key, key, "no_category"] : [key, "no_category"]
-                 },
+        _computeHidden: function (key)
+                        {
+                          return !key;
+                        },
+
+        _makeKey: function (key, short)
+                  {
+                    return short ? ['short_' + key, key, "no_category"] : [key, "no_category"]
+                  },
+
+        getCategory: function (key, short)
+                     {
+                       return this.i18n(this._makeKey(key, short));
+                     },
 
         behaviors: [
           Polymer.CubeI18nBehavior

@@ -36,6 +36,7 @@
     "cube-preferences": "CubexElements/cube-preferences",
     "cube-nudge": "CubexElements/cube-nudge",
     "cube-hero": "CubexElements/cube-hero",
+    "cube-card": "CubexElements/cube-card",
     "cube-title": "CubexElements/cube-title"
   },
   "resolutions": {

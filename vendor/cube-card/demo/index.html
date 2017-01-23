@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>cube-card Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../cube-card.html">
+  <link rel="import" href="../cube-card-content.html">
+  <link rel="import" href="../../cube-action/cube-action.html">
+  <link rel="import" href="../../cube-icon/cube-icon.html">
+</head>
+<body unresolved>
+
+<style>
+  cube-card {
+    margin: 20px;
+  }
+</style>
+
+<cube-card title="Virgin America flight 25">
+  <cube-icon icon="icons:flight-takeoff" style="width:56px; height:56px;" slot="overview"></cube-icon>
+
+  <cube-card-content>
+    <p><strong>Status: Delayed</strong> / Mon, 29 Oct 2012</p>
+    <h3>Depart New York</h3>
+    <p><strong>12:30 PM (12:00 PM)</strong><br/>
+      Terminal 2, Gate 54B</p>
+    <h3>Arrive San Francisco</h3>
+    <p><strong>1:56 PM (1:31 PM)</strong>
+      <br/>Terminal 4</p>
+  </cube-card-content>
+
+  <cube-action icon="maps:navigation">
+    Navigate to JFK / 32 min
+  </cube-action>
+
+  <cube-action icon="communication:email">
+    View email
+  </cube-action>
+
+  <cube-action slot="legal">Disclaimer</cube-action>
+</cube-card>
+
+<cube-card title="The Connaught Hotel" subtitle="Carlos Place, Mayfair, London, W1K 2AL, United Kingdom">
+  <cube-card-content>
+    <span class="error">Check-out in 1 hour</span>
+    <img src="http://r-ec.bstatic.com/images/hotel/840x460/469/46904169.jpg"/>
+  </cube-card-content>
+
+  <cube-action icon="maps:directions">
+    Get directions
+  </cube-action>
+
+  <cube-action icon="communication:email">
+    View email
+  </cube-action>
+</cube-card>
+
+<cube-card title="Walking with Dinosaurs" subtitle="The O2 Arena, Peninsula Square, London, SE10 ABC"
+           thumbnail="http://asset-manager.bbcchannels.com/i/2cyh80000f41000">
+
+  <cube-card-content>
+    Ticket Reminder<br/><span class="success">Show starts at 7:00pm</span>
+  </cube-card-content>
+
+  <cube-action icon="maps:directions">
+    Get directions
+  </cube-action>
+
+  <cube-action icon="communication:email">
+    View email
+  </cube-action>
+</cube-card>
+
+<cube-card>
+
+  <cube-card-content>
+    <img
+      src="http://cdn30.us1.fansshare.com/image/privateisland/phi-phi-island-beach-tropical-islands-beaches-1788155346.jpg"
+      class="thumbnail"/>
+    <h1>Two line item (Body 2)</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus laboriosam, vero. Aspernatur, nisi ut.</p>
+  </cube-card-content>
+
+  <cube-action icon="places:beach-access">
+    Sit on a beach
+  </cube-action>
+</cube-card>
+
+<cube-card>
+
+  <cube-card-content>
+    <h1>Two line item (Body 2)</h1>
+    <p>Secondary Text</p>
+    <hr/>
+    <h1>Two line item (Body 2)</h1>
+    <p>Secondary Text</p>
+  </cube-card-content>
+
+  <cube-action>
+    Action
+  </cube-action>
+</cube-card>
+
+<cube-card>
+
+  <cube-card-content>
+    <h1>Two line item (Body 2)</h1>
+    <p>Secondary Text</p>
+    GRAPH HERE
+  </cube-card-content>
+
+  <cube-action>
+    Action
+  </cube-action>
+</cube-card>
+
+<cube-card>
+
+  <cube-card-content slim style="background: url('https://img1.123freevectors.com/wp-content/uploads/vectorgraphics/wavy-background-free-vector.jpg');background-size:cover; background-position-y:-93px; height:80px;">
+
+    <em class="info">1200</em>
+  </cube-card-content>
+  <cube-action>
+    Action
+  </cube-action>
+</cube-card>
+
+</body>
+</html>

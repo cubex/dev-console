@@ -1,0 +1,150 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+
+<dom-module id="cube-card">
+  <template>
+    <style>
+      :host {
+        border: 1px solid black;
+        width: 300px;
+        display: inline-block;
+        color: #444;
+        @apply --paper-font-body1;
+      }
+
+      :host([title]) #header {
+        padding: 0 10px 10px 10px;
+        border-bottom: 1px solid grey;
+        position: relative;
+        margin-bottom: 10px;
+      }
+
+      #header h1 {
+        @apply --paper-font-headline;
+        margin: 0;
+        margin-bottom: 5px;
+      }
+
+      #header h2 {
+        @apply --paper-font-body1;
+        margin: 0;
+      }
+
+      #overview {
+        float: right;
+        margin-left: 10px;
+      }
+
+      :host([thumbnail]) #header {
+        padding-right: 50%;
+      }
+
+      :host([thumbnail]) #overview {
+        background-image: var(--card-thumbnail);
+        background-size: cover;
+        width: 50%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      }
+
+      #content::slotted(cube-action),
+      #legal ::slotted(cube-action) {
+        box-sizing: border-box;
+        border-top: 1px solid grey;
+        width: 100%;
+      }
+
+      #legal ::slotted(cube-action) {
+        font-size: 12px;
+        line-height: 14px;
+        display: block;
+        text-align: right;
+      }
+
+      #content::slotted(cube-action) {
+        padding-left: 10px;
+        line-height: 34px;
+        color: #0074db;
+      }
+
+      #content::slotted(cube-action[icon]) {
+        padding-left: 0;
+      }
+
+      #toolbar {
+        display: flex;
+      }
+
+      #toolbar cube-icon,
+      #toolbar cube-action {
+        margin: 7px;
+      }
+
+      #toolbar h1 {
+        @apply --paper-font-body2;
+        display: inline-flex;
+        flex-grow: 1;
+      }
+
+      #toolbar h1 span {
+        @apply --paper-font-caption;
+        padding-left: 5px;
+      }
+
+      #toolbar,
+      #toolbar h1,
+      #toolbar h1 span {
+        line-height: 48px;
+        margin: 0;
+      }
+
+    </style>
+    <div id="toolbar">
+      <cube-icon icon="image:wb-cloudy"></cube-icon>
+      <h1>Title <span class="time">- 17 mins</span></h1>
+      <cube-action icon="icons:more-vert"></cube-action>
+    </div>
+    <div id="card">
+      <div id="header">
+        <div id="overview">
+          <slot name="overview"></slot>
+        </div>
+        <h1>{{title}}</h1>
+        <h2>{{subtitle}}</h2>
+      </div>
+      <slot id="content"></slot>
+      <div id="legal">
+        <slot name="legal"></slot>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:                'cube-card',
+        properties:        {
+          title:     {
+            type:               String,
+            reflectToAttribute: true
+          },
+          subtitle:  {
+            type:               String,
+            reflectToAttribute: true
+          },
+          thumbnail: {
+            type:               String,
+            reflectToAttribute: true,
+            observer:           '_thumbnailChanged'
+          }
+        },
+        _thumbnailChanged: function (newVal, oldVal)
+                           {
+                             this.updateStyles({'--card-thumbnail': 'url(' + newVal + ')'});
+                           }
+      }
+    );
+  </script>
+</dom-module>

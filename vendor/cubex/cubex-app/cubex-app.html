@@ -19,6 +19,7 @@
 <link rel="import" href="../cubex-effects/displace-element.html">
 <link rel="import" href="../cubex-link/cubex-link.html">
 <link rel="import" href="../cubex-hash/cubex-hash.html">
+<link rel="import" href="../cubex-category/cubex-category.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -258,6 +259,7 @@ Example:
     <iron-media-query query="(min-width: 1300px)" query-matches="{{_lock}}"></iron-media-query>
 
     <cubex-project project="{{project}}"></cubex-project>
+    <cubex-category id="cat"></cubex-category>
 
     <cube-preferences name="appDrawerPosition" value="{{appDrawerState}}"></cube-preferences>
     <cubex-drawer id="appDrawer" hover-popout swipe-open position="left" preferred-state="{{appDrawerState}}">
@@ -355,7 +357,7 @@ Example:
           pagePath:            {type: String},
           narrow:              {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:             {type: Object, observer: '_updateResources'},
-          pageData:            {type: Object, observer: '_resetLayout'},
+          pageData:            {type: Object},
           breadcrumbs:         {type: Object, computed: '_updateCrumbs(pageData,project)'},
           drawerDisabled:      {
             type:               Boolean,
@@ -395,7 +397,6 @@ Example:
 
         ready: function ()
                {
-                 HTMLImports.whenReady(function () {this._resetLayout();}.bind(this));
                  document.addEventListener(
                    'cubex-drawer-state-changed', function (e)
                    {
@@ -443,7 +444,12 @@ Example:
                          },
         _updateCrumbs:   function (pageData)
                          {
-                           var bc = pageData && pageData.breadcrumb ? JSON.parse(pageData.breadcrumb) : [];
+                           var bc = [];
+                           if(pageData && pageData.breadcrumb)
+                           {
+                             bc = typeof(pageData.breadcrumb) == 'string' ? JSON.parse(pageData.breadcrumb) : pageData.breadcrumb;
+                           }
+
                            if(this.appData && pageData && this.project)
                            {
                              var prefix = '/' + this.project.id + '/' + this.appData.GlobalAppID;
@@ -454,13 +460,14 @@ Example:
                                  bc[i].Url = prefix + '/' + bc[i].Url.replace(/^\//, '');
                                }
                              }
-
+                             // prepend app
                              bc.unshift(
                                {
                                  Title: this.i18n('app_name'),
                                  Url:   prefix
                                }
                              );
+                             // prepend group
                              if(this.appData.Group)
                              {
                                bc.unshift(
@@ -470,17 +477,15 @@ Example:
                                  }
                                );
                              }
+                             // prepend category
+                             bc.unshift(
+                               {
+                                 Title: this.$.cat.getCategory(this.appData.Category),
+                                 Url:   '/' + this.project.id + '/_' + this.appData.Category
+                               }
+                             );
                            }
                            return bc;
-                         },
-        _resetLayout:    function ()
-                         {
-                           Polymer.RenderStatus.afterNextRender(
-                             this, function ()
-                             {
-                               this.$.ahl.resetLayout();
-                             }
-                           );
                          },
         _viewChanged:    function (lock, peek, narrow)
                          {

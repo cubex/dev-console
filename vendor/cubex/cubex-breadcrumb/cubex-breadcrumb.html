@@ -1,7 +1,6 @@
 <link rel="import" href="../../polymer/polymer.html"/>
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html"/>
 <link rel="import" href="cubex-breadcrumb-item.html"/>
-<link rel="import" href="../cubex-category/cubex-category.html"/>
 <link rel="import" href="../cubex-repath/cubex-repath.html">
 
 <dom-module id="cubex-breadcrumb" attributes="crumbs">
@@ -35,13 +34,6 @@
     <cubex-breadcrumb-item id="home" href="[[projectPath]]">
       <cube-icon icon="icons:home" size="16"></cube-icon>
     </cubex-breadcrumb-item>
-
-    <template is="dom-if" if="[[category]]">
-      <cubex-repath in="/[[category]]" gaid="" out="{{catPath}}"></cubex-repath>
-      <cubex-breadcrumb-item id="category" href="[[catPath]]">
-        <cubex-category key="[[category]]" short></cubex-category>
-      </cubex-breadcrumb-item>
-    </template>
 
     <template is="dom-repeat" items="[[crumbs]]">
       <cubex-breadcrumb-item href="[[item.Url]]">[[item.Title]]</cubex-breadcrumb-item>

@@ -15,11 +15,11 @@
     "webcomponentsjs": "v1"
   },
   "homepage": "https://github.com/CubexElements/cube-pagelet",
-  "_release": "cd658b793b",
+  "_release": "5ae8cce1e2",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "cd658b793b20980762a6b85f47424de348e10e4e"
+    "commit": "5ae8cce1e2e368a69a33102d0758271218f1344b"
   },
   "_source": "https://github.com/CubexElements/cube-pagelet.git",
   "_target": "*",

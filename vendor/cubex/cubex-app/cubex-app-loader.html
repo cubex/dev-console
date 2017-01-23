@@ -9,6 +9,7 @@
 <link rel="import" href="../cubex-drawer/cubex-drawer.html">
 <link rel="import" href="../cubex-hash/cubex-hash.html">
 <link rel="import" href="../cubex-category/cubex-category.html">
+<link rel="import" href="../cubex-category/cubex-category-page.html">
 <link rel="import" href="cubex-app.html">
 <link rel="import" href="cubex-app-title.html">
 <link rel="import" href="cubex-app-header.html">
@@ -48,18 +49,23 @@
       }
     </style>
 
-    <app-route id="route" route="[[route]]" pattern="/:project/:vendor/:app" data="{{routeData}}"
-               tail="{{appPath}}" query-params="{{appQuery}}"></app-route>
+    <app-route id="projectRoute" route="[[route]]" pattern="/:project" data="{{projectRouteData}}"
+               tail="{{projectTail}}" query-params="{{appQuery}}"></app-route>
+    <app-route id="vendorRoute" route="[[projectTail]]" pattern="/:vendor" data="{{vendorRouteData}}"
+               tail="{{vendorTail}}"></app-route>
+    <app-route id="appRoute" route="[[vendorTail]]" pattern="/:app" data="{{appRouteData}}"
+               tail="{{appPath}}" active="{{_appActive}}"></app-route>
 
     <cubex-registry project-data="{{projectData}}"></cubex-registry>
 
-    <cubex-app-definition gaid="[[routeData.vendor]]/[[routeData.app]]"
-                          app-data="{{appData}}"></cubex-app-definition>
+    <cubex-app-definition gaid="[[_appGaid]]" app-data="{{appData}}"></cubex-app-definition>
 
     <cube-resource auto auth url="[[_integrationsPath]]" data="{{_integrations}}"
                    headers="[[_pageDefinitionHeaders]]" ttl="3600"></cube-resource>
-    <cube-resource auto auth url="[[_pageDefinitionPath]]" data="{{_pageData}}" xhr="{{_pageXhr}}"
-                   headers="[[_pageDefinitionHeaders]]"></cube-resource>
+    <cube-resource auto auth url="[[_pageDefinitionPath]]" data="{{_pageDefinitionHtml}}" xhr="{{_pageXhr}}"
+                   headers="[[_pageDefinitionHeaders]]" status="{{_pageDefinitionStatus}}"></cube-resource>
+
+    <cubex-category id="cat"></cubex-category>
 
     <page-title page-title="[[pageData.title]]"></page-title>
 
@@ -74,9 +80,12 @@
       </cubex-drawer-content>
       <cubex-app-spinner slot="spinner" hidden$="[[!_pageSpinnerVisible]]"></cubex-app-spinner>
 
-      <cube-pagelet-content id="hero" slot="hero" html="[[_pageDefinitionContent]]"
+      <cube-pagelet-content id="hero" slot="hero" html="[[_pageDefinitionHtml]]"
                             hidden$="[[!_pageDefinitionContentHasHero]]"></cube-pagelet-content>
-      <cube-pagelet auto auth url="[[_pageContentPath]]" headers="[[_pageContentHeaders]]"></cube-pagelet>
+
+      <cube-resource auto auth url="[[_pageContentPath]]" headers="[[_pageContentHeaders]]"
+                     status="{{_pageContentStatus}}" data="{{_pageContentHtml}}"></cube-resource>
+      <cube-pagelet-content id="content" html="[[_pageContentHtml]]"></cube-pagelet-content>
     </cubex-app>
   </template>
 
@@ -86,25 +95,26 @@
         is:         'cubex-app-loader',
         properties: {
           _project: {type: String},
+          _appGaid: {type: String, computed: '_computeAppGaid(vendorRouteData,appRouteData)'},
 
-          _pageDefinitionPath:    {type: String},
-          _pagePath:              {type: String},
-          _loadedPath:            {type: String, value: ''},
-          _pageXhr:               {type: Object},
-          _pageData:              {type: Object},
-          _pageDefinitionHeaders: {type: Object, computed: '_computeHeaders(_project,"page-definition")'},
-          _pageDefinitionContent: {type: String},
-          _pageSpinnerVisible:    {type: Boolean, value: false},
-          pageData:               {type: Object, notify: true},
-          appData:                {type: Object, notify: true},
-          _backPath:              {
+          _pageDefinitionPath:           {type: String},
+          _pagePath:                     {type: String},
+          _loadedPath:                   {type: String, value: ''},
+          _pageXhr:                      {type: Object},
+          _pageDefinitionHeaders:        {type: Object, computed: '_computeHeaders(_project,"page-definition")'},
+          _pageDefinitionHtml:           {type: String},
+          _pageDefinitionContentHasHero: {type: Boolean},
+          _pageSpinnerVisible:           {type: Boolean, value: false},
+          pageData:                      {type: Object, notify: true},
+          appData:                       {type: Object, notify: true},
+          _backPath:                     {
             type:     String,
-            computed: '_computedBackPath(routeData.project,appData.GlobalAppID,pageData.backPath)'
+            computed: '_computedBackPath(projectRouteData.project,appData.GlobalAppID,pageData.backPath)'
           },
 
-          _pageContentPath:            {type: String},
-          _pageContentHeaders:         {type: Object, computed: '_computeHeaders(_project)'},
-          __pageContentSpinnerVisible: {type: Boolean, value: false},
+          _pageContentPath:    {type: String},
+          _pageContentHeaders: {type: Object, computed: '_computeHeaders(_project)'},
+          _pageContentHtml:    {type: String},
 
           _integrationsPath: {type: String},
           _integration:      {type: Object, value: null},
@@ -116,13 +126,23 @@
           _panels:        {type: Array}
         },
         observers:  [
-          '_updateProject(routeData.project)',
+          '_updateProject(projectRouteData.project)',
           '_pathChanged(route.path)',
-          '_updateData(_pageXhr,_pageData)',
+          '_updateHeaders(_pageXhr)',
           '_updateIntegration(_integrations,appPath.path,_pageDefinitionPath,projectData)',
           '_updateHeader(_integration,_integrations,appData,projectData)',
-          '_updateSidebar(_integration,_integrations,appPath,projectData)'
+          '_updateSidebar(_integration,_integrations,appPath,projectData)',
+          '_pageStatusChanged(_pageDefinitionHtml,_pageContentHtml)'
         ],
+
+        _computeAppGaid: function (vendorRouteData, appRouteData)
+                         {
+                           if(vendorRouteData && vendorRouteData.vendor && appRouteData && appRouteData.app)
+                           {
+                             return vendorRouteData.vendor + '/' + appRouteData.app;
+                           }
+                           return null;
+                         },
 
         _updateProject: function (project)
                         {
@@ -131,11 +151,6 @@
                             this._project = project;
                           }
                         },
-
-        attached: function ()
-                  {
-                    this.async(this._pathChanged);
-                  },
 
         _computeHeaders: function (project, resourceType)
                          {
@@ -159,104 +174,104 @@
                              }
                              return '';
                            },
-        _updateHeader:     function (integration, integrations, appData)
+
+        _updateHeader: function (integration, integrations, appData)
+                       {
+                         if(integrations)
+                         {
+                           var self = this;
+                           var headerActions = this._integrations.HeaderActions;
+                           var headerMenu = this._integrations.HeaderMenuItems;
+                           var newActions = [];
+                           var newMenu = [];
+                           if(headerMenu && appData && this.projectData && this.projectData.AppSummary)
                            {
-                             if(integrations)
-                             {
-                               var self = this;
-                               var headerActions = this._integrations.HeaderActions;
-                               var headerMenu = this._integrations.HeaderMenuItems;
-                               var newActions = [];
-                               var newMenu = [];
-                               if(headerMenu && appData && this.projectData && this.projectData.AppSummary)
+                             headerMenu = headerMenu.sort(
+                               function (a, b)
                                {
-                                 headerMenu = headerMenu.sort(
-                                   function (a, b)
-                                   {
-                                     // if one item is within the current app and one isn't, move the current one up
-                                     if((a.Hook.indexOf(a.GlobalAppID) == 0) != (b.Hook.indexOf(b.GlobalAppID) == 0))
-                                     {
-                                       return (a.GlobalAppID == appData.GlobalAppID) ? -1 : 1;
-                                     }
-                                     var cA = a.Title, cB = b.Title;
-                                     // if not current app, use category
-                                     if(a.Hook.indexOf(a.GlobalAppID) !== 0 && b.Hook.indexOf(b.GlobalAppID) !== 0)
-                                     {
-                                       cA = self.projectData.AppSummary[a.GlobalAppID].category;
-                                       cB = self.projectData.AppSummary[b.GlobalAppID].category;
-                                     }
-                                     // comparisons match, no change
-                                     if(cA == cB)
-                                     {
-                                       return 0;
-                                     }
-                                     // A is less than B, move A up
-                                     return (cA < cB) ? -1 : 1;
-                                   }
-                                 );
-
-                                 var categoriesAdded = [];
-                                 for(var i in headerMenu)
+                                 // if one item is within the current app and one isn't, move the current one up
+                                 if((a.Hook.indexOf(a.GlobalAppID) == 0) != (b.Hook.indexOf(b.GlobalAppID) == 0))
                                  {
-                                   if(headerMenu.hasOwnProperty(i))
-                                   {
-                                     if(headerMenu[i].Hook.indexOf(headerMenu[i].GlobalAppID) === 0)
-                                     {
-                                       newMenu.push(
-                                         {
-                                           Title: headerMenu[i].Title,
-                                           Path:  '/' + this.routeData.project + '/' + headerMenu[i].Hook + '/_/' + headerMenu[i].ID,
-                                           Mode:  'page'
-                                         }
-                                       );
-                                     }
-                                     else
-                                     {
-                                       var category = this.projectData.AppSummary[headerMenu[i].GlobalAppID].category;
-                                       if(categoriesAdded.indexOf(category) == -1)
-                                       {
-                                         newMenu.push(
-                                           {
-                                             Title:    category,
-                                             Category: true,
-                                             Path:     '/' + this.routeData.project + '/' + headerMenu[i].Hook + '/~/' + category
-                                                       + '/h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
-                                             Match:    '/' + this.routeData.project + '/' + headerMenu[i].Hook + '/~/' + category,
-                                             Mode:     'page'
-                                           }
-                                         );
-                                         categoriesAdded.push(category);
-                                       }
-                                     }
-                                   }
+                                   return (a.GlobalAppID == appData.GlobalAppID) ? -1 : 1;
                                  }
-                               }
-
-                               if(headerActions && appData && this.projectData && this.projectData.AppSummary)
-                               {
-                                 for(var j in headerActions)
+                                 var cA = a.Title, cB = b.Title;
+                                 // if not current app, use category
+                                 if(a.Hook.indexOf(a.GlobalAppID) !== 0 && b.Hook.indexOf(b.GlobalAppID) !== 0)
                                  {
-                                   if(headerActions.hasOwnProperty(j))
+                                   cA = self.projectData.AppSummary[a.GlobalAppID].category;
+                                   cB = self.projectData.AppSummary[b.GlobalAppID].category;
+                                 }
+                                 // comparisons match, no change
+                                 if(cA == cB)
+                                 {
+                                   return 0;
+                                 }
+                                 // A is less than B, move A up
+                                 return (cA < cB) ? -1 : 1;
+                               }
+                             );
+
+                             var categoriesAdded = [];
+                             for(var i in headerMenu)
+                             {
+                               if(headerMenu.hasOwnProperty(i))
+                               {
+                                 if(headerMenu[i].Hook.indexOf(headerMenu[i].GlobalAppID) === 0)
+                                 {
+                                   newMenu.push(
+                                     {
+                                       Title: headerMenu[i].Title,
+                                       Path:  '/' + this.projectRouteData.project + '/' + headerMenu[i].Hook + '/_/' + headerMenu[i].ID,
+                                       Mode:  'page'
+                                     }
+                                   );
+                                 }
+                                 else
+                                 {
+                                   var category = this.projectData.AppSummary[headerMenu[i].GlobalAppID].category;
+                                   if(categoriesAdded.indexOf(category) == -1)
                                    {
-                                     var action = headerActions[j];
-                                     newActions.push(
+                                     newMenu.push(
                                        {
-                                         Title:       action.Title,
-                                         Path:        action.Mode == 'dialog'
-                                                        ? '//' + this.getServiceHost('apps') + '/' + action.GlobalAppID + '/' + action.Path
-                                                        : '/' + this.routeData.project + '/' + action.Hook + '/_/' + action.ID,
-                                         Icon:        action.Icon,
-                                         Mode:        action.Mode,
-                                         GlobalAppID: action.GlobalAppID
+                                         Title: this.$.cat.getCategory(category),
+                                         Path:  '/' + this.projectRouteData.project + '/' + headerMenu[i].Hook + '/~/' + category
+                                                + '/h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
+                                         Match: '/' + this.projectRouteData.project + '/' + headerMenu[i].Hook + '/~/' + category,
+                                         Mode:  'page'
                                        }
                                      );
+                                     categoriesAdded.push(category);
                                    }
                                  }
                                }
                              }
-                             this._headerMenus = newMenu;
-                             this._headerActions = newActions;
-                           },
+                           }
+
+                           if(headerActions && appData && this.projectData && this.projectData.AppSummary)
+                           {
+                             for(var j in headerActions)
+                             {
+                               if(headerActions.hasOwnProperty(j))
+                               {
+                                 var action = headerActions[j];
+                                 newActions.push(
+                                   {
+                                     Title:   action.Title,
+                                     Path:    action.Mode == 'dialog'
+                                                ? '//' + this.getServiceHost('apps') + '/' + action.GlobalAppID + '/' + action.Path
+                                                : '/' + this.projectRouteData.project + '/' + action.Hook + '/_/' + action.ID,
+                                     Icon:    action.Icon,
+                                     Mode:    action.Mode,
+                                     Primary: action.GlobalAppID == 'fortifiplatform/customers'
+                                   }
+                                 );
+                               }
+                             }
+                           }
+                         }
+                         this._headerMenus = newMenu;
+                         this._headerActions = newActions;
+                       },
 
         _updateSidebar: function (integration, integrations)
                         {
@@ -347,54 +362,77 @@
                           this._panels = panels;
                         },
 
-        _pathChanged: function ()
+        _pathChanged: function (path)
                       {
-                        if(this.$.route.active)
+                        if(path !== undefined)
                         {
-                          if(this.route.path !== this._loadedPath)
+                          if(this.$.appRoute.active)
                           {
-                            this._loadedPath = this.route.path;
-
-                            var self = this,
-                              pathMatches = this._parsePath(this.appPath.path),
-                              fullPath = '/' + this.routeData.vendor + '/' + this.routeData.app + pathMatches.pagePath,
-                              integrationPath = fullPath;
-                            this._pagePath = '/' + this.routeData.project + fullPath;
-
-                            if(pathMatches.type == '_')
+                            if(this.route.path !== this._loadedPath)
                             {
-                              integrationPath += '/_/' + pathMatches.typeId;
-                            }
+                              this._loadedPath = this.route.path;
 
-                            var ip = '//' + this.getServiceHost('apps') + '/cubex/integrations/integrations.json?hook=' + integrationPath;
-                            if(this._integrationsPath != ip)
-                            {
-                              this._integrationsPath = ip;
-                            }
+                              var self = this,
+                                pathMatches = this._parsePath(this.appPath.path),
+                                fullPath = '/' + this.vendorRouteData.vendor + '/' + this.appRouteData.app + pathMatches.pagePath,
+                                integrationPath = fullPath;
+                              this._pagePath = '/' + this.projectRouteData.project + fullPath;
 
-                            var pdp = '//' + this.getServiceHost('apps') + fullPath;
-                            if(this._pageDefinitionPath != pdp)
-                            {
-                              this._addPageSpinner = setTimeout(
-                                function () { self._pageSpinnerVisible = true; }, 50
-                              );
-                              this._pageDefinitionPath = pdp;
-
-                              if(!pathMatches.type)
+                              if(pathMatches.type == '_')
                               {
-                                this._pageContentPath = this._pageDefinitionPath;
+                                integrationPath += '/_/' + pathMatches.typeId;
+                              }
+
+                              var ip = '//' + this.getServiceHost('apps') + '/cubex/integrations/integrations.json?hook=' + integrationPath;
+                              if(this._integrationsPath != ip)
+                              {
+                                this._integrationsPath = ip;
+                              }
+
+                              var pdp = '//' + this.getServiceHost('apps') + fullPath;
+                              if(this._pageDefinitionPath != pdp)
+                              {
+                                this._addPageSpinner = setTimeout(
+                                  function () { self._pageSpinnerVisible = true; }, 50
+                                );
+                                this._pageDefinitionPath = pdp;
                               }
                             }
                           }
-                        }
-                        else
-                        {
-                          this._integrationsPath = null;
-                          this._pageDefinitionPath = null;
-                          this._loadedPath = null;
-                          this.routeData = {};
-                          this.pageData = null;
-                          this.appData = null;
+                          else
+                          {
+                            this._integrationsPath = null;
+                            this._pageDefinitionPath = null;
+                            this._pageContentPath = null;
+                            this._loadedPath = null;
+                            this.appRouteData = {};
+                            this.appData = null;
+
+                            if((!this.$.appRoute.active) && this.$.vendorRoute.active && this.vendorRouteData.vendor)
+                            {
+                              if(this.vendorRouteData.vendor[0] == '_')
+                              {
+                                var cat = this.vendorRouteData.vendor.substring(1),
+                                  catName = this.$.cat.getCategory(cat);
+                                this.pageData = {
+                                  title:      'Category ' + catName,
+                                  breadcrumb: [{Title: catName, Url: this.route.path}]
+                                };
+                                this._pageContentHtml = '<cubex-category-page category="' + cat + '"></cubex-category-page>';
+                              }
+                              else
+                              {
+                                var vendor = this.vendorRouteData.vendor;
+                                this.pageData = {title: 'Vendor ' + vendor};
+                                this._pageContentHtml = 'vendor page';
+                              }
+                            }
+                            else
+                            {
+                              this.pageData = null;
+                              this._pageContentHtml = '';
+                            }
+                          }
                         }
                       },
 
@@ -474,47 +512,28 @@
                               {
                                 this._pageContentPath = contentPath;
                               }
-                              this.$.app._resetLayout();
                             },
 
-        _updateData: function ()
-                     {
-                       var frag = document.createRange().createContextualFragment(this._pageData || ''),
-                         imports = frag.querySelectorAll('link[rel="import"]'),
-                         cubeHeaderRegex = /x-cube-([a-z\-]+): (.*)[\n\r]*/g,
-                         headers = {};
+        _updateHeaders: function ()
+                        {
+                          var cubeHeaderRegex = /x-cube-([a-z\-]+): (.*)[\n\r]*/g,
+                            headers = {};
+                          if(this._pageXhr)
+                          {
+                            var fn = function (_, v) { return v.toUpperCase(); };
+                            while(matches = cubeHeaderRegex.exec(this._pageXhr.getAllResponseHeaders()))
+                            {
+                              headers[matches[1].replace(/-([a-z])/, fn)] = matches[2];
+                            }
+                          }
+                          this.pageData = headers;
 
-                       if(this._pageXhr)
-                       {
-                         var fn = function (_, v) { return v.toUpperCase(); };
-                         while(matches = cubeHeaderRegex.exec(this._pageXhr.getAllResponseHeaders()))
-                         {
-                           headers[matches[1].replace(/-([a-z])/, fn)] = matches[2];
-                         }
-                       }
-
-                       for(var idx in imports)
-                       {
-                         if(imports.hasOwnProperty(idx))
-                         {
-                           this.importHref(imports[idx].getAttribute('href'));
-                           frag.removeChild(imports[idx]);
-                         }
-                       }
-
-                       if(this._addPageSpinner)
-                       {
-                         clearTimeout(this._addPageSpinner);
-                       }
-                       this._pageSpinnerVisible = false;
-
-                       var div = document.createElement('div');
-                       div.append(frag);
-                       this._pageDefinitionContent = div.innerHTML;
-                       this._pageDefinitionContentHasHero = !!div.querySelector('cube-hero');
-
-                       this.pageData = headers;
-                     },
+                          if(this._addPageSpinner)
+                          {
+                            clearTimeout(this._addPageSpinner);
+                          }
+                          this._pageSpinnerVisible = false;
+                        },
 
         _parsePath: function (path)
                     {
@@ -540,8 +559,13 @@
 
         _getBasePath: function ()
                       {
-                        return '/' + this.routeData.project + '/' + this.routeData.vendor + '/' + this.routeData.app;
+                        return '/' + this.projectRouteData.project + '/' + this.vendorRouteData.vendor + '/' + this.appRouteData.app;
                       },
+
+        _pageStatusChanged: function (d, c)
+                            {
+                              this._pageDefinitionContentHasHero = this.$.hero.querySelector('cube-hero');
+                            },
 
         behaviors: [
           Polymer.CubeIteratorBehavior,
