@@ -10,6 +10,7 @@
 <link rel="import" href="../cubex-hash/cubex-hash.html">
 <link rel="import" href="../cubex-category/cubex-category.html">
 <link rel="import" href="../cubex-category/cubex-category-page.html">
+<link rel="import" href="../cubex-category/cubex-category-hero.html">
 <link rel="import" href="cubex-app.html">
 <link rel="import" href="cubex-app-title.html">
 <link rel="import" href="cubex-app-header.html">
@@ -37,10 +38,11 @@
         width: 100%;
         align-self: flex-end;
         margin-top: -64px;
+        padding-top: 64px;
       }
 
       #hero cube-hero {
-        padding-top: 112px;
+        padding-top: 48px;
         overflow: visible;
       }
 
@@ -132,7 +134,7 @@
           '_updateIntegration(_integrations,appPath.path,_pageDefinitionPath,projectData)',
           '_updateHeader(_integration,_integrations,appData,projectData)',
           '_updateSidebar(_integration,_integrations,appPath,projectData)',
-          '_pageStatusChanged(_pageDefinitionHtml,_pageContentHtml)'
+          '_pageHtmlChanged(_pageDefinitionHtml,_pageContentHtml)'
         ],
 
         _computeAppGaid: function (vendorRouteData, appRouteData)
@@ -414,22 +416,31 @@
                               {
                                 var cat = this.vendorRouteData.vendor.substring(1),
                                   catName = this.$.cat.getCategory(cat);
+                                this._pagePath = this.route.path;
                                 this.pageData = {
                                   title:      'Category ' + catName,
                                   breadcrumb: [{Title: catName, Url: this.route.path}]
                                 };
+                                this._pageDefinitionHtml = '<cubex-category-hero category="' + cat + '"></cubex-category-hero>';
                                 this._pageContentHtml = '<cubex-category-page category="' + cat + '"></cubex-category-page>';
+                                this._pageDefinitionContentHasHero = true;
                               }
                               else
                               {
                                 var vendor = this.vendorRouteData.vendor;
-                                this.pageData = {title: 'Vendor ' + vendor};
+                                this._pagePath = this.route.path;
+                                this.pageData = {
+                                  title:      'Vendor ' + vendor,
+                                  breadcrumb: [{Title: vendor, Url: this.route.path}]
+                                };
+                                this._pageDefinitionHtml = 'vendor Hero';
                                 this._pageContentHtml = 'vendor page';
                               }
                             }
                             else
                             {
                               this.pageData = null;
+                              this._pageDefinitionHtml = '';
                               this._pageContentHtml = '';
                             }
                           }
@@ -562,10 +573,10 @@
                         return '/' + this.projectRouteData.project + '/' + this.vendorRouteData.vendor + '/' + this.appRouteData.app;
                       },
 
-        _pageStatusChanged: function (d, c)
-                            {
-                              this._pageDefinitionContentHasHero = this.$.hero.querySelector('cube-hero');
-                            },
+        _pageHtmlChanged: function ()
+                          {
+                            this._pageDefinitionContentHasHero = this.$.hero.querySelector('cube-hero');
+                          },
 
         behaviors: [
           Polymer.CubeIteratorBehavior,

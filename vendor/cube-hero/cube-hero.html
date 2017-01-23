@@ -8,9 +8,8 @@
         align-self: flex-end;
         flex-grow: 1;
         width: 100%;
-        overflow: hidden;
+        overflow: visible;
         position: relative;
-        background-color: var(--hero-background-color, #3884cd);
         background-repeat: no-repeat;
         background-position: center center;
         background-size: auto;
@@ -41,13 +40,13 @@
         background: url('./polygon.svg');
         background-position: center center;
         background-size: cover;
+        background-color: var(--hero-background-color, #3884cd);
 
         position: absolute;
-        top: 0;
+        top: -64px;
         left: 0;
         bottom: 0;
         right: 0;
-        opacity: .2;
         content: "";
         pointer-events: none;
       }
