@@ -143,6 +143,17 @@
                         if(e.detail.action == 'install' || e.detail.action == 'uninstall')
                         {
                           this.$.integrationsResource.update(true);
+                          if(e.detail.action == 'uninstall')
+                          {
+                            if(this._integration && e.detail.payload == this._integration.GlobalAppID)
+                            {
+                              window.location.pathname = '/' + this.projectRouteData.project + '/' + this._integration.Hook;
+                            }
+                            else
+                            {
+                              window.location.pathname = '/' + this.projectRouteData.project;
+                            }
+                          }
                         }
                       },
 
