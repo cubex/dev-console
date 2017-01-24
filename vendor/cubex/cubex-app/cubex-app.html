@@ -356,7 +356,7 @@ Example:
           backPath:            {type: String},
           pagePath:            {type: String},
           narrow:              {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
-          appData:             {type: Object, observer: '_updateResources'},
+          appData:             {type: Object, value: null, observer: '_updateResources'},
           pageData:            {type: Object},
           breadcrumbs:         {type: Object, computed: '_updateCrumbs(pageData,project)'},
           drawerDisabled:      {
