@@ -122,8 +122,10 @@
     <app-location route="{{route}}"></app-location>
     <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
 
-    <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/searchactions/search.json"
+    <cube-resource id="searchResource" auto auth url="//[[getServiceHost('apps')]]/cubex/searchactions/search.json"
                    headers="[[_headers]]" data="{{_search}}" ttl="3600"></cube-resource>
+
+    <cube-websocket vendor="cubex" app="registry" auto on-message="_appsChanged"></cube-websocket>
 
     <div id="scrim" hidden="[[!focused]]"></div>
 
@@ -175,6 +177,14 @@
             }
           }
         },
+
+        _appsChanged: function (e)
+                      {
+                        if(e.detail.action == 'install' || e.detail.action == 'uninstall')
+                        {
+                          this.$.searchResource.update(true);
+                        }
+                      },
 
         keyBindings: {
           'down': '_cursor',

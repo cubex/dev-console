@@ -73,7 +73,7 @@
                              }
                              else
                              {
-                               this._debounceTriggerRequest();
+                               this._triggerRequest();
                              }
                            }
                            else
@@ -81,11 +81,6 @@
                              this._setExportsFromStruct(this._makeCache(null));
                            }
                          },
-
-        _debounceTriggerRequest: function ()
-                                 {
-                                   this.debounce('_triggerRequest', this._triggerRequest);
-                                 },
 
         _dispatchCached: function ()
                          {
@@ -101,11 +96,17 @@
                            var self = this, key = self._cacheKey(), oReq = new XMLHttpRequest();
                            if(!this._resourceCache[key])
                            {
-                             this._resourceCache[key] = this._makeCache(key);
+                             this._resourceCache[key] = this._makeCache(key, null, null, true);
+                           }
+                           else if(this._resourceCache[key].pending)
+                           {
+                             // request already pending
+                             return;
                            }
                            else
                            {
                              this._resourceCache[key].status = -1;
+                             this._resourceCache[key].pending = true;
                            }
                            this._dispatchCached();
 

@@ -9,10 +9,12 @@
     <app-location route="{{route}}"></app-location>
     <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
 
-    <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/registry/project.json"
+    <cube-resource id="project" auto auth url="//[[getServiceHost('apps')]]/cubex/registry/project.json"
                    data="{{projectData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
-    <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/registry/user.json"
+    <cube-resource id="user" auto auth url="//[[getServiceHost('apps')]]/cubex/registry/user.json"
                    data="{{userData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
+
+    <cube-websocket vendor="cubex" app="registry" auto on-message="_appsChanged"></cube-websocket>
   </template>
   <script>
     Polymer(
@@ -31,7 +33,17 @@
                            }
                            return undefined;
                          },
-        behaviors:       [Polymer.CubeServiceBehavior]
+
+        _appsChanged: function (e)
+                      {
+                        if(e.detail.action == 'install' || e.detail.action == 'uninstall')
+                        {
+                          this.$.project.update(true);
+                          this.$.user.update(true);
+                        }
+                      },
+
+        behaviors: [Polymer.CubeServiceBehavior]
       }
     );
   </script>

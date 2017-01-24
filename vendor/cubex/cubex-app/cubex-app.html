@@ -1,13 +1,14 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../iron-media-query/iron-media-query.html">
-<link rel="import" href="../../cube-behavior/cube-touch-enabled-behavior.html">
-<link rel="import" href="../../cube-behavior/cube-service-behavior.html">
-<link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 <link rel="import" href="../../app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../../app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../../app-layout/app-header/app-header.html">
 <link rel="import" href="../../app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../cube-behavior/cube-touch-enabled-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-service-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
 <link rel="import" href="../../cube-list/cube-list.html">
 <link rel="import" href="../../cube-list/cube-li.html">
 <link rel="import" href="../../cube-pagelet/cube-pagelet.html">
@@ -366,16 +367,46 @@ Example:
           _lock:               {type: Boolean, value: false},
           _peek:               {type: Boolean, value: false}
         },
-        observers:  [
+
+        observers: [
           '_viewChanged(_lock,_peek,narrow)',
           '_updateDrawer(appData)'
         ],
-        listeners:  {'cube-displace-changed': '_displaceChanged'},
 
+        listeners:        {'cube-displace-changed': '_displaceChanged'},
         _displaceChanged: function (e)
                           {
                             this._heroHeaderFraction = e.detail.fraction;
                           },
+
+        keyBindings: {'f': '_alertFid'},
+        _alertFid:   function (e)
+                     {
+                       if(e.detail.keyboardEvent.shiftKey && e.detail.keyboardEvent.target.tagName == 'BODY'
+                         && this.pageData && this.pageData.pageFid)
+                       {
+                         prompt('You are viewing an entity with a FID of:', this.pageData.pageFid);
+                       }
+                     },
+
+        ready: function ()
+               {
+                 this.keyEventTarget = document.body;
+                 document.addEventListener(
+                   'cubex-drawer-state-changed', function (e)
+                   {
+                     if(e.detail.position == 'left')
+                     {
+                       this.$.ah.style.left = (e.detail.offset + 24) + 'px';
+                     }
+                     else if(e.detail.position == 'right')
+                     {
+                       this.$.ah.style.right = (e.detail.offset + 24) + 'px';
+                     }
+                   }.bind(this)
+                 );
+                 this.async(function () {this._viewChanged(this._lock, this._peek);});
+               },
 
         _computeHeroHeader: function (hasHero, fraction)
                             {
@@ -393,24 +424,6 @@ Example:
                               }
                               return hasHero;
                             },
-
-        ready: function ()
-               {
-                 document.addEventListener(
-                   'cubex-drawer-state-changed', function (e)
-                   {
-                     if(e.detail.position == 'left')
-                     {
-                       this.$.ah.style.left = (e.detail.offset + 24) + 'px';
-                     }
-                     else if(e.detail.position == 'right')
-                     {
-                       this.$.ah.style.right = (e.detail.offset + 24) + 'px';
-                     }
-                   }.bind(this)
-                 );
-                 this.async(function () {this._viewChanged(this._lock, this._peek);});
-               },
 
         _computeHasSidebar: function (pageMenu, pageActions, panels)
                             {
@@ -547,6 +560,7 @@ Example:
         },
 
         behaviors: [
+          Polymer.IronA11yKeysBehavior,
           Polymer.CubeTouchEnabledBehavior,
           Polymer.CubeServiceBehavior,
           Polymer.CubeI18nBehavior,

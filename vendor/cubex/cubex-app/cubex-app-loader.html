@@ -62,7 +62,8 @@
 
     <cubex-app-definition gaid="[[_appGaid]]" app-data="{{appData}}"></cubex-app-definition>
 
-    <cube-resource auto auth url="[[_integrationsPath]]" data="{{_integrations}}"
+    <cube-websocket vendor="cubex" app="registry" auto on-message="_appsChanged"></cube-websocket>
+    <cube-resource id="integrationsResource" auto auth url="[[_integrationsPath]]" data="{{_integrations}}"
                    headers="[[_pageDefinitionHeaders]]" ttl="3600"></cube-resource>
     <cube-resource auto auth url="[[_pageDefinitionPath]]" data="{{_pageDefinitionHtml}}" xhr="{{_pageXhr}}"
                    headers="[[_pageDefinitionHeaders]]" status="{{_pageDefinitionStatus}}"></cube-resource>
@@ -136,6 +137,14 @@
           '_updateSidebar(_integration,_integrations,appPath,projectData)',
           '_pageHtmlChanged(_pageDefinitionHtml,_pageContentHtml)'
         ],
+
+        _appsChanged: function (e)
+                      {
+                        if(e.detail.action == 'install' || e.detail.action == 'uninstall')
+                        {
+                          this.$.integrationsResource.update(true);
+                        }
+                      },
 
         _computeAppGaid: function (vendorRouteData, appRouteData)
                          {
