@@ -97,6 +97,8 @@
       {
         is:         'cubex-app-loader',
         properties: {
+          route: {type: Object, notify: true},
+
           _project: {type: String},
           _appGaid: {type: String},
 
@@ -147,11 +149,15 @@
                           {
                             if(this._integration && e.detail.payload == this._integration.GlobalAppID)
                             {
-                              window.location.pathname = '/' + this.projectRouteData.project + '/' + this._integration.Hook;
+                              this.set(
+                                'route.path', '/' + this.projectRouteData.project + '/' + this._integration.Hook
+                              );
                             }
                             else
                             {
-                              window.location.pathname = '/' + this.projectRouteData.project;
+                              this.set(
+                                'route.path', '/' + this.projectRouteData.project
+                              );
                             }
                           }
                         }
@@ -383,14 +389,6 @@
                             && this.$.appRoute.active && this.appRouteData && this.appRouteData.app)
                           {
                             this._appGaid = this.vendorRouteData.vendor + '/' + this.appRouteData.app;
-                          }
-                          else
-                          {
-                            this._appGaid = null;
-                          }
-
-                          if(this.$.appRoute.active)
-                          {
                             if(this.route.path !== this._loadedPath)
                             {
                               this._loadedPath = this.route.path;
@@ -430,6 +428,7 @@
                             this._loadedPath = null;
                             this.appRouteData = {};
                             this.appData = null;
+                            this._appGaid = null;
 
                             if((!this.$.appRoute.active) && this.$.vendorRoute.active && this.vendorRouteData.vendor)
                             {
