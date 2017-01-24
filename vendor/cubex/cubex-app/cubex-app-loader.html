@@ -98,7 +98,7 @@
         is:         'cubex-app-loader',
         properties: {
           _project: {type: String},
-          _appGaid: {type: String, computed: '_computeAppGaid(vendorRouteData,appRouteData)'},
+          _appGaid: {type: String},
 
           _pageDefinitionPath:           {type: String},
           _pagePath:                     {type: String},
@@ -145,15 +145,6 @@
                           this.$.integrationsResource.update(true);
                         }
                       },
-
-        _computeAppGaid: function (vendorRouteData, appRouteData)
-                         {
-                           if(vendorRouteData && vendorRouteData.vendor && appRouteData && appRouteData.app)
-                           {
-                             return vendorRouteData.vendor + '/' + appRouteData.app;
-                           }
-                           return null;
-                         },
 
         _updateProject: function (project)
                         {
@@ -377,6 +368,16 @@
                       {
                         if(path !== undefined)
                         {
+                          if(this.$.vendorRoute.active && this.vendorRouteData && this.vendorRouteData.vendor
+                            && this.$.appRoute.active && this.appRouteData && this.appRouteData.app)
+                          {
+                            this._appGaid = this.vendorRouteData.vendor + '/' + this.appRouteData.app;
+                          }
+                          else
+                          {
+                            this._appGaid = null;
+                          }
+
                           if(this.$.appRoute.active)
                           {
                             if(this.route.path !== this._loadedPath)

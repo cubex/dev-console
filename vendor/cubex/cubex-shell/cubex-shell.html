@@ -273,18 +273,12 @@
                                   'cubex-drawer-state-changed', this._debounceResetLayout.bind(this)
                                 );
                                 document.addEventListener(
-                                  'cube-pagelet-content-ready', this._debounceResetLayout.bind(this)
+                                  'cube-pagelet-content-ready', this._resetLayout.bind(this)
                                 );
                               },
-        _debounceResetLayout: function (e)
+        _debounceResetLayout: function ()
                               {
-                                var wait = 0;
-                                // drawer-state-changed has a 200ms animation, delay for that long
-                                if(e.type == 'cubex-drawer-state-changed')
-                                {
-                                  wait = 200;
-                                }
-                                this.debounce('_resetLayout', this._resetLayout.bind(this), wait);
+                                this.debounce('_resetLayout', this._resetLayout.bind(this), 210);
                               },
         _resetLayout:         function ()
                               {
