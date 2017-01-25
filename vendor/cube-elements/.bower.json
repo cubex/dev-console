@@ -36,6 +36,7 @@
     "cube-nudge": "CubexElements/cube-nudge",
     "cube-hero": "CubexElements/cube-hero",
     "cube-card": "CubexElements/cube-card",
+    "cube-carousel": "CubexElements/cube-carousel",
     "cube-title": "CubexElements/cube-title"
   },
   "resolutions": {
@@ -62,11 +63,11 @@
     "iron-fit-behavior": "2.0-preview",
     "iron-a11y-announcer": "2.0-preview"
   },
-  "_release": "e7b3fea9ad",
+  "_release": "0b303c78f2",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "e7b3fea9adbec3a1deac4d86d51acdc4d9ae28cf"
+    "commit": "0b303c78f247f66002a3bed3123e46f854de8c6b"
   },
   "_source": "https://github.com/CubexElements/cube-elements.git",
   "_target": "*",

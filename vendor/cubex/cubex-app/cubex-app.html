@@ -492,7 +492,7 @@ Example:
                              // prepend category
                              bc.unshift(
                                {
-                                 Title: this.$.cat.getCategory(this.appData.Category),
+                                 Title: this.$.cat.getCategory(this.appData.Category, true),
                                  Url:   '/' + this.project.id + '/_' + this.appData.Category
                                }
                              );

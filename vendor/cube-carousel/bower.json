@@ -1,5 +1,6 @@
 {
-  "name": "cube-card",
+  "name": "cube-carousel",
+  "version": "1.0.0",
   "authors": [
     "Anonymous <anonymous@example.com>"
   ],
@@ -10,9 +11,9 @@
     "seed"
   ],
   "private": true,
-  "main": "cube-card.html",
+  "main": "cube-carousel.html",
   "license": "MIT",
-  "homepage": "https://github.com/CubexElements/cube-card/",
+  "homepage": "https://github.com/FortifiElements/cube-carousel/",
   "ignore": [
     "/.*",
     "/test/",
@@ -21,8 +22,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#2.0-preview",
-    "cube-action": "CubexElements/cube-action",
-    "cube-icon": "CubexElements/cube-icon"
+    "cube-action": "CubexElements/cube-action"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
@@ -32,18 +32,9 @@
     "polymer": "2.0-preview",
     "webcomponentsjs": "v1",
     "iron-flex-layout": "2.0-preview",
-    "iron-selector": "2.0-preview",
     "paper-styles": "2.0-preview",
+    "iron-selector": "2.0-preview",
     "iron-meta": "2.0-preview",
     "iron-resizable-behavior": "2.0-preview"
-  },
-  "_release": "0136db2c8e",
-  "_resolution": {
-    "type": "branch",
-    "branch": "master",
-    "commit": "0136db2c8e647e07bc9301b09916f1e5fc3c741b"
-  },
-  "_source": "https://github.com/CubexElements/cube-card.git",
-  "_target": "*",
-  "_originalSource": "CubexElements/cube-card"
+  }
 }
