@@ -100,7 +100,7 @@
           route: {type: Object, notify: true},
 
           _project: {type: String},
-          _appGaid: {type: String},
+          _appGaid: {type: String, observer: '_gaidChanged'},
 
           _pageDefinitionPath:           {type: String},
           _pagePath:                     {type: String},
@@ -128,9 +128,12 @@
           _headerActions: {type: Array},
           _pageMenus:     {type: Array},
           _pageActions:   {type: Array},
-          _panels:        {type: Array}
+          _panels:        {type: Array},
+
+          _refreshIntegrationsList: {type: Array, value: function () {return [];}}
         },
-        observers:  [
+
+        observers: [
           '_updateProject(projectRouteData.project)',
           '_pathChanged(route.path,projectData)',
           '_updateHeaders(_pageXhr)',
@@ -140,13 +143,29 @@
           '_pageHtmlChanged(_pageDefinitionHtml,_pageContentHtml)'
         ],
 
-        _appsChanged: function (e)
-                      {
-                        if(e.detail.action == 'install' || e.detail.action == 'uninstall')
-                        {
-                          this.$.integrationsResource.update(true);
-                        }
-                      },
+        _appsChanged:         function (e)
+                              {
+                                if(e.detail.action == 'install' || e.detail.action == 'uninstall')
+                                {
+                                  this._refreshIntegrationsList.push(e.detail.payload);
+                                  this._refreshIntegrations();
+                                }
+                              },
+        _gaidChanged:         function (gaid)
+                              {
+                                if(gaid)
+                                {
+                                  var idx = this._refreshIntegrationsList.indexOf(gaid);
+                                  if(idx > -1)
+                                  {
+                                    this.async(this._refreshIntegrations);
+                                  }
+                                }
+                              },
+        _refreshIntegrations: function ()
+                              {
+                                this.$.integrationsResource.update(true);
+                              },
 
         _updateProject: function (project)
                         {
@@ -230,7 +249,7 @@
                                      }
                                    );
                                  }
-                                 else
+                                 else if(this.projectData.AppSummary[headerMenu[i].GlobalAppID])
                                  {
                                    var category = this.projectData.AppSummary[headerMenu[i].GlobalAppID].category;
                                    if(categoriesAdded.indexOf(category) == -1)
@@ -286,7 +305,9 @@
                           if(integrations && this.projectData && this.projectData.AppSummary)
                           {
                             var pathMatches = this._parsePath(this.appPath.path);
-                            if(integration && pathMatches.type == '~')
+                            if(integration
+                              && this.projectData.AppSummary[integration.GlobalAppID]
+                              && pathMatches.type == '~')
                             {
                               var
                                 intData = this.projectData.AppSummary[integration.GlobalAppID],
@@ -549,11 +570,15 @@
                                   }
                                 }
                               }
+
                               if(integration != this._integration)
                               {
                                 this._integration = integration;
                               }
-                              if(contentPath != this._pageContentPath)
+
+                              if(contentPath != this._pageContentPath
+                                && this.projectData && this.projectData.AppSummary
+                                && this.projectData.AppSummary[integration ? integration.GlobalAppID : this._appGaid])
                               {
                                 this._pageContentPath = contentPath;
                               }
