@@ -464,11 +464,10 @@
                             {
                               if(this.vendorRouteData.vendor[0] == '_')
                               {
-                                var cat = this.vendorRouteData.vendor.substring(1),
-                                  catName = this.$.cat.getCategory(cat, true);
+                                var cat = this.vendorRouteData.vendor.substring(1);
                                 this.pageData = {
-                                  title:      catName,
-                                  breadcrumb: [{Title: catName, Url: this.route.path}]
+                                  title:      this.$.cat.getCategory(cat),
+                                  breadcrumb: [{Title: this.$.cat.getCategory(cat, true), Url: this.route.path}]
                                 };
                                 this._pagePath = this.route.path;
                                 this._pageDefinitionHtml = '<cubex-category-header category="' + cat + '"></cubex-category-header>';
