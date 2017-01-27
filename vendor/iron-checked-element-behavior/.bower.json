@@ -27,17 +27,33 @@
     "paper-button": "PolymerElements/paper-button#2.0-preview",
     "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "resolutions": {
     "test-fixture": "^2.0.0"
   },
-  "_release": "4d4e3610dc",
+  "variants": {
+    "1.x": {
+      "dependencies": {
+        "polymer": "Polymer/polymer#^1.1.0",
+        "iron-validatable-behavior": "PolymerElements/iron-validatable-behavior#^1.0.0",
+        "iron-form-element-behavior": "PolymerElements/iron-form-element-behavior#^1.0.0"
+      },
+      "devDependencies": {
+        "paper-styles": "PolymerElements/paper-styles#^1.0.0",
+        "paper-button": "PolymerElements/paper-button#^1.0.0",
+        "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+        "test-fixture": "PolymerElements/test-fixture#^1.0.0",
+        "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+      }
+    }
+  },
+  "_release": "acb0f5ba56",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "4d4e3610dcbf27ac7af767ac4e68a0fc1070ac0b"
+    "commit": "acb0f5ba5625242ba3419a0f8bb164dd06c0b53f"
   },
   "_source": "https://github.com/PolymerElements/iron-checked-element-behavior.git",
   "_target": "2.0-preview",

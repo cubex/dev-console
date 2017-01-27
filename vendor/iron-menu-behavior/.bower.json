@@ -31,7 +31,7 @@
     "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
     "iron-test-helpers": "PolymerElements/iron-test-helpers#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "resolutions": {
@@ -39,11 +39,28 @@
     "test-fixture": "^2.0.0",
     "webcomponentsjs": "v1"
   },
-  "_release": "d80ef5b1c4",
+  "variants": {
+    "1.x": {
+      "dependencies": {
+        "iron-selector": "PolymerElements/iron-selector#^1.0.0",
+        "polymer": "Polymer/polymer#^1.1.0",
+        "iron-a11y-keys-behavior": "PolymerElements/iron-a11y-keys-behavior#^1.0.0",
+        "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.0"
+      },
+      "devDependencies": {
+        "paper-styles": "PolymerElements/paper-styles#^1.0.0",
+        "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+        "iron-test-helpers": "PolymerElements/iron-test-helpers#^1.0.0",
+        "test-fixture": "PolymerElements/test-fixture#^1.0.0",
+        "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+      }
+    }
+  },
+  "_release": "9b39d15d8a",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "d80ef5b1c4b5bde1813e0b4a6d71946c6327173b"
+    "commit": "9b39d15d8ab1ea2c7cbdddc55b155f6fa22e6762"
   },
   "_source": "https://github.com/PolymerElements/iron-menu-behavior.git",
   "_target": "2.0-preview",

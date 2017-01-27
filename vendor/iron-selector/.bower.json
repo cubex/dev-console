@@ -31,7 +31,7 @@
     "iron-test-helpers": "polymerelements/iron-test-helpers#2.0-preview",
     "paper-styles": "PolymerElements/paper-styles#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^5.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "variants": {
@@ -54,11 +54,11 @@
     "webcomponentsjs": "v1",
     "polymer": "2.0-preview"
   },
-  "_release": "acb2ba2de9",
+  "_release": "cdef713952",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "acb2ba2de96a06b068ab6993c3ec928b7455cf3a"
+    "commit": "cdef7139523bb3fe4000601817f381848eb90387"
   },
   "_source": "https://github.com/PolymerElements/iron-selector.git",
   "_target": "2.0-preview",

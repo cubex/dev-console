@@ -43,7 +43,7 @@
     "iron-validator-behavior": "PolymerElements/iron-validator-behavior#2.0-preview",
     "paper-icon-button": "PolymerElements/paper-icon-button#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "variants": {
@@ -75,11 +75,11 @@
     "polymer": "2.0-preview",
     "webcomponentsjs": "v1"
   },
-  "_release": "a7c9504fe1",
+  "_release": "f853d46ce2",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "a7c9504fe1028d938db1827a1ac5848a81e33296"
+    "commit": "f853d46ce248f462e29376303622e9b0fb5212d2"
   },
   "_source": "https://github.com/PolymerElements/paper-input.git",
   "_target": "2.0-preview",

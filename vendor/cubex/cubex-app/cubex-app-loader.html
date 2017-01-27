@@ -9,7 +9,6 @@
 <link rel="import" href="../cubex-drawer/cubex-drawer.html">
 <link rel="import" href="../cubex-hash/cubex-hash.html">
 <link rel="import" href="../cubex-category/cubex-category.html">
-<link rel="import" href="../cubex-category/cubex-category-header.html">
 <link rel="import" href="../cubex-category/cubex-category-page.html">
 <link rel="import" href="cubex-app.html">
 <link rel="import" href="cubex-app-title.html">
@@ -470,7 +469,7 @@
                                   breadcrumb: [{Title: this.$.cat.getCategory(cat, true), Url: this.route.path}]
                                 };
                                 this._pagePath = this.route.path;
-                                this._pageDefinitionHtml = '<cubex-category-header category="' + cat + '"></cubex-category-header>';
+                                this._pageDefinitionHtml = '';
                                 this._pageContentHtml = '<cubex-category-page category="' + cat + '"></cubex-category-page>';
                                 this._pageDefinitionContentHasHero = false;
                               }

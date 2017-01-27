@@ -65,7 +65,7 @@ Example:
       }
 
       #app-container {
-        margin-top: calc(-1 * var(--cubex-drawer-offset-top, 0));
+        margin-top: -60px;
         border-bottom-left-radius: 3px;
         border-bottom-right-radius: 3px;
         @apply --theme-600;
@@ -73,11 +73,12 @@ Example:
       }
 
       #app-content {
-        margin: 32px;
+        overflow: hidden;
         min-height: 50px;
       }
 
       #app-content-main {
+        margin: 32px;
         display: block;
       }
 
@@ -206,7 +207,7 @@ Example:
       }
 
       @media (max-width: 1000px) {
-        #app-content {
+        #app-content-main {
           margin: 16px;
         }
 

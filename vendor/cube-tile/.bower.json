@@ -1,0 +1,48 @@
+{
+  "name": "cube-tile",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "private": true,
+  "main": "cube-tile.html",
+  "license": "MIT",
+  "homepage": "https://github.com/FortifiElements/cube-tile/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#2.0-preview",
+    "cube-icon": "CubexElements/cube-icon"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
+    "web-component-tester": "^5.0.0"
+  },
+  "resolutions": {
+    "polymer": "2.0-preview",
+    "webcomponentsjs": "v1",
+    "iron-flex-layout": "2.0-preview",
+    "paper-styles": "2.0-preview",
+    "iron-selector": "2.0-preview",
+    "iron-meta": "2.0-preview",
+    "iron-resizable-behavior": "2.0-preview"
+  },
+  "_release": "d503dc9981",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "d503dc9981eabc839afb65b8ef15e716502b8952"
+  },
+  "_source": "https://github.com/CubexElements/cube-tile.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-tile"
+}

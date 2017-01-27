@@ -39,7 +39,7 @@
     "app-layout": "PolymerElements/app-layout#2.0-preview",
     "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1",
     "paper-item": "PolymerElements/paper-item#2.0-preview",
     "paper-styles": "PolymerElements/paper-styles#2.0-preview",
@@ -78,11 +78,11 @@
     "polymer": "2.0-preview",
     "webcomponentsjs": "v1"
   },
-  "_release": "0d56babe45",
+  "_release": "04ee893cbf",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "0d56babe4517e5a37a238b7f30c61dc86c4b8d27"
+    "commit": "04ee893cbf805b59f319c54aeac64b83815f4e9a"
   },
   "_source": "https://github.com/PolymerElements/neon-animation.git",
   "_target": "2.0-preview",

@@ -32,7 +32,7 @@
     "iron-icons": "PolymerElements/iron-icons#2.0-preview",
     "iron-test-helpers": "PolymerElements/iron-test-helpers#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "variants": {
@@ -58,11 +58,11 @@
   "resolutions": {
     "test-fixture": "^2.0.0"
   },
-  "_release": "a0adac0180",
+  "_release": "192d1e4a8b",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "a0adac01806f5d79f40655042e3d1b73ce304157"
+    "commit": "192d1e4a8b006b51b71d3025a694250bfcd5d251"
   },
   "_source": "https://github.com/PolymerElements/paper-button.git",
   "_target": "2.0-preview",

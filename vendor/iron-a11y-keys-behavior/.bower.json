@@ -25,7 +25,7 @@
     "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
     "iron-test-helpers": "PolymerElements/iron-test-helpers#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "variants": {
@@ -48,11 +48,11 @@
   },
   "ignore": [],
   "homepage": "https://github.com/PolymerElements/iron-a11y-keys-behavior",
-  "_release": "4cebe020d4",
+  "_release": "3b5f7c81df",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "4cebe020d4ca465055f57d1132645ac57d5ea045"
+    "commit": "3b5f7c81df30ae372765672ad266daad74cb7c8e"
   },
   "_source": "https://github.com/PolymerElements/iron-a11y-keys-behavior.git",
   "_target": "2.0-preview",

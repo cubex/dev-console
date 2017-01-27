@@ -27,7 +27,7 @@
     "iron-test-helpers": "PolymerElements/iron-test-helpers#2.0-preview",
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "variants": {
@@ -53,11 +53,11 @@
     "test-fixture": "^2.0.0"
   },
   "homepage": "https://github.com/PolymerElements/paper-ripple",
-  "_release": "b141984523",
+  "_release": "07cef1fd35",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "b141984523981ee19b3e474d590774874a46f32c"
+    "commit": "07cef1fd357d9a000e6c86921d3df9871a3aed63"
   },
   "_source": "https://github.com/PolymerElements/paper-ripple.git",
   "_target": "2.0-preview",

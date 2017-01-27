@@ -34,7 +34,7 @@
     "paper-item": "PolymerElements/paper-item#2.0-preview",
     "paper-listbox": "PolymerElements/paper-listbox#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "variants": {
@@ -63,11 +63,11 @@
   "resolutions": {
     "test-fixture": "^2.0.0"
   },
-  "_release": "c91d8988cd",
+  "_release": "88885b24ce",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "c91d8988cdee38d715050b7426243adfa3d6d931"
+    "commit": "88885b24cec1d56f847abf09598eb0b39f781e81"
   },
   "_source": "https://github.com/PolymerElements/paper-dialog-behavior.git",
   "_target": "2.0-preview",

@@ -46,7 +46,7 @@
     "branch": "master",
     "commit": "da1f27a002aabc3f20b34ca5014008a6b7615135"
   },
-  "_source": "https://github.com/CubexElements/cube-action.git",
+  "_source": "https://github.com/CubexElements/cube-action",
   "_target": "*",
   "_originalSource": "CubexElements/cube-action"
 }

@@ -29,7 +29,7 @@
     "iron-flex-layout": "PolymerElements/iron-flex-layout#2.0-preview",
     "iron-test-helpers": "PolymerElements/iron-test-helpers#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "variants": {
@@ -56,11 +56,11 @@
   },
   "ignore": [],
   "homepage": "https://github.com/PolymerElements/iron-overlay-behavior",
-  "_release": "95c51e97ab",
+  "_release": "a1aac7a9d8",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "95c51e97ab6a5c94ed2e2b33b866ca619e030096"
+    "commit": "a1aac7a9d8c9c5e54d46d43d4ee0bf807f720f7d"
   },
   "_source": "https://github.com/PolymerElements/iron-overlay-behavior.git",
   "_target": "2.0-preview",

@@ -26,17 +26,32 @@
     "iron-validator-behavior": "PolymerElements/iron-validator-behavior#2.0-preview",
     "paper-styles": "PolymerElements/paper-styles#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "resolutions": {
     "test-fixture": "^2.0.0"
   },
-  "_release": "2e52f004dc",
+  "variants": {
+    "1.x": {
+      "dependencies": {
+        "iron-meta": "PolymerElements/iron-meta#^1.0.0",
+        "polymer": "Polymer/polymer#^1.1.0"
+      },
+      "devDependencies": {
+        "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+        "iron-validator-behavior": "PolymerElements/iron-validator-behavior#^1.0.0",
+        "paper-styles": "PolymerElements/paper-styles#^1.0.0",
+        "test-fixture": "PolymerElements/test-fixture#^1.0.0",
+        "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+      }
+    }
+  },
+  "_release": "6271378155",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "2e52f004dc17d7e60136f3f99a9955b2dd83479b"
+    "commit": "627137815558aadf8be566fc2a6ec627223ee2b5"
   },
   "_source": "https://github.com/PolymerElements/iron-validatable-behavior.git",
   "_target": "2.0-preview",

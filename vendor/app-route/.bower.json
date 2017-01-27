@@ -20,7 +20,7 @@
   "devDependencies": {
     "paper-styles": "PolymerElements/paper-styles#2.0-preview",
     "paper-input": "polymerelements/paper-input#2.0-preview",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "iron-component-page": "polymerelements/iron-component-page#2.0-preview",
     "iron-test-helpers": "polymerelements/iron-test-helpers#2.0-preview",
     "iron-pages": "PolymerElements/iron-pages#2.0-preview",
@@ -59,11 +59,11 @@
     "test-fixture": "^2.0.0",
     "webcomponentsjs": "v1"
   },
-  "_release": "6aa7f14631",
+  "_release": "8394e49695",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "6aa7f14631bfba9e09497838fb8580711fce8d0b"
+    "commit": "8394e496953afb1e1b33c6212c8e399f2dca9bce"
   },
   "_source": "https://github.com/PolymerElements/app-route.git",
   "_target": "2.0-preview",

@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
     "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
     "iron-demo-helpers": "polymerelements/iron-demo-helpers#2.0-preview",
@@ -38,11 +38,28 @@
     "test-fixture": "^2.0.0",
     "polymer": "2.0-preview"
   },
-  "_release": "745f287054",
+  "variants": {
+    "1.x": {
+      "dependencies": {
+        "polymer": "Polymer/polymer#^1.1.0",
+        "paper-styles": "PolymerElements/paper-styles#^1.0.0",
+        "neon-animation": "PolymerElements/neon-animation#^1.0.0"
+      },
+      "devDependencies": {
+        "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
+        "test-fixture": "PolymerElements/test-fixture#^1.0.0",
+        "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+        "iron-demo-helpers": "polymerelements/iron-demo-helpers#^1.0.0",
+        "iron-test-helpers": "PolymerElements/iron-test-helpers#^1.0.0",
+        "paper-icon-button": "PolymerElements/paper-icon-button#^1.0.0"
+      }
+    }
+  },
+  "_release": "b06d894d72",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "745f28705456ece99de496d29a15adfc1420092a"
+    "commit": "b06d894d72ed9f88919e74ada395c92d7d293db9"
   },
   "_source": "https://github.com/PolymerElements/paper-tooltip.git",
   "_target": "2.0-preview",

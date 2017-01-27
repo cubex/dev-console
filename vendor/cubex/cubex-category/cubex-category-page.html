@@ -1,8 +1,34 @@
 <link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-carousel/cube-carousel.html">
+<link rel="import" href="../../cube-tile/cube-tile.html">
+<link rel="import" href="../../cube-card/cube-card.html">
 
 <dom-module id="cubex-category-page" attributes="category">
   <template>
-    Here is the [[category]] page
+    <style>
+      :host {
+        --cube-carousel-style: {
+          overflow: hidden;
+          margin: 20px -32px;
+          background: var(--theme-400-color);
+        };
+      }
+
+      :host cube-carousel {
+        margin-top: -32px;
+      }
+    </style>
+    <cube-carousel count="5">
+      <cube-tile color="pink" icon="icons:alarm-on" heading="one" text="body text"></cube-tile>
+      <cube-tile color="orange" icon="icons:alarm-on" heading="two" text="body text"></cube-tile>
+      <cube-tile color="teal" icon="icons:alarm-on" heading="three" text="body text"></cube-tile>
+      <cube-tile color="purple" icon="icons:alarm-on" heading="four" text="body text"></cube-tile>
+      <cube-tile color="light-green" icon="icons:alarm-on" heading="five" text="body text"></cube-tile>
+      <cube-tile color="red" icon="icons:alarm-on" heading="three" text="body text"></cube-tile>
+      <cube-tile color="green" icon="icons:alarm-on" heading="four" text="body text"></cube-tile>
+      <cube-tile color="blue" icon="icons:alarm-on" heading="five" text="body text"></cube-tile>
+    </cube-carousel>
+
   </template>
   <script>
     Polymer(

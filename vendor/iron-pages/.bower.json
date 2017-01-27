@@ -26,7 +26,7 @@
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#2.0-preview",
     "paper-styles": "PolymerElements/paper-styles#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "variants": {
@@ -53,11 +53,11 @@
     "polymer": "2.0-preview"
   },
   "homepage": "https://github.com/PolymerElements/iron-pages",
-  "_release": "a89d288c01",
+  "_release": "16deef27d6",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "a89d288c01cf572e060f49f5318b10fa5ad09581"
+    "commit": "16deef27d62fd80c0b835854ad04897fc46cefda"
   },
   "_source": "https://github.com/PolymerElements/iron-pages.git",
   "_target": "2.0-preview",

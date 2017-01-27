@@ -1,0 +1,122 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../cube-icon/cube-icon.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <cube-tile icon="icons:alarm" heading="Timer" text="10 minutes" color="purple"></cube-tile>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+<dom-module id="cube-tile" attributes="icon heading text color">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+        color: white;
+      }
+
+      #contentContainer > div {
+        z-index: 1;
+      }
+
+      #contentContainer {
+        @apply --shadow-elevation-2dp;
+
+        overflow: hidden;
+        position: relative;
+        box-sizing: border-box;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        margin: 8px;
+        padding: 20px 10px 15px 10px;
+      }
+
+      cube-icon {
+        --cube-icon-background-color: var(--cube-tile-color-1);
+      }
+
+      #contentContainer:before, #contentContainer:after {
+        z-index: 0;
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+      }
+
+      #contentContainer:before {
+        height: 48px;
+        background: var(--cube-tile-color-2);
+      }
+
+      #contentContainer:after {
+        top: 48px;
+        bottom: 0;
+        background: var(--cube-tile-color-3);
+      }
+
+      #heading {
+        @apply --paper-font-subhead;
+        font-weight: bold;
+      }
+
+      #text {
+        @apply --paper-font-body1;
+      }
+
+      cube-icon {
+        border-radius: 1000px;
+        padding: 10px;
+      }
+    </style>
+
+    <div id="contentContainer">
+      <div>
+        <cube-icon size="30" icon="[[icon]]"></cube-icon>
+      </div>
+      <div id="heading">[[heading]]</div>
+      <div id="text">[[text]]</div>
+    </div>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:         'cube-tile',
+        properties: {
+          color:   {type: String, value: 'blue', observer: '_colorChanged'},
+          icon:    {type: String},
+          heading: {type: String},
+          text:    {type: String}
+        },
+
+        _colorChanged: function ()
+                       {
+                         this.updateStyles(
+                           {
+                             '--cube-tile-color-1': 'var(--paper-' + this.color + '-500)',
+                             '--cube-tile-color-2': 'var(--paper-' + this.color + '-600)',
+                             '--cube-tile-color-3': 'var(--paper-' + this.color + '-700)'
+                           }
+                         );
+                       }
+      }
+    );
+  </script>
+</dom-module>

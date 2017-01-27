@@ -28,7 +28,7 @@
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#2.0-preview",
     "iron-test-helpers": "PolymerElements/iron-test-helpers#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1",
     "web-animations-js": "web-animations/web-animations-js#^2.2.0",
     "iron-image": "polymerelements/iron-image#2.0-preview"
@@ -57,11 +57,11 @@
   "resolutions": {
     "test-fixture": "^2.0.0"
   },
-  "_release": "9feb9218dd",
+  "_release": "04489eb90b",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "9feb9218dd18e853ec2926826dc67bc479d2b57c"
+    "commit": "04489eb90b40506cb3dca4d412128fbebbe02064"
   },
   "_source": "https://github.com/PolymerElements/iron-dropdown.git",
   "_target": "2.0-preview",

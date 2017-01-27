@@ -33,7 +33,7 @@
     "paper-listbox": "PolymerElements/paper-listbox#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
     "web-animations-js": "web-animations/web-animations-js#^2.2.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "variants": {
@@ -62,11 +62,11 @@
   "resolutions": {
     "test-fixture": "^2.0.0"
   },
-  "_release": "aebce74b8a",
+  "_release": "afaf093cb8",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "aebce74b8ab1d10982e8ebf81736f2c20aed85ab"
+    "commit": "afaf093cb8da4151d798b531a6bb983ed2b53abb"
   },
   "_source": "https://github.com/PolymerElements/paper-dialog.git",
   "_target": "2.0-preview",

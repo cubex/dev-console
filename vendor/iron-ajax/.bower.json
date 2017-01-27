@@ -26,7 +26,7 @@
     "iron-image": "polymerelements/iron-image#2.0-preview",
     "promise-polyfill": "polymerlabs/promise-polyfill#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "variants": {
@@ -42,19 +42,23 @@
         "test-fixture": "polymerelements/test-fixture#^1.0.0",
         "web-component-tester": "^4.0.0",
         "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+      },
+      "resolutions": {
+        "promise-polyfill": "^1.0.0"
       }
     }
   },
   "resolutions": {
     "test-fixture": "^2.0.0",
     "webcomponentsjs": "v1",
-    "polymer": "2.0-preview"
+    "polymer": "2.0-preview",
+    "promise-polyfill": "2.0-preview"
   },
-  "_release": "8029d0e991",
+  "_release": "f3894cb271",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "8029d0e991390bf9106494e32f54877ad0cec047"
+    "commit": "f3894cb271a95e1ee233799629e0dda28d8373dd"
   },
   "_source": "https://github.com/PolymerElements/iron-ajax.git",
   "_target": "2.0-preview",

@@ -18,7 +18,7 @@
     "polymer": "polymer/polymer#2.0-preview"
   },
   "devDependencies": {
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "paper-input": "polymerelements/paper-input#2.0-preview",
     "moment": "^2.12.0",
     "paper-styles": "polymerelements/paper-styles#2.0-preview",
@@ -60,11 +60,11 @@
     "test-fixture": "^2.0.0",
     "polymer": "2.0-preview"
   },
-  "_release": "6bd3b16586",
+  "_release": "0d3b49a849",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "6bd3b16586da13d12b739ce600ad73c736b83c35"
+    "commit": "0d3b49a84997467a2679ff433b1591b1e2f090f8"
   },
   "_source": "https://github.com/PolymerElements/app-storage.git",
   "_target": "2.0-preview",

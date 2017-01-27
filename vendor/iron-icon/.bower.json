@@ -28,7 +28,7 @@
     "iron-iconset": "PolymerElements/iron-iconset#2.0-preview",
     "iron-icons": "PolymerElements/iron-icons#2.0-preview",
     "iron-component-page": "polymerelements/iron-component-page#2.0-preview",
-    "web-component-tester": "^5.0.0",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "webcomponentsjs": "webcomponents/webcomponentsjs#v1",
     "paper-styles": "PolymerElements/paper-styles#2.0-preview"
   },
@@ -63,11 +63,11 @@
     "paper-styles": "2.0-preview"
   },
   "homepage": "https://github.com/PolymerElements/iron-icon",
-  "_release": "eb90612cf4",
+  "_release": "97b2133f8f",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "eb90612cf49c3b29a3418a4ea0043067a5b85fdd"
+    "commit": "97b2133f8f81ddd1564ff7be6b442a182974e6ab"
   },
   "_source": "https://github.com/PolymerElements/iron-icon.git",
   "_target": "2.0-preview",

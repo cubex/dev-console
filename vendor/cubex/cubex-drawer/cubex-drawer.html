@@ -22,6 +22,11 @@ Example:
 <dom-module id="cubex-drawer" attributes="hover-popout swipe-open position min-state max-state preferred-state state">
   <template>
     <style>
+      :host {
+        display: block;
+        position: relative;
+      }
+
       :host #drawerContent ::slotted(*) {
         position: relative;
         min-width: 100%;
@@ -151,7 +156,9 @@ Example:
       }
 
       :host > #content {
+        position: relative;
         transition: 0.2s ease padding;
+        overflow: hidden;
       }
 
     </style>
