@@ -250,7 +250,7 @@
                                    {
                                      newMenu.push(
                                        {
-                                         Title: this.$.cat.getCategory(category),
+                                         Title: this.$.cat.getCategory(category, true),
                                          Path:  '/' + this.projectRouteData.project + '/' + headerMenu[i].Hook + '/~/' + category
                                                 + '/h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
                                          Match: '/' + this.projectRouteData.project + '/' + headerMenu[i].Hook + '/~/' + category,
@@ -323,7 +323,8 @@
                               {
                                 if(headerMenu.hasOwnProperty(i))
                                 {
-                                  if(this.projectData.AppSummary[headerMenu[i].GlobalAppID].category == category)
+                                  if(this.projectData.AppSummary[headerMenu[i].GlobalAppID].category == category
+                                    && headerMenu[i].GlobalAppID != this._appGaid)
                                   {
                                     pageMenus.push(
                                       {

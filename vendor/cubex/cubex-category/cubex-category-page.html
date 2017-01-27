@@ -19,15 +19,18 @@
         margin-top: -32px;
       }
     </style>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route route="[[route]]" pattern="/:project" data="{{projectRouteData}}"></app-route>
+    <cubex-registry project-data="{{projectData}}"></cubex-registry>
+
     <cube-carousel count="5">
-      <cube-tile color="pink" icon="icons:alarm-on" heading="one" text="body text"></cube-tile>
-      <cube-tile color="orange" icon="icons:alarm-on" heading="two" text="body text"></cube-tile>
-      <cube-tile color="teal" icon="icons:alarm-on" heading="three" text="body text"></cube-tile>
-      <cube-tile color="purple" icon="icons:alarm-on" heading="four" text="body text"></cube-tile>
-      <cube-tile color="light-green" icon="icons:alarm-on" heading="five" text="body text"></cube-tile>
-      <cube-tile color="red" icon="icons:alarm-on" heading="three" text="body text"></cube-tile>
-      <cube-tile color="green" icon="icons:alarm-on" heading="four" text="body text"></cube-tile>
-      <cube-tile color="blue" icon="icons:alarm-on" heading="five" text="body text"></cube-tile>
+      <template style="display:none" is="dom-repeat" items="[[_getCategories(projectData.AppSummary)]]">
+        <a href="/[[projectRouteData.project]]/[[item.vendor_id]]/[[item.id]]">
+          <cube-tile color="[[_getColor(index)]]" icon="[[item.icon]]" heading="[[item.name]]"
+                     text="[[item.description]]"></cube-tile>
+        </a>
+      </template>
     </cube-carousel>
 
     <cube-pagelet auto auth url="//[[getServiceHost('apps')]]/cubex/cardfeed?category=[[category]]"></cube-pagelet>
@@ -35,12 +38,29 @@
   <script>
     Polymer(
       {
-        is:         'cubex-category-page',
-        properties: {
+        is:             'cubex-category-page',
+        properties:     {
           category: {type: String}
         },
-
-        behaviors: [Polymer.CubeServiceBehavior]
+        _getCategories: function (appSummaries)
+                        {
+                          var cats = [];
+                          for(var idx in appSummaries)
+                          {
+                            if(appSummaries.hasOwnProperty(idx) && appSummaries[idx].category == this.category)
+                            {
+                              cats.push(appSummaries[idx]);
+                            }
+                          }
+                          console.log(cats);
+                          return cats;
+                        },
+        _getColor:      function (idx)
+                        {
+                          var colors = ['pink', 'orange', 'teal', 'purple', 'light-green', 'red', 'green', 'blue'];
+                          return colors[idx];
+                        },
+        behaviors:      [Polymer.CubeServiceBehavior]
       }
     );
   </script>
