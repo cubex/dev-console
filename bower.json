@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "polymer": "Polymer/polymer#2.0-preview",
+    "promise-polyfill": "PolymerLabs/promise-polyfill",
     "cubex": "CubexElements/cubex",
     "cube-elements": "CubexElements/cube-elements"
   },

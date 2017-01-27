@@ -2,6 +2,7 @@
 <link rel="import" href="../../cube-carousel/cube-carousel.html">
 <link rel="import" href="../../cube-tile/cube-tile.html">
 <link rel="import" href="../../cube-card/cube-card.html">
+<link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 
 <dom-module id="cubex-category-page" attributes="category">
   <template>
@@ -29,6 +30,7 @@
       <cube-tile color="blue" icon="icons:alarm-on" heading="five" text="body text"></cube-tile>
     </cube-carousel>
 
+    <cube-pagelet auto auth url="//[[getServiceHost('apps')]]/cubex/cardfeed?category=[[category]]"></cube-pagelet>
   </template>
   <script>
     Polymer(
@@ -36,7 +38,9 @@
         is:         'cubex-category-page',
         properties: {
           category: {type: String}
-        }
+        },
+
+        behaviors: [Polymer.CubeServiceBehavior]
       }
     );
   </script>
