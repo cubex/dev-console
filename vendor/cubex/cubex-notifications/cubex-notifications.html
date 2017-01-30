@@ -1,12 +1,12 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../cube-dropdown/cube-dropdown.html">
-<link rel="import" href="../cube-action/cube-action.html">
-<link rel="import" href="../cube-list/cube-list.html">
-<link rel="import" href="../cube-icon/cube-icon.html">
-<link rel="import" href="../cube-behavior/cube-iterator-behavior.html">
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-dropdown/cube-dropdown.html">
+<link rel="import" href="../../cube-action/cube-action.html">
+<link rel="import" href="../../cube-list/cube-list.html">
+<link rel="import" href="../../cube-icon/cube-icon.html">
+<link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
 <link rel="import" href="cubex-notification.html">
 
-<dom-module id="cubex-notifications" attributes="notifications horizontal-align">
+<dom-module id="cubex-notifications">
   <template>
     <style>
       :host {
@@ -14,51 +14,86 @@
         --paper-spinner-stroke-width: 3px;
       }
 
-      :host .dropdown-trigger cube-action {
-        @apply --primary-700-text-secondary;
-        width: 40px;
-        height: 40px;
+      cube-dropdown cube-list-menu {
+        @apply(--shadow-elevation-4dp);
+        max-height: 500px;
       }
 
-      :host .dropdown-trigger cube-action:hover {
+      cube-list-menu {
+        @apply(--primary-800);
+        min-width: 350px;
+        opacity: 1;
+
+        --cube-li-style: {
+          color: var(--theme-2-color);
+        }
+      }
+
+      :host #trigger {
+        @apply --primary-700-text-secondary;
+        margin: 10px 0;
+      }
+
+      :host #trigger:hover {
         @apply --primary-700-text;
       }
 
-      :host .dropdown-trigger paper-spinner-lite {
+      :host #trigger paper-spinner-lite {
         position: absolute;
-        margin: -2px;
+        left: 7px;
+        top: 8px;
+        width: 29px;
+        height: 29px;
       }
 
-      :host([running]) .dropdown-trigger cube-icon {
+      :host #trigger[unread] cube-icon:before {
+        content: '';
+        display: none;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        border-radius: 100px;
+        padding: 0 5px;
+        text-align: center;
+        font-size: 9px;
+        font-weight: bold;
+        line-height: 15px;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      :host #trigger[running][unread] cube-icon:before {
+        top: 0;
+        right: 0;
+      }
+
+      :host #trigger[running] cube-icon {
         transform: scale(0.8);
       }
 
-      :host cube-list.dropdown-content {
-        min-width: 350px;
-      }
-
-      :host cube-list.dropdown-content cube-action {
+      :host cube-list-menu#content cube-action {
         margin-right: -10px;
         margin-left: 10px;
       }
 
-      :host cube-list.dropdown-content cube-li[unread] {
+      :host cube-list-menu#content cube-li[unread] {
         background-color: var(--primary-700-color);
       }
     </style>
 
-    <cube-dropdown horizontal-align="[[horizontalAlign]]">
-      <div class="dropdown-trigger">
-        <cube-action>
-          <paper-spinner-lite active="[[running]]"></paper-spinner-lite>
-          <cube-icon icon="social:notifications"></cube-icon>
-        </cube-action>
-      </div>
-      <cube-list class="dropdown-content" custom>
-        <template is="dom-repeat" items="[[notifications]]" sort="__sortNotifications">
+    <cube-websocket auto vendor="cubex" app="notifications" on-subscribe="_notificationSubscribe"
+                    on-message="_notificationMessage"></cube-websocket>
+
+    <cube-dropdown id="dd" horizontal-align="right">
+      <cube-action id="trigger" slot="trigger" running$="[[_running]]" unread$="[[_unread]]">
+        <paper-spinner-lite active="[[_running]]"></paper-spinner-lite>
+        <cube-icon icon="social:notifications"></cube-icon>
+      </cube-action>
+      <cube-list-menu id="content">
+        <template id="notificationList" is="dom-repeat" items="[[_notificationsArray]]">
           <cubex-notification notification="[[item]]"></cubex-notification>
         </template>
-      </cube-list>
+      </cube-list-menu>
     </cube-dropdown>
   </template>
 
@@ -67,46 +102,107 @@
       {
         is:         'cubex-notifications',
         properties: {
-          running: {type: Boolean, reflectToAttribute: true, computed: '__hasRunning(notifications)'}
+          _running:            {type: Boolean, computed: '__hasRunning(_notifications)'},
+          _unread:             {type: Boolean, computed: '__hasUnread(_notifications)'},
+          _notifications:      {type: Object, value: function () {return {};}},
+          _notificationsArray: {
+            type:     Array,
+            value:    function () {return [];},
+            computed: '_computeNotifications(_notifications,_notifications.*)',
+            observer: '_updateList'
+          }
         },
+
+        _notificationSubscribe: function (e)
+                                {
+                                  if(e.detail)
+                                  {
+                                    var notes = JSON.parse(e.detail);
+                                    for(var i in notes)
+                                    {
+                                      if(notes.hasOwnProperty(i) && !this._notifications[notes[i].NotificationUid])
+                                      {
+                                        this.set(['_notifications', notes[i].NotificationUid], notes[i]);
+                                      }
+                                    }
+                                  }
+                                },
+        _notificationMessage:   function (e)
+                                {
+                                  this.set(['_notifications', e.detail.payload.NotificationUid], e.detail.payload);
+                                },
+
+        _updateList:           function ()
+                               {
+                                 Polymer.RenderStatus.afterNextRender(
+                                   this,
+                                   function ()
+                                   {
+                                     this.$.notificationList.render();
+                                     this.$.dd.refit();
+                                   }
+                                 );
+                               },
+        _computeNotifications: function ()
+                               {
+                                 var notes = this._notifications;
+                                 return Object.keys(notes)
+                                              .map(function (key) { return notes[key]; })
+                                              .sort(this.__sortNotifications)
+                                              .slice(0, 10)
+                                              .sort(this.__sortNotifications);
+                               },
 
         __sortNotifications: function (a, b)
                              {
-                               if(a.percent == b.percent)
+                               if(a.Percentage == b.Percentage)
                                {
-                                 if(a.percent == 100)
+                                 if(a.Percentage == 100)
                                  {
-                                   return a.endTime < b.endTime;
+                                   return a.UpdateTime < b.UpdateTime;
                                  }
-                                 return a.startTime < b.startTime;
+                                 return a.StartTime < b.StartTime;
                                }
-                               if(a.percent < 100 && b.percent < 100)
+                               if(a.Percentage < 100 && b.Percentage < 100)
                                {
-                                 return a.percent < b.percent;
+                                 return a.Percentage < b.Percentage;
                                }
-                               if(a.percent < 100)
+                               if(a.Percentage < 100)
                                {
                                  return -1;
                                }
-                               if(b.percent < 100)
+                               if(b.Percentage < 100)
                                {
                                  return 1;
                                }
-                               return a.startTime < b.startTime;
+                               return a.UpdateTime < b.UpdateTime;
                              },
 
-        __hasRunning: function ()
+        __hasRunning: function (notifications)
                       {
                         return !!this.iterate(
-                          this.notifications, function (item)
+                          notifications, function (item)
                           {
-                            if(item.percentage < 100)
+                            if(item.Percentage < 100)
                             {
                               return true;
                             }
                           }
                         );
                       },
+
+        __hasUnread: function (notifications)
+                     {
+                       return !!this.iterate(
+                         notifications, function (item)
+                         {
+                           if(!item.Read)
+                           {
+                             return true;
+                           }
+                         }
+                       );
+                     },
 
         behaviors: [Polymer.CubeIteratorBehavior]
       }

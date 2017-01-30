@@ -1,26 +1,33 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../cube-list/cube-li.html">
-<link rel="import" href="../cube-icon/cube-icon.html">
-<link rel="import" href="../cube-behavior/cube-iterator-behavior.html">
-<link rel="import" href="../cube-behavior/cube-i18n-behavior.html">
-<link rel="import" href="../cube-app/cube-app-definition.html">
-<link rel="import" href="../moment-element/moment-element.html">
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-list/cube-li.html">
+<link rel="import" href="../../cube-icon/cube-icon.html">
+<link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="../../moment-element/moment-element.html">
+<link rel="import" href="../cubex-app/cubex-app-definition.html">
 <link rel="import" href="cubex-notification-state.html">
 <link rel="import" href="cubex-notification-definition.html">
 
 <dom-module id="cubex-notification" attributes="notification">
   <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
     <cubex-notification-definition notification="[[notification]]"
-                                  definition="{{definition}}"></cubex-notification-definition>
+                                   definition="{{definition}}"></cubex-notification-definition>
 
-    <cube-li multi-line unread="[[notification.unread]]">
-      <cube-icon icon="[[definition.Icon]]"></cube-icon>
+    <cube-li multi-line>
+      <cube-icon slot="icon" icon="[[definition.Icon]]"></cube-icon>
       [[i18n_c4t(definition.ID,'_name')]]
       <div secondary>
-        <moment-element datetime$="[[_dateTime(notification)]]" from="now">[[_dateTime(notification)]]</moment-element>
+        <moment-element datetime$="[[_dateTime(notification.UpdateTime)]]" from="now">
+          [[_dateTime(notification.UpdateTime)]]
+        </moment-element>
         by Tom Kay
       </div>
-      <cube-action>
+      <cube-action slot="actions">
         <cubex-notification-state notification="[[notification]]"></cubex-notification-state>
       </cube-action>
     </cube-li>
@@ -36,13 +43,9 @@
           resources:    {type: Object, value: this._resetResources}
         },
 
-        _dateTime: function (n)
+        _dateTime: function (updateTime)
                    {
-                     if(n.percentage < 100)
-                     {
-                       return (new Date(n.startTime * 1000)).toISOString();
-                     }
-                     return (new Date(n.endTime * 1000)).toISOString();
+                     return (new Date(updateTime * 1000)).toISOString();
                    },
 
         _resetResources: function (def)

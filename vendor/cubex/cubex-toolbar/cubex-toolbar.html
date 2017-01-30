@@ -1,5 +1,4 @@
 <link href="../../polymer/polymer.html" rel="import">
-<link href="../cubex-quick-actions/cubex-quick-actions.html" rel="import">
 <link href="../../paper-dialog/paper-dialog.html" rel="import">
 <link href="../../paper-button/paper-button.html" rel="import">
 <link href="../../cube-dropdown/cube-dropdown.html" rel="import">
@@ -8,7 +7,9 @@
 <link href="../../cube-list/cube-list-menu.html" rel="import">
 <link href="../../cube-list/cube-list-group.html" rel="import">
 <link href="../../cube-list/cube-li.html" rel="import">
-<link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link href="../../cube-behavior/cube-i18n-behavior.html" rel="import">
+<link href="../cubex-quick-actions/cubex-quick-actions.html" rel="import">
+<link href="../cubex-notifications/cubex-notifications.html" rel="import">
 
 
 <dom-module id="cubex-toolbar">
@@ -45,6 +46,8 @@
         }
       }
     </style>
+
+    <cubex-notifications></cubex-notifications>
 
     <cubex-quick-actions></cubex-quick-actions>
 
@@ -86,8 +89,6 @@
         <paper-button dialog-dismiss>{{i18n('close')}}</paper-button>
       </div>
     </paper-dialog>
-
-
   </template>
   <script>
     Polymer(

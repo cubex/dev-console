@@ -1,41 +1,55 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../cube-app/cube-app-definition.html">
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../cubex-app/cubex-app-definition.html">
 
 <dom-module id="cubex-notification-definition" attributes="notification definition">
   <template>
-    <cube-app-definition gaid="[[notification.gaid]]" app-data="{{appData}}"></cube-app-definition>
-  </template><time></time>
+    <cubex-app-definition gaid="[[_globalAppId]]" app-data="{{_appData}}"></cubex-app-definition>
+  </template>
+  <time></time>
 
   <script>
     Polymer(
       {
         is:         'cubex-notification-definition',
         properties: {
-          appData:      {type: Object},
-          notification: {type: Object, notify: true},
-          definition:   {type: Object, notify: true}
+          notification:      {type: Object},
+          definition:        {
+            type:     Object,
+            notify:   true,
+            computed: '_computeDefinition(_notificationType,_appData.Notifications)'
+          },
+          _globalAppId:      {type: String},
+          _notificationType: {type: String}
         },
-        observers:  ['_mergeData(notification,appData)'],
 
-        _mergeData: function (notification, appData)
-                    {
-                      if(!appData.Notifications)
-                      {
-                        return;
-                      }
+        observers: ['_computeGaid(notification.NotificationId)'],
 
-                      for(var defIdx in appData.Notifications)
+        _computeGaid: function (id)
                       {
-                        if(appData.Notifications.hasOwnProperty(defIdx))
+                        var matches = id.match(/^(.+\/.+)\/(.+)$/);
+                        if(matches)
                         {
-                          if(appData.Notifications[defIdx].ID == notification['notifi-id'])
-                          {
-                            this.definition = appData.Notifications[defIdx];
-                            return;
-                          }
+                          this._globalAppId = matches[1];
+                          this._notificationType = matches[2];
                         }
-                      }
-                    }
+                      },
+
+        _computeDefinition: function (notificationType, notifications)
+                            {
+                              if(notificationType && notifications)
+                              {
+                                for(var defIdx in notifications)
+                                {
+                                  if(notifications.hasOwnProperty(defIdx))
+                                  {
+                                    if(notifications[defIdx].ID == notificationType)
+                                    {
+                                      return notifications[defIdx];
+                                    }
+                                  }
+                                }
+                              }
+                            }
       }
     );
   </script>
