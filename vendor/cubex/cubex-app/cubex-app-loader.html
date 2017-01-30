@@ -10,6 +10,7 @@
 <link rel="import" href="../cubex-hash/cubex-hash.html">
 <link rel="import" href="../cubex-category/cubex-category.html">
 <link rel="import" href="../cubex-category/cubex-category-page.html">
+<link rel="import" href="../cubex-vendor/cubex-vendor-page.html">
 <link rel="import" href="cubex-app.html">
 <link rel="import" href="cubex-app-title.html">
 <link rel="import" href="cubex-app-header.html">
@@ -482,8 +483,8 @@
                                   breadcrumb: [{Title: vendor, Url: this.route.path}]
                                 };
                                 this._pagePath = this.route.path;
-                                this._pageDefinitionHtml = 'vendor Hero';
-                                this._pageContentHtml = 'vendor page';
+                                this._pageDefinitionHtml = '';
+                                this._pageContentHtml = '<cubex-vendor-page vendor="' + vendor + '"></cubex-vendor-page>';
                               }
                             }
                             else

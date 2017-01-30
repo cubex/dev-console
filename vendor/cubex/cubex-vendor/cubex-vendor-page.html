@@ -4,7 +4,7 @@
 <link rel="import" href="../../cube-card/cube-card.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 
-<dom-module id="cubex-category-page" attributes="category">
+<dom-module id="cubex-vendor-page" attributes="vendor">
   <template>
     <style>
       :host {
@@ -33,27 +33,27 @@
       </template>
     </cube-carousel>
 
-    <cube-pagelet auto auth url="//[[getServiceHost('apps')]]/cubex/cardfeed?category=[[category]]"></cube-pagelet>
+    <cube-pagelet auto auth url="//[[getServiceHost('apps')]]/cubex/cardfeed?vendor=[[vendor]]"></cube-pagelet>
   </template>
   <script>
     Polymer(
       {
-        is:             'cubex-category-page',
+        is:             'cubex-vendor-page',
         properties:     {
-          category: {type: String},
-          _colors:  {type: Array, value: ['pink', 'orange', 'teal', 'purple', 'light-green', 'red', 'green', 'blue']}
+          vendor:  {type: String},
+          _colors: {type: Array, value: ['pink', 'orange', 'teal', 'purple', 'light-green', 'red', 'green', 'blue']}
         },
         _getCategories: function (appSummaries)
                         {
-                          var cats = [];
+                          var vendors = [];
                           for(var idx in appSummaries)
                           {
-                            if(appSummaries.hasOwnProperty(idx) && appSummaries[idx].category == this.category)
+                            if(appSummaries.hasOwnProperty(idx) && appSummaries[idx].vendor_id == this.vendor)
                             {
-                              cats.push(appSummaries[idx]);
+                              vendors.push(appSummaries[idx]);
                             }
                           }
-                          return cats;
+                          return vendors;
                         },
         _getColor:      function (idx)
                         {
