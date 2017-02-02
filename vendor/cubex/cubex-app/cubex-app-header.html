@@ -32,6 +32,19 @@
         transition: background 400ms;
       }
 
+      @media (max-width: 375px) {
+        :host #topHeader {
+          height: 48px;
+          padding-left: 16px;
+          line-height: 48px;
+        }
+
+        #actions cube-action,
+        #actions #more-actions {
+          padding: 7px;
+        }
+      }
+
       :host-context(cubex-app:not([hero-header])) #topHeader {
         background: var(--theme-50-color);
       }

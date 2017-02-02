@@ -108,6 +108,7 @@
 
       #toggler {
         @apply --accent-400;
+        @apply --cubex-app-menu-toggler;
       }
 
       #toggler:hover {
@@ -151,7 +152,7 @@
       <template restamp is="dom-if" if="[[appData.Name]]">
         <a href="/[[routeData.project]]/[[appData.GlobalAppID]]" on-tap="_collapseDrawer">
           <cubex-app-title icon="[[appData.Icon]]" title="[[i18n('app_name')]]" vendor="[[appData.Vendor]]"
-                             trusted-vendor="[[appData.TrustedVendor]]"></cubex-app-title>
+                           trusted-vendor="[[appData.TrustedVendor]]"></cubex-app-title>
         </a>
       </template>
 
@@ -159,7 +160,7 @@
         <cube-list>
           <template is="dom-repeat" items="[[appData.Navigation]]">
             <cubex-link href="/[[routeData.project]]/[[appData.GlobalAppID]]/[[_trimPath(item.Path)]]"
-                          on-tap="_collapseDrawer">
+                        on-tap="_collapseDrawer">
               <cube-li>
                 <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
                 [[i18n_c4t('nav_', item.ID, '_name')]]

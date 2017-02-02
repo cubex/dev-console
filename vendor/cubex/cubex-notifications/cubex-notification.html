@@ -5,7 +5,6 @@
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
 <link rel="import" href="../../moment-element/moment-element.html">
 <link rel="import" href="../cubex-app/cubex-app-definition.html">
-<link rel="import" href="cubex-notification-state.html">
 <link rel="import" href="cubex-notification-definition.html">
 
 <dom-module id="cubex-notification" attributes="notification">
@@ -14,22 +13,69 @@
       :host {
         display: block;
       }
+
+      :host #state, :host #spinner {
+        display: inline-block;
+        position: relative;
+        width: 28px;
+        height: 28px;
+        text-align: center;
+      }
+
+      :host #state::before {
+        position: absolute;
+        top: calc(5px + var(--paper-spinner-stroke-width));
+        right: calc(5px + var(--paper-spinner-stroke-width));
+        bottom: calc(5px + var(--paper-spinner-stroke-width));
+        left: calc(5px + var(--paper-spinner-stroke-width));
+        content: '';
+        border-radius: 1000px;
+        border: 2px solid var(--primary-700-text-color, #666666);
+      }
+
+      :host(:not([read])) #state::before {
+        background: var(--primary-700-text-color, #666666);
+      }
+
+      :host(:not([read])) {
+        @apply --primary-700;
+      }
+
+      :host([read]) {
+        @apply --primary-800;
+      }
+
+      #spinner paper-spinner-lite {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
     </style>
+
     <cubex-notification-definition notification="[[notification]]"
                                    definition="{{definition}}"></cubex-notification-definition>
 
     <cube-li multi-line>
       <cube-icon slot="icon" icon="[[definition.Icon]]"></cube-icon>
       [[i18n_c4t(definition.ID,'_name')]]
-      <div secondary>
+      <div slot="secondary">
         <moment-element datetime$="[[_dateTime(notification.UpdateTime)]]" from="now">
           [[_dateTime(notification.UpdateTime)]]
         </moment-element>
-        by Tom Kay
       </div>
-      <cube-action slot="actions">
-        <cubex-notification-state notification="[[notification]]"></cubex-notification-state>
-      </cube-action>
+
+      <template is="dom-if" if="[[running]]">
+        <div id="spinner" slot="actions">
+          <paper-spinner-lite active="[[running]]" title="[[definition.message]]"></paper-spinner-lite>
+          [[notification.Percentage]]
+        </div>
+      </template>
+      <template is="dom-if" if="[[!running]]">
+        <cube-action slot="actions">
+          <div id="state"></div>
+        </cube-action>
+      </template>
+
     </cube-li>
   </template>
 
@@ -40,8 +86,30 @@
         properties: {
           notification: {type: Object},
           definition:   {type: Object, observer: '_resetResources'},
-          resources:    {type: Object, value: this._resetResources}
+          resources:    {type: Object, value: this._resetResources},
+          running:      {
+            type:               Boolean,
+            readOnly:           true,
+            reflectToAttribute: true,
+            computed:           '_computeRunning(notification.Percentage)'
+          },
+          read:         {
+            type:               Boolean,
+            readOnly:           true,
+            reflectToAttribute: true,
+            computed:           '_computeRead(notification.Read)'
+          }
         },
+
+        _computeRead: function (read)
+                      {
+                        return !!read;
+                      },
+
+        _computeRunning: function (percentage)
+                         {
+                           return percentage < 100;
+                         },
 
         _dateTime: function (updateTime)
                    {

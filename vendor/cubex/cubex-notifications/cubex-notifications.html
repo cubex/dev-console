@@ -14,15 +14,16 @@
         --paper-spinner-stroke-width: 3px;
       }
 
-      cube-dropdown cube-list-menu {
+      cube-dropdown #drop {
         @apply(--shadow-elevation-4dp);
-        max-height: 500px;
       }
 
       cube-list-menu {
         @apply(--primary-800);
         min-width: 350px;
         opacity: 1;
+        max-height: 403px;
+        overflow: auto;
 
         --cube-li-style: {
           color: var(--theme-2-color);
@@ -76,8 +77,14 @@
         margin-left: 10px;
       }
 
-      :host cube-list-menu#content cube-li[unread] {
-        background-color: var(--primary-700-color);
+      :host cube-li {
+        text-transform: uppercase;
+        @apply --primary-900;
+      }
+
+      :host cube-li a {
+        color: var(--primary-800-text-color);
+        text-decoration: none;
       }
     </style>
 
@@ -89,11 +96,25 @@
         <paper-spinner-lite active="[[_running]]"></paper-spinner-lite>
         <cube-icon icon="social:notifications"></cube-icon>
       </cube-action>
-      <cube-list-menu id="content">
-        <template id="notificationList" is="dom-repeat" items="[[_notificationsArray]]">
-          <cubex-notification notification="[[item]]"></cubex-notification>
-        </template>
-      </cube-list-menu>
+      <div id="drop">
+        <cube-li>
+          Notifications
+          <a href="#settings" slot="actions">
+            <cube-action size="20" icon="icons:settings"></cube-action>
+          </a>
+        </cube-li>
+        <cube-list-menu id="content">
+          <template id="notificationList" is="dom-repeat" items="[[_notificationsArray]]"
+                    asort="[[__sortNotifications]]">
+            <cubex-notification notification="[[item]]"></cubex-notification>
+          </template>
+        </cube-list-menu>
+
+        <cube-li>
+          <a href="#seeAll">See All</a>
+          <a href="#markRead" slot="actions">Mark all As Read</a>
+        </cube-li>
+      </div>
     </cube-dropdown>
   </template>
 
@@ -107,8 +128,7 @@
           _notifications:      {type: Object, value: function () {return {};}},
           _notificationsArray: {
             type:     Array,
-            value:    function () {return [];},
-            computed: '_computeNotifications(_notifications,_notifications.*)',
+            computed: '_computeNotifications(_notifications)',
             observer: '_updateList'
           }
         },
@@ -120,7 +140,7 @@
                                     var notes = JSON.parse(e.detail);
                                     for(var i in notes)
                                     {
-                                      if(notes.hasOwnProperty(i) && !this._notifications[notes[i].NotificationUid])
+                                      if(notes.hasOwnProperty(i))
                                       {
                                         this.set(['_notifications', notes[i].NotificationUid], notes[i]);
                                       }
@@ -132,40 +152,45 @@
                                   this.set(['_notifications', e.detail.payload.NotificationUid], e.detail.payload);
                                 },
 
-        _updateList:           function ()
-                               {
-                                 Polymer.RenderStatus.afterNextRender(
-                                   this,
-                                   function ()
-                                   {
-                                     this.$.notificationList.render();
-                                     this.$.dd.refit();
-                                   }
-                                 );
-                               },
+        _updateList: function ()
+                     {
+                       Polymer.RenderStatus.afterNextRender(
+                         this,
+                         function ()
+                         {
+                           this.$.dd.refit();
+                         }
+                       );
+                     },
+
         _computeNotifications: function ()
                                {
                                  var notes = this._notifications;
                                  return Object.keys(notes)
                                               .map(function (key) { return notes[key]; })
                                               .sort(this.__sortNotifications)
-                                              .slice(0, 10)
-                                              .sort(this.__sortNotifications);
+                                              .slice(0, 30);
                                },
 
         __sortNotifications: function (a, b)
                              {
-                               if(a.Percentage == b.Percentage)
+                               if((a.Percentage == b.Percentage) && (a.Percentage == 100))
                                {
-                                 if(a.Percentage == 100)
+                                 var updateReturn = 0;
+                                 if(a.UpdateTime != b.UpdateTime)
                                  {
-                                   return a.UpdateTime < b.UpdateTime;
+                                   updateReturn = a.UpdateTime > b.UpdateTime ? -1 : 1;
                                  }
-                                 return a.StartTime < b.StartTime;
+                                 return updateReturn;
                                }
                                if(a.Percentage < 100 && b.Percentage < 100)
                                {
-                                 return a.Percentage < b.Percentage;
+                                 var startReturn = 0;
+                                 if(a.StartTime != b.StartTime)
+                                 {
+                                   startReturn = a.StartTime > b.StartTime ? -1 : 1;
+                                 }
+                                 return startReturn;
                                }
                                if(a.Percentage < 100)
                                {
@@ -175,7 +200,7 @@
                                {
                                  return 1;
                                }
-                               return a.UpdateTime < b.UpdateTime;
+                               return 0;
                              },
 
         __hasRunning: function (notifications)

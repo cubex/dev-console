@@ -37,11 +37,11 @@
     "iron-meta": "2.0-preview",
     "iron-resizable-behavior": "2.0-preview"
   },
-  "_release": "51367b9e70",
+  "_release": "42168a28af",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "51367b9e706d265ee05923fe46253e4824edc031"
+    "commit": "42168a28af1dc352735ce03714ef5654515c4c64"
   },
   "_source": "https://github.com/CubexElements/cube-card.git",
   "_target": "*",

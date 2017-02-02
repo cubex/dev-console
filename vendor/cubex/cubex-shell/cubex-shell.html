@@ -151,14 +151,20 @@
         padding-left: 12px;
       }
 
+      cubex-pinned-apps[hidden] {
+        display: none;
+      }
+
       :host([focus-search]) #burger,
       :host([focus-search]) #search-shortcut,
       :host([focus-search]) #user-panel-action,
+      :host([focus-search]) #app-menu,
       :host([focus-search]) cubex-pinned-apps,
       :host([focus-search]) cubex-toolbar,
       :host([drawer-opened]) #burger,
       :host([drawer-opened]) #search-shortcut,
       :host([drawer-opened]) #user-panel-action,
+      :host([drawer-opened]) #app-menu,
       :host([drawer-opened]) cubex-search,
       :host([drawer-opened]) cubex-toolbar {
         display: none;
@@ -168,9 +174,12 @@
         @apply --text-primary;
       }
 
-      #user-panel-action {
+      #user-panel-action, #app-menu {
         --cube-icon-color: var(--primary-700-text-color);
         @apply --text-secondary;
+      }
+
+      #user-panel-action {
         position: relative;
         margin: 15px 8px;
       }
@@ -218,7 +227,8 @@
             <div id="burger">
               <paper-icon-button icon="menu" on-tap="_toggleDrawer"></paper-icon-button>
             </div>
-            <cubex-pinned-apps></cubex-pinned-apps>
+            <cubex-pinned-apps hidden="[[_narrow]]"></cubex-pinned-apps>
+            <cube-action icon="icons:toc" hidden="[[!_narrow]]" id="app-menu" on-tap="_showAppMenu"></cube-action>
             <div class="spread"></div>
             <cubex-search id="search" focus-search="[[focusSearch]]"></cubex-search>
             <div class="spread"></div>
@@ -226,6 +236,7 @@
               <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
             </div>
             <cubex-toolbar id="toolbar"></cubex-toolbar>
+
             <cube-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action" size="24"
                          on-tap="_toggleUserDrawer"></cube-action>
           </div>
@@ -378,6 +389,11 @@
                              {
                                this.$.userDrawer.setMaxState(0);
                              }
+                           },
+        _showAppMenu:      function (e)
+                           {
+                             document.dispatchEvent(new CustomEvent('cubex-app-drawer-toggle'));
+                             e.stopPropagation();
                            },
 
         behaviors: [
