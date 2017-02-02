@@ -104,8 +104,7 @@
           </a>
         </cube-li>
         <cube-list-menu id="content">
-          <template id="notificationList" is="dom-repeat" items="[[_notificationsArray]]"
-                    asort="[[__sortNotifications]]">
+          <template id="notificationList" is="dom-repeat" items="[[_notificationsArray]]">
             <cubex-notification notification="[[item]]"></cubex-notification>
           </template>
         </cube-list-menu>
@@ -128,6 +127,7 @@
           _notifications:      {type: Object, value: function () {return {};}},
           _notificationsArray: {
             type:     Array,
+            value:    function () {return [];},
             computed: '_computeNotifications(_notifications)',
             observer: '_updateList'
           }
@@ -142,14 +142,16 @@
                                     {
                                       if(notes.hasOwnProperty(i))
                                       {
-                                        this.set(['_notifications', notes[i].NotificationUid], notes[i]);
+                                        this._notifications[notes[i].NotificationUid] = notes[i];
                                       }
                                     }
+                                    this.notifyPath('_notifications');
                                   }
                                 },
         _notificationMessage:   function (e)
                                 {
-                                  this.set(['_notifications', e.detail.payload.NotificationUid], e.detail.payload);
+                                  this._notifications[e.detail.payload.NotificationUid] = e.detail.payload;
+                                  this.notifyPath('_notifications');
                                 },
 
         _updateList: function ()
