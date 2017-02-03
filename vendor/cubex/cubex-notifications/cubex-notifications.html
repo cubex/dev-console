@@ -96,6 +96,9 @@
       }
     </style>
 
+    <app-location route="{{route}}"></app-location>
+    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
+
     <cube-websocket auto vendor="cubex" app="notifications" on-subscribe="_notificationSubscribe"
                     on-message="_notificationMessage"></cube-websocket>
 
@@ -107,7 +110,7 @@
       <div id="drop">
         <cube-li>
           Notifications
-          <a id="settings" href="#settings" slot="actions">
+          <a id="settings" href="/[[routeData.project]]/cubex/notifications/_configure" slot="actions">
             <cube-action size="20" icon="icons:settings"></cube-action>
           </a>
         </cube-li>
@@ -118,8 +121,10 @@
         </cube-list-menu>
 
         <cube-li>
-          <a href="#seeAll">See All</a>
-          <a href="#markRead" slot="actions">Mark all As Read</a>
+          <a href="/[[routeData.project]]/cubex/notifications">
+            <cube-action>See All</cube-action>
+          </a>
+          <cube-action on-tap="_markRead" slot="actions">Mark all As Read</cube-action>
         </cube-li>
       </div>
     </cube-dropdown>
@@ -165,8 +170,11 @@
                                   }
                                   else if(e.detail.action == 'read')
                                   {
-                                    this._notifications[e.detail.payload].Read = true;
-                                    this.notifyPath('_notifications');
+                                    if(this._notifications[e.detail.payload])
+                                    {
+                                      this._notifications[e.detail.payload].Read = true;
+                                      this.notifyPath('_notifications');
+                                    }
                                   }
                                 },
 
@@ -247,7 +255,22 @@
                        );
                      },
 
-        behaviors: [Polymer.CubeIteratorBehavior]
+        _markRead: function ()
+                   {
+                     var xhr = new XMLHttpRequest();
+                     xhr.open(
+                       'PUT',
+                       '//' + this.getServiceHost('apps') + '/cubex/notifications/read/all'
+                     );
+                     xhr.setRequestHeader('x-cube-project', this.routeData.project);
+                     xhr.withCredentials = true;
+                     xhr.send();
+                   },
+
+        behaviors: [
+          Polymer.CubeIteratorBehavior,
+          Polymer.CubeServiceBehavior
+        ]
       }
     );
   </script>

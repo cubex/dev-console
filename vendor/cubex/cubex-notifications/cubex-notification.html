@@ -143,7 +143,7 @@
                      var xhr = new XMLHttpRequest();
                      xhr.open(
                        'PUT',
-                       '//' + this.getServiceHost('apps') + '/cubex/notifications/' + this.notification.NotificationUid
+                       '//' + this.getServiceHost('apps') + '/cubex/notifications/read/' + this.notification.NotificationUid
                      );
                      xhr.setRequestHeader('x-cube-project', this.routeData.project);
                      xhr.withCredentials = true;
