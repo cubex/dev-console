@@ -129,7 +129,7 @@
             <template is="dom-repeat" items="[[__appGroups(_projectRegistryData)]]" as="group">
               <cube-list-group>
                 <cubex-category key="[[group.name]]" slot="title"></cubex-category>
-                <template is="dom-repeat" items="[[group.apps]]" as="app">
+                <template is="dom-repeat" items="[[group.apps]]" as="app" filter="_filterApps">
                   <a href="/[[project.id]]/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
                     <cube-li>
                       <cube-icon slot="icon" icon="[[app.icon]]"></cube-icon>
@@ -255,6 +255,11 @@
                          }
                        }
                        return Object.keys(groups).map(function (i) {return groups[i];});
+                     },
+
+        _filterApps: function (item)
+                     {
+                       return item.app_type == 'cubex.platform.application';
                      }
       }
     );
