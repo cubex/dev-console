@@ -47,6 +47,10 @@
         height: 29px;
       }
 
+      :host #trigger[unread] cube-icon {
+        color: white;
+      }
+
       :host #trigger[unread] cube-icon:before {
         content: '';
         display: none;
@@ -86,6 +90,10 @@
         color: var(--primary-800-text-color);
         text-decoration: none;
       }
+
+      :host #settings {
+        margin-right: -5px;
+      }
     </style>
 
     <cube-websocket auto vendor="cubex" app="notifications" on-subscribe="_notificationSubscribe"
@@ -99,7 +107,7 @@
       <div id="drop">
         <cube-li>
           Notifications
-          <a href="#settings" slot="actions">
+          <a id="settings" href="#settings" slot="actions">
             <cube-action size="20" icon="icons:settings"></cube-action>
           </a>
         </cube-li>
@@ -150,8 +158,16 @@
                                 },
         _notificationMessage:   function (e)
                                 {
-                                  this._notifications[e.detail.payload.NotificationUid] = e.detail.payload;
-                                  this.notifyPath('_notifications');
+                                  if(e.detail.action == 'update' || e.detail.action == 'send')
+                                  {
+                                    this._notifications[e.detail.payload.NotificationUid] = e.detail.payload;
+                                    this.notifyPath('_notifications');
+                                  }
+                                  else if(e.detail.action == 'read')
+                                  {
+                                    this._notifications[e.detail.payload].Read = true;
+                                    this.notifyPath('_notifications');
+                                  }
                                 },
 
         _updateList: function ()
@@ -223,7 +239,7 @@
                        return !!this.iterate(
                          notifications, function (item)
                          {
-                           if(!item.Read)
+                           if(item.Percentage >= 100 && !item.Read)
                            {
                              return true;
                            }

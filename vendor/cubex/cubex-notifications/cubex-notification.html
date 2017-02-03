@@ -15,7 +15,11 @@
         display: block;
       }
 
-      :host #state, :host #spinner {
+      :host #state {
+        margin-right: -5px;
+      }
+
+      :host #state > div, :host #spinner {
         display: inline-block;
         position: relative;
         width: 28px;
@@ -23,7 +27,7 @@
         text-align: center;
       }
 
-      :host #state::before {
+      :host #state > div::before {
         position: absolute;
         top: calc(5px + var(--paper-spinner-stroke-width));
         right: calc(5px + var(--paper-spinner-stroke-width));
@@ -34,7 +38,7 @@
         border: 2px solid var(--primary-700-text-color, #666666);
       }
 
-      :host(:not([read])) #state::before {
+      :host(:not([read])) #state > div::before {
         background: var(--primary-700-text-color, #666666);
       }
 
@@ -52,6 +56,9 @@
         top: 0;
       }
     </style>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
 
     <cubex-notification-definition notification="[[notification]]"
                                    definition="{{definition}}"></cubex-notification-definition>
@@ -72,8 +79,8 @@
         </div>
       </template>
       <template is="dom-if" if="[[!running]]">
-        <cube-action slot="actions">
-          <div id="state"></div>
+        <cube-action id="state" slot="actions" on-tap="_markRead">
+          <div></div>
         </cube-action>
       </template>
 
@@ -131,9 +138,22 @@
                            this.resources = res;
                          },
 
+        _markRead: function ()
+                   {
+                     var xhr = new XMLHttpRequest();
+                     xhr.open(
+                       'PUT',
+                       '//' + this.getServiceHost('apps') + '/cubex/notifications/' + this.notification.NotificationUid
+                     );
+                     xhr.setRequestHeader('x-cube-project', this.routeData.project);
+                     xhr.withCredentials = true;
+                     xhr.send();
+                   },
+
         behaviors: [
           Polymer.CubeIteratorBehavior,
-          Polymer.CubeI18nBehavior
+          Polymer.CubeI18nBehavior,
+          Polymer.CubeServiceBehavior
         ]
       }
     );
