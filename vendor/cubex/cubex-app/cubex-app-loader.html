@@ -11,6 +11,7 @@
 <link rel="import" href="../cubex-category/cubex-category.html">
 <link rel="import" href="../cubex-category/cubex-category-page.html">
 <link rel="import" href="../cubex-vendor/cubex-vendor-page.html">
+<link rel="import" href="../cubex-error/cubex-error.html">
 <link rel="import" href="cubex-app.html">
 <link rel="import" href="cubex-app-title.html">
 <link rel="import" href="cubex-app-header.html">
@@ -438,7 +439,7 @@
                                 // no permission? 401
                                 this.pageData = {title: 'Unauthorized'};
                                 this._pagePath = null;
-                                this._pageDefinitionHtml = '<cube-hero color="red">(401) Unauthorized</cube-hero>';
+                                this._pageDefinitionHtml = '<cubex-error code="401" color="red">(401) Unauthorized</cubex-error>';
                                 this._pageContentHtml = '<p>You do not have permission to access the requested page.</p>';
                                 this._pageDefinitionContentHasHero = true;
                               }
@@ -447,7 +448,7 @@
                                 // no relationship? 404
                                 this.pageData = {title: 'Page Not Found'};
                                 this._pagePath = null;
-                                this._pageDefinitionHtml = '<cube-hero color="orange">(404) Page Not Found</cube-hero>';
+                                this._pageDefinitionHtml = '<cubex-error code="400" color="orange">(404) Page Not Found</cubex-error>';
                                 this._pageContentHtml = '<p>Sorry. The page you were looking for could not be found.</p>';
                                 this._pageDefinitionContentHasHero = true;
                               }
