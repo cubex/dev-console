@@ -16,7 +16,8 @@
   <template>
     <style>
       :host {
-        display: block;
+        display: flex;
+        flex-direction: column;
         overflow: auto;
         height: 100%;
         --cube-animbg-background-color: var(--accent-700-color);
@@ -103,6 +104,12 @@
       :host cube-li {
         @apply --primary-700;
       }
+
+      #storeLink {
+        --cube-li-style: {
+          background: red;
+        }
+      }
     </style>
 
     <cubex-project project="{{project}}" projects="{{_projects}}"></cubex-project>
@@ -116,31 +123,43 @@
       <img src="../demo/resources/images/avatar/default-64.png">
       <strong>[[whoami.FirstName]] [[whoami.LastName]]</strong>
       <span>[[whoami.Username]]</span>
-      <paper-button on-tap="toggleDrawer" class="toggle" selected-drawer="{{selectedItem}}">
-        [[project.name]]
-        <iron-icon icon="[[_icon]]"></iron-icon>
-      </paper-button>
+      <template is="dom-if" if="[[project]]">
+        <paper-button on-tap="toggleDrawer" class="toggle" selected-drawer="{{selectedItem}}">
+          [[project.name]]
+          <iron-icon icon="[[_icon]]"></iron-icon>
+        </paper-button>
+      </template>
     </cube-animbg>
-    <div style="position: relative;">
+    <div style="position: relative;flex-grow: 1;">
       <iron-selector selected="0" id="drawerPanels">
         <slot></slot>
-        <cubex-shell-drawer-panel>
-          <cube-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
-            <template is="dom-repeat" items="[[__appGroups(_projectRegistryData)]]" as="group">
-              <cube-list-group>
-                <cubex-category key="[[group.name]]" slot="title"></cubex-category>
-                <template is="dom-repeat" items="[[group.apps]]" as="app" filter="_filterApps">
-                  <a href="/[[project.id]]/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
-                    <cube-li>
-                      <cube-icon slot="icon" icon="[[app.icon]]"></cube-icon>
-                      [[app.name]]
-                    </cube-li>
-                  </a>
-                </template>
-              </cube-list-group>
-            </template>
-          </cube-list-menu>
-        </cubex-shell-drawer-panel>
+        <template is="dom-if" if="[[project]]">
+          <cubex-shell-drawer-panel>
+            <cube-list-menu show-filter filter-label="{{i18n('filter_apps')}}" style="flex-grow: 1;">
+              <template is="dom-repeat" items="[[__appGroups(_projectRegistryData)]]" as="group">
+                <cube-list-group>
+                  <cubex-category key="[[group.name]]" slot="title"></cubex-category>
+                  <template is="dom-repeat" items="[[group.apps]]" as="app" filter="_filterApps">
+                    <a href="/[[project.id]]/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
+                      <cube-li>
+                        <cube-icon slot="icon" icon="[[app.icon]]"></cube-icon>
+                        [[app.name]]
+                      </cube-li>
+                    </a>
+                  </template>
+                </cube-list-group>
+              </template>
+            </cube-list-menu>
+            <cube-list-menu>
+              <a id="storeLink" href="/[[project.id]]/cubex/store">
+                <cube-li>
+                  <cube-icon slot="icon" icon="icons:apps"></cube-icon>
+                  App Store
+                </cube-li>
+              </a>
+            </cube-list-menu>
+          </cubex-shell-drawer-panel>
+        </template>
         <cubex-shell-drawer-panel>
           <cube-list-menu show-filter filter-label="{{i18n('filter_projects')}}">
             <cube-list-group id="projectsGroup" title="{{i18n('all_projects')}}">
@@ -245,12 +264,15 @@
                            if(projectRegistry.AppSummary.hasOwnProperty(idx))
                            {
                              var app = projectRegistry.AppSummary[idx];
-                             if(!groups[app.category])
+                             if(this._filterApps(app))
                              {
-                               groups[app.category] = {name: app.category, apps: []};
+                               if(!groups[app.category])
+                               {
+                                 groups[app.category] = {name: app.category, apps: []};
+                               }
+                               var group = groups[app.category];
+                               group.apps.push(app);
                              }
-                             var group = groups[app.category];
-                             group.apps.push(app);
                            }
                          }
                        }
