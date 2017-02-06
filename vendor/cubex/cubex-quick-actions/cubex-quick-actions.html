@@ -6,6 +6,7 @@
 <link rel="import" href="../../cube-icon/cube-icon.html">
 <link rel="import" href="../../cube-resource/cube-resource.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
+<link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="../cubex-theme/cubex-theme-style.html">
 
 <dom-module id="cubex-quick-actions">
@@ -37,8 +38,7 @@
         @apply --primary-700-text;
       }
     </style>
-    <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
+    <cubex-route project-id="{{projectId}}"></cubex-route>
 
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/quickactions/actions.json"
                    headers="[[_headers]]" data="{{actions}}" ttl="3600"></cube-resource>
@@ -48,7 +48,7 @@
         <cube-action icon="icons:add" slot="trigger"></cube-action>
         <cube-list-menu>
           <template is="dom-repeat" items="[[actions.Actions]]" as="action">
-            <a href="/[[routeData.project]]/[[action.GlobalAppID]]/[[action.Path]]" on-tap="_tap">
+            <a href="/[[projectId]]/[[action.GlobalAppID]]/[[action.Path]]" on-tap="_tap">
               <cube-li title="[[action.Name]]">
                 <cube-icon slot="icon" icon="[[action.Icon]]"></cube-icon>
                 [[action.Name]]
@@ -66,7 +66,7 @@
         is: 'cubex-quick-actions',
 
         properties: {
-          _headers: {type: Object, computed: '_refreshHeaders(routeData.project)'}
+          _headers: {type: Object, computed: '_refreshHeaders(projectId)'}
         },
 
         _refreshHeaders: function (project)

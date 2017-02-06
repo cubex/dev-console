@@ -4,6 +4,8 @@
 <link rel="import" href="../../cube-list/cube-list.html">
 <link rel="import" href="../../cube-icon/cube-icon.html">
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
+<link rel="import" href="../../cube-websocket/cube-websocket.html">
+<link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="cubex-notification.html">
 
 <dom-module id="cubex-notifications">
@@ -96,11 +98,10 @@
       }
     </style>
 
-    <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
+    <cubex-route project-id="{{projectId}}"></cubex-route>
 
-    <cube-websocket auto vendor="cubex" app="notifications" on-subscribe="_notificationSubscribe"
-                    on-message="_notificationMessage"></cube-websocket>
+    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="notifications"
+                    on-subscribe="_notificationSubscribe" on-message="_notificationMessage"></cube-websocket>
 
     <cube-dropdown id="dd" horizontal-align="right">
       <cube-action id="trigger" slot="trigger" running$="[[_running]]" unread$="[[_unread]]">
@@ -110,7 +111,7 @@
       <div id="drop">
         <cube-li>
           Notifications
-          <a id="settings" href="/[[routeData.project]]/cubex/notifications/_configure" slot="actions">
+          <a id="settings" href="/[[projectId]]/cubex/notifications/_configure" slot="actions">
             <cube-action size="20" icon="icons:settings"></cube-action>
           </a>
         </cube-li>
@@ -121,7 +122,7 @@
         </cube-list-menu>
 
         <cube-li>
-          <a href="/[[routeData.project]]/cubex/notifications">
+          <a href="/[[projectId]]/cubex/notifications">
             <cube-action>See All</cube-action>
           </a>
           <cube-action on-tap="_markRead" slot="actions">Mark all As Read</cube-action>
@@ -262,7 +263,7 @@
                        'PUT',
                        '//' + this.getServiceHost('apps') + '/cubex/notifications/read/all'
                      );
-                     xhr.setRequestHeader('x-cube-project', this.routeData.project);
+                     xhr.setRequestHeader('x-cube-project', this.projectId);
                      xhr.withCredentials = true;
                      xhr.send();
                    },

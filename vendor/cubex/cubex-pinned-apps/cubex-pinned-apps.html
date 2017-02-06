@@ -1,9 +1,9 @@
 <link href="../../polymer/polymer.html" rel="import">
 <link href="../../cube-websocket/cube-websocket.html" rel="import">
 <link href="../../cube-action/cube-action.html" rel="import">
-<link href="../../app-route/app-route.html" rel="import">
-<link href="../../app-route/app-location.html" rel="import">
 <link href="../../paper-tooltip/paper-tooltip.html" rel="import">
+<link rel="import" href="../../cube-websocket/cube-websocket.html">
+<link rel="import" href="../cubex-route/cubex-route.html">
 
 <dom-module id="cubex-pinned-apps">
   <template>
@@ -36,12 +36,11 @@
         }
       }
     </style>
-    <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
-    <cube-websocket auto vendor="cubex" app="pinnedapps" on-subscribe="_pinnedSub"
-                    on-message="_pinnedMsg"></cube-websocket>
+    <cubex-route project-id="{{projectId}}"></cubex-route>
+    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="pinnedapps"
+                    on-subscribe="_pinnedSub" on-message="_pinnedMsg"></cube-websocket>
     <template is="dom-repeat" items="[[pinnedApps]]">
-      <a href="/[[routeData.project]]/[[item.GlobalAppID]]">
+      <a href="/[[projectId]]/[[item.GlobalAppID]]">
         <cube-action id="pinned-[[item.ID]]" icon="[[item.Icon]]"></cube-action>
       </a>
       <paper-tooltip for="pinned-[[item.ID]]" position="center" animation-delay="100"><strong>[[item.Name]]</strong>

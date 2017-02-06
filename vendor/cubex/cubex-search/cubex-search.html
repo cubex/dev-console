@@ -5,8 +5,10 @@
 <link rel="import" href="../../cube-icon/cube-icon.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
-<link rel="import" href="cubex-search-overlay.html">
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="../../cube-websocket/cube-websocket.html">
+<link rel="import" href="../cubex-route/cubex-route.html">
+<link rel="import" href="cubex-search-overlay.html">
 
 <dom-module id="cubex-search" attributes="focus-search">
   <template>
@@ -119,13 +121,13 @@
       }
     </style>
 
-    <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
+    <cubex-route project-id="{{projectId}}"></cubex-route>
 
     <cube-resource id="searchResource" auto auth url="//[[getServiceHost('apps')]]/cubex/searchactions/search.json"
                    headers="[[_headers]]" data="{{_search}}" ttl="3600"></cube-resource>
 
-    <cube-websocket vendor="cubex" app="registry" auto on-message="_appsChanged"></cube-websocket>
+    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="registry"
+                    on-message="_appsChanged"></cube-websocket>
 
     <div id="scrim" hidden="[[!focused]]"></div>
 
@@ -137,7 +139,7 @@
     <iron-dropdown vertical-align="top" id="results">
       <cube-list-menu id="searchmenu" zebra>
         <template is="dom-repeat" items="{{_filterActions(searchQuery,_search.Actions)}}">
-          <a href="/[[routeData.project]]/[[item.GlobalAppID]]/[[item.Path]]">
+          <a href="/[[projectId]]/[[item.GlobalAppID]]/[[item.Path]]">
             <cube-li>
               <template restamp is="dom-if" if="[[item.Icon]]">
                 <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
@@ -162,7 +164,7 @@
             value:              false,
             reflectToAttribute: true
           },
-          _headers:    {type: Object, computed: '_refreshHeaders(routeData.project)'},
+          _headers:    {type: Object, computed: '_refreshHeaders(projectId)'},
           resources:   {
             type:  Object,
             value: {

@@ -27,11 +27,11 @@
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "web-component-tester": "^4.0.0"
   },
-  "_release": "a7dd27c8fa",
+  "_release": "e0c9be532c",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "a7dd27c8faecc08d28393954b855f28fe27f8ec3"
+    "commit": "e0c9be532ccbeecec7e77906bec6edfc3a6993de"
   },
   "_source": "https://github.com/CubexElements/cube-websocket.git",
   "_target": "*",

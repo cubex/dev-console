@@ -1,20 +1,20 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../app-route/app-location.html">
-<link rel="import" href="../../app-route/app-route.html">
 <link rel="import" href="../../cube-resource/cube-resource.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
+<link rel="import" href="../../cube-websocket/cube-websocket.html">
+<link rel="import" href="../cubex-route/cubex-route.html">
 
 <dom-module id="cubex-registry" attributes="project-data user-data">
   <template>
-    <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
+    <cubex-route project-id="{{projectId}}"></cubex-route>
 
     <cube-resource id="project" auto auth url="//[[getServiceHost('apps')]]/cubex/registry/project.json"
                    data="{{projectData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
     <cube-resource id="user" auto auth url="//[[getServiceHost('apps')]]/cubex/registry/user.json"
                    data="{{userData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
 
-    <cube-websocket vendor="cubex" app="registry" auto on-message="_appsChanged"></cube-websocket>
+    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="registry"
+                    on-message="_appsChanged"></cube-websocket>
   </template>
   <script>
     Polymer(
@@ -23,7 +23,7 @@
         properties:      {
           projectData: {type: Object, notify: true},
           userData:    {type: Object, notify: true},
-          _headers:    {type: Object, computed: '_refreshHeaders(routeData.project)'}
+          _headers:    {type: Object, computed: '_refreshHeaders(projectId)'}
         },
         _refreshHeaders: function (project)
                          {

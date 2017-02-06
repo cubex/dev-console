@@ -3,6 +3,7 @@
 <link rel="import" href="../../cube-tile/cube-tile.html">
 <link rel="import" href="../../cube-card/cube-card.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
+<link rel="import" href="../cubex-route/cubex-route.html">
 
 <dom-module id="cubex-category-page" attributes="category">
   <template>
@@ -20,13 +21,13 @@
       }
     </style>
 
-    <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:project" data="{{projectRouteData}}"></app-route>
+    <cubex-route project-id="{{projectId}}"></cubex-route>
+
     <cubex-registry project-data="{{projectData}}"></cubex-registry>
 
     <cube-carousel count="5">
       <template style="display:none" is="dom-repeat" items="[[_getCategories(projectData.AppSummary)]]">
-        <a href="/[[projectRouteData.project]]/[[item.vendor_id]]/[[item.id]]">
+        <a href="/[[projectId]]/[[item.vendor_id]]/[[item.id]]">
           <cube-tile color="[[_getColor(index)]]" icon="[[item.icon]]" heading="[[item.name]]"
                      text="[[item.description]]"></cube-tile>
         </a>

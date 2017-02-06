@@ -1,24 +1,25 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../app-route/app-route.html">
 <link rel="import" href="../../cube-action/cube-action.html">
 <link rel="import" href="../../cube-list/cube-li.html">
 <link rel="import" href="../../cube-pagelet/cube-pagelet-content.html">
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../page-title/page-title.html">
+<link rel="import" href="../../cube-websocket/cube-websocket.html">
 <link rel="import" href="../cubex-drawer/cubex-drawer.html">
 <link rel="import" href="../cubex-hash/cubex-hash.html">
 <link rel="import" href="../cubex-category/cubex-category.html">
 <link rel="import" href="../cubex-category/cubex-category-page.html">
 <link rel="import" href="../cubex-vendor/cubex-vendor-page.html">
 <link rel="import" href="../cubex-error/cubex-error.html">
+<link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="cubex-app.html">
 <link rel="import" href="cubex-app-title.html">
 <link rel="import" href="cubex-app-header.html">
 <link rel="import" href="cubex-app-menu.html">
 <link rel="import" href="cubex-app-spinner.html">
 
-<dom-module id="cubex-app-loader" attributes="route vendor">
+<dom-module id="cubex-app-loader">
   <template strip-whitespace>
     <style>
       :host {
@@ -48,18 +49,15 @@
       }
     </style>
 
-    <app-route id="projectRoute" route="[[route]]" pattern="/:project" data="{{projectRouteData}}"
-               tail="{{projectTail}}" query-params="{{appQuery}}"></app-route>
-    <app-route id="vendorRoute" route="[[projectTail]]" pattern="/:vendor" data="{{vendorRouteData}}"
-               tail="{{vendorTail}}"></app-route>
-    <app-route id="appRoute" route="[[vendorTail]]" pattern="/:app" data="{{appRouteData}}"
-               tail="{{appPath}}" active="{{_appActive}}"></app-route>
+    <cubex-route full-path="{{fullPath}}" project-id="{{projectId}}" vendor-id="{{vendorId}}" app-id="{{appId}}"
+                 app-path="{{appPath}}"></cubex-route>
 
     <cubex-registry project-data="{{projectData}}"></cubex-registry>
 
     <cubex-app-definition gaid="[[_appGaid]]" app-data="{{appData}}"></cubex-app-definition>
 
-    <cube-websocket vendor="cubex" app="registry" auto on-message="_appsChanged"></cube-websocket>
+    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="registry"
+                    on-message="_appsChanged"></cube-websocket>
     <cube-resource id="integrationsResource" auto auth url="[[_integrationsPath]]" data="{{_integrations}}"
                    headers="[[_pageDefinitionHeaders]]" ttl="3600"></cube-resource>
     <cube-resource auto auth url="[[_pageDefinitionPath]]" data="{{_pageDefinitionHtml}}" xhr="{{_pageXhr}}"
@@ -110,7 +108,7 @@
           appData:                       {type: Object, notify: true},
           _backPath:                     {
             type:     String,
-            computed: '_computedBackPath(projectRouteData.project,appData.GlobalAppID,pageData.backPath)'
+            computed: '_computedBackPath(_project,appData.GlobalAppID,pageData.backPath)'
           },
 
           _pageContentPath:    {type: String},
@@ -130,8 +128,8 @@
         },
 
         observers: [
-          '_updateProject(projectRouteData.project)',
-          '_pathChanged(route.path,projectData)',
+          '_updateProject(projectId)',
+          '_pathChanged(fullPath,projectData)',
           '_updateHeaders(_pageXhr)',
           '_updateIntegration(_integrations,appPath.path,_pageDefinitionPath,projectData)',
           '_updateHeader(_integration,_integrations,appData,projectData)',
@@ -240,7 +238,7 @@
                                    newMenu.push(
                                      {
                                        Title: headerMenu[i].Title,
-                                       Path:  '/' + this.projectRouteData.project + '/' + headerMenu[i].Hook + '/_/' + headerMenu[i].ID,
+                                       Path:  '/' + this.projectId + '/' + headerMenu[i].Hook + '/_/' + headerMenu[i].ID,
                                        Mode:  'page'
                                      }
                                    );
@@ -253,9 +251,9 @@
                                      newMenu.push(
                                        {
                                          Title: this.$.cat.getCategory(category, true),
-                                         Path:  '/' + this.projectRouteData.project + '/' + headerMenu[i].Hook + '/~/' + category
+                                         Path:  '/' + this.projectId + '/' + headerMenu[i].Hook + '/~/' + category
                                                 + '/h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
-                                         Match: '/' + this.projectRouteData.project + '/' + headerMenu[i].Hook + '/~/' + category,
+                                         Match: '/' + this.projectId + '/' + headerMenu[i].Hook + '/~/' + category,
                                          Mode:  'page'
                                        }
                                      );
@@ -278,7 +276,7 @@
                                      Title:   action.Title,
                                      Path:    action.Mode == 'dialog'
                                                 ? '//' + this.getServiceHost('apps') + '/' + action.GlobalAppID + '/' + action.Path
-                                                : '/' + this.projectRouteData.project + '/' + action.Hook + '/_/' + action.ID,
+                                                : '/' + this.projectId + '/' + action.Hook + '/_/' + action.ID,
                                      Icon:    action.Icon,
                                      Mode:    action.Mode,
                                      Primary: action.GlobalAppID == 'fortifiplatform/customers'
@@ -300,7 +298,7 @@
 
                           if(integrations && this.projectData && this.projectData.AppSummary)
                           {
-                            var pathMatches = this._parsePath(this.appPath.path);
+                            var pathMatches = this._parsePath(this.appPath);
                             if(integration
                               && this.projectData.AppSummary[integration.GlobalAppID]
                               && pathMatches.type == '~')
@@ -388,22 +386,21 @@
                       {
                         if(path !== undefined && projectData)
                         {
-                          if(this.$.vendorRoute.active && this.vendorRouteData && this.vendorRouteData.vendor
-                            && this.$.appRoute.active && this.appRouteData && this.appRouteData.app)
+                          if(this.vendorId && this.appId)
                           {
-                            var gaid = this.vendorRouteData.vendor + '/' + this.appRouteData.app;
+                            var gaid = this.vendorId + '/' + this.appId;
                             // check project has app installed
                             if(projectData.AppSummary[gaid])
                             {
                               this._appGaid = gaid;
-                              if(this.route.path !== this._loadedPath)
+                              if(this.fullPath !== this._loadedPath)
                               {
-                                this._loadedPath = this.route.path;
+                                this._loadedPath = this.fullPath;
                                 var self = this,
-                                  pathMatches = this._parsePath(this.appPath.path),
+                                  pathMatches = this._parsePath(this.appPath),
                                   fullPath = '/' + gaid + pathMatches.pagePath,
                                   integrationPath = fullPath;
-                                this._pagePath = '/' + this.projectRouteData.project + fullPath;
+                                this._pagePath = '/' + this.projectId + fullPath;
 
                                 if(pathMatches.type == '_')
                                 {
@@ -462,28 +459,28 @@
                             this._loadedPath = null;
                             this._appGaid = null;
 
-                            if((!this.$.appRoute.active) && this.$.vendorRoute.active && this.vendorRouteData.vendor)
+                            if((!this.appPath) && this.vendorId)
                             {
-                              if(this.vendorRouteData.vendor[0] == '_')
+                              if(this.vendorId[0] == '_')
                               {
-                                var cat = this.vendorRouteData.vendor.substring(1);
+                                var cat = this.vendorId.substring(1);
                                 this.pageData = {
                                   title:      this.$.cat.getCategory(cat),
-                                  breadcrumb: [{Title: this.$.cat.getCategory(cat, true), Url: this.route.path}]
+                                  breadcrumb: [{Title: this.$.cat.getCategory(cat, true), Url: this.fullPath}]
                                 };
-                                this._pagePath = this.route.path;
+                                this._pagePath = this.fullPath;
                                 this._pageDefinitionHtml = '';
                                 this._pageContentHtml = '<cubex-category-page category="' + cat + '"></cubex-category-page>';
                                 this._pageDefinitionContentHasHero = false;
                               }
                               else
                               {
-                                var vendor = this.vendorRouteData.vendor;
+                                var vendor = this.vendorId;
                                 this.pageData = {
                                   title:      vendor,
-                                  breadcrumb: [{Title: vendor, Url: this.route.path}]
+                                  breadcrumb: [{Title: vendor, Url: this.fullPath}]
                                 };
-                                this._pagePath = this.route.path;
+                                this._pagePath = this.fullPath;
                                 this._pageDefinitionHtml = '';
                                 this._pageContentHtml = '<cubex-vendor-page vendor="' + vendor + '"></cubex-vendor-page>';
                               }
@@ -503,9 +500,9 @@
                               var integration = null, contentPath = this._pageDefinitionPath;
 
                               if(this._integrations && this.projectData && this.projectData.AppSummary
-                                && this.appPath && this.appPath.path)
+                                && this.appPath && this.appPath)
                               {
-                                var pathMatches = this._parsePath(this.appPath.path);
+                                var pathMatches = this._parsePath(this.appPath);
                                 var items = null;
                                 if(pathMatches.pageletId)
                                 {
@@ -625,7 +622,7 @@
 
         _getBasePath: function ()
                       {
-                        return '/' + this.projectRouteData.project + '/' + this.vendorRouteData.vendor + '/' + this.appRouteData.app;
+                        return '/' + this.projectId + '/' + this.vendorId + '/' + this.appId;
                       },
 
         _pageHtmlChanged: function ()

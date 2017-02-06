@@ -6,6 +6,7 @@
 <link rel="import" href="../../moment-element/moment-element.html">
 <link rel="import" href="../../paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="../cubex-app/cubex-app-definition.html">
+<link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="cubex-notification-definition.html">
 
 <dom-module id="cubex-notification" attributes="notification">
@@ -57,8 +58,7 @@
       }
     </style>
 
-    <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:project" data="{{routeData}}"></app-route>
+    <cubex-route project-id="{{projectId}}"></cubex-route>
 
     <cubex-notification-definition notification="[[notification]]"
                                    definition="{{definition}}"></cubex-notification-definition>
@@ -145,7 +145,7 @@
                        'PUT',
                        '//' + this.getServiceHost('apps') + '/cubex/notifications/read/' + this.notification.NotificationUid
                      );
-                     xhr.setRequestHeader('x-cube-project', this.routeData.project);
+                     xhr.setRequestHeader('x-cube-project', this.projectId);
                      xhr.withCredentials = true;
                      xhr.send();
                    },

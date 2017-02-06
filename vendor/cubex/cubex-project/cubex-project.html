@@ -1,7 +1,6 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
-<link rel="import" href="../../app-route/app-location.html">
-<link rel="import" href="../../app-route/app-route.html">
+<link rel="import" href="../cubex-route/cubex-route.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -15,9 +14,8 @@ Example:
 
 <dom-module id="cubex-project" attributes="project projects">
   <template>
-    <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:project" data="{{routeData}}"></app-route>
-    <cube-websocket vendor="cubex" app="projects" auto
+    <cubex-route project-id="{{projectId}}"></cubex-route>
+    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="projects"
                     on-subscribe="_projectSubscribed" on-message="_projectUpdate"></cube-websocket>
   </template>
   <script>
@@ -28,7 +26,7 @@ Example:
           project:  {type: Object, notify: true},
           projects: {type: Object, notify: true, readOnly: true}
         },
-        observers:          ['_projectChanged(projects,routeData.project)'],
+        observers:          ['_projectChanged(projects,projectId)'],
         _projectSubscribed: function (e, message)
                             {
                               this._setProjects(JSON.parse(message).projects);
@@ -42,9 +40,9 @@ Example:
                             },
         _projectChanged:    function ()
                             {
-                              if(this.projects && this.routeData.project)
+                              if(this.projects && this.projectId)
                               {
-                                this.set('project', this.projects[this.routeData.project]);
+                                this.set('project', this.projects[this.projectId]);
                               }
                             }
       }

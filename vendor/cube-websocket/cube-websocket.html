@@ -13,7 +13,7 @@ Example:
 -->
 
 <dom-module id="cube-websocket"
-            attributes="vendor app url protocol auto subscribe-payload on-subscribe on-close on-message on-error">
+            attributes="project vendor app url protocol auto subscribe-payload on-subscribe on-close on-message on-error">
   <script>
     (function ()
     {
@@ -23,23 +23,16 @@ Example:
           is:           'cube-websocket',
           behaviors:    [Polymer.CubeServiceBehavior],
           properties:   {
-            vendor:           {
-              type: String
-            },
-            app:              {
-              type: String
-            },
+            project:          {type: String},
+            vendor:           {type: String},
+            app:              {type: String},
             url:              {
               type:               String,
               value:              function () {return 'wss://' + this.getServiceHost('conduit');},
               reflectToAttribute: true
             },
-            protocol:         {
-              type: String
-            },
-            subscribePayload: {
-              type: String
-            },
+            protocol:         {type: String},
+            subscribePayload: {type: String},
             auto:             {
               type:  Boolean,
               value: false
@@ -73,10 +66,12 @@ Example:
                           };
                           xmlHttp.withCredentials = true;
                           xmlHttp.open("POST", subscribeUrl, true);
-                          xmlHttp.send(
-                            typeof(this.subscribePayload) == 'string' ? this.subscribePayload
-                              : JSON.stringify(this.subscribePayload)
-                          );
+                          if(this.project)
+                          {
+                            xmlHttp.setRequestHeader('x-cube-project', this.project);
+                          }
+                          //noinspection JSCheckFunctionSignatures
+                          xmlHttp.send(this.subscribePayload);
                         },
           _onClose:     function ()
                         {

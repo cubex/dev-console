@@ -1,7 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html"/>
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html"/>
+<link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="cubex-breadcrumb-item.html"/>
-<link rel="import" href="../cubex-repath/cubex-repath.html">
 
 <dom-module id="cubex-breadcrumb" attributes="crumbs">
   <template>
@@ -31,8 +31,9 @@
       }
     </style>
 
-    <cubex-repath in="/" gaid="" out="{{projectPath}}"></cubex-repath>
-    <cubex-breadcrumb-item id="home" href="[[projectPath]]">
+    <cubex-route project-id="{{projectId}}"></cubex-route>
+
+    <cubex-breadcrumb-item id="home" href="/[[projectId]]">
       <cube-icon icon="icons:home" size="16"></cube-icon>
     </cubex-breadcrumb-item>
 
