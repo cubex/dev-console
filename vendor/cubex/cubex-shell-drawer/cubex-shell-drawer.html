@@ -91,6 +91,11 @@
         height: 90px;
       }
 
+      #drawerPanelContainer {
+        position: relative;
+        flex-grow: 1
+      }
+
       #drawerPanels {
         height: 100%;
         width: 100%;
@@ -105,10 +110,12 @@
         @apply --primary-700;
       }
 
-      #storeLink {
-        --cube-li-style: {
-          background: red;
-        }
+      cube-list-menu:last-of-type cube-li {
+        @apply --accent-700;
+      }
+
+      cubex-shell-drawer-panel cube-list-menu:first-of-type {
+        flex-grow: 1;
       }
     </style>
 
@@ -130,12 +137,12 @@
         </paper-button>
       </template>
     </cube-animbg>
-    <div style="position: relative;flex-grow: 1;">
+    <div id="drawerPanelContainer">
       <iron-selector selected="0" id="drawerPanels">
         <slot></slot>
         <template is="dom-if" if="[[project]]">
           <cubex-shell-drawer-panel>
-            <cube-list-menu show-filter filter-label="{{i18n('filter_apps')}}" style="flex-grow: 1;">
+            <cube-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
               <template is="dom-repeat" items="[[__appGroups(_projectRegistryData)]]" as="group">
                 <cube-list-group>
                   <cubex-category key="[[group.name]]" slot="title"></cubex-category>
@@ -160,9 +167,9 @@
             </cube-list-menu>
           </cubex-shell-drawer-panel>
         </template>
-        <cubex-shell-drawer-panel>
+        <cubex-shell-drawer-panel id="projectsPanel">
           <cube-list-menu show-filter filter-label="{{i18n('filter_projects')}}">
-            <cube-list-group id="projectsGroup" title="{{i18n('all_projects')}}">
+            <cube-list-group title="{{i18n('all_projects')}}">
               <template is="dom-repeat" items="[[projects]]">
                 <a href="/[[item.id]]">
                   <cube-li>
@@ -172,6 +179,14 @@
                 </a>
               </template>
             </cube-list-group>
+          </cube-list-menu>
+          <cube-list-menu>
+            <a href="/">
+              <cube-li>
+                <cube-icon slot="icon" icon="icons:settings"></cube-icon>
+                Manage Projects
+              </cube-li>
+            </a>
           </cube-list-menu>
         </cubex-shell-drawer-panel>
       </iron-selector>
@@ -228,7 +243,7 @@
         attached:        function ()
                          {
                            this.keyEventTarget = document.body;
-                           this.$.projectsGroup.addEventListener('click', function (e) { e.stopPropagation(); });
+                           this.$.projectsPanel.addEventListener('click', function (e) { e.stopPropagation(); });
                          },
         observers:       ['_updateProjects(_projects)'],
         _updateProjects: function (projects)
