@@ -1,7 +1,7 @@
 <dom-module id="cubex-theme-theme-dark">
   <template>
     <style>
-      html {
+      html, :host > * {
         --theme-text: var(--light-text);
         --theme-text-secondary: var(--light-text-secondary);
         --theme-text-disabled: var(--light-text-disabled);
@@ -26,39 +26,6 @@
         --theme-500-color: #3B3B3B;
         --theme-600-color: #333333;
         --theme-700-color: #222222;
-
-        --theme-50: {
-          background-color: var(--theme-50-color);
-          color: var(--theme-text);
-        };
-        --theme-100: {
-          background-color: var(--theme-100-color);
-          color: var(--theme-text);
-        };
-        --theme-200: {
-          background-color: var(--theme-200-color);
-          color: var(--theme-text);
-        };
-        --theme-300: {
-          background-color: var(--theme-300-color);
-          color: var(--theme-text);
-        };
-        --theme-400: {
-          background-color: var(--theme-400-color);
-          color: var(--theme-text);
-        };
-        --theme-500: {
-          background-color: var(--theme-500-color);
-          color: var(--theme-text);
-        };
-        --theme-600: {
-          background-color: var(--theme-600-color);
-          color: var(--theme-text);
-        };
-        --theme-700: {
-          background-color: var(--theme-700-color);
-          color: var(--theme-text);
-        };
       }
     </style>
   </template>

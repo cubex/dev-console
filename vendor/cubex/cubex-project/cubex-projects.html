@@ -1,0 +1,256 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-hero/cube-hero.html">
+<link rel="import" href="../../cube-icon/cube-icon.html">
+<link rel="import" href="../../cube-list/cube-list.html">
+<link rel="import" href="../../cube-list/cube-li.html">
+<link rel="import" href="../../paper-styles/paper-styles.html">
+<link rel="import" href="../../cube-behavior/cube-service-behavior.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="cubex-project.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <cubex-project project="{{project}}"></cubex-project>
+
+@demo demo/index.html
+-->
+
+<dom-module id="cubex-projects" attributes="project projects">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+        margin: 55px 40px;
+        padding: 40px 20px;
+        background: var(--theme-600-color);
+        min-width: 368px;
+        border-radius: 3px;
+        @apply --shadow-elevation-2dp;
+      }
+
+      @media (max-width: 500px) {
+        :host {
+          min-width: 308px;
+          margin: 55px 0;
+          padding: 40px 0;
+        }
+      }
+
+      h1 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 70px;
+        background: white;
+        margin: 0;
+        padding-top: 30px;
+        text-align: center;
+
+        @apply --paper-font-display1;
+      }
+
+      h2 {
+        @apply --paper-font-title;
+        font-weight: normal;
+        margin-bottom: 0;
+      }
+
+      p {
+        @apply --paper-font-body1;
+        @apply --text-secondary;
+        margin-top: 0;
+      }
+
+      a {
+        display: inline-block;
+        flex-shrink: 0;
+        flex-grow: 0;
+      }
+
+      #wrapper {
+        text-align: center;
+        margin-top: 80px;
+      }
+
+      #container {
+        text-align: left;
+      }
+
+      .project-section {
+        max-width: 313px;
+        margin: 0 auto;
+      }
+
+      #container cube-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      @media (min-width: 925px) {
+        :host([two-column]) .project-section {
+          max-width: 640px;
+        }
+      }
+
+      #container a {
+        color: var(--primary-text-color);
+      }
+
+      #container cube-li {
+        display: inline-block;
+        width: 313px;
+        margin: 4px 0;
+        background: var(--theme-100-color);
+        @apply --shadow-elevation-2dp;
+      }
+
+      #create-button {
+        display: inline-block;
+        margin-top: 15px;
+        @apply --shadow-elevation-2dp;
+        @apply --accent-400;
+      }
+    </style>
+
+    <cubex-project projects="{{_projects}}"></cubex-project>
+    <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/projects/invites"
+                   data="{{_invites}}"></cube-resource>
+
+    <h1>Distributor Logo</h1>
+
+    <div id="wrapper">
+      <div id="container">
+        <template is="dom-if" if="[[_invitesArray]]">
+          <div class="project-section">
+            <h2>Your Invites</h2>
+            <p>You have been invited to the following projects</p>
+            <cube-list border double-border>
+              <template is="dom-repeat" items="[[_invitesArray]]">
+                <cube-li>
+                  <cube-icon icon="icons:add-circle-outline" slot="icon"></cube-icon>
+                  [[item.project.name]]
+                  <div slot="secondary">Pending</div>
+                  <cube-action slot="actions" title="Accept" style="color:green" icon="icons:thumb-up"
+                               on-tap="_processInvite" data-accept-type="1"
+                               data-accept-id$="[[item.project.id]]"></cube-action>
+                  <cube-action slot="actions" title="Reject" style="color:red" icon="icons:thumb-down"
+                               on-tap="_processInvite" data-accept-type="0"
+                               data-accept-id$="[[item.project.id]]"></cube-action>
+                </cube-li>
+              </template>
+            </cube-list>
+          </div>
+        </template>
+
+        <template is="dom-if" if="[[_projectsArray]]">
+          <div class="project-section">
+            <h2>Your Projects</h2>
+            <p>Please choose a project</p>
+            <cube-list border double-border>
+              <template is="dom-repeat" items="[[_projectsArray]]">
+                <a href="/[[item.id]]">
+                  <cube-li>
+                    <cube-icon icon="communication:business" slot="icon"></cube-icon>
+                    [[item.name]]
+                    <div slot="secondary">Owner</div>
+                  </cube-li>
+                </a>
+              </template>
+            </cube-list>
+          </div>
+        </template>
+
+        <template is="dom-if" if="[[!_projectsArray]]">
+          <div class="project-section">
+            <h2>Your Projects</h2>
+            <p>Looks like you just created your account and have no projects. Probably time to create one!</p>
+          </div>
+        </template>
+      </div>
+
+      <cubex-link id="create-button" mode="dialog" href="//[[getServiceHost('apps')]]/cubex/projects/create">
+        <paper-button>Create Project</paper-button>
+      </cubex-link>
+    </div>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:                'cubex-projects',
+        properties:        {
+          twoColumn:      {
+            type:               Boolean,
+            value:              false,
+            reflectToAttribute: true,
+            computed:           '_computeTwoColumn(_projectsArray)'
+          },
+          _projectsArray: {
+            type:     Array,
+            value:    function () {return [];},
+            computed: '_computeProjects(_projects)'
+          },
+          _invitesArray:  {
+            type:     Array,
+            value:    function () {return [];},
+            computed: '_computeInvites(_invites)'
+          }
+        },
+        _computeProjects:  function (projects)
+                           {
+                             return Object.keys(projects).map(function (key) { return projects[key]; });
+                           },
+        _computeInvites:   function (_invites)
+                           {
+                             console.log(_invites.invites);
+                             return _invites.invites;
+                           },
+        _computeTwoColumn: function (_projectsArray)
+                           {
+                             return _projectsArray.length > 7;
+                           },
+        _processInvite:    function (e)
+                           {
+                             var action = e.target;
+                             var xhr = new XMLHttpRequest();
+                             xhr.addEventListener(
+                               'readystatechange', function ()
+                               {
+                                 if(this.readyState == XMLHttpRequest.DONE)
+                                 {
+                                   if(this.status === 200)
+                                   {
+                                     action.parentNode.parentNode.removeChild(action.parentNode);
+                                   }
+                                 }
+                               }
+                             );
+                             if(action.dataset.acceptType == 1)
+                             {
+                               xhr.open(
+                                 'PUT',
+                                 '//' + this.getServiceHost('apps') + '/cubex/projects/approval/' + action.dataset.acceptId
+                               );
+                             }
+                             else
+                             {
+                               xhr.open(
+                                 'DELETE',
+                                 '//' + this.getServiceHost('apps') + '/cubex/projects/approval/' + action.dataset.acceptId
+                               );
+                             }
+                             xhr.withCredentials = true;
+                             xhr.send();
+                           },
+
+        behaviors: [Polymer.CubeServiceBehavior]
+      }
+    );
+  </script>
+</dom-module>

@@ -15,14 +15,16 @@
   "license": "BSD",
   "ignore": [],
   "devDependencies": {
-    "web-component-tester": "^4.0.1",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.22"
+    "web-component-tester": "6.0.0-prerelease.3",
+    "webcomponents-platform": "webcomponents/platform#master",
+    "es6-promise": "stefanpenner/es6-promise#^4.0.0",
+    "html-imports": "webcomponents/html-imports#master"
   },
-  "_release": "36451e1dbe",
+  "_release": "8b1c47ff79",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "36451e1dbe4e3b77d98499fc12132573d91d4a8b"
+    "commit": "8b1c47ff790d51678f75c7016b61ad9655156cc0"
   },
   "_source": "https://github.com/webcomponents/custom-elements.git",
   "_target": "master",

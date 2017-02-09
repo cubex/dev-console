@@ -33,9 +33,13 @@ Example:
                             },
         _projectUpdate:     function (e, message)
                             {
-                              if(message.action == 'create')
+                              if(message.action == 'create' || message.action == 'join')
                               {
                                 this.set('projects.' + message.payload.id, message.payload);
+                              }
+                              else if(message.action == 'leave')
+                              {
+                                this.set('projects.' + message.payload, null);
                               }
                             },
         _projectChanged:    function ()

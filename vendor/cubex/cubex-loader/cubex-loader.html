@@ -1,0 +1,27 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../cubex-app/cubex-app-loader.html">
+<link rel="import" href="../cubex-project/cubex-projects.html">
+
+<dom-module id="cubex-loader">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <cubex-route project-id="{{projectId}}"></cubex-route>
+    <template is="dom-if" if="[[projectId]]">
+      <cubex-app-loader></cubex-app-loader>
+    </template>
+    <template is="dom-if" if="[[!projectId]]">
+      <cubex-projects></cubex-projects>
+    </template>
+  </template>
+  <script>
+    Polymer(
+      {
+        is: 'cubex-loader'
+      }
+    );
+  </script>
+</dom-module>

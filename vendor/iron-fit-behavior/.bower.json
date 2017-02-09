@@ -45,11 +45,11 @@
     "test-fixture": "^2.0.0"
   },
   "homepage": "https://github.com/PolymerElements/iron-fit-behavior",
-  "_release": "8f6398f967",
+  "_release": "0c8639d580",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "8f6398f967d4588b70d1e6cbe55385eaa3d87003"
+    "commit": "0c8639d580c762b9b68910e0f782f76c320f291f"
   },
   "_source": "https://github.com/PolymerElements/iron-fit-behavior.git",
   "_target": "2.0-preview",

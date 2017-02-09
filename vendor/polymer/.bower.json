@@ -1,9 +1,7 @@
 {
   "name": "polymer",
   "main": [
-    "polymer.html",
-    "polymer-mini.html",
-    "polymer-micro.html"
+    "polymer.html"
   ],
   "license": "http://polymer.github.io/LICENSE.txt",
   "ignore": [
@@ -25,19 +23,19 @@
     "webcomponentsjs": "#v1"
   },
   "devDependencies": {
-    "web-component-tester": "*",
-    "test-fixture": "PolymerElements/test-fixture#^2.0.0"
+    "web-component-tester": "^5",
+    "test-fixture": "PolymerElements/test-fixture#safari9-constructor"
   },
   "private": true,
   "resolutions": {
-    "test-fixture": "^2.0.0"
+    "test-fixture": "safari9-constructor"
   },
   "homepage": "https://github.com/Polymer/polymer",
-  "_release": "3a5e9a30ad",
+  "_release": "faef7111ca",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "3a5e9a30ade84acf5841ea6ffe4685a6e3844328"
+    "commit": "faef7111caa3dc548a2547235a25e29c65823a72"
   },
   "_source": "https://github.com/Polymer/polymer.git",
   "_target": "2.0-preview",

@@ -24,7 +24,7 @@
 <link rel="import" href="../cubex-drawer/cubex-drawer.html">
 <link rel="import" href="../cubex-drawer/cubex-user-drawer.html">
 <link rel="import" href="../cubex-drawer/cubex-drawer-content.html">
-<link rel="import" href="../cubex-app/cubex-app-loader.html">
+<link rel="import" href="../cubex-loader/cubex-loader.html">
 <link rel="import" href="../../cube-preferences/cube-preferences.html">
 
 <dom-module id="cubex-shell" attributes="drawer-opened focus-search">
@@ -42,7 +42,7 @@
       }
 
       @media screen and (max-width: 320px) {
-        :root {
+        :host {
           --app-drawer-width: 256px;
         }
       }
@@ -217,12 +217,12 @@
     <iron-media-query query="(max-width: 375px)" query-matches="{{_narrow}}"></iron-media-query>
 
     <app-drawer-layout id="adl" fullbleed force-narrow>
-      <app-drawer id="drawer" opened="{{drawerOpened}}">
+      <app-drawer slot="drawer" id="drawer" opened="{{drawerOpened}}">
         <cubex-shell-drawer></cubex-shell-drawer>
       </app-drawer>
 
       <app-header-layout>
-        <app-header fixed>
+        <app-header fixed slot="header">
           <div id="flex-toolbar">
             <div id="burger">
               <paper-icon-button icon="menu" on-tap="_toggleDrawer"></paper-icon-button>
@@ -241,18 +241,20 @@
                          on-tap="_toggleUserDrawer"></cube-action>
           </div>
         </app-header>
+
+        <div id="waterfall"></div>
+
+        <cube-preferences name="userDrawerPosition" value="{{userDrawerState}}"></cube-preferences>
+
+        <cubex-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]" state="{{userDrawerState}}"
+                      preferred-state="[[userDrawerState]]" position="right">
+          <cubex-drawer-content slot="drawer-content">
+            <cubex-user-drawer></cubex-user-drawer>
+          </cubex-drawer-content>
+
+          <cubex-loader></cubex-loader>
+        </cubex-drawer>
       </app-header-layout>
-      <div id="waterfall"></div>
-
-      <cube-preferences name="userDrawerPosition" value="{{userDrawerState}}"></cube-preferences>
-      <cubex-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]" state="{{userDrawerState}}"
-                    preferred-state="[[userDrawerState]]" position="right">
-        <cubex-drawer-content slot="drawer-content">
-          <cubex-user-drawer></cubex-user-drawer>
-        </cubex-drawer-content>
-
-        <cubex-app-loader></cubex-app-loader>
-      </cubex-drawer>
 
     </app-drawer-layout>
 

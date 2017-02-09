@@ -13,7 +13,6 @@
         background-repeat: no-repeat;
         background-position: center center;
         background-size: auto;
-        background-image: var(--hero-background-image);
       }
 
       :host #wrapper {
@@ -25,19 +24,25 @@
         box-sizing: border-box;
       }
 
-      :host([background]) #wrapper {
-        background: -webkit-radial-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)); /* Safari 5.1 to 6.0 */
-        background: -o-radial-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)); /* For Opera 11.6 to 12.0 */
-        background: -moz-radial-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)); /* For Firefox 3.6 to 15 */
-        background: radial-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)); /* Standard syntax */
+      :host([background])::after {
+
+        content: "";
+        pointer-events: none;
+        position: absolute;
+        top: -64px;
+        left: 0;
+        bottom: 0;
+        right: 0;
+
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, rgba(255, 255, 255, 0) 64px), radial-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.3));
       }
 
-      :host(:not([background])) #wrapper {
+      :host #wrapper {
         position: relative;
       }
 
-      :host(:not([background]))::before {
-        background: url('./polygon.svg');
+      :host::before {
+        background: var(--hero-background-image, url('./polygon.svg'));
         background-position: center center;
         background-size: cover;
         background-color: var(--hero-background-color, #3884cd);

@@ -30,11 +30,11 @@
     "polymer": "2.0-preview",
     "webcomponentsjs": "v1"
   },
-  "_release": "7d9984bd75",
+  "_release": "da62007d86",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "7d9984bd7576a7a38f4f92cb9f53d6bd8b154be2"
+    "commit": "da62007d86c58af880701e12eef339cc1eec6460"
   },
   "_source": "https://github.com/CubexElements/cube-hero.git",
   "_target": "*",
