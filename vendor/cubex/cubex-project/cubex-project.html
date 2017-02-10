@@ -23,30 +23,33 @@ Example:
       {
         is:                 'cubex-project',
         properties:         {
-          project:  {type: Object, notify: true},
-          projects: {type: Object, notify: true, readOnly: true}
+          project:  {type: Object, value: function () {return {};}, notify: true, readOnly: true},
+          projects: {type: Object, value: function () {return {};}, notify: true, readOnly: true}
         },
         observers:          ['_projectChanged(projects,projectId)'],
         _projectSubscribed: function (e, message)
                             {
-                              this._setProjects(JSON.parse(message).projects);
+                              this._setProjects(JSON.parse(message).projects || {});
                             },
         _projectUpdate:     function (e, message)
                             {
+                              var projects = this.projects;
                               if(message.action == 'create' || message.action == 'join')
                               {
-                                this.set('projects.' + message.payload.id, message.payload);
+                                projects[message.payload.id] = message.payload;
+                                this._setProjects(projects);
                               }
                               else if(message.action == 'leave')
                               {
-                                this.set('projects.' + message.payload, null);
+                                delete projects[message.payload];
+                                this._setProjects(projects);
                               }
                             },
         _projectChanged:    function ()
                             {
                               if(this.projects && this.projectId)
                               {
-                                this.set('project', this.projects[this.projectId]);
+                                this._setProject(this.projects[this.projectId]);
                               }
                             }
       }

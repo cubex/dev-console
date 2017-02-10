@@ -126,12 +126,12 @@ Example:
 
     <div id="wrapper">
       <div id="container">
-        <template is="dom-if" if="[[_invitesArray]]">
+        <template is="dom-if" if="[[_invites.invites.length]]">
           <div class="project-section">
             <h2>Your Invites</h2>
             <p>You have been invited to the following projects</p>
             <cube-list border double-border>
-              <template is="dom-repeat" items="[[_invitesArray]]">
+              <template is="dom-repeat" items="[[_invites.invites]]">
                 <cube-li>
                   <cube-icon icon="icons:add-circle-outline" slot="icon"></cube-icon>
                   [[item.project.name]]
@@ -148,7 +148,7 @@ Example:
           </div>
         </template>
 
-        <template is="dom-if" if="[[_projectsArray]]">
+        <template is="dom-if" if="[[_projectsArray.length]]">
           <div class="project-section">
             <h2>Your Projects</h2>
             <p>Please choose a project</p>
@@ -166,9 +166,9 @@ Example:
           </div>
         </template>
 
-        <template is="dom-if" if="[[!_projectsArray]]">
+        <template is="dom-if" if="[[!_projectsArray.length]]">
           <div class="project-section">
-            <h2>Your Projects</h2>
+            <h2>Create a Project</h2>
             <p>Looks like you just created your account and have no projects. Probably time to create one!</p>
           </div>
         </template>
@@ -183,71 +183,77 @@ Example:
   <script>
     Polymer(
       {
-        is:                'cubex-projects',
-        properties:        {
+        is:         'cubex-projects',
+        properties: {
+          _projectsArray: {
+            type:     Array,
+            notify:   true,
+            value:    function () {return [];},
+            computed: '_computeProjects(_projects,_projects.*)'
+          },
           twoColumn:      {
             type:               Boolean,
             value:              false,
             reflectToAttribute: true,
-            computed:           '_computeTwoColumn(_projectsArray)'
-          },
-          _projectsArray: {
-            type:     Array,
-            value:    function () {return [];},
-            computed: '_computeProjects(_projects)'
-          },
-          _invitesArray:  {
-            type:     Array,
-            value:    function () {return [];},
-            computed: '_computeInvites(_invites)'
+            computed:           '_computeTwoColumn(_projectsArray,_invites.invites)'
           }
         },
+
         _computeProjects:  function (projects)
                            {
                              return Object.keys(projects).map(function (key) { return projects[key]; });
                            },
-        _computeInvites:   function (_invites)
+        _computeTwoColumn: function (projects, invites)
                            {
-                             console.log(_invites.invites);
-                             return _invites.invites;
-                           },
-        _computeTwoColumn: function (_projectsArray)
-                           {
-                             return _projectsArray.length > 7;
-                           },
-        _processInvite:    function (e)
-                           {
-                             var action = e.target;
-                             var xhr = new XMLHttpRequest();
-                             xhr.addEventListener(
-                               'readystatechange', function ()
-                               {
-                                 if(this.readyState == XMLHttpRequest.DONE)
-                                 {
-                                   if(this.status === 200)
-                                   {
-                                     action.parentNode.parentNode.removeChild(action.parentNode);
-                                   }
-                                 }
-                               }
-                             );
-                             if(action.dataset.acceptType == 1)
+                             if(projects && invites)
                              {
-                               xhr.open(
-                                 'PUT',
-                                 '//' + this.getServiceHost('apps') + '/cubex/projects/approval/' + action.dataset.acceptId
-                               );
+                               return (projects.length + invites.length) > 7;
                              }
-                             else
-                             {
-                               xhr.open(
-                                 'DELETE',
-                                 '//' + this.getServiceHost('apps') + '/cubex/projects/approval/' + action.dataset.acceptId
-                               );
-                             }
-                             xhr.withCredentials = true;
-                             xhr.send();
+                             return false;
                            },
+
+        _processInvite: function (e)
+                        {
+                          var self = this, actionData = e.target.dataset, xhr = new XMLHttpRequest();
+                          xhr.addEventListener(
+                            'readystatechange', function ()
+                            {
+                              if(this.readyState == XMLHttpRequest.DONE)
+                              {
+                                if(this.status === 200)
+                                {
+                                  for(var i in self._invites.invites)
+                                  {
+                                    if(self._invites.invites.hasOwnProperty(i))
+                                    {
+                                      if(self._invites.invites[i].project.id == actionData.acceptId)
+                                      {
+                                        self.splice('_invites.invites', i, 1);
+                                        break;
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          );
+                          if(actionData.acceptType == 1)
+                          {
+                            xhr.open(
+                              'PUT',
+                              '//' + this.getServiceHost('apps') + '/cubex/projects/approval/' + actionData.acceptId
+                            );
+                          }
+                          else
+                          {
+                            xhr.open(
+                              'DELETE',
+                              '//' + this.getServiceHost('apps') + '/cubex/projects/approval/' + actionData.acceptId
+                            );
+                          }
+                          xhr.withCredentials = true;
+                          xhr.send();
+                        },
 
         behaviors: [Polymer.CubeServiceBehavior]
       }
