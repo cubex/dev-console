@@ -3,7 +3,7 @@
 <link rel="import" href="../cube-indexeddb-mirror/cube-indexeddb-mirror.html">
 <link rel="import" href="../cube-behavior/cube-service-behavior.html">
 
-<dom-module id="cube-preferences" attributes="name value cache">
+<dom-module id="cube-preferences" attributes="gaid name value cache">
   <template>
     <template is="dom-if" if="[[cache]]">
       <cube-indexeddb-mirror data="{{value}}" persisted-data="{{persistedValue}}"
@@ -16,7 +16,7 @@
         is:            'cube-preferences',
         behaviors:     [Polymer.CubeServiceBehavior],
         properties:    {
-          gaid:  {type: String, readonly: true},
+          gaid:  {type: String},
           name:  {type: String},
           value: {type: String, notify: true},
           cache: {type: Boolean},
