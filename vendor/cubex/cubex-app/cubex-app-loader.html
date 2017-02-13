@@ -238,7 +238,7 @@
                                    newMenu.push(
                                      {
                                        Title: headerMenu[i].Title,
-                                       Path:  '/' + this.projectId + '/' + headerMenu[i].Hook + '/_/' + headerMenu[i].ID,
+                                       Path:  '/' + headerMenu[i].Hook + '/_/' + headerMenu[i].ID,
                                        Mode:  'page'
                                      }
                                    );
@@ -251,9 +251,9 @@
                                      newMenu.push(
                                        {
                                          Title: this.$.cat.getCategory(category, true),
-                                         Path:  '/' + this.projectId + '/' + headerMenu[i].Hook + '/~/' + category
+                                         Path:  '/' + headerMenu[i].Hook + '/~/' + category
                                                 + '/h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
-                                         Match: '/' + this.projectId + '/' + headerMenu[i].Hook + '/~/' + category,
+                                         Match: '/' + headerMenu[i].Hook + '/~/' + category,
                                          Mode:  'page'
                                        }
                                      );
@@ -276,7 +276,7 @@
                                      Title:   action.Title,
                                      Path:    action.Mode == 'dialog'
                                                 ? '//' + this.getServiceHost('apps') + '/' + action.GlobalAppID + '/' + action.Path
-                                                : '/' + this.projectId + '/' + action.Hook + '/_/' + action.ID,
+                                                : '/' + action.Hook + '/_/' + action.ID,
                                      Icon:    action.Icon,
                                      Mode:    action.Mode,
                                      Primary: action.GlobalAppID == 'fortifiplatform/customers'
@@ -400,7 +400,7 @@
                                   pathMatches = this._parsePath(this.appPath),
                                   fullPath = '/' + gaid + pathMatches.pagePath,
                                   integrationPath = fullPath;
-                                this._pagePath = '/' + this.projectId + fullPath;
+                                this._pagePath = fullPath;
 
                                 if(pathMatches.type == '_')
                                 {
@@ -622,7 +622,7 @@
 
         _getBasePath: function ()
                       {
-                        return '/' + this.projectId + '/' + this.vendorId + '/' + this.appId;
+                        return '/' + this.vendorId + '/' + this.appId;
                       },
 
         _pageHtmlChanged: function ()
