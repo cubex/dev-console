@@ -5,10 +5,8 @@
 <dom-module id="cubex-route" attributes="full-path project-id vendor-id app-id app-path query">
   <template>
     <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:project" active="{{projectActive}}"
-               data="{{projectRouteData}}" tail="{{projectTail}}" query-params="{{query}}"></app-route>
-    <app-route route="[[projectTail]]" pattern="/:vendor" active="{{vendorActive}}"
-               data="{{vendorRouteData}}" tail="{{vendorTail}}"></app-route>
+    <app-route route="[[route]]" pattern="/:vendor" active="{{vendorActive}}"
+               data="{{vendorRouteData}}" tail="{{vendorTail}}" query-params="{{query}}"></app-route>
     <app-route route="[[vendorTail]]" pattern="/:app" active="{{appActive}}"
                data="{{appRouteData}}" tail="{{appTail}}"></app-route>
   </template>
@@ -28,10 +26,11 @@
         observers:      ['_computeValues(route.path)'],
         _computeValues: function ()
                         {
+                          var project = window.location.host.match(/^(.+?)\./)[1];
                           this.setProperties(
                             {
                               'fullPath':  this.route.path,
-                              'projectId': this.projectActive ? this.projectRouteData.project : '',
+                              'projectId': project == 'console' ? '' : project,
                               'vendorId':  this.vendorActive ? this.vendorRouteData.vendor : '',
                               'appId':     this.appActive ? this.appRouteData.app : '',
                               'appPath':   this.appActive ? this.appTail.path : '',

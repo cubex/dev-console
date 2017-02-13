@@ -147,7 +147,7 @@
                 <cube-list-group>
                   <cubex-category key="[[group.name]]" slot="title"></cubex-category>
                   <template is="dom-repeat" items="[[group.apps]]" as="app" filter="_filterApps">
-                    <a href="/[[project.id]]/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
+                    <a href="/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
                       <cube-li>
                         <cube-icon slot="icon" icon="[[app.icon]]"></cube-icon>
                         [[app.name]]
@@ -158,7 +158,7 @@
               </template>
             </cube-list-menu>
             <cube-list-menu>
-              <a id="storeLink" href="/[[project.id]]/cubex/store">
+              <a id="storeLink" href="/cubex/store">
                 <cube-li>
                   <cube-icon slot="icon" icon="icons:apps"></cube-icon>
                   App Store
@@ -171,7 +171,7 @@
           <cube-list-menu show-filter filter-label="{{i18n('filter_projects')}}">
             <cube-list-group title="{{i18n('all_projects')}}">
               <template is="dom-repeat" items="[[projects]]">
-                <a href="/[[item.id]]">
+                <a href="//[[getServiceHost(item.id)]]">
                   <cube-li>
                     <cube-icon slot="icon" icon="communication:business"></cube-icon>
                     [[item.name]]
@@ -181,7 +181,7 @@
             </cube-list-group>
           </cube-list-menu>
           <cube-list-menu>
-            <a href="/">
+            <a href="//[[getServiceHost('console')]]">
               <cube-li>
                 <cube-icon slot="icon" icon="icons:settings"></cube-icon>
                 Manage Projects
@@ -232,18 +232,12 @@
             type: String
           }
         },
-        behaviors:       [
-          Polymer.IronA11yKeysBehavior,
-          Polymer.CubeI18nBehavior,
-          Polymer.CubeServiceBehavior
-        ],
         keyBindings:     {
           ',': 'toggleDrawer'
         },
         attached:        function ()
                          {
                            this.keyEventTarget = document.body;
-                           this.$.projectsPanel.addEventListener('click', function (e) { e.stopPropagation(); });
                          },
         observers:       ['_updateProjects(_projects)'],
         _updateProjects: function (projects)
@@ -297,7 +291,13 @@
         _filterApps: function (item)
                      {
                        return item.app_type == 'cubex.platform.application';
-                     }
+                     },
+
+        behaviors: [
+          Polymer.IronA11yKeysBehavior,
+          Polymer.CubeI18nBehavior,
+          Polymer.CubeServiceBehavior
+        ]
       }
     );
   </script>

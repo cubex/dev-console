@@ -27,7 +27,7 @@
 
     <cube-carousel count="5">
       <template style="display:none" is="dom-repeat" items="[[_getCategories(projectData.AppSummary)]]">
-        <a href="/[[projectId]]/[[item.vendor_id]]/[[item.id]]">
+        <a href="/[[item.vendor_id]]/[[item.id]]">
           <cube-tile color="[[_getColor(index)]]" icon="[[item.icon]]" heading="[[item.name]]"
                      text="[[item.description]]"></cube-tile>
         </a>

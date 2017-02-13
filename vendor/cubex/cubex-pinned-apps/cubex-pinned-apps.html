@@ -37,14 +37,16 @@
       }
     </style>
     <cubex-route project-id="{{projectId}}"></cubex-route>
-    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="pinnedapps"
-                    on-subscribe="_pinnedSub" on-message="_pinnedMsg"></cube-websocket>
-    <template is="dom-repeat" items="[[pinnedApps]]">
-      <a href="/[[projectId]]/[[item.GlobalAppID]]">
-        <cube-action id="pinned-[[item.ID]]" icon="[[item.Icon]]"></cube-action>
-      </a>
-      <paper-tooltip for="pinned-[[item.ID]]" position="center" animation-delay="100"><strong>[[item.Name]]</strong>
-      </paper-tooltip>
+    <template is="dom-if" if="[[projectId]]">
+      <cube-websocket auto project="[[projectId]]" vendor="cubex" app="pinnedapps"
+                      on-subscribe="_pinnedSub" on-message="_pinnedMsg"></cube-websocket>
+      <template is="dom-repeat" items="[[pinnedApps]]">
+        <a href="/[[item.GlobalAppID]]">
+          <cube-action id="pinned-[[item.ID]]" icon="[[item.Icon]]"></cube-action>
+        </a>
+        <paper-tooltip for="pinned-[[item.ID]]" position="center" animation-delay="100"><strong>[[item.Name]]</strong>
+        </paper-tooltip>
+      </template>
     </template>
   </template>
   <script>

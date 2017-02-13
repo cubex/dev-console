@@ -48,7 +48,7 @@
         <cube-action icon="icons:add" slot="trigger"></cube-action>
         <cube-list-menu>
           <template is="dom-repeat" items="[[actions.Actions]]" as="action">
-            <a href="/[[projectId]]/[[action.GlobalAppID]]/[[action.Path]]" on-tap="_tap">
+            <a href="/[[action.GlobalAppID]]/[[action.Path]]" on-tap="_tap">
               <cube-li title="[[action.Name]]">
                 <cube-icon slot="icon" icon="[[action.Icon]]"></cube-icon>
                 [[action.Name]]

@@ -139,7 +139,7 @@
     <iron-dropdown vertical-align="top" id="results">
       <cube-list-menu id="searchmenu" zebra>
         <template is="dom-repeat" items="{{_filterActions(searchQuery,_search.Actions)}}">
-          <a href="/[[projectId]]/[[item.GlobalAppID]]/[[item.Path]]">
+          <a href="/[[item.GlobalAppID]]/[[item.Path]]">
             <cube-li>
               <template restamp is="dom-if" if="[[item.Icon]]">
                 <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>

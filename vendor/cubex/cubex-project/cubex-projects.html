@@ -154,7 +154,7 @@ Example:
             <p>Please choose a project</p>
             <cube-list border double-border>
               <template is="dom-repeat" items="[[_projectsArray]]">
-                <a href="/[[item.id]]">
+                <a href="//[[getServiceHost(item.id)]]">
                   <cube-li>
                     <cube-icon icon="communication:business" slot="icon"></cube-icon>
                     [[item.name]]

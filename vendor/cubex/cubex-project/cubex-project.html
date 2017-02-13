@@ -23,7 +23,7 @@ Example:
       {
         is:                 'cubex-project',
         properties:         {
-          project:  {type: Object, value: function () {return {};}, notify: true, readOnly: true},
+          project:  {type: Object, notify: true, readOnly: true},
           projects: {type: Object, value: function () {return {};}, notify: true, readOnly: true}
         },
         observers:          ['_projectChanged(projects,projectId)'],

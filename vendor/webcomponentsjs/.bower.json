@@ -25,11 +25,11 @@
     "URL": "webcomponents/URL#master",
     "webcomponents-platform": "webcomponents/webcomponents-platform#master"
   },
-  "_release": "f214a22d17",
+  "_release": "113ea96025",
   "_resolution": {
     "type": "branch",
     "branch": "v1",
-    "commit": "f214a22d171d618285c2245ace8c7eb6438c81f7"
+    "commit": "113ea960250dc254b20c18903c16cc0fe22bd06d"
   },
   "_source": "https://github.com/Polymer/webcomponentsjs.git",
   "_target": "v1",
