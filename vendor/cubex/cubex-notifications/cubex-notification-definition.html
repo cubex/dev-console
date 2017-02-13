@@ -1,7 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../cubex-app/cubex-app-definition.html">
 
-<dom-module id="cubex-notification-definition" attributes="notification definition">
+<dom-module id="cubex-notification-definition" attributes="notification-id definition">
   <template>
     <cubex-app-definition gaid="[[_globalAppId]]" app-data="{{_appData}}"></cubex-app-definition>
   </template>
@@ -12,7 +12,7 @@
       {
         is:         'cubex-notification-definition',
         properties: {
-          notification:      {type: Object},
+          notificationId:    {type: String, value: null},
           definition:        {
             type:     Object,
             notify:   true,
@@ -22,7 +22,7 @@
           _notificationType: {type: String}
         },
 
-        observers: ['_computeGaid(notification.NotificationId)'],
+        observers: ['_computeGaid(notificationId)'],
 
         _computeGaid: function (id)
                       {
