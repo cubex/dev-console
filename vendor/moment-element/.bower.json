@@ -30,12 +30,12 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
   },
   "homepage": "https://github.com/abdonrd/moment-element",
-  "version": "0.4.3",
-  "_release": "0.4.3",
+  "version": "0.4.4",
+  "_release": "0.4.4",
   "_resolution": {
     "type": "version",
-    "tag": "v0.4.3",
-    "commit": "a73f3a2fdb057a9dad204263d222aadf54a68c06"
+    "tag": "v0.4.4",
+    "commit": "3df521548359bcb2bdff1d752c747af0410125dd"
   },
   "_source": "https://github.com/abdonrd/moment-element.git",
   "_target": "^0.4.3",

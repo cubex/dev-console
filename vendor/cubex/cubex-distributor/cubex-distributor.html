@@ -1,0 +1,19 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<dom-module id="cubex-distributor" attributes="distributor">
+  <script>
+    Polymer(
+      {
+        is:         'cubex-distributor',
+        properties: {
+          distributor: {type: Object, readOnly: true, notify: true}
+        },
+        ready:      function ()
+                    {
+                      //noinspection JSUnresolvedVariable
+                      this._setDistributor(window.CubexDistributor);
+                    }
+      }
+    );
+  </script>
+</dom-module>

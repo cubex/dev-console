@@ -6,6 +6,7 @@
 <link rel="import" href="../../paper-styles/paper-styles.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../cubex-distributor/cubex-distributor.html">
 <link rel="import" href="cubex-project.html">
 
 <!--
@@ -40,18 +41,29 @@ Example:
         }
       }
 
-      h1 {
+      #heading {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 70px;
+        height: 100px;
         background: white;
         margin: 0;
-        padding-top: 30px;
+        padding: 20px;
+        box-sizing: border-box;
         text-align: center;
+        display: flex;
+        justify-content: center;
+      }
 
+      #heading img {
+        margin-right: 10px;
+      }
+
+      #heading h1 {
         @apply --paper-font-display1;
+        margin: 0;
+        line-height: 60px;
       }
 
       h2 {
@@ -118,11 +130,17 @@ Example:
       }
     </style>
 
+    <cubex-distributor distributor="{{_distributor}}"></cubex-distributor>
     <cubex-project projects="{{_projects}}"></cubex-project>
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/projects/invites"
                    data="{{_invites}}"></cube-resource>
 
-    <h1>Distributor Logo</h1>
+    <div id="heading">
+      <template is="dom-if" if="[[_distributor.LogoUrl]]">
+        <img height="60" src="[[_distributor.LogoUrl]]">
+      </template>
+      <h1>[[_distributor.Name]]</h1>
+    </div>
 
     <div id="wrapper">
       <div id="container">
