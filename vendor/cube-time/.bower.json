@@ -21,17 +21,17 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.7.0",
-    "time-elements": "git://github.com/github/time-elements#^0.6.1"
+    "moment-element": "^0.4.3"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.1.7",
     "web-component-tester": "^4.3.5"
   },
-  "_release": "2bae5a1c6a",
+  "_release": "a7a761e2b7",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "2bae5a1c6a6bb8920503772576e38f9f689ccb07"
+    "commit": "a7a761e2b77a7fa38ea44aa9e6a6a18a9c8afe0b"
   },
   "_source": "https://github.com/CubexElements/cube-time.git",
   "_target": "*",

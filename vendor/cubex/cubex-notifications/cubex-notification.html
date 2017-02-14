@@ -3,7 +3,7 @@
 <link rel="import" href="../../cube-icon/cube-icon.html">
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
-<link rel="import" href="../../moment-element/moment-element.html">
+<link rel="import" href="../../cube-time/cube-time.html">
 <link rel="import" href="../../paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="../cubex-app/cubex-app-definition.html">
 <link rel="import" href="../cubex-route/cubex-route.html">
@@ -67,9 +67,9 @@
       <cube-icon slot="icon" icon="[[definition.Icon]]"></cube-icon>
       [[i18nData_c4t(definition.ID,'_message','',notification.Data)]]
       <div slot="secondary">
-        <moment-element datetime$="[[_dateTime(notification.UpdateTime)]]" from="now">
+        <cube-time datetime="[[_dateTime(notification.UpdateTime)]]" from="now">
           [[_dateTime(notification.UpdateTime)]]
-        </moment-element>
+        </cube-time>
       </div>
 
       <template is="dom-if" if="[[running]]">

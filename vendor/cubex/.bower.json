@@ -21,7 +21,6 @@
     "app-route": "PolymerElements/app-route#2.0-preview",
     "app-layout": "PolymerElements/app-layout#2.0-preview",
     "app-storage": "PolymerElements/app-storage#2.0-preview",
-    "moment-element": "^0.4.3",
     "shadycss": "TomK/shadycss#issue-21",
     "page-title": "^2.0.0",
     "murmurHash3js": "murmurhash3js#^3.0.0"
@@ -77,11 +76,11 @@
     "app-localize-behavior": "^0.9.0"
   },
   "homepage": "https://github.com/CubexElements/cubex",
-  "_release": "fa40099b87",
+  "_release": "d6fa44b57a",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "fa40099b8736f58e6ca29673884169fab60e5e13"
+    "commit": "d6fa44b57a40809a83745a96476b6a082961f853"
   },
   "_source": "https://github.com/CubexElements/cubex.git",
   "_target": "*",
