@@ -31,11 +31,11 @@
     "test-fixture": "safari9-constructor"
   },
   "homepage": "https://github.com/Polymer/polymer",
-  "_release": "12a4bcd572",
+  "_release": "d6e9e8a977",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "12a4bcd572151246dae23ae44eaf230c063d11b1"
+    "commit": "d6e9e8a97798b8ae5781edf0260cac94257699a5"
   },
   "_source": "https://github.com/Polymer/polymer.git",
   "_target": "2.0-preview",
