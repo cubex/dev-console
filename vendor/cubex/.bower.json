@@ -76,11 +76,11 @@
     "app-localize-behavior": "^0.9.0"
   },
   "homepage": "https://github.com/CubexElements/cubex",
-  "_release": "d6fa44b57a",
+  "_release": "759b85eedb",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "d6fa44b57a40809a83745a96476b6a082961f853"
+    "commit": "759b85eedbe15658add06417ba0f6e76cadb6b0f"
   },
   "_source": "https://github.com/CubexElements/cubex.git",
   "_target": "*",

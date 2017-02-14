@@ -1,14 +1,23 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../moment-element/moment-element.html">
 
-<dom-module id="cube-time" attributes="datetime input-format output-format from output">
+<dom-module id="cube-time" attributes="datetime input-format output-format from to">
   <template>
     <moment-element datetime="[[datetime]]" input-format="[[inputFormat]]" output-format="[[outputFormat]]"
-                    from="[[from]]" to="[[to]]" output="{{output}}">
-      <slot></slot>
-    </moment-element>
+                    from="[[from]]" to="[[to]]"></moment-element>
   </template>
   <script>
-    Polymer({is: 'cube-time'});
+    Polymer(
+      {
+        is:         'cube-time',
+        properties: {
+          datetime:     {type: String},
+          inputFormat:  {type: String},
+          outputFormat: {type: String},
+          from:         {type: String},
+          to:           {type: String}
+        }
+      }
+    );
   </script>
 </dom-module>

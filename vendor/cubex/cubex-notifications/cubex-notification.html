@@ -67,7 +67,7 @@
       <cube-icon slot="icon" icon="[[definition.Icon]]"></cube-icon>
       [[i18nData_c4t(definition.ID,'_message','',notification.Data)]]
       <div slot="secondary">
-        <cube-time datetime="[[_dateTime(notification.UpdateTime)]]" from="now">
+        <cube-time input-format="X" datetime="[[notification.UpdateTime]]" from="now">
           [[_dateTime(notification.UpdateTime)]]
         </cube-time>
       </div>
