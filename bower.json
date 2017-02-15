@@ -9,9 +9,8 @@
   },
   "resolutions": {
     "polymer": "2.0-preview",
-    "app-storage": "2.0-preview",
-    "shadycss": "issue-21",
     "webcomponentsjs": "v1",
+    "app-storage": "2.0-preview",
     "neon-animation": "2.0-preview",
     "paper-styles": "2.0-preview",
     "iron-flex-layout": "2.0-preview",

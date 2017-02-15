@@ -22,7 +22,6 @@
     "app-route": "PolymerElements/app-route#2.0-preview",
     "app-layout": "PolymerElements/app-layout#2.0-preview",
     "app-storage": "PolymerElements/app-storage#2.0-preview",
-    "shadycss": "TomK/shadycss#issue-21",
     "page-title": "^2.0.0",
     "murmurHash3js": "murmurhash3js#^3.0.0"
   },
@@ -47,7 +46,6 @@
     "iron-autogrow-textarea": "2.0-preview",
     "iron-input": "2.0-preview",
     "iron-icon": "2.0-preview",
-    "shadycss": "issue-21",
     "app-route": "2.0-preview",
     "iron-location": "2.0-preview",
     "iron-media-query": "2.0-preview",
