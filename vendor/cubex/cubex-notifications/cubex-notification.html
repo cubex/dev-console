@@ -83,7 +83,6 @@
           <div></div>
         </cube-action>
       </template>
-
     </cube-li>
   </template>
 
@@ -126,16 +125,14 @@
 
         _resetResources: function (def)
                          {
-                           var self = this,
-                             res = {};
-
+                           var newRes = {};
                            if(def)
                            {
-                             res = self.hydrateResources(res, def.ID + '_message', def.Message);
-                             res = self.hydrateResources(res, def.ID + '_description', def.Description);
+                             newRes[def.ID + '_message'] = def.Message;
+                             newRes[def.ID + '_description'] = def.Description;
+                             newRes[def.ID + '_path'] = def.Path;
                            }
-
-                           this.resources = res;
+                           this.hydrateResources(newRes, true);
                          },
 
         _markRead: function ()

@@ -276,41 +276,25 @@
                              },
         _resetResources:     function ()
                              {
-                               var self = this,
-                                 res = {
-                                   "en": {
-                                     "configure": "Configure",
-                                     "collapse":  "Collapse Menu",
-                                     "keep_out":  "Keep Menu Out"
-                                   },
-                                   "fr": {
-                                     "configure": "Configurer",
-                                     "collapse":  "Réduire Menu",
-                                     "keep_out":  "Gardez Menu Out"
-                                   }
-                                 };
+                               // reset resources
+                               var newRes = {
+                                 'configure': {'en': 'Configure', 'fr': 'Configurer'},
+                                 'collapse':  {'en': 'Collapse Menu', 'fr': 'Réduire Menu'},
+                                 'keep_out':  {'en': 'Keep Menu Out', 'fr': 'Gardez Menu Out'}
+                               };
 
                                if(this.appData && this.appData.Name)
                                {
-                                 res = this.hydrateResources(res, 'app_name', this.appData.Name);
+                                 newRes['app_name'] = this.appData.Name;
                                  this.iterate(
                                    this.appData.Navigation, function (nav)
                                    {
-                                     res = self.hydrateResources(res, 'nav_' + nav.ID + '_name', nav.Name);
-                                     res = self.hydrateResources(
-                                       res,
-                                       'nav_' + nav.ID + '_description',
-                                       nav.Description
-                                     );
+                                     newRes['nav_' + nav.ID + '_name'] = nav.Name;
+                                     newRes['nav_' + nav.ID + '_description'] = nav.Description;
                                    }
                                  );
-
-                                 this.resources = res;
                                }
-                               else
-                               {
-                                 this.async(function () { this.resources = res; });
-                               }
+                               this.hydrateResources(newRes, true);
                              },
 
         behaviors: [

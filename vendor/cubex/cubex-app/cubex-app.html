@@ -591,11 +591,12 @@ Example:
 
         _updateResources: function (appData)
                           {
-                            this.resources = [];
+                            var newRes = {};
                             if(appData)
                             {
-                              this.hydrateResources(this.resources, 'app_name', appData.Name);
+                              newRes['app_name'] = appData.Name;
                             }
+                            this.hydrateResources(newRes, true);
                           },
 
         /**

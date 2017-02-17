@@ -31,6 +31,13 @@
     </a>
   </template>
   <script>
-    Polymer({is: 'cubex-breadcrumb-item'});
+    Polymer(
+      {
+        is:         'cubex-breadcrumb-item',
+        properties: {
+          href: {type: String}
+        }
+      }
+    );
   </script>
 </dom-module>
