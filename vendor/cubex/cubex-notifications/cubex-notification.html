@@ -61,29 +61,31 @@
     <cubex-route project-id="{{projectId}}"></cubex-route>
 
     <cubex-notification-definition notification-id="[[notification.NotificationId]]"
-                                   definition="{{definition}}"></cubex-notification-definition>
+                                   definition="{{definition}}" gaid="{{gaid}}"></cubex-notification-definition>
 
-    <cube-li multi-line>
-      <cube-icon slot="icon" icon="[[definition.Icon]]"></cube-icon>
-      [[i18nData_c4t(definition.ID,'_message','',notification.Data)]]
-      <div slot="secondary">
-        <cube-time input-format="X" datetime="[[notification.UpdateTime]]" from="now">
-          [[_dateTime(notification.UpdateTime)]]
-        </cube-time>
-      </div>
-
-      <template is="dom-if" if="[[running]]">
-        <div id="spinner" slot="actions">
-          <paper-spinner-lite active="[[running]]" title="[[definition.message]]"></paper-spinner-lite>
-          [[notification.Percentage]]
+    <a href="/[[gaid]]/[[i18nData_c4t(definition.ID,'_path','',notification.Data)]]">
+      <cube-li multi-line>
+        <cube-icon slot="icon" icon="[[definition.Icon]]"></cube-icon>
+        [[i18nData_c4t(definition.ID,'_message','',notification.Data)]]
+        <div slot="secondary">
+          <cube-time input-format="X" datetime="[[notification.UpdateTime]]" from="now">
+            [[_dateTime(notification.UpdateTime)]]
+          </cube-time>
         </div>
-      </template>
-      <template is="dom-if" if="[[!running]]">
-        <cube-action id="state" slot="actions" on-tap="_markRead">
-          <div></div>
-        </cube-action>
-      </template>
-    </cube-li>
+
+        <template is="dom-if" if="[[running]]">
+          <div id="spinner" slot="actions">
+            <paper-spinner-lite active="[[running]]" title="[[definition.message]]"></paper-spinner-lite>
+            [[notification.Percentage]]
+          </div>
+        </template>
+        <template is="dom-if" if="[[!running]]">
+          <cube-action id="state" slot="actions" on-tap="_markRead">
+            <div></div>
+          </cube-action>
+        </template>
+      </cube-li>
+    </a>
   </template>
 
   <script>

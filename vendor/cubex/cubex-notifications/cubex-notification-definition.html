@@ -1,9 +1,9 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../cubex-app/cubex-app-definition.html">
 
-<dom-module id="cubex-notification-definition" attributes="notification-id definition">
+<dom-module id="cubex-notification-definition" attributes="notification-id definition gaid">
   <template>
-    <cubex-app-definition gaid="[[_globalAppId]]" app-data="{{_appData}}"></cubex-app-definition>
+    <cubex-app-definition gaid="[[gaid]]" app-data="{{_appData}}"></cubex-app-definition>
   </template>
   <time></time>
 
@@ -18,7 +18,7 @@
             notify:   true,
             computed: '_computeDefinition(_notificationType,_appData.Notifications)'
           },
-          _globalAppId:      {type: String},
+          gaid:              {type: String, notify: true},
           _notificationType: {type: String}
         },
 
@@ -29,7 +29,7 @@
                         var matches = id.match(/^(.+\/.+)\/(.+)$/);
                         if(matches)
                         {
-                          this._globalAppId = matches[1];
+                          this.gaid = matches[1];
                           this._notificationType = matches[2];
                         }
                       },
