@@ -55,14 +55,14 @@
     "test-fixture": "^2.0.0"
   },
   "ignore": [],
-  "homepage": "https://github.com/PolymerElements/iron-overlay-behavior",
-  "_release": "3725ae8073",
+  "homepage": "https://github.com/TomK/iron-overlay-behavior",
+  "_release": "d0cfd3b3ea",
   "_resolution": {
     "type": "branch",
-    "branch": "2.0-preview",
-    "commit": "3725ae8073d851ac3a7ac3190f99a40818a74ecf"
+    "branch": "patch-1",
+    "commit": "d0cfd3b3eac4915032c131a88b8d2cb6b002cf55"
   },
-  "_source": "https://github.com/PolymerElements/iron-overlay-behavior.git",
-  "_target": "2.0-preview",
-  "_originalSource": "PolymerElements/iron-overlay-behavior"
+  "_source": "https://github.com/TomK/iron-overlay-behavior.git",
+  "_target": "patch-1",
+  "_originalSource": "TomK/iron-overlay-behavior"
 }
