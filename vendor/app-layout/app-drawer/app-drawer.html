@@ -278,7 +278,7 @@ Custom property                  | Description                            | Defa
           // Only listen for horizontal track so you can vertically scroll inside the drawer.
           this.listen(this, 'track', '_track');
           this.setScrollDirection('y');
-        });
+        }.bind(this));
 
         this.fire('app-reset-layout');
       },
