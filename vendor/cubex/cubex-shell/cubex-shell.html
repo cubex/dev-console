@@ -280,7 +280,7 @@
                               {
                                 this.keyEventTarget = document.body;
                                 document.querySelector('body').removeAttribute('shellunloaded');
-                                Polymer.RenderStatus.afterNextRender(this._resetLayout.bind(this));
+                                window.addEventListener('WebComponentsReady', this._resetLayout.bind(this));
                                 document.addEventListener(
                                   'cubex-drawer-state-changed', this._debounceResetLayout.bind(this)
                                 );
