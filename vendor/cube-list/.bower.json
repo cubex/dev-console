@@ -56,11 +56,11 @@
     "iron-dropdown": "2.0-preview",
     "iron-overlay-behavior": "2.0-preview"
   },
-  "_release": "5ba9ca8bd5",
+  "_release": "b99ae9359d",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "5ba9ca8bd53ca27ac738827bae1f2d1b39c8650a"
+    "commit": "b99ae9359d02d3c0af4807ea28daa65979e4c0f7"
   },
   "_source": "https://github.com/CubexElements/cube-list.git",
   "_target": "*",

@@ -182,11 +182,10 @@
         _updateList: function ()
                      {
                        Polymer.RenderStatus.afterNextRender(
-                         this,
                          function ()
                          {
                            this.$.dd.refit();
-                         }
+                         }.bind(this)
                        );
                      },
 

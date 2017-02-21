@@ -36,11 +36,11 @@
     "iron-meta": "2.0-preview",
     "iron-resizable-behavior": "2.0-preview"
   },
-  "_release": "46a330564a",
+  "_release": "4f9b410835",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "46a330564a40e6c0a42b76598d33a1ae5e03a166"
+    "commit": "4f9b41083537e51ee752313d540717d77472559b"
   },
   "_source": "https://github.com/CubexElements/cube-carousel.git",
   "_target": "*",
