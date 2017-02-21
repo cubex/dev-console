@@ -1,0 +1,32 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`bind-factory`
+Bind a local property to a [computed] value
+
+@demo demo/index.html
+-->
+
+<dom-module id="bind-factory" attributes="bind as">
+  <script>
+    Polymer(
+      {
+        is:         'bind-factory',
+        properties: {
+          bind: {type: String},
+          as:   {
+            type:     String,
+            notify:   true,
+            readOnly: true,
+            computed: '_computeBinding(bind)'
+          }
+        },
+
+        _computeBinding: function (bind)
+                         {
+                           return bind;
+                         }
+      }
+    );
+  </script>
+</dom-module>

@@ -65,50 +65,49 @@ Example:
                           }
                           var dom = this,
                             prefix = 'cubex-theme-' + type,
-                            cs = dom.querySelector('#' + prefix),
                             fullName = prefix + '-' + name;
-
-                          if(!cs)
-                          {
-                            cs = document.createElement('custom-style');
-                            cs.id = prefix;
-                            dom.appendChild(cs);
-                          }
-
-                          var s = cs.querySelector('style');
-                          if(s && s.getAttribute('include') === fullName)
-                          {
-                            return;
-                          }
 
                           this.importHref(
                             this.resolveUrl('styles/' + type + '/' + fullName + '.html'),
                             function ()
                             {
-                              while(e = cs.firstChild)
+                              var oldCustomStyle = dom.querySelector('#' + prefix);
+                              if(oldCustomStyle)
                               {
-                                cs.removeChild(e);
+                                oldCustomStyle.parentNode.removeChild(oldCustomStyle);
                               }
 
-                              s = document.createElement('style');
-                              s.setAttribute('include', fullName);
-                              cs.appendChild(s);
-                              CustomStyle.processHook(s);
-                              Polymer.updateStyles();
+                              var style = document.createElement('style');
+                              style.setAttribute('include', fullName);
+
+                              var customStyle = document.createElement('custom-style');
+                              customStyle.id = prefix;
+                              customStyle.appendChild(style);
+
+                              dom.appendChild(customStyle);
                             }, null, true
                           );
                         },
         _updatePrimary: function (v)
                         {
-                          this._import('primary', v.replace(this._regex, ''));
+                          if(v)
+                          {
+                            this._import('primary', v.replace(this._regex, ''));
+                          }
                         },
         _updateAccent:  function (v)
                         {
-                          this._import('accent', v.replace(this._regex, ''));
+                          if(v)
+                          {
+                            this._import('accent', v.replace(this._regex, ''));
+                          }
                         },
         _updateTheme:   function (v)
                         {
-                          this._import('theme', v.replace(this._regex, ''));
+                          if(v)
+                          {
+                            this._import('theme', v.replace(this._regex, ''));
+                          }
                         }
       }
     );

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>bind-factory test</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../bind-factory.html">
+</head>
+<body>
+
+<dom-module id="concat-test">
+  <template>
+    <bind-factory id="factory" bind="[[_concat('pre_',myId,'_suf')]]"></bind-factory>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:         'concat-test',
+        properties: {myId: {type: String, value: 'MY_ID'}},
+        _concat:    function ()
+                    {
+                      return Array.prototype.slice.call(arguments).join('');
+                    }
+      }
+    )
+  </script>
+</dom-module>
+
+<test-fixture id="bind-factory">
+  <template>
+    <concat-test></concat-test>
+  </template>
+</test-fixture>
+
+<script>
+  suite(
+    'bind-factory', function ()
+    {
+      var element;
+      suite(
+        'basic', function ()
+        {
+          setup(
+            function ()
+            {
+              element = fixture('bind-factory');
+              element.$.factory.bind = 'abc';
+            }
+          );
+
+          test(
+            'instantiating the element works', function ()
+            {
+              assert.equal(element.$.factory.is, 'bind-factory');
+            }
+          );
+
+          test(
+            'basic string', function ()
+            {
+              assert.equal(element.$.factory.as, 'abc');
+            }
+          );
+        }
+      );
+
+      suite(
+        'computed', function ()
+        {
+          setup(
+            function ()
+            {
+              element = fixture('bind-factory');
+            }
+          );
+
+          test(
+            'computed binding default', function ()
+            {
+              assert.equal(element.$.factory.as, 'pre_MY_ID_suf');
+            }
+          );
+
+          test(
+            'computed binding 123', function ()
+            {
+              element.myId = 123;
+              assert.equal(element.$.factory.as, 'pre_123_suf');
+            }
+          );
+        }
+      );
+    }
+  );
+</script>
+</body>
+</html>

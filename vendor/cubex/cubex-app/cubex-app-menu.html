@@ -4,6 +4,7 @@
 <link rel="import" href="../../cube-behavior/cube-element-path-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="../../bind-factory/bind-factory.html">
 <link rel="import" href="../cubex-route/cubex-route.html">
 
 <dom-module id="cubex-app-menu" attributes="app-data">
@@ -161,7 +162,8 @@
                         on-tap="_collapseDrawer">
               <cube-li>
                 <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
-                [[i18n_c4t('nav_', item.ID, '_name')]]
+                <bind-factory bind="[[_concat('nav_', item.ID, '_name')]]" as="{{i18nKey}}"></bind-factory>
+                [[i18n(i18nKey)]]
                 <paper-ripple></paper-ripple>
               </cube-li>
             </cubex-link>
@@ -204,12 +206,13 @@
           _configPath: {type: String, computed: '_calculateConfigure(appData,projectId)'},
           _drawerOpen: {type: Boolean, value: false}
         },
-        attached:   function ()
-                    {
-                      this._resetResources();
-                      this._refreshDrawerState();
-                      document.addEventListener('cubex-drawer-state-changed', this._refreshDrawerState.bind(this));
-                    },
+
+        attached: function ()
+                  {
+                    this._resetResources();
+                    this._refreshDrawerState();
+                    document.addEventListener('cubex-drawer-state-changed', this._refreshDrawerState.bind(this));
+                  },
 
         _refreshDrawerState: function ()
                              {
@@ -270,32 +273,38 @@
                                  || (this.appData && this.appData.AdvancedConfigPath)
                                  || null;
                              },
-        _trimPath:           function (path)
-                             {
-                               return (path || '').replace(/^\/+/, '');
-                             },
-        _resetResources:     function ()
-                             {
-                               // reset resources
-                               var newRes = {
-                                 'configure': {'en': 'Configure', 'fr': 'Configurer'},
-                                 'collapse':  {'en': 'Collapse Menu', 'fr': 'Réduire Menu'},
-                                 'keep_out':  {'en': 'Keep Menu Out', 'fr': 'Gardez Menu Out'}
-                               };
 
-                               if(this.appData && this.appData.Name)
+        _concat:   function ()
+                   {
+                     return Array.prototype.slice.call(arguments).join('');
+                   },
+        _trimPath: function (path)
+                   {
+                     return (path || '').replace(/^\/+/, '');
+                   },
+
+        _resetResources: function ()
+                         {
+                           // reset resources
+                           var newRes = {
+                             'configure': {'en': 'Configure', 'fr': 'Configurer'},
+                             'collapse':  {'en': 'Collapse Menu', 'fr': 'Réduire Menu'},
+                             'keep_out':  {'en': 'Keep Menu Out', 'fr': 'Gardez Menu Out'}
+                           };
+
+                           if(this.appData && this.appData.Name)
+                           {
+                             newRes['app_name'] = this.appData.Name;
+                             this.iterate(
+                               this.appData.Navigation, function (nav)
                                {
-                                 newRes['app_name'] = this.appData.Name;
-                                 this.iterate(
-                                   this.appData.Navigation, function (nav)
-                                   {
-                                     newRes['nav_' + nav.ID + '_name'] = nav.Name;
-                                     newRes['nav_' + nav.ID + '_description'] = nav.Description;
-                                   }
-                                 );
+                                 newRes['nav_' + nav.ID + '_name'] = nav.Name;
+                                 newRes['nav_' + nav.ID + '_description'] = nav.Description;
                                }
-                               this.hydrateResources(newRes, true);
-                             },
+                             );
+                           }
+                           this.hydrateResources(newRes, true);
+                         },
 
         behaviors: [
           Polymer.CubeElementPathBehavior,
