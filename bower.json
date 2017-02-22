@@ -4,7 +4,6 @@
   "dependencies": {
     "polymer": "Polymer/polymer#2.0-preview",
     "promise-polyfill": "PolymerLabs/promise-polyfill",
-    "iron-overlay-behavior": "TomK/iron-overlay-behavior#patch-1",
     "cubex": "CubexElements/cubex",
     "cube-elements": "CubexElements/cube-elements"
   },
