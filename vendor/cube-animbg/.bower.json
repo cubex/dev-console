@@ -30,11 +30,11 @@
     "polymer": "2.0-preview",
     "webcomponentsjs": "v1"
   },
-  "_release": "70723ff5a8",
+  "_release": "888e6d777c",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "70723ff5a8219019ed530cf94b48316da1230526"
+    "commit": "888e6d777cf8fbcfc140aaac49a44d561484b0dd"
   },
   "_source": "https://github.com/CubexElements/cube-animbg.git",
   "_target": "*",

@@ -162,7 +162,7 @@ Example:
 
         attached:    function ()
                      {
-                       Polymer.RenderStatus.afterNextRender(this._debounceFilter.bind(this));
+                       Polymer.RenderStatus.afterNextRender(this, this._debounceFilter);
                        this.$.filterInput.addEventListener(
                          'keydown', function (e) { e.stopPropagation(); }
                        )
