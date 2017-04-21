@@ -21,11 +21,15 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.6.0",
-    "app-storage": "PolymerElements/app-storage#^0.9.4"
+    "polymer": "Polymer/polymer#^2.0.0",
+    "app-storage": "PolymerElements/app-storage#2.0-preview"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "web-component-tester": "^4.0.0"
+  },
+  "resolutions": {
+    "polymer": "^2.0.0",
+    "webcomponentsjs": "^v1.0.0-rc.5"
   }
 }

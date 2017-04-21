@@ -11,26 +11,26 @@
     "app-indexeddb-mirror/app-indexeddb-mirror.html"
   ],
   "moduleType": [],
-  "license": "MIT",
+  "license": "http://polymer.github.io/LICENSE.txt",
   "homepage": "https://github.com/PolymerElements/app-storage",
   "private": true,
   "dependencies": {
-    "polymer": "polymer/polymer#2.0-preview"
+    "polymer": "polymer/polymer#^2.0.0-rc.3"
   },
   "devDependencies": {
-    "web-component-tester": "v6.0.0-prerelease.5",
-    "paper-input": "polymerelements/paper-input#2.0-preview",
-    "moment": "^2.12.0",
-    "paper-styles": "polymerelements/paper-styles#2.0-preview",
     "font-roboto": "polymerelements/font-roboto#^1.0.0",
     "iron-flex-layout": "polymerelements/iron-flex-layout#2.0-preview",
     "iron-icon": "polymerelements/iron-icon#2.0-preview",
-    "paper-fab": "polymerelements/paper-fab#2.0-preview",
     "iron-icons": "polymerelements/iron-icons#2.0-preview",
+    "moment": "^2.12.0",
     "paper-button": "polymerelements/paper-button#2.0-preview",
-    "platinum-sw": "polymerelements/platinum-sw#^1.3.0",
-    "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "promise-polyfill": "polymerlabs/promise-polyfill#2.0-preview"
+    "paper-fab": "polymerelements/paper-fab#2.0-preview",
+    "paper-input": "polymerelements/paper-input#2.0-preview",
+    "paper-styles": "polymerelements/paper-styles#2.0-preview",
+    "platinum-sw": "polymerelements/platinum-sw#2.0-preview",
+    "promise-polyfill": "polymerlabs/promise-polyfill#2.0-preview",
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0-prerelease.6",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0-rc.1"
   },
   "variants": {
     "1.x": {
@@ -38,33 +38,27 @@
         "polymer": "polymer/polymer#^1.2.0"
       },
       "devDependencies": {
-        "web-component-tester": "^4.0.0",
-        "paper-input": "polymerelements/paper-input#^1.0.0",
-        "moment": "^2.12.0",
-        "paper-styles": "polymerelements/paper-styles#^1.0.0",
         "font-roboto": "polymerelements/font-roboto#^1.0.0",
         "iron-flex-layout": "polymerelements/iron-flex-layout#^1.0.0",
         "iron-icon": "polymerelements/iron-icon#^1.0.0",
-        "paper-fab": "polymerelements/paper-fab#^1.0.0",
         "iron-icons": "polymerelements/iron-icons#^1.0.0",
+        "moment": "^2.12.0",
         "paper-button": "polymerelements/paper-button#^1.0.0",
+        "paper-fab": "polymerelements/paper-fab#^1.0.0",
+        "paper-input": "polymerelements/paper-input#^1.0.0",
+        "paper-styles": "polymerelements/paper-styles#^1.0.0",
         "platinum-sw": "polymerelements/platinum-sw#^1.3.0",
-        "test-fixture": "PolymerElements/test-fixture#^1.0.0",
-        "promise-polyfill": "polymerlabs/promise-polyfill#^1.0.0"
+        "promise-polyfill": "polymerlabs/promise-polyfill#^1.0.0",
+        "web-component-tester": "Polymer/web-component-tester#^4.0.0",
+        "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.24"
       }
     }
   },
-  "ignore": [],
-  "resolutions": {
-    "webcomponentsjs": "v1",
-    "test-fixture": "^2.0.0",
-    "polymer": "2.0-preview"
-  },
-  "_release": "0d3b49a849",
+  "_release": "1a220c822c",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "0d3b49a84997467a2679ff433b1591b1e2f090f8"
+    "commit": "1a220c822cdcd0e77f8390ccd25f53854f633083"
   },
   "_source": "https://github.com/PolymerElements/app-storage.git",
   "_target": "2.0-preview",

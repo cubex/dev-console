@@ -50,24 +50,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <!-- default to use body scroller -->
-  <app-header-layout>
+  <dom-module id="simple-layout">
+    <template>
+      <style>
+        app-header {
+          background-color: #4285f4;
+          color: #fff;
+        }
+      </style>
+      <app-header-layout fullbleed>
+        <app-header slot="header" effects="waterfall" condenses reveals>
+          <app-toolbar>
+            <paper-icon-button icon="menu"></paper-icon-button>
+            <div main-title></div>
+            <paper-icon-button icon="search"></paper-icon-button>
+          </app-toolbar>
+          <app-toolbar></app-toolbar>
+          <app-toolbar>
+            <div spacer main-title>My Drive</div>
+          </app-toolbar>
+        </app-header>
+        <sample-content size="100"></sample-content>
+      </app-header-layout>
+    </template>
+    <script>
+      document.addEventListener('WebComponentsReady', function() {
+        Polymer({
+          is: 'simple-layout'
+        });
+      });
+    </script>
+  </dom-module>
 
-    <app-header slot="header" effects="waterfall" condenses reveals>
-      <app-toolbar>
-        <paper-icon-button icon="menu"></paper-icon-button>
-        <div main-title></div>
-        <paper-icon-button icon="search"></paper-icon-button>
-      </app-toolbar>
-      <app-toolbar></app-toolbar>
-      <app-toolbar>
-        <div spacer main-title>My Drive</div>
-      </app-toolbar>
-    </app-header>
-
-    <sample-content size="100"></sample-content>   
-  
-  </app-header-layout>
+  <simple-Layout></simple-Layout>
 
 </body>
 </html>

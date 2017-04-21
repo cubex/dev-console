@@ -39,7 +39,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       --app-drawer-layout-drawer: {
         background-color: blue;
       };
-      --app-drawer-duration: 0s;
     }
 
     [content] {
@@ -123,8 +122,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.isTrue(notifyResizeSpy.called);
 
             done();
-          }, 50);
-        }, 50);
+          }, 150);
+        }, 150);
       });
 
       test('drawer-toggle', function(done) {
@@ -146,8 +145,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.Base.fire('click', null /* detail */, { node: drawerLayout.querySelector('[drawer-toggle]') });
           assert.isTrue(drawer.opened);
           done();
-        }, 50);
-       
+        }, 150);
+      });
+
+      test('disable initial drawer transition', function(done) {
+        assert.equal(drawer.transitionDuration, 0);
+        Polymer.dom.flush();
+
+        window.setTimeout(function() {
+          assert.equal(drawer.transitionDuration, 200);
+          done();
+        }, 150);
       });
 
       test('content layout', function(done) {
@@ -170,9 +178,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               assert.equal(drawerLayout.$.contentContainer.style.marginRight, '256px');
 
               done();
-            }, 50);
-          }, 50);
-        }, 50);
+            }, 100);
+          }, 100);
+        }, 100);
       });
 
       test('iron-resize triggers content layout', function() {
@@ -202,8 +210,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.isTrue(drawer.opened);
 
             done();
-          }, 50);
-        }, 50);
+          }, 100);
+        }, 100);
       });
 
       test('app-drawer appended later', function(done) {
@@ -228,7 +236,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           assert.equal(drawerLayout.$.contentContainer.style.marginRight, '');
 
           done();
-        }, 50);
+        }, 100);
       });
     });
 

@@ -27,7 +27,7 @@
   "homepage": "https://github.com/PolymerElements/paper-input",
   "ignore": [],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0-preview",
+    "polymer": "Polymer/polymer#^2.0.0-rc.1",
     "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#2.0-preview",
     "iron-behaviors": "PolymerElements/iron-behaviors#2.0-preview",
     "iron-input": "PolymerElements/iron-input#2.0-preview",
@@ -36,6 +36,7 @@
     "iron-form-element-behavior": "PolymerElements/iron-form-element-behavior#2.0-preview"
   },
   "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#2.0-preview",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#2.0-preview",
     "iron-icon": "PolymerElements/iron-icon#2.0-preview",
@@ -43,9 +44,9 @@
     "iron-test-helpers": "PolymerElements/iron-test-helpers#2.0-preview",
     "iron-validator-behavior": "PolymerElements/iron-validator-behavior#2.0-preview",
     "paper-icon-button": "PolymerElements/paper-icon-button#2.0-preview",
-    "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "v6.0.0-prerelease.5",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
+    "test-fixture": "PolymerElements/test-fixture#^3.0.0-rc.1",
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0-prerelease.6",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0-rc.1"
   },
   "variants": {
     "1.x": {
@@ -59,6 +60,7 @@
         "iron-form-element-behavior": "PolymerElements/iron-form-element-behavior#^1.0.0"
       },
       "devDependencies": {
+        "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
         "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
         "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.0",
         "iron-icon": "PolymerElements/iron-icon#^1.0.0",
@@ -72,16 +74,11 @@
       }
     }
   },
-  "resolutions": {
-    "test-fixture": "^2.0.0",
-    "polymer": "2.0-preview",
-    "webcomponentsjs": "v1"
-  },
-  "_release": "b9c521e610",
+  "_release": "1f2af3260e",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "b9c521e610524819d40f2625fa883f05e55d5a43"
+    "commit": "1f2af3260e32b747061605eac209f46a5dbe5c7c"
   },
   "_source": "https://github.com/PolymerElements/paper-input.git",
   "_target": "2.0-preview",

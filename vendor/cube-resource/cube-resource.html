@@ -31,7 +31,7 @@
         _resourceUpdated: function (e)
                           {
                             var key = this._cacheKey();
-                            if(key && e.detail && e.detail.key == key)
+                            if(key && e.detail && e.detail.key === key)
                             {
                               this._setExportsFromStruct(e.detail);
                             }
@@ -46,17 +46,18 @@
                                {
                                  this._setPendingProperty(
                                    'status',
-                                   dataStruct.status !== undefined ? dataStruct.status : -1
+                                   dataStruct.status !== undefined ? dataStruct.status : -1,
+                                   true
                                  );
 
                                  if(this.xhr !== dataStruct.xhr)
                                  {
-                                   this._setPendingProperty('xhr', dataStruct.xhr);
+                                   this._setPendingProperty('xhr', dataStruct.xhr, true);
                                  }
 
                                  if(this.data !== dataStruct.data)
                                  {
-                                   this._setPendingProperty('data', dataStruct.data);
+                                   this._setPendingProperty('data', dataStruct.data, true);
                                  }
 
                                  this._invalidateProperties();
@@ -113,7 +114,7 @@
                            oReq.addEventListener(
                              "readystatechange", function ()
                              {
-                               if(this.readyState == XMLHttpRequest.DONE)
+                               if(this.readyState === XMLHttpRequest.DONE)
                                {
                                  var data = null;
                                  switch(this.getResponseHeader('content-type'))

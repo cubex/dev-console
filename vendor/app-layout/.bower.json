@@ -11,12 +11,15 @@
     "url": "git://github.com/PolymerElements/app-layout"
   },
   "main": "app-layout.html",
+  "demos": {
+    "Demos": "demo/index.html"
+  },
   "dependencies": {
     "iron-flex-layout": "PolymerElements/iron-flex-layout#2.0-preview",
     "iron-media-query": "PolymerElements/iron-media-query#2.0-preview",
     "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#2.0-preview",
     "iron-scroll-target-behavior": "PolymerElements/iron-scroll-target-behavior#2.0-preview",
-    "polymer": "Polymer/polymer#2.0-preview"
+    "polymer": "Polymer/polymer#^2.0.0-rc.3"
   },
   "devDependencies": {
     "font-roboto": "PolymerElements/font-roboto#^1.0.0",
@@ -34,9 +37,10 @@
     "paper-spinner": "PolymerElements/paper-spinner#2.0-preview",
     "paper-styles": "PolymerElements/paper-styles#2.0-preview",
     "paper-tabs": "PolymerElements/paper-tabs#2.0-preview",
-    "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "v6.0.0-prerelease.5",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
+    "promise-polyfill": "polymerlabs/promise-polyfill#2.0-preview",
+    "test-fixture": "PolymerElements/test-fixture#^3.0.0-rc.1",
+    "web-component-tester": "^6.0.0-prerelease.6",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0-rc.1"
   },
   "variants": {
     "1.x": {
@@ -45,6 +49,7 @@
       },
       "devDependencies": {
         "test-fixture": "PolymerElements/test-fixture#^1.0.0",
+        "web-component-tester": "^4.0.0",
         "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
       },
       "resolutions": {
@@ -56,16 +61,11 @@
   },
   "ignore": [],
   "private": true,
-  "resolutions": {
-    "test-fixture": "^2.0.0",
-    "polymer": "2.0-preview",
-    "webcomponentsjs": "v1"
-  },
-  "_release": "93473142f7",
+  "_release": "c298d0399e",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "93473142f7a85c7a5e2729e1917b90add5229ae4"
+    "commit": "c298d0399ec2f63b971ae8f475def0114e2484e6"
   },
   "_source": "https://github.com/PolymerElements/app-layout.git",
   "_target": "2.0-preview",

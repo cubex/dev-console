@@ -12,8 +12,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="iron-selection.html">
 
 <script>
-
-  /** @polymerBehavior */
+  /**
+   * @polymerBehavior Polymer.IronSelectableBehavior
+   */
   Polymer.IronSelectableBehavior = {
 
       /**
@@ -167,8 +168,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     attached: function() {
       this._observer = this._observeItems(this);
-      this._updateItems();
-      this._updateSelected();
       this._addListener(this.activateEvent);
     },
 

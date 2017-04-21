@@ -75,7 +75,7 @@ milliseconds.
           type: String,
           notify: true,
           value: function() {
-            return window.decodeURIComponent(window.location.search.slice(1));
+            return window.location.search.slice(1);
           }
         },
 
@@ -149,20 +149,6 @@ milliseconds.
       ],
 
       attached: function() {
-        this.initialize();
-      },
-
-      ready: function() {
-        if (!Polymer.version || Polymer.version >= '2') {
-          this.initialize();        
-        }
-      },
-
-      initialize: function() {
-        if (this._initialized) {
-          return;
-        }
-
         this.listen(window, 'hashchange', '_hashChanged');
         this.listen(window, 'location-changed', '_urlChanged');
         this.listen(window, 'popstate', '_urlChanged');
@@ -196,8 +182,7 @@ milliseconds.
         this._dontUpdateUrl = true;
         this._hashChanged();
         this.path = window.decodeURIComponent(window.location.pathname);
-        this.query = window.decodeURIComponent(
-            window.location.search.substring(1));
+        this.query = window.location.search.substring(1);
         this._dontUpdateUrl = false;
         this._updateUrl();
       },
@@ -206,18 +191,13 @@ milliseconds.
         var partiallyEncodedPath = window.encodeURI(
             this.path).replace(/\#/g, '%23').replace(/\?/g, '%3F');
         var partiallyEncodedQuery = '';
-
         if (this.query) {
-          partiallyEncodedQuery = '?' + window.encodeURI(
-              this.query).replace(/\#/g, '%23');
+          partiallyEncodedQuery = '?' + this.query.replace(/\#/g, '%23');
         }
-
         var partiallyEncodedHash = '';
-
         if (this.hash) {
           partiallyEncodedHash = '#' + window.encodeURI(this.hash);
         }
-
         return (
             partiallyEncodedPath + partiallyEncodedQuery + partiallyEncodedHash);
       },
@@ -228,8 +208,7 @@ milliseconds.
         }
 
         if (this.path === window.decodeURIComponent(window.location.pathname) &&
-            this.query === window.decodeURIComponent(
-                window.location.search.substring(1)) &&
+            this.query === window.location.search.substring(1) &&
             this.hash === window.decodeURIComponent(
                 window.location.hash.substring(1))) {
           // Nothing to do, the current URL is a representation of our properties.

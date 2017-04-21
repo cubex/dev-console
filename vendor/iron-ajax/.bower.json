@@ -19,15 +19,15 @@
   "homepage": "https://github.com/PolymerElements/iron-ajax",
   "ignore": [],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0-preview"
+    "polymer": "Polymer/polymer#^2.0.0-rc.1"
   },
   "devDependencies": {
     "iron-component-page": "polymerelements/iron-component-page#2.0-preview",
     "iron-image": "polymerelements/iron-image#2.0-preview",
     "promise-polyfill": "polymerlabs/promise-polyfill#2.0-preview",
-    "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "v6.0.0-prerelease.5",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0-rc.1",
+    "test-fixture": "PolymerElements/test-fixture#^3.0.0-rc.1",
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0-prerelease.6"
   },
   "variants": {
     "1.x": {
@@ -48,17 +48,11 @@
       }
     }
   },
-  "resolutions": {
-    "test-fixture": "^2.0.0",
-    "webcomponentsjs": "v1",
-    "polymer": "2.0-preview",
-    "promise-polyfill": "2.0-preview"
-  },
-  "_release": "f3894cb271",
+  "_release": "43326547cc",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "f3894cb271a95e1ee233799629e0dda28d8373dd"
+    "commit": "43326547cc66ea228adb6cf1ee66f0fba6495174"
   },
   "_source": "https://github.com/PolymerElements/iron-ajax.git",
   "_target": "2.0-preview",

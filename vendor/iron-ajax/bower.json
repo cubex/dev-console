@@ -20,15 +20,15 @@
   "homepage": "https://github.com/PolymerElements/iron-ajax",
   "ignore": [],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0-preview"
+    "polymer": "Polymer/polymer#^2.0.0-rc.1"
   },
   "devDependencies": {
     "iron-component-page": "polymerelements/iron-component-page#2.0-preview",
     "iron-image": "polymerelements/iron-image#2.0-preview",
     "promise-polyfill": "polymerlabs/promise-polyfill#2.0-preview",
-    "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "web-component-tester": "v6.0.0-prerelease.5",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0-rc.1",
+    "test-fixture": "PolymerElements/test-fixture#^3.0.0-rc.1",
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0-prerelease.6"
   },
   "variants": {
     "1.x": {
@@ -48,11 +48,5 @@
         "promise-polyfill": "^1.0.0"
       }
     }
-  },
-  "resolutions": {
-    "test-fixture": "^2.0.0",
-    "webcomponentsjs": "v1",
-    "polymer": "2.0-preview",
-    "promise-polyfill": "2.0-preview"
   }
 }

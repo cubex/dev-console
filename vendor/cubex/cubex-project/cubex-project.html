@@ -24,25 +24,37 @@ Example:
         is:                 'cubex-project',
         properties:         {
           project:  {type: Object, notify: true, readOnly: true},
-          projects: {type: Object, value: function () {return {};}, notify: true, readOnly: true}
+          projects: {type: Array, value: function () {return [];}, notify: true, readOnly: true}
         },
         observers:          ['_projectChanged(projects,projectId)'],
         _projectSubscribed: function (e, message)
                             {
-                              this._setProjects(JSON.parse(message).projects || {});
+                              var projects = JSON.parse(message).projects;
+                              this._setProjects(
+                                Object.keys(projects).map(function (i) {return projects[i]})
+                                || []
+                              );
                             },
         _projectUpdate:     function (e, message)
                             {
                               var projects = this.projects;
-                              if(message.action == 'create' || message.action == 'join')
+                              if(message.action === 'create' || message.action === 'join')
                               {
-                                projects[message.payload.id] = message.payload;
-                                this._setProjects(projects);
+                                this.push('projects', message.payload);
                               }
-                              else if(message.action == 'leave')
+                              else if(message.action === 'leave')
                               {
-                                delete projects[message.payload];
-                                this._setProjects(projects);
+                                for(var i in this.projects)
+                                {
+                                  if(this.projects.hasOwnProperty(i))
+                                  {
+                                    if(this.projects[i].id === message.payload.id)
+                                    {
+                                      this.splice('projects', i, 1);
+                                      break;
+                                    }
+                                  }
+                                }
                               }
                             },
         _projectChanged:    function ()

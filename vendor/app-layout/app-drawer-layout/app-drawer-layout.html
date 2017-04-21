@@ -22,7 +22,7 @@ By default the drawer is aligned to the start, which is left in LTR layouts:
 
 ```html
 <app-drawer-layout>
-  <app-drawer>
+  <app-drawer slot="drawer">
     drawer content
   </app-drawer>
   <div>
@@ -35,7 +35,7 @@ Align the drawer at the end:
 
 ```html
 <app-drawer-layout>
-  <app-drawer align="end">
+  <app-drawer slot="drawer" align="end">
      drawer content
   </app-drawer>
   <div>
@@ -48,11 +48,11 @@ With an app-header-layout:
 
 ```html
 <app-drawer-layout>
-  <app-drawer>
+  <app-drawer slot="drawer">
     drawer-content
   </app-drawer>
   <app-header-layout>
-    <app-header>
+    <app-header slot="header">
       <app-toolbar>
         <div main-title>App name</div>
       </app-toolbar>
@@ -68,11 +68,11 @@ Add the `drawer-toggle` attribute to elements inside `app-drawer-layout` that to
 
 ```html
 <app-drawer-layout>
-  <app-drawer>
+  <app-drawer slot="drawer">
     drawer-content
   </app-drawer>
   <app-header-layout>
-    <app-header>
+    <app-header slot="header">
       <app-toolbar>
         <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
         <div main-title>App name</div>
@@ -85,11 +85,21 @@ Add the `drawer-toggle` attribute to elements inside `app-drawer-layout` that to
 </app-drawer-layout>
 ```
 
+**NOTE:** With app-layout 2.0, the `drawer-toggle` element will not be automatically hidden
+when app-drawer-layout is not in narrow layout. To add this, add the following CSS rule where
+app-drawer-layout is used:
+
+```css
+app-drawer-layout:not([narrow]) [drawer-toggle] {
+  display: none;
+}
+```
+
 Add the `fullbleed` attribute to app-drawer-layout to make it fit the size of its container:
 
 ```html
 <app-drawer-layout fullbleed>
-  <app-drawer>
+  <app-drawer slot="drawer">
      drawer content
   </app-drawer>
   <div>
@@ -214,6 +224,15 @@ Custom property                          | Description                          
         return Polymer.dom(this.$.drawerSlot).getDistributedNodes()[0];
       },
 
+      attached: function() {
+        // Disable drawer transitions until after app-drawer-layout sets the initial opened state.
+        var drawer = this.drawer;
+        if (drawer) {
+          this._savedDrawerTransitionDuration = drawer.transitionDuration;
+          drawer.transitionDuration = 0;
+        }
+      },
+
       _clickHandler: function(e) {
         var target = Polymer.dom(e).localTarget;
         if (target && target.hasAttribute('drawer-toggle')) {
@@ -247,6 +266,13 @@ Custom property                          | Description                          
             drawer.persistent = false;
           } else {
             drawer.opened = drawer.persistent = true;
+          }
+          if (this._savedDrawerTransitionDuration) {
+            // Enable drawer transitions after app-drawer-layout sets the initial opened state.
+            Polymer.RenderStatus.afterNextRender(this, function() {
+              drawer.transitionDuration = this._savedDrawerTransitionDuration;
+              this._savedDrawerTransitionDuration = 0;
+            });
           }
           this._drawerNeedsReset = false;
         }

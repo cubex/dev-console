@@ -166,12 +166,12 @@ Example:
           </div>
         </template>
 
-        <template is="dom-if" if="[[_projectsArray.length]]">
+        <template is="dom-if" if="[[_projects.length]]">
           <div class="project-section">
             <h2>Your Projects</h2>
             <p>Please choose a project</p>
             <cube-list border double-border>
-              <template is="dom-repeat" items="[[_projectsArray]]">
+              <template is="dom-repeat" items="[[_projects]]">
                 <a href="//[[getServiceHost(item.id)]]">
                   <cube-li>
                     <cube-icon icon="communication:business" slot="icon"></cube-icon>
@@ -184,7 +184,7 @@ Example:
           </div>
         </template>
 
-        <template is="dom-if" if="[[!_projectsArray.length]]">
+        <template is="dom-if" if="[[!_projects.length]]">
           <div class="project-section">
             <h2>Create a Project</h2>
             <p>Looks like you just created your account and have no projects. Probably time to create one!</p>
@@ -203,24 +203,15 @@ Example:
       {
         is:         'cubex-projects',
         properties: {
-          _projectsArray: {
-            type:     Array,
-            notify:   true,
-            value:    function () {return [];},
-            computed: '_computeProjects(_projects,_projects.*)'
-          },
-          twoColumn:      {
+          _projects: {type: Array, notify: true},
+          twoColumn: {
             type:               Boolean,
             value:              false,
             reflectToAttribute: true,
-            computed:           '_computeTwoColumn(_projectsArray,_invites.invites)'
+            computed:           '_computeTwoColumn(_projects,_invites.invites)'
           }
         },
 
-        _computeProjects:  function (projects)
-                           {
-                             return Object.keys(projects).map(function (key) { return projects[key]; });
-                           },
         _computeTwoColumn: function (projects, invites)
                            {
                              if(projects && invites)
@@ -236,7 +227,7 @@ Example:
                           xhr.addEventListener(
                             'readystatechange', function ()
                             {
-                              if(this.readyState == XMLHttpRequest.DONE)
+                              if(this.readyState === XMLHttpRequest.DONE)
                               {
                                 if(this.status === 200)
                                 {
@@ -244,7 +235,7 @@ Example:
                                   {
                                     if(self._invites.invites.hasOwnProperty(i))
                                     {
-                                      if(self._invites.invites[i].project.id == actionData.acceptId)
+                                      if(self._invites.invites[i].project.id === actionData.acceptId)
                                       {
                                         self.splice('_invites.invites', i, 1);
                                         break;
@@ -255,7 +246,7 @@ Example:
                               }
                             }
                           );
-                          if(actionData.acceptType == 1)
+                          if(actionData.acceptType === 1)
                           {
                             xhr.open(
                               'PUT',

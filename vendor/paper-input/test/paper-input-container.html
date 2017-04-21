@@ -149,6 +149,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
+  <test-fixture id="required-validate-1.0">
+    <template>
+      <paper-input-container>
+        <label id="l">label</label>
+        <input is="iron-input" id="i" slot="input" required>
+      </paper-input-container>
+    </template>
+  </test-fixture>
+  <test-fixture id="required-validate-2.0">
+    <template>
+      <paper-input-container>
+        <label id="l">label</label>
+        <iron-input id="i" slot="input">
+          <input required>
+        </iron-input>
+      </paper-input-container>
+    </template>
+  </test-fixture>
+
   <letters-only></letters-only>
 
   <test-fixture id="auto-validate-validator-1.0">
@@ -313,6 +332,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       });
 
+      test('focused class added to input content', function(done) {
+        var container = fixture('basic');
+        var input = Polymer.dom(container).querySelector('#i');
+        var inputContent = Polymer.dom(container.root).querySelector('.input-content');
+        assert.isFalse(inputContent.classList.contains('focused'), 'input content does not have class "focused" when input is not focused');
+        MockInteractions.focus(input);
+        requestAnimationFrame(function() {
+          assert.isTrue(inputContent.classList.contains('focused'), 'input content has class "focused" when input is focused');
+          done();
+        });
+      });
+
     });
 
     suite('validation', function() {
@@ -391,6 +422,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }, 1);
       });
 
+      test('styled when the input is manually validated and required', function(done) {
+        var container = Polymer.Element ?
+            fixture('required-validate-2.0') :
+            fixture('required-validate-1.0');
+
+        // Mutation observer is async, so wait one tick.
+        Polymer.Base.async(function() {
+          var input = Polymer.dom(container).querySelector('#i');
+          var inputContent = Polymer.dom(container.root).querySelector('.input-content');
+          var line = Polymer.dom(container.root).querySelector('.underline');
+          assert.isFalse(container.invalid, 'invalid is false');
+          input.validate();
+
+          assert.isTrue(container.invalid, 'invalid is true');
+          assert.isTrue(inputContent.classList.contains('is-invalid'), 'label has invalid styling when input is invalid');
+          assert.isTrue(line.classList.contains('is-invalid'), 'underline has invalid styling when input is invalid');
+          done();
+        }, 1);
+      });
     });
 
   </script>

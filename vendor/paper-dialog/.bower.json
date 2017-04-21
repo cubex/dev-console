@@ -20,7 +20,8 @@
   "dependencies": {
     "neon-animation": "PolymerElements/neon-animation#2.0-preview",
     "paper-dialog-behavior": "PolymerElements/paper-dialog-behavior#2.0-preview",
-    "polymer": "Polymer/polymer#2.0-preview"
+    "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#2.0-preview",
+    "polymer": "Polymer/polymer#^2.0.0-rc.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
@@ -31,16 +32,16 @@
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#2.0-preview",
     "paper-item": "PolymerElements/paper-item#2.0-preview",
     "paper-listbox": "PolymerElements/paper-listbox#2.0-preview",
-    "test-fixture": "PolymerElements/test-fixture#^2.0.0",
     "web-animations-js": "web-animations/web-animations-js#^2.2.0",
-    "web-component-tester": "v6.0.0-prerelease.5",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0-prerelease.6",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0-rc.1"
   },
   "variants": {
     "1.x": {
       "dependencies": {
         "neon-animation": "PolymerElements/neon-animation#^1.0.0",
         "paper-dialog-behavior": "PolymerElements/paper-dialog-behavior#^1.0.0",
+        "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#^1.7.0",
         "polymer": "Polymer/polymer#^1.7.0"
       },
       "devDependencies": {
@@ -52,21 +53,17 @@
         "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^1.0.0",
         "paper-item": "PolymerElements/paper-item#^1.0.0",
         "paper-listbox": "PolymerElements/paper-listbox#^1.0.0",
-        "test-fixture": "PolymerElements/test-fixture#^1.0.0",
         "web-animations-js": "web-animations/web-animations-js#^2.2.0",
         "web-component-tester": "^4.0.0",
         "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
       }
     }
   },
-  "resolutions": {
-    "test-fixture": "^2.0.0"
-  },
-  "_release": "afaf093cb8",
+  "_release": "418e6a6e86",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "afaf093cb8da4151d798b531a6bb983ed2b53abb"
+    "commit": "418e6a6e86610130a9cf0b4d35d74ec80f08a31b"
   },
   "_source": "https://github.com/PolymerElements/paper-dialog.git",
   "_target": "2.0-preview",

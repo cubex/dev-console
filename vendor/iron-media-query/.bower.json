@@ -18,14 +18,12 @@
   "homepage": "https://github.com/PolymerElements/iron-media-query",
   "ignore": [],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0-preview"
+    "polymer": "Polymer/polymer#^2.0.0-rc.1"
   },
   "devDependencies": {
     "paper-styles": "polymerelements/paper-styles#2.0-preview",
-    "web-component-tester": "v6.0.0-prerelease.5",
-    "test-fixture": "PolymerElements/test-fixture#^2.0.0",
-    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0-prerelease.6",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0-rc.1"
   },
   "variants": {
     "1.x": {
@@ -33,27 +31,18 @@
         "polymer": "Polymer/polymer#^1.7.1"
       },
       "devDependencies": {
-        "test-fixture": "PolymerElements/test-fixture#^1.0.0",
-        "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
-      },
-      "resolutions": {
-        "test-fixture": "^1.0.0",
-        "polymer": "^1.7.1",
-        "webcomponentsjs": "^0.7.0"
+        "paper-styles": "polymerelements/paper-styles#^1.0.0",
+        "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
+        "web-component-tester": "Polymer/web-component-tester#^4.0.0"
       }
     }
   },
   "main": "iron-media-query.html",
-  "resolutions": {
-    "polymer": "2.0-preview",
-    "test-fixture": "^2.0.0",
-    "webcomponentsjs": "v1"
-  },
-  "_release": "4e46c4d142",
+  "_release": "ad136eb716",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "4e46c4d142d6da0e30ad394388e76af2989d5546"
+    "commit": "ad136eb7169e1ce3fbbadea18df6ed9bfd3bedbf"
   },
   "_source": "https://github.com/PolymerElements/iron-media-query.git",
   "_target": "2.0-preview",
