@@ -132,7 +132,7 @@ Example:
 
     <cubex-distributor distributor="{{_distributor}}"></cubex-distributor>
     <cubex-project projects="{{_projects}}"></cubex-project>
-    <cube-resource auto auth url="//[[getServiceHost('apps')]]/cubex/projects/invites"
+    <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/project/invites"
                    data="{{_invites}}"></cube-resource>
 
     <div id="heading">
@@ -144,12 +144,12 @@ Example:
 
     <div id="wrapper">
       <div id="container">
-        <template is="dom-if" if="[[_invites.invites.length]]">
+        <template is="dom-if" if="[[_invites.Invites.length]]">
           <div class="project-section">
             <h2>Your Invites</h2>
             <p>You have been invited to the following projects</p>
             <cube-list border double-border>
-              <template is="dom-repeat" items="[[_invites.invites]]">
+              <template is="dom-repeat" items="[[_invites.Invites]]">
                 <cube-li>
                   <cube-icon icon="icons:add-circle-outline" slot="icon"></cube-icon>
                   [[item.project.name]]
@@ -192,7 +192,7 @@ Example:
         </template>
       </div>
 
-      <cubex-link id="create-button" mode="dialog" href="//[[getServiceHost('apps')]]/cubex/projects/create">
+      <cubex-link id="create-button" mode="dialog" href="//[[getServiceHost('apps')]]/kubex/project/create">
         <paper-button>Create Project</paper-button>
       </cubex-link>
     </div>
@@ -208,7 +208,7 @@ Example:
             type:               Boolean,
             value:              false,
             reflectToAttribute: true,
-            computed:           '_computeTwoColumn(_projects,_invites.invites)'
+            computed:           '_computeTwoColumn(_projects,_invites.Invites)'
           }
         },
 
@@ -231,13 +231,13 @@ Example:
                               {
                                 if(this.status === 200)
                                 {
-                                  for(var i in self._invites.invites)
+                                  for(var i in self._invites.Invites)
                                   {
-                                    if(self._invites.invites.hasOwnProperty(i))
+                                    if(self._invites.Invites.hasOwnProperty(i))
                                     {
-                                      if(self._invites.invites[i].project.id === actionData.acceptId)
+                                      if(self._invites.Invites[i].project.id === actionData.acceptId)
                                       {
-                                        self.splice('_invites.invites', i, 1);
+                                        self.splice('_invites.Invites', i, 1);
                                         break;
                                       }
                                     }
@@ -246,18 +246,18 @@ Example:
                               }
                             }
                           );
-                          if(actionData.acceptType === 1)
+                          if(actionData.acceptType === '1')
                           {
                             xhr.open(
                               'PUT',
-                              '//' + this.getServiceHost('apps') + '/cubex/projects/approval/' + actionData.acceptId
+                              '//' + this.getServiceHost('apps') + '/kubex/project/approval/' + actionData.acceptId
                             );
                           }
-                          else
+                          else if(actionData.acceptType === '0')
                           {
                             xhr.open(
                               'DELETE',
-                              '//' + this.getServiceHost('apps') + '/cubex/projects/approval/' + actionData.acceptId
+                              '//' + this.getServiceHost('apps') + '/kubex/project/approval/' + actionData.acceptId
                             );
                           }
                           xhr.withCredentials = true;

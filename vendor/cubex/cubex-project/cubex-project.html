@@ -15,7 +15,7 @@ Example:
 <dom-module id="cubex-project" attributes="project projects">
   <template>
     <cubex-route project-id="{{projectId}}"></cubex-route>
-    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="projects"
+    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="project"
                     on-subscribe="_projectSubscribed" on-message="_projectUpdate"></cube-websocket>
   </template>
   <script>
@@ -30,10 +30,10 @@ Example:
         _projectSubscribed: function (e, message)
                             {
                               var projects = JSON.parse(message).projects;
-                              this._setProjects(
-                                Object.keys(projects).map(function (i) {return projects[i]})
-                                || []
-                              );
+                              if(projects)
+                              {
+                                this._setProjects(Object.keys(projects).map(function (i) {return projects[i]}));
+                              }
                             },
         _projectUpdate:     function (e, message)
                             {

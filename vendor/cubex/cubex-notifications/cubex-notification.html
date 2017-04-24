@@ -120,7 +120,7 @@
                            {
                              if(arguments.hasOwnProperty(i))
                              {
-                               if(arguments[i] == undefined)
+                               if(arguments[i] === undefined)
                                {
                                  return undefined;
                                }
@@ -162,7 +162,7 @@
                      var xhr = new XMLHttpRequest();
                      xhr.open(
                        'PUT',
-                       '//' + this.getServiceHost('apps') + '/cubex/notifications/read/' + this.notification.NotificationUid
+                       '//' + this.getServiceHost('apps') + '/kubex/notifications/read/' + this.notification.NotificationUid
                      );
                      xhr.setRequestHeader('x-cube-project', this.projectId);
                      xhr.withCredentials = true;
@@ -171,7 +171,7 @@
 
         _computeNotificationPath: function (gaid, pathKey, notification, i18nData)
                                   {
-                                    if(gaid == 'cubex/projects')
+                                    if(gaid === 'kubex/project')
                                     {
                                       return '//' + this.getServiceHost('console');
                                     }
