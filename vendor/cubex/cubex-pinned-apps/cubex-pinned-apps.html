@@ -37,16 +37,14 @@
       }
     </style>
     <cubex-route project-id="{{projectId}}"></cubex-route>
-    <template is="dom-if" if="[[projectId]]">
-      <cube-websocket auto project="[[projectId]]" vendor="cubex" app="pinnedapps"
-                      on-subscribe="_pinnedSub" on-message="_pinnedMsg"></cube-websocket>
-      <template is="dom-repeat" items="[[pinnedApps]]">
-        <a href="/[[item.GlobalAppID]]">
-          <cube-action id="pinned-[[item.ID]]" icon="[[item.Icon]]"></cube-action>
-        </a>
-        <paper-tooltip for="pinned-[[item.ID]]" position="center" animation-delay="100"><strong>[[item.Name]]</strong>
-        </paper-tooltip>
-      </template>
+    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="pinned"
+                    on-subscribe="_pinnedSub" on-message="_pinnedMsg"></cube-websocket>
+    <template is="dom-repeat" items="[[pinnedApps]]">
+      <a href="/[[item.GlobalAppID]]">
+        <cube-action id="pinned-[[item.ID]]" icon="[[item.Icon]]"></cube-action>
+      </a>
+      <paper-tooltip for="pinned-[[item.ID]]" position="center" animation-delay="100"><strong>[[item.Name]]</strong>
+      </paper-tooltip>
     </template>
   </template>
   <script>
@@ -58,11 +56,11 @@
         },
         _pinnedSub: function (e, msg)
                     {
-                      this.set('pinnedApps', JSON.parse(msg));
+                      this.set('pinnedApps', Object.values(JSON.parse(msg).Apps));
                     },
         _pinnedMsg: function (e, msg)
                     {
-                      this.set('pinnedApps', msg.payload);
+                      this.set('pinnedApps', Object.values(msg.payload.Apps));
                     }
       }
     );
