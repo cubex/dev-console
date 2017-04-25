@@ -139,7 +139,7 @@
       },
       _isSelectedApp:     function ()
                           {
-                            return Array.prototype.slice.call(arguments, -1).join('/') == this._selectedApp;
+                            return Array.prototype.slice.call(arguments, -1).join('/') === this._selectedApp;
                           },
       _getPageletUrl:     function (page)
                           {
@@ -151,13 +151,12 @@
                           },
       attached:           function ()
                           {
-                            this._drawer = this._getDrawer();
                             document.addEventListener(
                               'cubex-drawer-state-changed', function (e)
                               {
-                                if(this._drawer == e.detail.drawer)
+                                if(this._getDrawer() === e.detail.drawer)
                                 {
-                                  if(e.detail.state !== 2 && e.detail.isOpen == false)
+                                  if(e.detail.state !== 2 && e.detail.isOpen === false)
                                   {
                                     this._selectedApp = null;
                                   }
@@ -167,18 +166,22 @@
                           },
       _getDrawer:         function ()
                           {
-                            var drawer = null;
-                            this.iterate(
-                              this.getPath(this), function (parent)
-                              {
-                                if(parent.tagName == 'CUBEX-DRAWER')
+                            if(!this._drawer)
+                            {
+                              var drawer = null;
+                              this.iterate(
+                                this.getPath(this), function (parent)
                                 {
-                                  drawer = parent;
-                                  return true;
+                                  if(parent.tagName === 'CUBEX-DRAWER')
+                                  {
+                                    drawer = parent;
+                                    return true;
+                                  }
                                 }
-                              }
-                            );
-                            return drawer;
+                              );
+                              this._drawer = drawer;
+                            }
+                            return this._drawer;
                           },
       _addUserApp:        function ()
                           {
@@ -186,7 +189,7 @@
                           },
       _openUserDrawerApp: function (e)
                           {
-                            if(e.currentTarget.getAttribute('gaid') == this._selectedApp)
+                            if(e.currentTarget.getAttribute('gaid') === this._selectedApp)
                             {
                               this._selectedApp = null;
                             }
@@ -195,26 +198,26 @@
                               this._selectedApp = e.currentTarget.getAttribute('gaid');
                             }
 
-                            if(this._drawer.state == 2)
+                            if(this._getDrawer().state === 2)
                             {
-                              this._drawer.setMaxState(1);
+                              this._getDrawer().setMaxState(1);
                             }
                           },
       _appChange:         function ()
                           {
                             if(this._selectedApp)
                             {
-                              this._drawer.open();
+                              this._getDrawer().open();
                             }
                             else
                             {
-                              this._drawer.close();
+                              this._getDrawer().close();
                             }
                           },
       _lockUserDrawer:    function ()
                           {
-                            this._drawer.setMaxState(this._drawer.state == 2 ? 1 : 2);
-                            this._drawer.setState(this._drawer.maxState);
+                            this._getDrawer().setMaxState(this._getDrawer().state === 2 ? 1 : 2);
+                            this._getDrawer().setState(this._getDrawer().maxState);
                           },
 
       __appGroups: function (userRegistry)

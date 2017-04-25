@@ -34,11 +34,11 @@
     "webcomponentsjs": "v1",
     "iron-ajax": "2.0-preview"
   },
-  "_release": "8cafd8d00a",
+  "_release": "0b1d297fd2",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "8cafd8d00a645931cd510e0c747d6238432e149f"
+    "commit": "0b1d297fd217563fbe6929827d380251d6c2fb2e"
   },
   "_source": "https://github.com/CubexElements/cube-preferences.git",
   "_target": "*",

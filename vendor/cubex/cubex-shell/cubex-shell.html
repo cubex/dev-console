@@ -244,7 +244,7 @@
 
         <div id="waterfall"></div>
 
-        <cube-preferences name="userDrawerPosition" value="{{userDrawerState}}"></cube-preferences>
+        <cube-preferences name="userDrawerState" value="{{userDrawerState}}" live-update></cube-preferences>
 
         <cubex-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]" state="{{userDrawerState}}"
                       preferred-state="[[userDrawerState]]" position="right">
@@ -316,7 +316,7 @@
                                   this.$.userDrawer.setMinState(0);
                                   this.$.userDrawer.setMaxState(2);
 
-                                  if(peek && this.$.userDrawer.state == 0)
+                                  if(peek && this.$.userDrawer.state === 0)
                                   {
                                     this.$.userDrawer.setState(1);
                                   }
@@ -342,7 +342,7 @@
                                 {
                                   this.$.drawer.close();
                                   e.preventDefault();
-                                  if(this.$.search.getComputedStyleValue('display') == 'block')
+                                  if(this.$.search.getComputedStyleValue('display') === 'block')
                                   {
                                     this.$.search.focus();
                                   }
@@ -356,9 +356,11 @@
                               {
                                 if(!this._setupClose)
                                 {
-                                  this.$$('cubex-shell-drawer').addEventListener(
-                                    'closeParent', function (e) {this.$.drawer.close();}.bind(this)
-                                  );
+                                  this.$$('cubex-shell-drawer')
+                                      .addEventListener(
+                                        'closeParent',
+                                        function () {this.$.drawer.close();}.bind(this)
+                                      );
                                   this._setupClose = true;
                                 }
                               },
@@ -376,13 +378,13 @@
                            {
                              if(e && e.detail && e.detail.keyboardEvent)
                              {
-                               return e.detail.keyboardEvent.target.tagName == 'BODY';
+                               return e.detail.keyboardEvent.target.tagName === 'BODY';
                              }
                              return true;
                            },
         _toggleUserDrawer: function ()
                            {
-                             if(this.$.userDrawer.maxState == 0 || this.$.userDrawer.state == 0)
+                             if(this.$.userDrawer.maxState === 0 || this.$.userDrawer.state === 0)
                              {
                                this.$.userDrawer.setMaxState(2);
                                this.$.userDrawer.setState(1);

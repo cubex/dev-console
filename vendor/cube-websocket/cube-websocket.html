@@ -49,9 +49,9 @@ Example:
 
                           xmlHttp.onreadystatechange = function ()
                           {
-                            if(xmlHttp.readyState == XMLHttpRequest.DONE)
+                            if(xmlHttp.readyState === XMLHttpRequest.DONE)
                             {
-                              if(xmlHttp.status == 200)
+                              if(xmlHttp.status === 200)
                               {
                                 self.fire('subscribe', xmlHttp.responseText);
                               }
@@ -111,16 +111,16 @@ Example:
           _onMessage:   function (event)
                         {
                           var message = JSON.parse(event.data);
-                          if(message.app == 'conduit')
+                          if(message.app === 'conduit')
                           {
-                            if(message.channel == '_conduit' && message.action == 'session-id')
+                            if(message.channel === '_conduit' && message.action === 'session-id')
                             {
                               this._socket.sessionId = message.payload;
                               // socket is only open when we have received the sessionId
                               this._doSubscribe();
                             }
                           }
-                          else if(message.app == this.vendor + '/' + this.app)
+                          else if(message.app === this.vendor + '/' + this.app)
                           {
                             this.fire('message', message);
                           }
@@ -151,11 +151,11 @@ Example:
                   }
                   else
                   {
-                    if(undefined == this._socket)
+                    if(undefined === this._socket)
                     {
                       this._socket = {reconnectTime: 1, startTime: Math.floor(Date.now() / 1000)};
                     }
-                    if(undefined == this._socket.socket || this._socket.socket.readyState == WebSocket.CLOSED)
+                    if(undefined === this._socket.socket || this._socket.socket.readyState === WebSocket.CLOSED)
                     {
                       try
                       {

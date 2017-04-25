@@ -2,97 +2,132 @@
 <link rel="import" href="../iron-ajax/iron-request.html">
 <link rel="import" href="../cube-indexeddb-mirror/cube-indexeddb-mirror.html">
 <link rel="import" href="../cube-behavior/cube-service-behavior.html">
+<link rel="import" href="../cubex/cubex-route/cubex-route.html">
+<link rel="import" href="../cube-websocket/cube-websocket.html">
 
-<dom-module id="cube-preferences" attributes="gaid name value cache">
+<dom-module id="cube-preferences" attributes="gaid name value cache live-update">
   <template>
     <template is="dom-if" if="[[cache]]">
       <cube-indexeddb-mirror data="{{value}}" persisted-data="{{persistedValue}}"
                              key="[[name]]"></cube-indexeddb-mirror>
     </template>
+
+    <cubex-route project-id="{{projectId}}"></cubex-route>
+    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="preference"
+                    on-message="_socketMsg"></cube-websocket>
   </template>
   <script>
     Polymer(
       {
-        is:            'cube-preferences',
-        behaviors:     [Polymer.CubeServiceBehavior],
-        properties:    {
-          gaid:  {type: String},
-          name:  {type: String},
-          value: {type: String, notify: true},
-          cache: {type: Boolean},
-          _url:  {type: String, computed: '_computeUrl(name)', readonly: true}
+        is:           'cube-preferences',
+        behaviors:    [Polymer.CubeServiceBehavior],
+        properties:   {
+          gaid:           {type: String},
+          name:           {type: String},
+          value:          {type: String, notify: true},
+          cache:          {type: Boolean, value: false},
+          lastUpdated:    {type: Number, value: 0},
+          liveUpdate:     {type: Boolean, value: false},
+          _url:           {type: String, computed: '_computeUrl(name,gaid)', readonly: true},
+          _changingValue: {type: Boolean, value: false}
         },
-        _oldValue:     null,
-        observers:     ['_valueChanged(value.*)'],
-        _initialized:  false,
-        _computeUrl:   function (name)
+        _oldValue:    null,
+        observers:    ['_valueChanged(value,value.*)'],
+        _initialized: false,
+        _computeUrl:  function (name, gaid)
+                      {
+                        return '//' + this.getServiceHost('apps') + '/kubex/preference/'
+                          + (gaid ? gaid + ':' : '') + name;
+                      },
+
+        ready: function ()
+               {
+                 var self = this, xhr = new XMLHttpRequest();
+                 xhr.addEventListener(
+                   'readystatechange', function ()
+                   {
+                     if(this.readyState === XMLHttpRequest.DONE)
+                     {
+                       if(this.status === 200)
                        {
-                         return '//' + this.getServiceHost('apps') + '/cubex/preferences/'
-                           + (this.gaid ? this.gaid + ':' : '') + name;
-                       },
-        ready:         function ()
-                       {
-                         var self = this, oReq = new XMLHttpRequest();
-                         this.async(
-                           function ()
+                         try
+                         {
+                           var response = JSON.parse(this.responseText);
+                           if(response.Status === 200 && response.Value)
                            {
-                             oReq.addEventListener(
-                               "load", function ()
-                               {
-                                 if(this.status == '200')
-                                 {
-                                   try
-                                   {
-                                     var response = JSON.parse(this.responseText);
-                                     if(response.status == '200')
-                                     {
-                                       self.value = JSON.parse(response.value);
-                                     }
-                                     else
-                                     {
-                                       self.value = null;
-                                     }
-                                   }
-                                   catch(e)
-                                   {
-                                     console.error(e);
-                                   }
-                                   finally
-                                   {
-                                     self._initialized = true;
-                                   }
-                                 }
-                               }
-                             );
-                             oReq.open('GET', this._url, true);
-                             oReq.withCredentials = true;
-                             oReq.send();
+                             self.__setValue(JSON.parse(response.Value));
                            }
-                         );
-                       },
+                           else
+                           {
+                             self.__setValue(null);
+                           }
+                         }
+                         catch(e)
+                         {
+                           console.error('err', e);
+                         }
+                         finally
+                         {
+                           self._initialized = true;
+                         }
+                       }
+                     }
+                   }
+                 );
+                 xhr.open('GET', self._url, true);
+                 xhr.withCredentials = true;
+                 xhr.send();
+               },
+
         _valueChanged: function ()
                        {
-                         if(this._initialized)
+                         if(this._initialized && !this._changingValue)
                          {
-                           var oReq = new XMLHttpRequest();
-                           oReq.addEventListener(
-                             "load", function ()
+                           this.lastUpdated = Date.now();
+                           var xhr = new XMLHttpRequest();
+                           xhr.addEventListener(
+                             'readystatechange', function ()
                              {
-                               if(this.status == '200')
+                               if(this.readyState === XMLHttpRequest.DONE)
                                {
-                                 var response = JSON.parse(this.responseText);
-                                 if(response.status != '200')
+                                 if(this.status === 200)
                                  {
-                                   console.error(this.statusText);
+                                   var response = JSON.parse(this.responseText);
+                                   if(response.Status !== 200)
+                                   {
+                                     console.error(this.statusText);
+                                   }
                                  }
                                }
                              }
                            );
-                           oReq.open(this.value === undefined ? 'DELETE' : 'PUT', this._url, true);
-                           oReq.withCredentials = true;
-                           oReq.send(this.value === undefined ? null : JSON.stringify(this.value));
+                           xhr.open(this.value === undefined ? 'DELETE' : 'PUT', this._url, true);
+                           xhr.withCredentials = true;
+                           xhr.send(this.value === undefined ? null : JSON.stringify(this.value));
                          }
-                       }
+                       },
+
+        _socketMsg: function (e, msg)
+                    {
+                      var newVal = JSON.parse(msg.payload.Value);
+                      if(this.liveUpdate
+                        && msg.payload.Name.toLowerCase() === this.name.toLowerCase()
+                      //  && this.lastUpdated < msg.payload.Timestamp
+                      )
+                      {
+                        this.__setValue(newVal, true);
+                      }
+                    },
+
+        __setValue: function (newVal)
+                    {
+                      if(this.value !== newVal && !this._changingValue)
+                      {
+                        this.set('_changingValue', true);
+                        this.set('value', newVal);
+                        this.set('_changingValue', false);
+                      }
+                    }
       }
     );
   </script>
