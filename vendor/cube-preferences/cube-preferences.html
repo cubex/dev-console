@@ -13,7 +13,7 @@
     </template>
 
     <cubex-route project-id="{{projectId}}"></cubex-route>
-    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="preference"
+    <cube-websocket auto="[[liveUpdate]]" project="[[projectId]]" vendor="kubex" app="preference"
                     on-message="_socketMsg"></cube-websocket>
   </template>
   <script>
@@ -22,14 +22,14 @@
         is:           'cube-preferences',
         behaviors:    [Polymer.CubeServiceBehavior],
         properties:   {
-          gaid:           {type: String},
-          name:           {type: String},
-          value:          {type: String, notify: true},
-          cache:          {type: Boolean, value: false},
-          lastUpdated:    {type: Number, value: 0},
-          liveUpdate:     {type: Boolean, value: false},
-          _url:           {type: String, computed: '_computeUrl(name,gaid)', readonly: true},
-          _changingValue: {type: Boolean, value: false}
+          gaid:         {type: String},
+          name:         {type: String},
+          value:        {type: String, notify: true},
+          cache:        {type: Boolean, value: false},
+          lastUpdated:  {type: Number, value: 0},
+          liveUpdate:   {type: Boolean, value: false},
+          _url:         {type: String, computed: '_computeUrl(name,gaid)', readonly: true},
+          _localUpdate: {type: Boolean, value: true}
         },
         _oldValue:    null,
         observers:    ['_valueChanged(value,value.*)'],
@@ -81,29 +81,32 @@
 
         _valueChanged: function ()
                        {
-                         if(this._initialized && !this._changingValue)
+                         if(this._initialized)
                          {
                            this.lastUpdated = Date.now();
-                           var xhr = new XMLHttpRequest();
-                           xhr.addEventListener(
-                             'readystatechange', function ()
-                             {
-                               if(this.readyState === XMLHttpRequest.DONE)
+                           if(this._localUpdate)
+                           {
+                             var xhr = new XMLHttpRequest();
+                             xhr.addEventListener(
+                               'readystatechange', function ()
                                {
-                                 if(this.status === 200)
+                                 if(this.readyState === XMLHttpRequest.DONE)
                                  {
-                                   var response = JSON.parse(this.responseText);
-                                   if(response.Status !== 200)
+                                   if(this.status === 200)
                                    {
-                                     console.error(this.statusText);
+                                     var response = JSON.parse(this.responseText);
+                                     if(response.Status !== 200)
+                                     {
+                                       console.error(this.statusText);
+                                     }
                                    }
                                  }
                                }
-                             }
-                           );
-                           xhr.open(this.value === undefined ? 'DELETE' : 'PUT', this._url, true);
-                           xhr.withCredentials = true;
-                           xhr.send(this.value === undefined ? null : JSON.stringify(this.value));
+                             );
+                             xhr.open(this.value === undefined ? 'DELETE' : 'PUT', this._url, true);
+                             xhr.withCredentials = true;
+                             xhr.send(this.value === undefined ? null : JSON.stringify(this.value));
+                           }
                          }
                        },
 
@@ -115,17 +118,17 @@
                         && this.lastUpdated < msg.payload.Timestamp
                       )
                       {
-                        this.__setValue(newVal, true);
+                        this.__setValue(newVal);
                       }
                     },
 
         __setValue: function (newVal)
                     {
-                      if(this.value !== newVal && !this._changingValue)
+                      if(this.value !== newVal)
                       {
-                        this.set('_changingValue', true);
+                        this.set('_localUpdate', false);
                         this.set('value', newVal);
-                        this.set('_changingValue', false);
+                        this.set('_localUpdate', true);
                       }
                     }
       }

@@ -266,7 +266,7 @@
         properties:           {
           drawerOpened:    {type: Boolean, reflectToAttribute: true},
           focusSearch:     {type: Boolean, reflectToAttribute: true},
-          userDrawerState: {type: Number, reflectToAttribute: true}
+          userDrawerState: {type: Number, reflectToAttribute: true, observer: '_userDrawerStateChanged'}
         },
         observers:            [
           '_viewChanged(_peek,_narrow)'
@@ -394,11 +394,20 @@
                                this.$.userDrawer.setMaxState(0);
                              }
                            },
-        _showAppMenu:      function (e)
-                           {
-                             document.dispatchEvent(new CustomEvent('cubex-app-drawer-toggle'));
-                             e.stopPropagation();
-                           },
+
+        _userDrawerStateChanged: function (newState)
+                                 {
+                                   if(newState > this.$.userDrawer.state)
+                                   {
+                                     this.$.userDrawer.setMaxState(2);
+                                   }
+                                 },
+
+        _showAppMenu: function (e)
+                      {
+                        document.dispatchEvent(new CustomEvent('cubex-app-drawer-toggle'));
+                        e.stopPropagation();
+                      },
 
         behaviors: [
           Polymer.IronA11yKeysBehavior,
