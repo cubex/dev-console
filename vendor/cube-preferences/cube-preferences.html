@@ -112,7 +112,7 @@
                       var newVal = JSON.parse(msg.payload.Value);
                       if(this.liveUpdate
                         && msg.payload.Name.toLowerCase() === this.name.toLowerCase()
-                      //  && this.lastUpdated < msg.payload.Timestamp
+                        && this.lastUpdated < msg.payload.Timestamp
                       )
                       {
                         this.__setValue(newVal, true);
