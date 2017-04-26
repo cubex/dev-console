@@ -126,7 +126,7 @@
     <cube-resource id="searchResource" auto auth url="//[[getServiceHost('apps')]]/cubex/searchactions/search.json"
                    headers="[[_headers]]" data="{{_search}}" ttl="3600"></cube-resource>
 
-    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="registry"
+    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="registry"
                     on-message="_appsChanged"></cube-websocket>
 
     <div id="scrim" hidden="[[!focused]]"></div>
@@ -182,7 +182,7 @@
 
         _appsChanged: function (e)
                       {
-                        if(e.detail.action == 'install' || e.detail.action == 'uninstall')
+                        if(e.detail.action === 'install' || e.detail.action === 'uninstall')
                         {
                           this.$.searchResource.update(true);
                         }
@@ -219,7 +219,7 @@
                          if(e.key)
                          {
                            if((e.key !== 'ArrowUp' && e.key !== 'ArrowDown')
-                             || (e.key === 'ArrowUp' && this.$.searchmenu.indexOf(this.$.searchmenu.focusedItem) == 0))
+                             || (e.key === 'ArrowUp' && this.$.searchmenu.indexOf(this.$.searchmenu.focusedItem) === 0))
                            {
                              this.focus();
                              var len = this.$.search.inputElement.inputElement.value.length;
@@ -229,7 +229,7 @@
                              {
                                e.preventDefault();
                              }
-                             else if(e.key == 'Enter')
+                             else if(e.key === 'Enter')
                              {
                                this.$.results.close();
                              }
@@ -313,7 +313,7 @@
         runQuery: function ()
                   {
                     var query = this.searchQuery;
-                    if(!query || query.length == 0)
+                    if(!query || query.length === 0)
                     {
                       this.$.results.close();
                     }

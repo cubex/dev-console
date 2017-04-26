@@ -56,7 +56,7 @@
 
     <cubex-app-definition gaid="[[_appGaid]]" app-data="{{appData}}"></cubex-app-definition>
 
-    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="registry"
+    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="registry"
                     on-message="_appsChanged"></cube-websocket>
     <cube-resource id="integrationsResource" auto auth url="[[_integrationsPath]]" data="{{_integrations}}"
                    headers="[[_pageDefinitionHeaders]]" ttl="3600"></cube-resource>
@@ -139,7 +139,7 @@
 
         _appsChanged:         function (e)
                               {
-                                if(e.detail.action == 'install' || e.detail.action == 'uninstall')
+                                if(e.detail.action === 'install' || e.detail.action === 'uninstall')
                                 {
                                   this._refreshIntegrationsList.push(e.detail.payload);
                                   this._refreshIntegrations();
@@ -207,9 +207,9 @@
                                function (a, b)
                                {
                                  // if one item is within the current app and one isn't, move the current one up
-                                 if((a.Hook.indexOf(a.GlobalAppID) == 0) != (b.Hook.indexOf(b.GlobalAppID) == 0))
+                                 if((a.Hook.indexOf(a.GlobalAppID) == 0) !== (b.Hook.indexOf(b.GlobalAppID) == 0))
                                  {
-                                   return (a.GlobalAppID == appData.GlobalAppID) ? -1 : 1;
+                                   return (a.GlobalAppID === appData.GlobalAppID) ? -1 : 1;
                                  }
                                  var cA = a.Title, cB = b.Title;
                                  // if not current app, use category
@@ -219,7 +219,7 @@
                                    cB = self.projectData.AppSummary[b.GlobalAppID].category;
                                  }
                                  // comparisons match, no change
-                                 if(cA == cB)
+                                 if(cA === cB)
                                  {
                                    return 0;
                                  }
@@ -246,7 +246,7 @@
                                  else if(this.projectData.AppSummary[headerMenu[i].GlobalAppID])
                                  {
                                    var category = this.projectData.AppSummary[headerMenu[i].GlobalAppID].category;
-                                   if(categoriesAdded.indexOf(category) == -1)
+                                   if(categoriesAdded.indexOf(category) === -1)
                                    {
                                      newMenu.push(
                                        {
@@ -274,12 +274,12 @@
                                  newActions.push(
                                    {
                                      Title:   action.Title,
-                                     Path:    action.Mode == 'dialog'
+                                     Path:    action.Mode === 'dialog'
                                                 ? '//' + this.getServiceHost('apps') + '/' + action.GlobalAppID + '/' + action.Path
                                                 : '/' + action.Hook + '/_/' + action.ID,
                                      Icon:    action.Icon,
                                      Mode:    action.Mode,
-                                     Primary: action.GlobalAppID == 'fortifiplatform/customers'
+                                     Primary: action.GlobalAppID === 'fortifiplatform/customers'
                                    }
                                  );
                                }
@@ -301,7 +301,7 @@
                             var pathMatches = this._parsePath(this.appPath);
                             if(integration
                               && this.projectData.AppSummary[integration.GlobalAppID]
-                              && pathMatches.type == '~')
+                              && pathMatches.type === '~')
                             {
                               var
                                 intData = this.projectData.AppSummary[integration.GlobalAppID],
@@ -311,7 +311,7 @@
                               headerMenu = headerMenu.sort(
                                 function (a, b)
                                 {
-                                  if(a.Title == b.Title)
+                                  if(a.Title === b.Title)
                                   {
                                     return 0;
                                   }
@@ -323,8 +323,8 @@
                               {
                                 if(headerMenu.hasOwnProperty(i))
                                 {
-                                  if(this.projectData.AppSummary[headerMenu[i].GlobalAppID].category == category
-                                    && headerMenu[i].GlobalAppID != this._appGaid)
+                                  if(this.projectData.AppSummary[headerMenu[i].GlobalAppID].category === category
+                                    && headerMenu[i].GlobalAppID !== this._appGaid)
                                   {
                                     pageMenus.push(
                                       {
@@ -350,7 +350,7 @@
                                 var items = this._integrations.PageMenuItems.sort(
                                   function (a, b)
                                   {
-                                    if(a.Title == b.Title)
+                                    if(a.Title === b.Title)
                                     {
                                       return 0;
                                     }
@@ -402,19 +402,19 @@
                                   integrationPath = fullPath;
                                 this._pagePath = fullPath;
 
-                                if(pathMatches.type == '_')
+                                if(pathMatches.type === '_')
                                 {
                                   integrationPath += '/_/' + pathMatches.typeId;
                                 }
 
                                 var ip = '//' + this.getServiceHost('apps') + '/cubex/integrations/integrations.json?hook=' + integrationPath;
-                                if(this._integrationsPath != ip)
+                                if(this._integrationsPath !== ip)
                                 {
                                   this._integrationsPath = ip;
                                 }
 
                                 var pdp = '//' + this.getServiceHost('apps') + fullPath;
-                                if(this._pageDefinitionPath != pdp)
+                                if(this._pageDefinitionPath !== pdp)
                                 {
                                   this._addPageSpinner = setTimeout(
                                     function () { self._pageSpinnerVisible = true; }, 50
@@ -461,7 +461,7 @@
 
                             if((!this.appPath) && this.vendorId)
                             {
-                              if(this.vendorId[0] == '_')
+                              if(this.vendorId[0] === '_')
                               {
                                 var cat = this.vendorId.substring(1);
                                 this.pageData = {
@@ -508,24 +508,24 @@
                                 {
                                   var hashType = pathMatches.pageletId.substr(0, 2),
                                     hash = pathMatches.pageletId.substr(2);
-                                  if(hashType == 'm-')
+                                  if(hashType === 'm-')
                                   {
                                     items = this._integrations.PageMenuItems;
                                   }
-                                  else if(hashType == 'a-')
+                                  else if(hashType === 'a-')
                                   {
                                     items = this._integrations.PageActions;
                                   }
-                                  else if(hashType == 'h-')
+                                  else if(hashType === 'h-')
                                   {
                                     items = this._integrations.HeaderMenuItems;
                                   }
                                 }
-                                else if(pathMatches.type == '~' && pathMatches.typeId)
+                                else if(pathMatches.type === '~' && pathMatches.typeId)
                                 {
                                   items = this._integrations.HeaderMenuItems;
                                 }
-                                else if(pathMatches.type == '_' && pathMatches.typeId)
+                                else if(pathMatches.type === '_' && pathMatches.typeId)
                                 {
                                   items = this._integrations.HeaderMenuItems;
                                 }
@@ -535,7 +535,7 @@
                                   items = items.sort(
                                     function (a, b)
                                     {
-                                      if(a.Title == b.Title)
+                                      if(a.Title === b.Title)
                                       {
                                         return 0;
                                       }
@@ -549,10 +549,10 @@
                                       var gaidHash = this._hash32(items[i].GlobalAppID + '/' + items[i].ID);
                                       if(
                                         ((!pathMatches.pageletId)
-                                          && (pathMatches.type == '~' && pathMatches.typeId == this.projectData.AppSummary[items[i].GlobalAppID].category)
-                                          || (pathMatches.type == '_' && items[i].GlobalAppID == this.appData.GlobalAppID && items[i].ID == pathMatches.typeId)
+                                          && (pathMatches.type === '~' && pathMatches.typeId === this.projectData.AppSummary[items[i].GlobalAppID].category)
+                                          || (pathMatches.type === '_' && items[i].GlobalAppID === this.appData.GlobalAppID && items[i].ID === pathMatches.typeId)
                                         )
-                                        || (gaidHash == hash)
+                                        || (gaidHash === hash)
                                       )
                                       {
                                         integration = items[i];
@@ -564,12 +564,12 @@
                                 }
                               }
 
-                              if(integration != this._integration)
+                              if(integration !== this._integration)
                               {
                                 this._integration = integration;
                               }
 
-                              if(contentPath != this._pageContentPath
+                              if(contentPath !== this._pageContentPath
                                 && this.projectData && this.projectData.AppSummary
                                 && this.projectData.AppSummary[integration ? integration.GlobalAppID : this._appGaid])
                               {

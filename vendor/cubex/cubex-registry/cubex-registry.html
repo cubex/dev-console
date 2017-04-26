@@ -8,12 +8,12 @@
   <template>
     <cubex-route project-id="{{projectId}}"></cubex-route>
 
-    <cube-resource id="project" auto auth url="//[[getServiceHost('apps')]]/cubex/registry/project.json"
+    <cube-resource id="project" auto auth url="//[[getServiceHost('apps')]]/kubex/registry/project.json"
                    data="{{projectData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
-    <cube-resource id="user" auto auth url="//[[getServiceHost('apps')]]/cubex/registry/user.json"
+    <cube-resource id="user" auto auth url="//[[getServiceHost('apps')]]/kubex/registry/user.json"
                    data="{{userData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
 
-    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="registry"
+    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="registry"
                     on-message="_appsChanged"></cube-websocket>
   </template>
   <script>
@@ -36,7 +36,7 @@
 
         _appsChanged: function (e)
                       {
-                        if(e.detail.action == 'install' || e.detail.action == 'uninstall')
+                        if(e.detail.action === 'install' || e.detail.action === 'uninstall')
                         {
                           this.$.project.update(true);
                           this.$.user.update(true);

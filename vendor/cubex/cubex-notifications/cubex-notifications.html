@@ -100,7 +100,7 @@
 
     <cubex-route project-id="{{projectId}}"></cubex-route>
 
-    <cube-websocket auto project="[[projectId]]" vendor="cubex" app="notifications"
+    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="notifications"
                     on-subscribe="_notificationSubscribe" on-message="_notificationMessage"></cube-websocket>
 
     <cube-dropdown id="dd" horizontal-align="right">
@@ -164,12 +164,12 @@
                                 },
         _notificationMessage:   function (e)
                                 {
-                                  if(e.detail.action == 'update' || e.detail.action == 'send')
+                                  if(e.detail.action === 'update' || e.detail.action === 'send')
                                   {
                                     this._notifications[e.detail.payload.NotificationUid] = e.detail.payload;
                                     this.notifyPath('_notifications');
                                   }
-                                  else if(e.detail.action == 'read')
+                                  else if(e.detail.action === 'read')
                                   {
                                     if(this._notifications[e.detail.payload])
                                     {
@@ -201,10 +201,10 @@
 
         __sortNotifications: function (a, b)
                              {
-                               if((a.Percentage == b.Percentage) && (a.Percentage == 100))
+                               if((a.Percentage === b.Percentage) && (a.Percentage === 100))
                                {
                                  var updateReturn = 0;
-                                 if(a.UpdateTime != b.UpdateTime)
+                                 if(a.UpdateTime !== b.UpdateTime)
                                  {
                                    updateReturn = a.UpdateTime > b.UpdateTime ? -1 : 1;
                                  }
@@ -213,7 +213,7 @@
                                if(a.Percentage < 100 && b.Percentage < 100)
                                {
                                  var startReturn = 0;
-                                 if(a.StartTime != b.StartTime)
+                                 if(a.StartTime !== b.StartTime)
                                  {
                                    startReturn = a.StartTime > b.StartTime ? -1 : 1;
                                  }

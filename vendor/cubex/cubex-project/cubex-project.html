@@ -23,8 +23,9 @@ Example:
       {
         is:                 'cubex-project',
         properties:         {
-          project:  {type: Object, notify: true, readOnly: true},
-          projects: {type: Array, value: function () {return [];}, notify: true, readOnly: true}
+          project:         {type: Object, notify: true, readOnly: true},
+          projects:        {type: Array, value: function () {return []}, notify: true, readOnly: true},
+          _projectsObject: {type: Object, value: function () {return {}}}
         },
         observers:          ['_projectChanged(projects,projectId)'],
         _projectSubscribed: function (e, message)
@@ -32,6 +33,7 @@ Example:
                               var projects = JSON.parse(message).projects;
                               if(projects)
                               {
+                                this._projectsObject = projects;
                                 this._setProjects(Object.keys(projects).map(function (i) {return projects[i]}));
                               }
                             },
@@ -59,9 +61,9 @@ Example:
                             },
         _projectChanged:    function ()
                             {
-                              if(this.projects && this.projectId)
+                              if(this._projectsObject && this.projectId)
                               {
-                                this._setProject(this.projects[this.projectId]);
+                                this._setProject(this._projectsObject[this.projectId]);
                               }
                             }
       }

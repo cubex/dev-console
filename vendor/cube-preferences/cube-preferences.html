@@ -25,6 +25,7 @@
           gaid:         {type: String},
           name:         {type: String},
           value:        {type: String, notify: true},
+          version:      {type: String, notify: true},
           cache:        {type: Boolean, value: false},
           lastUpdated:  {type: Number, value: 0},
           liveUpdate:   {type: Boolean, value: false},
@@ -53,18 +54,18 @@
                          try
                          {
                            var response = JSON.parse(this.responseText);
-                           if(response.Status === 200 && response.Value)
+                           if(response.Value)
                            {
-                             self.__setValue(JSON.parse(response.Value));
+                             self.__setValue(JSON.parse(response.Value), response.Version);
                            }
                            else
                            {
-                             self.__setValue(null);
+                             self.__setValue(null, null);
                            }
                          }
                          catch(e)
                          {
-                           console.error('err', e);
+                           console.error(e);
                          }
                          finally
                          {
@@ -92,13 +93,9 @@
                                {
                                  if(this.readyState === XMLHttpRequest.DONE)
                                  {
-                                   if(this.status === 200)
+                                   if(this.status !== 200)
                                    {
-                                     var response = JSON.parse(this.responseText);
-                                     if(response.Status !== 200)
-                                     {
-                                       console.error(this.statusText);
-                                     }
+                                     console.error(this.statusText);
                                    }
                                  }
                                }
@@ -122,12 +119,12 @@
                       }
                     },
 
-        __setValue: function (newVal)
+        __setValue: function (newVal, version)
                     {
                       if(this.value !== newVal)
                       {
                         this.set('_localUpdate', false);
-                        this.set('value', newVal);
+                        this.setProperties({'value': newVal, 'version': version});
                         this.set('_localUpdate', true);
                       }
                     }
