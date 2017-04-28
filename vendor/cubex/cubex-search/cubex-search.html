@@ -123,7 +123,7 @@
 
     <cubex-route project-id="{{projectId}}"></cubex-route>
 
-    <cube-resource id="searchResource" auto auth url="//[[getServiceHost('apps')]]/cubex/searchactions/search.json"
+    <cube-resource id="searchResource" auto auth url="//[[getServiceHost('apps')]]/kubex/search-actions/search.json"
                    headers="[[_headers]]" data="{{_search}}" ttl="3600"></cube-resource>
 
     <cube-websocket auto project="[[projectId]]" vendor="kubex" app="registry"
