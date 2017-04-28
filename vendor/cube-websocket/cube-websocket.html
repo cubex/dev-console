@@ -28,7 +28,15 @@ Example:
             app:              {type: String},
             url:              {
               type:               String,
-              value:              function () {return 'wss://' + this.getServiceHost('conduit');},
+              value:              function ()
+                                  {
+                                    var protocol = 'ws:';
+                                    if(window.location.protocol === 'https:')
+                                    {
+                                      protocol = 'wss:'
+                                    }
+                                    return protocol + '//' + this.getServiceHost('conduit');
+                                  },
               reflectToAttribute: true
             },
             protocol:         {type: String},
