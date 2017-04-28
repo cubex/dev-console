@@ -66,26 +66,26 @@
         margin: 0 12px;
       }
 
-      :host([focus-search]) {
+      :host([focus-search]), #results {
         display: block;
         width: 295px
       }
 
       @media screen and (min-width: 530px) {
-        :host([focus-search]) {
+        :host([focus-search]), #results {
           width: 512px
         }
       }
 
       @media screen and (min-width: 800px) {
-        :host {
+        :host, #results {
           max-width: 300px;
           display: block;
         }
       }
 
       @media screen and (min-width: 1000px) {
-        :host {
+        :host, #results {
           max-width: 512px;
         }
       }
@@ -136,8 +136,8 @@
       <cube-icon icon="icons:search" slot="prefix"></cube-icon>
     </paper-input>
 
-    <iron-dropdown vertical-align="top" id="results">
-      <cube-list-menu id="searchmenu" zebra>
+    <iron-dropdown vertical-align="top" id="results" vertical-offset="45">
+      <cube-list-menu slot="dropdown-content" id="searchmenu" zebra>
         <template is="dom-repeat" items="{{_filterActions(searchQuery,_search.Actions)}}">
           <a href="/[[item.GlobalAppID]]/[[item.Path]]">
             <cube-li>
@@ -203,6 +203,7 @@
                          this.listen(this, 'blur', '_onBlur');
                          this.listen(this, 'focus', '_onFocus');
                          this.listen(this.$.searchmenu, 'keydown', '_recoverFocus');
+                         this.$.results.sizingTarget = this.$.results;
                        },
         _onFocus:      function ()
                        {
@@ -320,7 +321,6 @@
                     else
                     {
                       this.$.results.open();
-                      this.$.results.sizingTarget = null;
                     }
                   },
         focus:    function ()
