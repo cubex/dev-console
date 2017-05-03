@@ -51,14 +51,9 @@ Example:
           accent:  {type: String, value: 'cubex-blue', observer: '_updateAccent'},
           theme:   {type: String, value: 'light', observer: '_updateTheme'}
         },
-        _doc:           (function ()
-        {
-          var script = document._currentScript || document.currentScript;
-          return script && script.ownerDocument || document;
-        }()),
-        _regex:         /[^a-z0-9\-]/,
         _import:        function (type, name)
                         {
+                          name = name.replace(/[^a-z0-9\-]/, '');
                           if(!name)
                           {
                             return;
@@ -92,21 +87,21 @@ Example:
                         {
                           if(v)
                           {
-                            this._import('primary', v.replace(this._regex, ''));
+                            this._import('primary', v);
                           }
                         },
         _updateAccent:  function (v)
                         {
                           if(v)
                           {
-                            this._import('accent', v.replace(this._regex, ''));
+                            this._import('accent', v);
                           }
                         },
         _updateTheme:   function (v)
                         {
                           if(v)
                           {
-                            this._import('theme', v.replace(this._regex, ''));
+                            this._import('theme', v);
                           }
                         }
       }

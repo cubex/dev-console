@@ -4,7 +4,6 @@
 <link href="../cubex-project/cubex-project.html" rel="import">
 <link href="../../iron-selector/iron-selector.html" rel="import">
 <link href="../../paper-button/paper-button.html" rel="import">
-<link href="../../cube-animbg/cube-animbg.html" rel="import">
 <link href="../../cube-list/cube-list-menu.html" rel="import">
 <link href="../../cube-list/cube-list-group.html" rel="import">
 <link href="../../cube-list/cube-li.html" rel="import">
@@ -20,10 +19,10 @@
         flex-direction: column;
         overflow: auto;
         height: 100%;
-        --cube-animbg-background-color: var(--accent-700-color);
       }
 
       #user-view {
+        background: var(--accent-700-color);
         position: relative;
         width: 100%;
         height: 146px;
@@ -123,7 +122,7 @@
 
     <cubex-registry project-data="{{_projectRegistryData}}"></cubex-registry>
 
-    <cube-animbg id="user-view" size="80">
+    <div id="user-view">
       <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/whoami/whoami.json"
                      data="{{whoami}}"></cube-resource>
       <paper-button on-tap="_toggleParent" class="closer"></paper-button>
@@ -136,7 +135,7 @@
           <iron-icon icon="[[_icon]]"></iron-icon>
         </paper-button>
       </template>
-    </cube-animbg>
+    </div>
     <div id="drawerPanelContainer">
       <iron-selector selected="0" id="drawerPanels">
         <slot></slot>
