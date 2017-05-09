@@ -28,17 +28,28 @@ Example:
           action: {type: String, value: ''},
           method: {type: String, value: ''}
         },
-        attached:   function ()
-                    {
-                      this._nodeObserver = Polymer.dom(this.$.content).observeNodes(
-                        function (mutations)
+
+        listeners: {'tap': '_onTap'},
+
+        _onTap: function (e)
+                {
+                  if(e.detail.sourceEvent.target.tagName === 'PAPER-BUTTON')
+                  {
+                    this.$.form.submit();
+                  }
+                },
+
+        attached: function ()
+                  {
+                    this._nodeObserver = Polymer.dom(this.$.content).observeNodes(
+                      function (mutations)
+                      {
+                        for(var i = 0; i < mutations.addedNodes.length; i++)
                         {
-                          for(var i = 0; i < mutations.addedNodes.length; i++)
-                          {
-                            this.$.helper.appendChild(mutations.addedNodes[i]);
-                          }
-                        }.bind(this));
-                    },
+                          this.$.helper.appendChild(mutations.addedNodes[i]);
+                        }
+                      }.bind(this));
+                  },
 
         ready: function ()
                {
