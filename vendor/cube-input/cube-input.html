@@ -1,0 +1,99 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-input/paper-input.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <cube-input></cube-input>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="cube-input">
+  <template>
+    <paper-input
+      id="input"
+      value="{{value}}"
+      no-label-float="[[noLabelFloat]]"
+      placeholder="[[placeholder]]"
+      auto-validate="[[autoValidate]]"
+      disabled="[[disabled]]"
+      pattern="[[pattern]]"
+      invalid="{{invalid}}"
+      error-message="[[errorMessage]]"
+      char-counter="[[charCounter]]"
+      label="[[label]]"
+      maxlength$="[[maxlength]]"
+      allowed-pattern="[[allowedPattern]]"
+      invalid="{{invalid}}"
+      validator="[[validator]]"
+      aria-labelledby$="[[_ariaLabelledBy]]"
+      aria-describedby$="[[_ariaDescribedBy]]"
+      disabled$="[[disabled]]"
+      title$="[[title]]"
+      type$="[[type]]"
+      pattern$="[[pattern]]"
+      required$="[[required]]"
+      autocomplete$="[[autocomplete]]"
+      autofocus$="[[autofocus]]"
+      inputmode$="[[inputmode]]"
+      minlength$="[[minlength]]"
+      maxlength$="[[maxlength]]"
+      min$="[[min]]"
+      max$="[[max]]"
+      step$="[[step]]"
+      name$="[[name]]"
+      placeholder$="[[placeholder]]"
+      readonly$="[[readonly]]"
+      list$="[[list]]"
+      size$="[[size]]"
+      autocapitalize$="[[autocapitalize]]"
+      autocorrect$="[[autocorrect]]"
+      tabindex$="[[tabIndex]]"
+      autosave$="[[autosave]]"
+      results$="[[results]]"
+      accept$="[[accept]]"
+      multiple$="[[multiple]]">
+    </paper-input>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is: 'cube-input',
+
+        attached: function ()
+                  {
+                    var self = this, errMsg = this.errorMessage;
+                    this.$.input.addEventListener(
+                      'bind-value-changed',
+                      function () { self.errorMessage = errMsg; }
+                    );
+                  },
+
+        setTemporaryError: function (error)
+                           {
+                             this.errorMessage = error;
+                             this.invalid = true;
+                           },
+
+        /**
+         * Returns a reference to the focusable element. Overridden from PaperInputBehavior
+         * to correctly focus the native input.
+         */
+        get _focusableElement()
+        {
+          return Polymer.Element ? this.inputElement._inputElement : this.inputElement;
+        },
+
+        behaviors: [
+          Polymer.PaperInputBehavior,
+          Polymer.IronFormElementBehavior
+        ]
+      }
+    );
+  </script>
+</dom-module>

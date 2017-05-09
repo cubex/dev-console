@@ -1,0 +1,39 @@
+{
+  "name": "cube-input",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "private": true,
+  "main": "cube-input.html",
+  "license": "MIT",
+  "homepage": "https://github.com/FortifiElements/cube-input/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~2.0.0",
+    "paper-input": "PolymerElements/paper-input#2.0-preview"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
+    "web-component-tester": "^6.0.0"
+  },
+  "_release": "62c0cb565d",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "62c0cb565d8b7a8036de2ed8d9531542caa1f270"
+  },
+  "_source": "https://github.com/CubexElements/cube-input.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-input"
+}

@@ -64,11 +64,11 @@
     "iron-fit-behavior": "2.0-preview",
     "iron-a11y-announcer": "2.0-preview"
   },
-  "_release": "e43f557482",
+  "_release": "17ea09dc21",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "e43f557482eca43eefda1b066084c33dfa5aa74a"
+    "commit": "17ea09dc2190b94feb926d2004fc2948c7245cbe"
   },
   "_source": "https://github.com/CubexElements/cube-elements.git",
   "_target": "*",

@@ -6,7 +6,9 @@
     "promise-polyfill": "PolymerLabs/promise-polyfill",
     "web-animations-js": "web-animations/web-animations-js#2.2.2",
     "cubex": "CubexElements/cubex",
-    "cube-elements": "CubexElements/cube-elements"
+    "cube-elements": "CubexElements/cube-elements",
+    "cube-form": "CubexElements/cube-form",
+    "cube-input": "CubexElements/cube-input"
   },
   "resolutions": {
     "polymer": "~2.0.0",

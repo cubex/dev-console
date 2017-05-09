@@ -122,7 +122,11 @@ Example:
         @apply --shadow-elevation-2dp;
       }
 
-      #create-button {
+      #create-box {
+        text-align: center;
+      }
+
+      #create-box paper-button {
         display: inline-block;
         margin-top: 15px;
         @apply --shadow-elevation-2dp;
@@ -166,8 +170,8 @@ Example:
           </div>
         </template>
 
-        <template is="dom-if" if="[[_projects.length]]">
-          <div class="project-section">
+        <div class="project-section">
+          <template is="dom-if" if="[[_projects.length]]">
             <h2>Your Projects</h2>
             <p>Please choose a project</p>
             <cube-list border double-border>
@@ -181,20 +185,20 @@ Example:
                 </a>
               </template>
             </cube-list>
-          </div>
-        </template>
+          </template>
 
-        <template is="dom-if" if="[[!_projects.length]]">
-          <div class="project-section">
+          <template is="dom-if" if="[[!_projects.length]]">
             <h2>Create a Project</h2>
             <p>Looks like you just created your account and have no projects. Probably time to create one!</p>
-          </div>
-        </template>
-      </div>
+          </template>
 
-      <cubex-link id="create-button" mode="dialog" href="//[[getServiceHost('apps')]]/kubex/project/create">
-        <paper-button>Create Project</paper-button>
-      </cubex-link>
+          <div id="create-box">
+            <cubex-link id="create-button" mode="dialog" href="//[[getServiceHost('apps')]]/kubex/project/create">
+              <paper-button>Create Project</paper-button>
+            </cubex-link>
+          </div>
+        </div>
+      </div>
     </div>
   </template>
 
@@ -209,7 +213,9 @@ Example:
             value:              false,
             reflectToAttribute: true,
             computed:           '_computeTwoColumn(_projects,_invites.Invites)'
-          }
+          },
+          _dlg:      {type: Object},
+          _pagelet:  {type: Object}
         },
 
         _computeTwoColumn: function (projects, invites)
@@ -263,6 +269,17 @@ Example:
                           xhr.withCredentials = true;
                           xhr.send();
                         },
+
+        _tapDialog: function ()
+                    {
+                      if(!this._dlg)
+                      {
+                        this._dlg = Polymer.dom(this.root).querySelector('#create-dialog');
+                        document.body.appendChild(this._dlg);
+                      }
+
+                      this._dlg.open();
+                    },
 
         behaviors: [Polymer.CubeServiceBehavior]
       }

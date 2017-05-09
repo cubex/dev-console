@@ -1,0 +1,39 @@
+{
+  "name": "cube-form",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "private": true,
+  "main": "cube-form.html",
+  "license": "MIT",
+  "homepage": "https://github.com/FortifiElements/cube-form/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~2.0.0",
+    "iron-form": "PolymerElements/iron-form#2.0-preview"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
+    "web-component-tester": "~6.0.0"
+  },
+  "_release": "1a47d17dfa",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "1a47d17dfa13ea1c4d9a7c56ad4c2e02407bb8ab"
+  },
+  "_source": "https://github.com/CubexElements/cube-form.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-form"
+}
