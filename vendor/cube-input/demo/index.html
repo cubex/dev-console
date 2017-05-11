@@ -9,9 +9,9 @@
 </head>
 <body unresolved>
 
-<cube-input id="inp" label="Project ID" type="text" name="projectID" required auto-validate
-            pattern="^([a-zA-Z0-9]-)*[a-zA-Z0-9]+$"
-            error-message="Letters, Numbers and hyphens"></cube-input>
+<cube-input label="Project ID" name="projectName" required auto-validate></cube-input>
+<cube-input id="inp" label="Project ID" name="projectID" required auto-validate
+            pattern="^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$" error-message="Letters, Numbers and hyphens"></cube-input>
 
 <button id="btn" onclick="_setError()">Set Temporary Error</button>
 <script>
