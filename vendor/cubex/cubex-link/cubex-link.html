@@ -104,7 +104,7 @@
 
         _isMode:    function (test, mode)
                     {
-                      return test == mode;
+                      return test === mode;
                     },
         _tapDialog: function ()
                     {
@@ -115,6 +115,7 @@
                       if(!this._dlg)
                       {
                         this._dlg = Polymer.dom(this.root).querySelector('#dialog');
+                        this._dlg.addEventListener('cube-dialog-close', function () {this._dlg.close()}.bind(this));
                         document.body.appendChild(this._dlg);
                       }
 
@@ -123,13 +124,13 @@
                     },
 
         _dialogStatusChanged: function (status)
+                              {
+                                // refit dialog when pagelet loads
+                                if(status > -1 && this._dlg)
                                 {
-                                  // refit dialog when pagelet loads
-                                  if(status > -1 && this._dlg)
-                                  {
-                                    this._dlg.refit()
-                                  }
+                                  this._dlg.refit()
                                 }
+                              }
       }
     );
   </script>

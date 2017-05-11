@@ -213,9 +213,7 @@ Example:
             value:              false,
             reflectToAttribute: true,
             computed:           '_computeTwoColumn(_projects,_invites.Invites)'
-          },
-          _dlg:      {type: Object},
-          _pagelet:  {type: Object}
+          }
         },
 
         _computeTwoColumn: function (projects, invites)
@@ -269,17 +267,6 @@ Example:
                           xhr.withCredentials = true;
                           xhr.send();
                         },
-
-        _tapDialog: function ()
-                    {
-                      if(!this._dlg)
-                      {
-                        this._dlg = Polymer.dom(this.root).querySelector('#create-dialog');
-                        document.body.appendChild(this._dlg);
-                      }
-
-                      this._dlg.open();
-                    },
 
         behaviors: [Polymer.CubeServiceBehavior]
       }

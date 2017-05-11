@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-form/iron-form.html">
+<link rel="import" href="../paper-toast/paper-toast.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -54,44 +55,65 @@ Example:
         ready: function ()
                {
                  var self = this;
-                 this.$.form.addEventListener('iron-form-presubmit', function (event)
+                 this.$.form.addEventListener('iron-form-presubmit', function ()
                  {
                    this.ajax.withCredentials = true;
                    this.ajax.contentType = 'application/x-www-form-urlencoded';
                  });
                  this.$.form.addEventListener('iron-form-response', function (event)
                  {
-                   var response = event.detail.response;
-                   if(response.Errors)
-                   {
-                     for(var field in response.Errors)
-                     {
-                       if(response.Errors.hasOwnProperty(field))
-                       {
-                         var ele = self.$.helper.querySelector('[name="' + field + '"]'),
-                           errors = response.Errors[field],
-                           errs = [];
-
-                         for(var i in errors)
-                         {
-                           if(errors.hasOwnProperty(i))
-                           {
-                             errs.push(errors[i]);
-                           }
-                         }
-                         if(ele.setTemporaryError)
-                         {
-                           ele.setTemporaryError(errs.join(', '));
-                         }
-                         else
-                         {
-                           console.error(errs);
-                         }
-                       }
-                     }
-                   }
+                   self.__handleFormResponse(event.detail.response);
                  });
-               }
+               },
+
+        __handleFormResponse: function (response)
+                              {
+                                if(response.Errors)
+                                {
+                                  for(var field in response.Errors)
+                                  {
+                                    if(response.Errors.hasOwnProperty(field))
+                                    {
+                                      var ele = this.$.helper.querySelector('[name="' + field + '"]'),
+                                        errors = response.Errors[field],
+                                        errs = [];
+
+                                      for(var i in errors)
+                                      {
+                                        if(errors.hasOwnProperty(i))
+                                        {
+                                          errs.push(errors[i]);
+                                        }
+                                      }
+                                      if(ele.setTemporaryError)
+                                      {
+                                        ele.setTemporaryError(errs.join(', '));
+                                      }
+                                      else
+                                      {
+                                        console.error(errs);
+                                      }
+                                    }
+                                  }
+                                }
+
+                                if(response.ToastMessage)
+                                {
+                                  this.fire('cube-dialog-close');
+                                  var toast = document.createElement('paper-toast');
+                                  toast.addEventListener('iron-overlay-closed', function ()
+                                  {
+                                    document.body.removeChild(this);
+                                  });
+                                  document.body.appendChild(toast);
+                                  toast.show({text: response.ToastMessage, duration: 3000});
+                                }
+
+                                if(response.RedirectPath)
+                                {
+                                  window.location = response.RedirectPath;
+                                }
+                              }
       }
     );
   </script>
