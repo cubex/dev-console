@@ -68,6 +68,12 @@ Example:
 
         __handleFormResponse: function (response)
                               {
+                                var evt = this.fire('cube-form-response', response, {cancelable: true});
+                                if(evt.defaultPrevented)
+                                {
+                                  return;
+                                }
+
                                 if(response.Errors)
                                 {
                                   for(var field in response.Errors)
@@ -99,7 +105,6 @@ Example:
 
                                 if(response.ToastMessage)
                                 {
-                                  this.fire('cube-dialog-close');
                                   var toast = document.createElement('paper-toast');
                                   toast.addEventListener('iron-overlay-closed', function ()
                                   {

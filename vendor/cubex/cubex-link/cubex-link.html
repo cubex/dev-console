@@ -116,6 +116,13 @@
                       {
                         this._dlg = Polymer.dom(this.root).querySelector('#dialog');
                         this._dlg.addEventListener('cube-dialog-close', function () {this._dlg.close()}.bind(this));
+                        this._dlg.addEventListener('cube-form-response', function (evt)
+                        {
+                          if(evt.detail.Errors.length <= 0)
+                          {
+                            this._dlg.close();
+                          }
+                        }.bind(this));
                         document.body.appendChild(this._dlg);
                       }
 

@@ -51,11 +51,11 @@
   },
   "ignore": [],
   "homepage": "https://github.com/PolymerElements/paper-toast",
-  "_release": "462319a6c2",
+  "_release": "1bebcb0fa4",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "462319a6c2f4f1bfc00b0e694a1500bd31ff74c3"
+    "commit": "1bebcb0fa4c5d2f9fae2fd49624795579838840a"
   },
   "_source": "https://github.com/PolymerElements/paper-toast.git",
   "_target": "2.0-preview",

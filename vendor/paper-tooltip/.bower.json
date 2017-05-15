@@ -49,11 +49,11 @@
       }
     }
   },
-  "_release": "6f3fd7b7aa",
+  "_release": "182db9a52a",
   "_resolution": {
     "type": "branch",
     "branch": "2.0-preview",
-    "commit": "6f3fd7b7aa51551364e0f098835454694b7c3ecd"
+    "commit": "182db9a52a82c1305d05ef8c00c76b2057c9c789"
   },
   "_source": "https://github.com/PolymerElements/paper-tooltip.git",
   "_target": "2.0-preview",

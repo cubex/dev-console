@@ -50,11 +50,11 @@
     "iron-checked-element-behavior": "2.0-preview"
   },
   "homepage": "https://github.com/CubexElements/cubex",
-  "_release": "2d3bd06f98",
+  "_release": "5323dd6142",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "2d3bd06f98ac7d17cb2aa87b315ce84a19682711"
+    "commit": "5323dd6142b99f574a9cefda1e984d655a3a871b"
   },
   "_source": "https://github.com/CubexElements/cubex.git",
   "_target": "*",

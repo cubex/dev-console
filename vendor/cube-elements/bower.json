@@ -39,7 +39,9 @@
     "cube-card": "CubexElements/cube-card",
     "cube-carousel": "CubexElements/cube-carousel",
     "cube-tile": "CubexElements/cube-tile",
-    "cube-title": "CubexElements/cube-title"
+    "cube-title": "CubexElements/cube-title",
+    "cube-form": "CubexElements/cube-form",
+    "cube-input": "CubexElements/cube-input"
   },
   "resolutions": {
     "iron-ajax": "2.0-preview",
