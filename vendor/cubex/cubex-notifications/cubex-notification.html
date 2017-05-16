@@ -162,7 +162,7 @@
                      var xhr = new XMLHttpRequest();
                      xhr.open(
                        'PUT',
-                       '//' + this.getServiceHost('apps') + '/kubex/notifications/read/' + this.notification.NotificationUid
+                       '//' + this.getServiceHost('apps') + '/kubex/notify/read/' + this.notification.NotificationUid
                      );
                      xhr.setRequestHeader('x-cube-project', this.projectId);
                      xhr.withCredentials = true;
