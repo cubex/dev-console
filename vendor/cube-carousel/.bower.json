@@ -20,27 +20,18 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0-preview",
+    "polymer": "Polymer/polymer#1.9 - 2",
     "cube-action": "CubexElements/cube-action"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
-    "web-component-tester": "^5.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
   },
-  "resolutions": {
-    "polymer": "2.0-preview",
-    "webcomponentsjs": "v1",
-    "iron-flex-layout": "2.0-preview",
-    "paper-styles": "2.0-preview",
-    "iron-selector": "2.0-preview",
-    "iron-meta": "2.0-preview",
-    "iron-resizable-behavior": "2.0-preview"
-  },
-  "_release": "1b53966695",
+  "_release": "7002e5751d",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "1b53966695310e5e94e1e110820d04d741698e09"
+    "commit": "7002e5751ddb8eec3401ca291878ef049976f87a"
   },
   "_source": "https://github.com/CubexElements/cube-carousel.git",
   "_target": "*",

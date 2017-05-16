@@ -111,7 +111,7 @@
       <div id="drop">
         <cube-li>
           Notifications
-          <a id="settings" href="/cubex/notifications/_configure" slot="actions">
+          <a id="settings" href="/kubex/notifications/_configure" slot="actions">
             <cube-action size="20" icon="icons:settings"></cube-action>
           </a>
         </cube-li>
@@ -122,7 +122,7 @@
         </cube-list-menu>
 
         <cube-li>
-          <a href="/cubex/notifications">
+          <a href="/kubex/notifications">
             <cube-action>See All</cube-action>
           </a>
           <cube-action on-tap="_markRead" slot="actions">Mark all As Read</cube-action>
@@ -261,7 +261,7 @@
                      var xhr = new XMLHttpRequest();
                      xhr.open(
                        'PUT',
-                       '//' + this.getServiceHost('apps') + '/cubex/notifications/read/all'
+                       '//' + this.getServiceHost('apps') + '/kubex/notifications/read/all'
                      );
                      xhr.setRequestHeader('x-cube-project', this.projectId);
                      xhr.withCredentials = true;

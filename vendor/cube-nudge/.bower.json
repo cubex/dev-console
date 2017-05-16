@@ -20,21 +20,17 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0-preview"
+    "polymer": "Polymer/polymer#1.9 - 2"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "web-component-tester": "^4.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
   },
-  "resolutions": {
-    "polymer": "2.0-preview",
-    "webcomponentsjs": "v1"
-  },
-  "_release": "bc945eb65a",
+  "_release": "075e57f3cc",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "bc945eb65abb84f23324ca44f501cf72bbb73942"
+    "commit": "075e57f3cc76707c96db85a83a720bcfcf8a38e6"
   },
   "_source": "https://github.com/CubexElements/cube-nudge.git",
   "_target": "*",

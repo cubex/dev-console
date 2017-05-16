@@ -20,18 +20,21 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.7.0",
+    "polymer": "Polymer/polymer#1.9 - 2",
     "moment-element": "^0.4.3"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.1.7",
-    "web-component-tester": "^4.3.5"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
   },
-  "_release": "f453dc609f",
+  "resolutions": {
+    "webcomponentsjs": "^v1.0.0"
+  },
+  "_release": "4fa11905bc",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "f453dc609fa85e68018cb740217e1d372ed4225d"
+    "commit": "4fa11905bc90bd9186ff47e1e6ab6fd2c42b2840"
   },
   "_source": "https://github.com/CubexElements/cube-time.git",
   "_target": "*",

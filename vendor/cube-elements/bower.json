@@ -44,27 +44,8 @@
     "cube-input": "CubexElements/cube-input"
   },
   "resolutions": {
-    "iron-ajax": "2.0-preview",
-    "polymer": "2.0-preview",
-    "iron-icon": "2.0-preview",
-    "neon-animation": "2.0-preview",
-    "paper-styles": "2.0-preview",
-    "paper-item": "2.0-preview",
-    "paper-ripple": "2.0-preview",
-    "paper-input": "2.0-preview",
-    "iron-meta": "2.0-preview",
-    "iron-flex-layout": "2.0-preview",
-    "webcomponentsjs": "v1",
-    "iron-dropdown": "2.0-preview",
-    "iron-resizable-behavior": "2.0-preview",
-    "iron-selector": "2.0-preview",
-    "iron-behaviors": "2.0-preview",
-    "iron-autogrow-textarea": "2.0-preview",
-    "iron-a11y-keys-behavior": "2.0-preview",
-    "iron-input": "2.0-preview",
-    "iron-overlay-behavior": "2.0-preview",
-    "iron-validatable-behavior": "2.0-preview",
-    "iron-fit-behavior": "2.0-preview",
-    "iron-a11y-announcer": "2.0-preview"
+    "polymer": "1.9 - 2",
+    "iron-ajax": "1.9 - 2",
+    "webcomponentsjs": "^v1.0.0"
   }
 }

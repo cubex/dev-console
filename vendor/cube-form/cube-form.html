@@ -32,6 +32,21 @@ Example:
 
         listeners: {'tap': '_onTap'},
 
+        submit: function ()
+                {
+                  return this.$.form.submit();
+                },
+
+        reset: function ()
+               {
+                 return this.$.form.reset();
+               },
+
+        validate: function ()
+                  {
+                    return this.$.form.validate();
+                  },
+
         _onTap: function (e)
                 {
                   if(e.detail.sourceEvent.target.tagName === 'PAPER-BUTTON')
@@ -91,7 +106,8 @@ Example:
                                           errs.push(errors[i]);
                                         }
                                       }
-                                      if(ele.setTemporaryError)
+
+                                      if(ele && ele.setTemporaryError)
                                       {
                                         ele.setTemporaryError(errs.join(', '));
                                       }

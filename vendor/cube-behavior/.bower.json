@@ -20,24 +20,19 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~2.0.0",
-    "iron-ajax": "PolymerElements/iron-ajax#2.0-preview",
+    "polymer": "Polymer/polymer#1.9 - 2",
+    "iron-ajax": "PolymerElements/iron-ajax#1.9 - 2",
     "intl-messageformat": "yahoo/intl-messageformat#~1.3.0"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "web-component-tester": "^4.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
   },
-  "resolutions": {
-    "polymer": "~2.0.0",
-    "webcomponentsjs": "~1.0.0",
-    "iron-ajax": "2.0-preview"
-  },
-  "_release": "bb5946078f",
+  "_release": "e46ed07f37",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "bb5946078fff76a76a3a96103585ffee4021afc2"
+    "commit": "e46ed07f37e30f775d65197d30e5ee6e91a56e2d"
   },
   "_source": "https://github.com/CubexElements/cube-behavior.git",
   "_target": "*",

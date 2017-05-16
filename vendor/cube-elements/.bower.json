@@ -43,34 +43,15 @@
     "cube-input": "CubexElements/cube-input"
   },
   "resolutions": {
-    "iron-ajax": "2.0-preview",
-    "polymer": "2.0-preview",
-    "iron-icon": "2.0-preview",
-    "neon-animation": "2.0-preview",
-    "paper-styles": "2.0-preview",
-    "paper-item": "2.0-preview",
-    "paper-ripple": "2.0-preview",
-    "paper-input": "2.0-preview",
-    "iron-meta": "2.0-preview",
-    "iron-flex-layout": "2.0-preview",
-    "webcomponentsjs": "v1",
-    "iron-dropdown": "2.0-preview",
-    "iron-resizable-behavior": "2.0-preview",
-    "iron-selector": "2.0-preview",
-    "iron-behaviors": "2.0-preview",
-    "iron-autogrow-textarea": "2.0-preview",
-    "iron-a11y-keys-behavior": "2.0-preview",
-    "iron-input": "2.0-preview",
-    "iron-overlay-behavior": "2.0-preview",
-    "iron-validatable-behavior": "2.0-preview",
-    "iron-fit-behavior": "2.0-preview",
-    "iron-a11y-announcer": "2.0-preview"
+    "polymer": "1.9 - 2",
+    "iron-ajax": "1.9 - 2",
+    "webcomponentsjs": "^v1.0.0"
   },
-  "_release": "17ea09dc21",
+  "_release": "ec1f0b02df",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "17ea09dc2190b94feb926d2004fc2948c7245cbe"
+    "commit": "ec1f0b02df7a4a602f0ba35071d8112baed90b22"
   },
   "_source": "https://github.com/CubexElements/cube-elements.git",
   "_target": "*",

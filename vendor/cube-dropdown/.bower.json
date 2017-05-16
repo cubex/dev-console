@@ -20,38 +20,22 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0-preview",
-    "iron-dropdown": "PolymerElements/iron-dropdown#2.0-preview",
-    "neon-animation": "PolymerElements/neon-animation#2.0-preview",
+    "polymer": "Polymer/polymer#1.9 - 2",
+    "iron-dropdown": "PolymerElements/iron-dropdown#1.9 - 2",
+    "neon-animation": "PolymerElements/neon-animation#1.9 - 2",
     "web-animations-js": "web-animations/web-animations-js#~2.2.2",
-    "paper-styles": "PolymerElements/paper-styles#2.0-preview"
+    "paper-styles": "PolymerElements/paper-styles#1.9 - 2"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "web-component-tester": "^4.0.0",
-    "paper-item": "PolymerElements/paper-item#2.0-preview"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0",
+    "paper-item": "PolymerElements/paper-item#1.9 - 2"
   },
-  "resolutions": {
-    "iron-flex-layout": "2.0-preview",
-    "paper-styles": "2.0-preview",
-    "iron-dropdown": "2.0-preview",
-    "neon-animation": "2.0-preview",
-    "iron-selector": "2.0-preview",
-    "iron-a11y-keys-behavior": "2.0-preview",
-    "iron-resizable-behavior": "2.0-preview",
-    "iron-behaviors": "2.0-preview",
-    "iron-fit-behavior": "2.0-preview",
-    "iron-meta": "2.0-preview",
-    "iron-overlay-behavior": "2.0-preview",
-    "polymer": "2.0-preview",
-    "webcomponentsjs": "v1",
-    "paper-item": "2.0-preview"
-  },
-  "_release": "ec63f0136e",
+  "_release": "abeee488c2",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "ec63f0136ed38ee894f98dfd30c9265d82ca9903"
+    "commit": "abeee488c2a10c2f3f1477a6d0645d9f1c8ecb5e"
   },
   "_source": "https://github.com/CubexElements/cube-dropdown.git",
   "_target": "*",

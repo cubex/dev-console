@@ -20,22 +20,18 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^2.0.0",
-    "app-storage": "PolymerElements/app-storage#2.0-preview"
+    "polymer": "Polymer/polymer#1.9 - 2",
+    "app-storage": "PolymerElements/app-storage#1.9 - 2"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "web-component-tester": "^4.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
   },
-  "resolutions": {
-    "polymer": "^2.0.0",
-    "webcomponentsjs": "^v1.0.0-rc.5"
-  },
-  "_release": "f3c7b682d7",
+  "_release": "994dc0d9c3",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "f3c7b682d75e48ede6deb7d1088b25998cdd2d61"
+    "commit": "994dc0d9c397671f5e85131460c50093f32248c1"
   },
   "_source": "https://github.com/CubexElements/cube-indexeddb-mirror.git",
   "_target": "*",

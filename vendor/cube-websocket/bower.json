@@ -21,11 +21,11 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.6.0",
-    "cube-behavior": "ssh://git@github.com/CubexElements/cube-behavior.git"
+    "polymer": "Polymer/polymer#1.9 - 2",
+    "cube-behavior": "CubexElements/cube-behavior"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "web-component-tester": "^4.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
   }
 }

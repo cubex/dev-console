@@ -20,21 +20,17 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0-preview"
+    "polymer": "Polymer/polymer#1.9 - 2"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "web-component-tester": "^4.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
   },
-  "resolutions": {
-    "polymer": "2.0-preview",
-    "webcomponentsjs": "v1"
-  },
-  "_release": "888e6d777c",
+  "_release": "7bc58d969e",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "888e6d777cf8fbcfc140aaac49a44d561484b0dd"
+    "commit": "7bc58d969e55ccaebe03a378aab4dae8f31c4b4b"
   },
   "_source": "https://github.com/CubexElements/cube-animbg.git",
   "_target": "*",

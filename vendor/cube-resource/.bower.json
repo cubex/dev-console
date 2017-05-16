@@ -20,17 +20,17 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~2.0.0"
+    "polymer": "Polymer/polymer#1.9 - 2"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
-    "web-component-tester": "^5.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#1.9 - 2",
+    "web-component-tester": "^6.0.0"
   },
-  "_release": "3a81641a71",
+  "_release": "ad0ba0210b",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "3a81641a71975f4989cb7fe83dc642f30c27cd77"
+    "commit": "ad0ba0210b34f8bfa50abc6baaee5544c8e6a656"
   },
   "_source": "https://github.com/CubexElements/cube-resource.git",
   "_target": "*",

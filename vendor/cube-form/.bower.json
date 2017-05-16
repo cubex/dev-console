@@ -20,19 +20,22 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~2.0.0",
+    "polymer": "Polymer/polymer#1.9 - 2",
     "iron-form": "PolymerElements/iron-form#2.0-preview",
-    "paper-toast": "PolymerElements/paper-toast#2.0-preview"
+    "paper-toast": "PolymerElements/paper-toast#1.9 - 2"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
-    "web-component-tester": "~6.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
   },
-  "_release": "6b7db4fefc",
+  "resolutions": {
+    "iron-ajax": "1.9 - 2"
+  },
+  "_release": "30a5bfaa51",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "6b7db4fefcd1c506ca8c4234f56ee087b094f62a"
+    "commit": "30a5bfaa5167a6b8d64d67acc783002f7f01f617"
   },
   "_source": "https://github.com/CubexElements/cube-form.git",
   "_target": "*",

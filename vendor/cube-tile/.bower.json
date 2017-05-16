@@ -20,27 +20,18 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0-preview",
+    "polymer": "Polymer/polymer#1.9 - 2",
     "cube-icon": "CubexElements/cube-icon"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
-    "web-component-tester": "^5.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
   },
-  "resolutions": {
-    "polymer": "2.0-preview",
-    "webcomponentsjs": "v1",
-    "iron-flex-layout": "2.0-preview",
-    "paper-styles": "2.0-preview",
-    "iron-selector": "2.0-preview",
-    "iron-meta": "2.0-preview",
-    "iron-resizable-behavior": "2.0-preview"
-  },
-  "_release": "d503dc9981",
+  "_release": "a35bf9763d",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "d503dc9981eabc839afb65b8ef15e716502b8952"
+    "commit": "a35bf9763d9cea21a5ea99ae671ef585c6a1d409"
   },
   "_source": "https://github.com/CubexElements/cube-tile.git",
   "_target": "*",

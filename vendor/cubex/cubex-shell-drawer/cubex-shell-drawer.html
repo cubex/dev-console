@@ -157,7 +157,7 @@
               </template>
             </cube-list-menu>
             <cube-list-menu>
-              <a id="storeLink" href="/cubex/store">
+              <a id="storeLink" href="/kubex/store">
                 <cube-li>
                   <cube-icon slot="icon" icon="icons:apps"></cube-icon>
                   App Store
@@ -289,7 +289,8 @@
 
         _filterApps: function (item)
                      {
-                       return item.app_type == 'cubex.platform.application';
+                       return item.app_type === 'kubex.application.project'
+                         || item.ui_mode === 'full';
                      },
 
         behaviors: [

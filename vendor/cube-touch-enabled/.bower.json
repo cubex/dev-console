@@ -20,17 +20,17 @@
     "/node_modules/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.6.0"
+    "polymer": "Polymer/polymer#1.9 - 2"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "web-component-tester": "^4.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
   },
-  "_release": "067881f070",
+  "_release": "57d29d131b",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "067881f070175848dc2a465f43fdf5fb458f7e44"
+    "commit": "57d29d131b10f767d871cdec106de4d4e0e7664d"
   },
   "_source": "https://github.com/CubexElements/cube-touch-enabled.git",
   "_target": "*",
