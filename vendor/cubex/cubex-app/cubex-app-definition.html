@@ -21,7 +21,8 @@
                       var url = null;
                       if(this.gaid && this.gaid !== '/')
                       {
-                        url = '//' + this.getServiceHost('cdn') + '/_apps/' + this.gaid + '/definition.json';
+                        url = '//' + this.getServiceHost('cdn', null, 'io')
+                          + '/_apps/' + this.gaid + '/definition.json';
                       }
 
                       if(this._url !== url)

@@ -38,7 +38,7 @@
 
     <template is="dom-if" if="[[_isMode('dialog',mode)]]">
       <paper-dialog id="dialog" with-backdrop>
-        <cube-pagelet id="pagelet" auth url="[[href]]" status="{{_dialogStatus}}">
+        <cube-pagelet on-cube-pagelet-content-ready="_refitDialog" id="pagelet" auth url="[[href]]">
           Loading...
         </cube-pagelet>
       </paper-dialog>
@@ -63,7 +63,6 @@
 
         observers: [
           '_activeState(__path,__query,__hash,href,mode,match)',
-          '_dialogStatusChanged(_dialogStatus)'
         ],
 
         _activeState: function (path, query, urlHash)
@@ -130,14 +129,13 @@
                       this._pagelet.update();
                     },
 
-        _dialogStatusChanged: function (status)
-                              {
-                                // refit dialog when pagelet loads
-                                if(status > -1 && this._dlg)
-                                {
-                                  this._dlg.refit()
-                                }
-                              }
+        _refitDialog: function ()
+                      {
+                        if(this._dlg)
+                        {
+                          this._dlg.refit();
+                        }
+                      }
       }
     );
   </script>

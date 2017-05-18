@@ -1,0 +1,14 @@
+[
+  {
+    "name": "More Info",
+    "icon": "icons:assignment",
+    "contentUrl": "/demo/content/more-info.html",
+    "optional": true
+  },
+  {
+    "name": "More Info",
+    "icon": "icons:assignment",
+    "contentUrl": "/demo/content/more-form.html",
+    "optional": true
+  }
+]

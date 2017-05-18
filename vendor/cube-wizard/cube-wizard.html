@@ -1,0 +1,296 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../cube-list/cube-list-menu.html">
+<link rel="import" href="../cube-list/cube-li.html">
+<link rel="import" href="../cube-resource/cube-resource.html">
+<link rel="import" href="../cube-pagelet/cube-pagelet-content.html">
+
+<!--
+`cube-wizard`
+
+@demo demo/index.html
+-->
+
+<dom-module id="cube-wizard" attributes="steps-url horizontal">
+  <template>
+    <style>
+      :host {
+        display: block;
+        --cube-list-items-content-container: {
+          display: flex;
+          flex-direction: column;
+        };
+        --cube-li-active-color: transparent;
+        --cube-li-hover-color: transparent;
+        --cube-li-focus-color: transparent;
+      }
+
+      :host([horizontal]) {
+        --cube-list-items-content-container: {
+          display: flex;
+          flex-direction: row;
+        };
+      }
+
+      :host([horizontal]) .step-name {
+        display: none
+      }
+
+      :host([horizontal]) .step-wrapper {
+        text-align: center;
+        flex-grow: 1;
+        position: relative;
+      }
+
+      :host([horizontal]) .step-wrapper[current-step] cube-icon:hover,
+      :host([horizontal]) .step-wrapper cube-icon:hover {
+        background: green;
+      }
+
+      :host([horizontal]) .step-wrapper[current-step] cube-icon {
+        background: lightgreen;
+      }
+
+      :host(:not([horizontal])) .step-wrapper[current-step]:hover cube-icon,
+      :host(:not([horizontal])) .step-wrapper:hover cube-icon {
+        color: lightgreen;
+      }
+
+      :host(:not([horizontal])) .step-wrapper[current-step] cube-icon {
+        color: green;
+      }
+
+      :host([horizontal]) cube-icon {
+        position: relative;
+        text-align: center;
+        flex-grow: 1;
+        background: white;
+        border: 2px solid black;
+        border-radius: 1000px;
+      }
+
+      :host([horizontal]) .step-line {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+
+        height: 1px;
+        margin-top: -1px;
+
+        background: red;
+      }
+
+      :host([horizontal]) .step-wrapper:first-of-type .step-line {
+        left: 50%;
+      }
+
+      :host([horizontal]) .step-wrapper:last-of-type .step-line {
+        right: 50%;
+      }
+
+      #content {
+        width: 100%;
+      }
+
+      #contentWrapper {
+        display: flex;
+        flex-direction: row;
+      }
+
+      :host([horizontal]) #contentWrapper {
+        flex-direction: column;
+      }
+
+      cube-li {
+        cursor: initial;
+      }
+
+      .step-item {
+        cursor: pointer;
+        display: inline-block;
+      }
+
+    </style>
+
+    <cube-resource auto auth url="[[stepsUrl]]" data="{{_steps}}"></cube-resource>
+    <cube-resource auto auth url="[[_step.contentUrl]]" data="{{_stepContent}}"></cube-resource>
+
+    <div id="contentWrapper">
+      <cube-list-menu id="wrapper">
+        <template is="dom-repeat" items="[[_steps]]">
+          <div class="step-wrapper" current-step$="[[_isCurrent(index,_currentStep)]]">
+            <cube-li>
+              <div class="step-line"></div>
+              <div class="step-item" on-tap="_tapStep" step$="[[index]]" title="[[item.name]]">
+                <cube-icon icon="[[item.icon]]"></cube-icon>
+                <span class="step-name">[[item.name]]</span>
+              </div>
+            </cube-li>
+          </div>
+        </template>
+      </cube-list-menu>
+
+      <div id="content">
+        <cube-pagelet-content id="stepPagelet" html="[[_stepContent]]"></cube-pagelet-content>
+        <!--<template is="dom-if" if="[[_stepForm]]">
+          <button type="reset" on-tap="_tapReset">Reset</button>
+        </template>-->
+        <template is="dom-if" if="[[_showSkip]]">
+          <button type="reset" on-tap="_tapSkip">Skip ></button>
+        </template>
+        <template is="dom-if" if="[[_showNext]]">
+          <button on-tap="_tapNext">Next ></button>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is: 'cube-wizard',
+
+        properties: {
+          stepsUrl:      {type: String},
+          _steps:        {type: Array, value: function () {return [];}},
+          _currentStep:  {type: Number, value: 0},
+          _step:         {type: Object, computed: '_computeStep(_steps,_currentStep)'},
+          _stepContent:  {type: String},
+          _stepForm:     {type: Object},
+          _showSkip:     {type: Boolean, computed: '_computeShowSkip(_step,_childWizard,_stepForm)'},
+          _showNext:     {
+            type:     Boolean,
+            computed: '_computeShowNext(_step,_childWizard,_steps,_currentStep,_parentWizard)'
+          },
+          _parentWizard: {type: Object},
+          _childWizard:  {type: Object},
+          horizontal:    {type: Boolean, value: false, reflectToAttribute: true}
+        },
+
+        attached: function ()
+                  {
+                    var self = this;
+
+                    var node = this;
+                    while(node = (node.parentNode && (node.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) ? node.parentNode.host : node.parentNode))
+                    {
+                      if(node.tagName === 'CUBE-WIZARD')
+                      {
+                        this._parentWizard = node;
+                        break;
+                      }
+                    }
+
+                    this.$.stepPagelet.addEventListener('cube-pagelet-content-ready', function (e)
+                    {
+                      e.stopPropagation();
+                      self._stepForm = this.querySelector('cube-form');
+                      self._childWizard = this.querySelector('cube-wizard');
+                    });
+                    this.addEventListener('cube-form-response', function (e)
+                    {
+                      e.stopPropagation();
+                      if(Object.keys(e.detail.Errors).length <= 0)
+                      {
+                        self._step.completed = true;
+                        self._nextStep();
+                      }
+                    });
+                  },
+
+        _computeShowSkip: function (step, childWizard, form)
+                          {
+                            return step && (!childWizard) && (step.optional && form);
+                          },
+
+        _computeShowNext: function (step, childWizard, steps, currentStep, parentWizard)
+                          {
+                            return step && (!childWizard) && (steps[currentStep + 1] || parentWizard);
+                          },
+
+        _computeStep: function (steps, currentStep)
+                      {
+                        return steps[currentStep];
+                      },
+
+        _isCurrent: function (step, currentStep)
+                    {
+                      return step.toString() === currentStep.toString();
+                    },
+
+        _tapReset: function ()
+                   {
+                     this._stepForm.reset();
+                   },
+
+        _tapSkip: function ()
+                  {
+                    this._nextStep();
+                  },
+        _tapNext: function ()
+                  {
+                    // if has child, pass events over
+                    if(this._childWizard)
+                    {
+                      this._childWizard._tapNext();
+                      return;
+                    }
+
+                    if(this._stepForm)
+                    {
+                      this._stepForm.submit();
+                    }
+                    else
+                    {
+                      this._nextStep();
+                    }
+                  },
+        _tapStep: function (event)
+                  {
+                    this._moveToStep(event.currentTarget.getAttribute('step'));
+                  },
+
+        _leaveStep: function ()
+                    {
+                      if(this._stepForm)
+                      {
+                        this._stepForm.submit();
+                      }
+                    },
+
+        _nextStep: function ()
+                   {
+                     if(this._currentStep < this._steps.length - 1)
+                     {
+                       this._moveToStep(this._currentStep + 1);
+                     }
+                     else if(this._parentWizard)
+                     {
+                       this._parentWizard._nextStep();
+                     }
+                     else
+                     {
+                       this.fire('cube-wizard-finished');
+                     }
+                   },
+
+        _moveToStep: function (step)
+                     {
+                       // check that we can access that step
+                       // go through each previous steps, ensure that `completed` or `optional` are true
+                       for(var i = 0; i < step; i++)
+                       {
+                         if(!(this._steps[i].completed || this._steps[i].optional))
+                         {
+                           console.error('Cannot progress to that step. You must complete this step first.');
+                           this._currentStep = i;
+                           return;
+                         }
+                       }
+                       this._currentStep = parseInt(step);
+                     }
+
+      });
+  </script>
+</dom-module>

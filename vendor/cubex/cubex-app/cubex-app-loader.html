@@ -386,6 +386,12 @@
                       {
                         if(path !== undefined && projectData)
                         {
+                          if(!this.vendorId && !this.appId)
+                          {
+                            this.vendorId = 'kubex';
+                            this.appId = 'dashboard';
+                          }
+
                           if(this.vendorId && this.appId)
                           {
                             var gaid = this.vendorId + '/' + this.appId;
