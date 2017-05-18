@@ -1,5 +1,6 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
 <link rel="import" href="cubex-app-definition.html">
 
@@ -14,7 +15,7 @@
     </style>
 
     <cubex-app-definition gaid="[[vendor]]/[[app]]" app-data="{{appData}}"></cubex-app-definition>
-    <cubex-link mode="dialog" href="[[getServiceHost(apps)]]/kubex/registry/setup/[[vendor]]/[[app]]">
+    <cubex-link mode="dialog" href="//[[getServiceHost('apps')]]/kubex/registry/setup/[[vendor]]/[[app]]">
       Install [[i18n('app_name')]]
     </cubex-link>
   </template>
