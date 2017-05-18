@@ -1,0 +1,52 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="cubex-app-definition.html">
+
+<dom-module id="cubex-app-button" attributes="vendor app can-open">
+  <template>
+    <style>
+      cubex-link {
+        display: block;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+    </style>
+
+    <cubex-app-definition gaid="[[vendor]]/[[app]]" app-data="{{appData}}"></cubex-app-definition>
+    <cubex-link mode="dialog" href="[[getServiceHost(apps)]]/kubex/registry/setup/[[vendor]]/[[app]]">
+      Install [[i18n('app_name')]]
+    </cubex-link>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:         'cubex-app-button',
+        properties: {
+          vendor:  {type: String},
+          app:     {type: String},
+          canOpen: {type: Boolean, value: false},
+          appData: {type: Object, observer: '_resetResources'}
+        },
+
+        _resetResources: function ()
+                         {
+                           // reset resources
+                           var newRes = {};
+
+                           if(this.appData && this.appData.Name)
+                           {
+                             newRes['app_name'] = this.appData.Name;
+                           }
+                           this.hydrateResources(newRes, true);
+                         },
+
+        behaviors: [
+          Polymer.CubeI18nBehavior,
+          Polymer.CubeServiceBehavior
+        ]
+      }
+    );
+  </script>
+</dom-module>
