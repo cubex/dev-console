@@ -40,18 +40,19 @@
     "cube-tile": "CubexElements/cube-tile",
     "cube-title": "CubexElements/cube-title",
     "cube-form": "CubexElements/cube-form",
-    "cube-input": "CubexElements/cube-input"
+    "cube-input": "CubexElements/cube-input",
+    "cube-wizard": "CubexElements/cube-wizard"
   },
   "resolutions": {
     "polymer": "1.9 - 2",
     "iron-ajax": "1.9 - 2",
     "webcomponentsjs": "^v1.0.0"
   },
-  "_release": "ec1f0b02df",
+  "_release": "10e8285e01",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "ec1f0b02df7a4a602f0ba35071d8112baed90b22"
+    "commit": "10e8285e01d704824249a14b84bb3895f94a79cc"
   },
   "_source": "https://github.com/CubexElements/cube-elements.git",
   "_target": "*",

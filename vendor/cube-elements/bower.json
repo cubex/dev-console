@@ -41,7 +41,8 @@
     "cube-tile": "CubexElements/cube-tile",
     "cube-title": "CubexElements/cube-title",
     "cube-form": "CubexElements/cube-form",
-    "cube-input": "CubexElements/cube-input"
+    "cube-input": "CubexElements/cube-input",
+    "cube-wizard": "CubexElements/cube-wizard"
   },
   "resolutions": {
     "polymer": "1.9 - 2",

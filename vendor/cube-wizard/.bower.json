@@ -19,11 +19,11 @@
     "webcomponentsjs": "v1.0.0"
   },
   "homepage": "https://github.com/CubexElements/cube-wizard",
-  "_release": "03285f89df",
+  "_release": "954400b1d3",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "03285f89df6d8c9921a8a03d24f43ecd4e085124"
+    "commit": "954400b1d3ab647d1a4a235d07e90d92071763f2"
   },
   "_source": "https://github.com/CubexElements/cube-wizard.git",
   "_target": "*",
