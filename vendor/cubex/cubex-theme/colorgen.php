@@ -1,5 +1,168 @@
 <?php
-$cubexNavy = [
+
+$cubexCharcoal = [
+  "P50"  => ['#dadada', 0],
+  "P100" => ['#c6c7c7', 0],
+  "P200" => ['#b2b4b4', 1],
+  "P300" => ['#8a8e8e', 1],
+  "P400" => ['#767b7b', 1],
+  "P500" => ['#626868', 1],
+  "P600" => ['#4e5555', 1],
+  "P700" => ['#3a4242', 1],
+  "P800" => ['#343b3b', 1],
+  "P900" => ['#2e3434', 1],
+  "A50"  => ['#dadada', 0],
+  "A100" => ['#c6c7c7', 0],
+  "A200" => ['#b2b4b4', 1],
+  "A400" => ['#626868', 1],
+  "A700" => ['#3a4242', 1],
+];
+
+$cubexTeal = [
+  "P50"  => ['#dbf3f2', 0],
+  "P100" => ['#b9e5e4', 0],
+  "P200" => ['#97d7d6', 0],
+  "P300" => ['#75c9c8', 1],
+  "P400" => ['#64c2c1', 1],
+  "P500" => ['#53bbba', 1],
+  "P600" => ['#4ba8a7', 1],
+  "P700" => ['#439594', 1],
+  "P800" => ['#3b8281', 1],
+  "P900" => ['#2b5c5b', 1],
+  "A50"  => ['#dbf3f2', 0],
+  "A100" => ['#b9e5e4', 1],
+  "A200" => ['#97d7d6', 1],
+  "A400" => ['#53bbba', 1],
+  "A700" => ['#439594', 1],
+];
+
+$cubexGreen = [
+  "P50"  => ['#edf1e3', 0],
+  "P100" => ['#d7e7c7', 0],
+  "P200" => ['#c1ddab', 0],
+  "P300" => ['#abd38f', 1],
+  "P400" => ['#a0ce81', 1],
+  "P500" => ['#95c973', 1],
+  "P600" => ['#86b567', 1],
+  "P700" => ['#77a15b', 1],
+  "P800" => ['#688d4f', 1],
+  "P900" => ['#4a6537', 1],
+  "A50"  => ['#edf1e3', 0],
+  "A100" => ['#d7e7c7', 0],
+  "A200" => ['#c1ddab', 0],
+  "A400" => ['#95c973', 1],
+  "A700" => ['#77a15b', 1],
+];
+
+$cubexYellow = [
+  "P50"  => ['#f6f4d3', 0],
+  "P100" => ['#f0eaab', 0],
+  "P200" => ['#eae083', 0],
+  "P300" => ['#e4d65b', 1],
+  "P400" => ['#e1d147', 1],
+  "P500" => ['#decc33', 1],
+  "P600" => ['#c8b82e', 1],
+  "P700" => ['#b2a429', 1],
+  "P800" => ['#9c9024', 1],
+  "P900" => ['#70681a', 1],
+  "A50"  => ['#f6f4d3', 0],
+  "A100" => ['#f0eaab', 0],
+  "A200" => ['#eae083', 0],
+  "A400" => ['#decc33', 1],
+  "A700" => ['#b2a429', 1],
+];
+
+$cubexOrange = [
+  "P50"  => ['#ffe3df', 0],
+  "P100" => ['#ffc9bd', 0],
+  "P200" => ['#ffaf9b', 0],
+  "P300" => ['#ff9579', 1],
+  "P400" => ['#ff8868', 1],
+  "P500" => ['#ff7b57', 1],
+  "P600" => ['#e56f4e', 1],
+  "P700" => ['#cb6345', 1],
+  "P800" => ['#b1573c', 1],
+  "P900" => ['#7d3f2a', 1],
+  "A50"  => ['#ffe3df', 0],
+  "A100" => ['#ffc9bd', 0],
+  "A200" => ['#ffaf9b', 0],
+  "A400" => ['#ff7b57', 1],
+  "A700" => ['#cb6345', 1],
+];
+
+$cubexRed = [
+  "P50"  => ['#feddda', 0],
+  "P100" => ['#fabdb8', 0],
+  "P200" => ['#f69d96', 0],
+  "P300" => ['#f27d74', 1],
+  "P400" => ['#f06d63', 1],
+  "P500" => ['#ee5d52', 1],
+  "P600" => ['#d6544a', 1],
+  "P700" => ['#be4b42', 1],
+  "P800" => ['#a6423a', 1],
+  "P900" => ['#76302a', 1],
+  "A50"  => ['#feddda', 0],
+  "A100" => ['#fabdb8', 0],
+  "A200" => ['#f69d96', 0],
+  "A400" => ['#ee5d52', 1],
+  "A700" => ['#be4b42', 1],
+];
+
+$cubexPink = [
+  "P50"  => ['#ffe4e7', 0],
+  "P100" => ['#ffc6d1', 0],
+  "P200" => ['#ffa8bb', 0],
+  "P300" => ['#ff8aa5', 1],
+  "P400" => ['#ff7b9a', 1],
+  "P500" => ['#ff6c8f', 1],
+  "P600" => ['#e56181', 1],
+  "P700" => ['#cb5673', 1],
+  "P800" => ['#b14b65', 1],
+  "P900" => ['#7d3549', 1],
+  "A50"  => ['#ffe4e7', 0],
+  "A100" => ['#ffc6d1', 0],
+  "A200" => ['#ffa8bb', 0],
+  "A400" => ['#ff6c8f', 1],
+  "A700" => ['#cb5673', 1],
+];
+
+$cubexPurple = [
+  "P50"  => ['#f0e5f7', 0],
+  "P100" => ['#decfef', 0],
+  "P200" => ['#ccb9e7', 0],
+  "P300" => ['#baa3df', 1],
+  "P400" => ['#b198db', 1],
+  "P500" => ['#a88dd7', 1],
+  "P600" => ['#977fc1', 1],
+  "P700" => ['#8671ab', 1],
+  "P800" => ['#756395', 1],
+  "P900" => ['#534769', 1],
+  "A50"  => ['#f0e5f7', 0],
+  "A100" => ['#decfef', 0],
+  "A200" => ['#ccb9e7', 0],
+  "A400" => ['#a88dd7', 1],
+  "A700" => ['#8671ab', 1],
+];
+
+$cubexBlue = [
+  "P50"  => ['#dbedf9', 0],
+  "P100" => ['#b7dff1', 0],
+  "P200" => ['#93d1e9', 0],
+  "P300" => ['#6fc3e1', 1],
+  "P400" => ['#5dbcdd', 1],
+  "P500" => ['#4bb5d9', 1],
+  "P600" => ['#43a3c3', 1],
+  "P700" => ['#3b91ad', 1],
+  "P800" => ['#337f97', 1],
+  "P900" => ['#235b6b', 1],
+  "A50"  => ['#dbedf9', 0],
+  "A100" => ['#b7dff1', 0],
+  "A200" => ['#93d1e9', 0],
+  "A400" => ['#4bb5d9', 1],
+  "A700" => ['#3b91ad', 1],
+];
+
+$fortifiNavy = [
   "P50"  => ['#D8DADE', 0],
   "P100" => ['#B0B4BD', 1],
   "P200" => ['#9DA2AD', 1],
@@ -17,7 +180,7 @@ $cubexNavy = [
   "A700" => ['#3A445B', 11],
 ];
 
-$cubexBlue = [
+$fortifiBlue = [
   "P50"  => ['#E8F5FE', 0],
   "P100" => ['#C2E3F4', 1],
   "P200" => ['#9CD1EA', 1],
@@ -363,8 +526,19 @@ $blueGrey = [
 ];
 
 $colors = [
-  "cubex-navy"  => $cubexNavy,
-  "cubex-blue"  => $cubexBlue,
+  "cubex-charcoal" => $cubexCharcoal,
+  "cubex-teal"     => $cubexTeal,
+  "cubex-green"    => $cubexGreen,
+  "cubex-yellow"   => $cubexYellow,
+  "cubex-orange"   => $cubexOrange,
+  "cubex-red"      => $cubexRed,
+  "cubex-pink"     => $cubexPink,
+  "cubex-purple"   => $cubexPurple,
+  "cubex-blue"     => $cubexBlue,
+
+  "fortifi-navy" => $fortifiNavy,
+  "fortifi-blue" => $fortifiBlue,
+
   "red"         => $red,
   "pink"        => $pink,
   "purple"      => $purple,
@@ -408,24 +582,33 @@ foreach($colors as $colorName => $colorGrades)
     }
 
     $code = substr($colorKey, 1);
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-color:' . $hex . ';';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-text-color:var(--' . ($isWhite ? 'light' : 'dark') . '-text);';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-text-secondary-color:var(--' . ($isWhite ? 'light' : 'dark') . '-text-secondary);';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-text-disabled-color:var(--' . ($isWhite ? 'light' : 'dark') . '-text-disabled);';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-divider-primary-color:var(--' . (!$isWhite ? 'light' : 'dark') . '-divider-primary-color);';
-    $cssVars[$type][] = '--' . $type . '-' . $code . '-divider-secondary-color:var(--' . (!$isWhite ? 'light' : 'dark') . '-divider-secondary-color);';
+    $prefix = '--' . $colorName . '-' . $type . '-' . $code;
+    $cssVars[$type][] = $prefix . '-color:' . $hex . ';';
+    $cssVars[$type][] = $prefix . '-text-color:var(--' . ($isWhite ?
+        'light' : 'dark') . '-text);';
+    $cssVars[$type][] = $prefix . '-text-secondary-color:var(--' . ($isWhite ?
+        'light' : 'dark') . '-text-secondary);';
+    $cssVars[$type][] = $prefix . '-text-disabled-color:var(--' . ($isWhite ?
+        'light' : 'dark') . '-text-disabled);';
+    $cssVars[$type][] = $prefix . '-divider-primary-color:var(--' . (!$isWhite ?
+        'light' : 'dark') . '-divider-primary-color);';
+    $cssVars[$type][] = $prefix . '-divider-secondary-color:var(--' . (!$isWhite ?
+        'light' : 'dark') . '-divider-secondary-color);';
   }
   foreach(['primary', 'accent'] as $type)
   {
-    $template = '<dom-module id="cubex-theme-%s-%s"><template><style>html{%s}</style></template></dom-module>';
-    file_put_contents(
-      'styles/' . $type . '/cubex-theme-' . $type . '-' . $colorName . '.html',
-      sprintf(
-        $template,
-        $type,
-        $colorName,
-        implode('', $cssVars[$type])
-      )
-    );
+    if($cssVars[$type])
+    {
+      $template = '<dom-module id="cubex-theme-%s-%s"><template><style>html,:host{%s}</style></template></dom-module>';
+      file_put_contents(
+        'styles/' . $type . '/cubex-theme-' . $type . '-' . $colorName . '.html',
+        sprintf(
+          $template,
+          $type,
+          $colorName,
+          implode('', $cssVars[$type])
+        )
+      );
+    }
   }
 }

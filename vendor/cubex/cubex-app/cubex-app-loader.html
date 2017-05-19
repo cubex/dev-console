@@ -18,9 +18,13 @@
 <link rel="import" href="cubex-app-header.html">
 <link rel="import" href="cubex-app-menu.html">
 <link rel="import" href="cubex-app-spinner.html">
+<link rel="import" href="../cubex-theme/styles/primary/cubex-theme-primary-cubex-red.html">
+<link rel="import" href="../cubex-theme/styles/primary/cubex-theme-primary-cubex-orange.html">
 
 <dom-module id="cubex-app-loader">
   <template strip-whitespace>
+    <style include="cubex-theme-primary-cubex-red"></style>
+    <style include="cubex-theme-primary-cubex-orange"></style>
     <style>
       :host {
         display: block;
@@ -46,6 +50,14 @@
       #hero cube-hero {
         padding-top: 48px;
         overflow: visible;
+      }
+
+      cubex-error[code="400"] {
+        --hero-background-color: var(--cubex-orange-primary-600-color);
+      }
+
+      cubex-error[code="401"] {
+        --hero-background-color: var(--cubex-red-primary-600-color);
       }
     </style>
 
@@ -442,7 +454,7 @@
                                 // no permission? 401
                                 this.pageData = {title: 'Unauthorized'};
                                 this._pagePath = null;
-                                this._pageDefinitionHtml = '<cubex-error code="401" color="red">(401) Unauthorized</cubex-error>';
+                                this._pageDefinitionHtml = '<cubex-error code="401">(401) Unauthorized</cubex-error>';
                                 this._pageContentHtml = '<p>You do not have permission to access the requested page.</p>';
                                 this._pageDefinitionContentHasHero = true;
                               }
@@ -451,7 +463,7 @@
                                 // no relationship? 404
                                 this.pageData = {title: 'Page Not Found'};
                                 this._pagePath = null;
-                                this._pageDefinitionHtml = '<cubex-error code="400" color="orange">(404) Page Not Found</cubex-error>';
+                                this._pageDefinitionHtml = '<cubex-error code="400">(404) Page Not Found</cubex-error>';
                                 this._pageContentHtml = '<p>Sorry. The page you were looking for could not be found.</p>';
                                 this._pageDefinitionContentHasHero = true;
                               }

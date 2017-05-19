@@ -47,8 +47,8 @@ Example:
       {
         is:             'cubex-theme',
         properties:     {
-          primary: {type: String, value: 'cubex-navy', observer: '_updatePrimary'},
-          accent:  {type: String, value: 'cubex-blue', observer: '_updateAccent'},
+          primary: {type: String, value: 'cubex-charcoal', observer: '_updatePrimary'},
+          accent:  {type: String, value: 'cubex-teal', observer: '_updateAccent'},
           theme:   {type: String, value: 'light', observer: '_updateTheme'}
         },
         _import:        function (type, name)
@@ -58,20 +58,24 @@ Example:
                           {
                             return;
                           }
-                          var dom = this,
+                          var self = this,
                             prefix = 'cubex-theme-' + type,
-                            fullName = prefix + '-' + name;
+                            fullName = prefix + '-' + name,
+                            primaryGrades = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900],
+                            accentGrades = [100, 200, 400, 700];
 
                           this.importHref(
                             this.resolveUrl('styles/' + type + '/' + fullName + '.html'),
                             function ()
                             {
-                              var oldCustomStyle = dom.querySelector('#' + prefix);
+                              // remove old style
+                              var oldCustomStyle = self.querySelector('#' + prefix);
                               if(oldCustomStyle)
                               {
                                 oldCustomStyle.parentNode.removeChild(oldCustomStyle);
                               }
 
+                              // create new style
                               var style = document.createElement('style');
                               style.setAttribute('include', fullName);
 
@@ -79,7 +83,18 @@ Example:
                               customStyle.id = prefix;
                               customStyle.appendChild(style);
 
-                              dom.appendChild(customStyle);
+                              // append new style
+                              self.appendChild(customStyle);
+
+                              // if primary or accent, apply the appropriate style variables
+                              if(type === 'primary')
+                              {
+                                self._setColorVariables(primaryGrades, name, type);
+                              }
+                              else if(type === 'accent')
+                              {
+                                self._setColorVariables(accentGrades, name, type);
+                              }
                             }, null, true
                           );
                         },
@@ -103,7 +118,43 @@ Example:
                           {
                             this._import('theme', v);
                           }
-                        }
+                        },
+
+        _setColorVariables: function (grades, name, type)
+                            {
+                              var
+                                styleId = 'apply-' + name + '-' + type,
+                                styles = '';
+
+                              for(var idx in grades)
+                              {
+                                if(grades.hasOwnProperty(idx))
+                                {
+                                  var grade = grades[idx];
+                                  styles = styles + '--' + type + '-' + grade + '-color: var(--' + name + '-' + type + '-' + grade + '-color);';
+                                  styles = styles + '--' + type + '-' + grade + '-text-color: var(--' + name + '-' + type + '-' + grade + '-text-color);';
+                                  styles = styles + '--' + type + '-' + grade + '-text-secondary-color: var(--' + name + '-' + type + '-' + grade + '-text-secondary-color);';
+                                  styles = styles + '--' + type + '-' + grade + '-text-disabled-color: var(--' + name + '-' + type + '-' + grade + '-text-disabled-color);';
+                                  styles = styles + '--' + type + '-' + grade + '-divider-primary-color: var(--' + name + '-' + type + '-' + grade + '-divider-primary-color);';
+                                  styles = styles + '--' + type + '-' + grade + '-divider-secondary-color: var(--' + name + '-' + type + '-' + grade + '-divider-secondary-color);';
+                                }
+                              }
+
+                              // remove old style
+                              var oldStyle = this.querySelector('#' + styleId);
+                              if(oldStyle)
+                              {
+                                oldStyle.parentNode.removeChild(oldStyle);
+                              }
+
+                              // create new style
+                              var style = document.createElement('style');
+                              style.id = styleId;
+                              style.innerHTML = 'html{' + styles + '}';
+
+                              // append new style
+                              this.appendChild(style);
+                            }
       }
     );
   </script>
