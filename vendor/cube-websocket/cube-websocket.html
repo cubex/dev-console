@@ -40,11 +40,12 @@ Example:
               reflectToAttribute: true
             },
             protocol:         {type: String},
+            subscribed:       {type: Boolean, notify: true},
             subscribePayload: {type: String},
-            auto:             {
-              type:  Boolean,
-              value: false
-            }
+            auto:             {type: Boolean, value: false},
+            meta:             {type: Object, value: function () {return {}}, notify: true},
+            actionCount:      {type: Object, value: function () {return {}}, notify: true},
+            messageCount:     {type: Number, value: 0, notify: true}
           },
           _doSubscribe: function ()
                         {
@@ -61,6 +62,7 @@ Example:
                             {
                               if(xmlHttp.status === 200)
                               {
+                                self.subscribed = true;
                                 self.fire('subscribe', xmlHttp.responseText);
                               }
                               else
@@ -83,6 +85,7 @@ Example:
                         },
           _onClose:     function ()
                         {
+                          this.subscribed = false;
                           this._socket.startTime = Math.floor(Date.now() / 1000);
                           this._socket.reconnectTime = 1;
                           this._tryConnect(true);
@@ -130,6 +133,18 @@ Example:
                           }
                           else if(message.app === this.vendor + '/' + this.app)
                           {
+                            this.messageCount++;
+                            this.actionCount[message.action] = (this.actionCount[message.action] || 0) + 1;
+                            if(message.meta)
+                            {
+                              for(var mIdx in message.meta)
+                              {
+                                if(message.meta.hasOwnProperty(mIdx))
+                                {
+                                  this.meta[mIdx] = message.meta[mIdx];
+                                }
+                              }
+                            }
                             this.fire('message', message);
                           }
                         },
@@ -177,6 +192,10 @@ Example:
                     this._socket.socket.addEventListener('open', this._onOpen.bind(this));
                     this._socket.socket.addEventListener('error', this._onError.bind(this));
                     this._socket.socket.addEventListener('message', this._onMessage.bind(this));
+                    if(this._socket.sessionId)
+                    {
+                      this._doSubscribe();
+                    }
                   }
                 },
           send: function (message)
