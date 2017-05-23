@@ -20,13 +20,24 @@
           /**
            * resource cache, shared object between instances (value not wrapped with function)
            */
-          _resourceCache: {type: Object, value: {}}
+          _resourceCache: {type: Object, value: {}},
+          _headers:       {type: Object, computed: '_refreshHeaders(headers)'}
         },
         observers:  ['_updateResource(auto,ttl,url,headers)'],
         attached:   function ()
                     {
                       document.addEventListener(this._NOTIFY_EVENT_NAME, this._resourceUpdated.bind(this));
                     },
+
+        _refreshHeaders: function (headers)
+                         {
+                           var project = window.location.host.match(/^(.+?)\./)[1];
+                           if(project)
+                           {
+                             headers['x-cube-project'] = project;
+                           }
+                           return headers;
+                         },
 
         _resourceUpdated: function (e)
                           {
@@ -133,14 +144,14 @@
                              }
                            );
                            oReq.open('GET', this.url);
-                           if(this.headers)
+                           if(this._headers)
                            {
-                             var keys = Object.keys(this.headers);
+                             var keys = Object.keys(this._headers);
                              for(var idx in keys)
                              {
                                if(keys.hasOwnProperty(idx))
                                {
-                                 oReq.setRequestHeader(keys[idx], this.headers[keys[idx]]);
+                                 oReq.setRequestHeader(keys[idx], this._headers[keys[idx]]);
                                }
                              }
                            }
@@ -152,7 +163,7 @@
                    {
                      if(this.url)
                      {
-                       return JSON.stringify([this.url, this.headers]);
+                       return JSON.stringify([this.url, this._headers]);
                      }
                      return null;
                    },

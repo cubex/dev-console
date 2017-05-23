@@ -41,7 +41,7 @@
     <cubex-route project-id="{{projectId}}"></cubex-route>
 
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/quick-actions/actions.json"
-                   headers="[[_headers]]" data="{{actions}}" ttl="3600"></cube-resource>
+                   data="{{actions}}" ttl="3600"></cube-resource>
 
     <cube-dropdown horizontal-align="right" id="qadrop">
       <template is="dom-if" if="[[actions.Actions]]">
@@ -65,22 +65,10 @@
       {
         is: 'cubex-quick-actions',
 
-        properties: {
-          _headers: {type: Object, computed: '_refreshHeaders(projectId)'}
-        },
-
-        _refreshHeaders: function (project)
-                         {
-                           if(project)
-                           {
-                             return {'x-cube-project': project};
-                           }
-                           return undefined;
-                         },
-        _tap:            function ()
-                         {
-                           this.$.qadrop.close();
-                         },
+        _tap: function ()
+              {
+                this.$.qadrop.close();
+              },
 
         behaviors: [
           Polymer.CubeServiceBehavior

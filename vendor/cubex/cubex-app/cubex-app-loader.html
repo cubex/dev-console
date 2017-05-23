@@ -112,7 +112,7 @@
           _pagePath:                     {type: String},
           _loadedPath:                   {type: String, value: ''},
           _pageXhr:                      {type: Object},
-          _pageDefinitionHeaders:        {type: Object, computed: '_computeHeaders(_project,"page-definition")'},
+          _pageDefinitionHeaders:        {type: Object, computed: '_computeHeaders("page-definition")'},
           _pageDefinitionHtml:           {type: String},
           _pageDefinitionContentHasHero: {type: Boolean},
           _pageSpinnerVisible:           {type: Boolean, value: false},
@@ -124,7 +124,7 @@
           },
 
           _pageContentPath:    {type: String},
-          _pageContentHeaders: {type: Object, computed: '_computeHeaders(_project)'},
+          _pageContentHeaders: {type: Object, computed: '_computeHeaders()'},
           _pageContentHtml:    {type: String},
 
           _integrationsPath: {type: String},
@@ -181,13 +181,9 @@
                           }
                         },
 
-        _computeHeaders: function (project, resourceType)
+        _computeHeaders: function (resourceType)
                          {
                            var headers = {};
-                           if(project)
-                           {
-                             headers['x-cube-project'] = project;
-                           }
                            if(resourceType)
                            {
                              headers['x-cube-resource-type'] = resourceType;

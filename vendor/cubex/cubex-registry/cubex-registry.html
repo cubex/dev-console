@@ -9,9 +9,9 @@
     <cubex-route project-id="{{projectId}}"></cubex-route>
 
     <cube-resource id="project" auto auth url="//[[getServiceHost('apps')]]/kubex/registry/project.json"
-                   data="{{projectData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
+                   data="{{projectData}}" ttl="3600"></cube-resource>
     <cube-resource id="user" auto auth url="//[[getServiceHost('apps')]]/kubex/registry/user.json"
-                   data="{{userData}}" headers="[[_headers]]" ttl="3600"></cube-resource>
+                   data="{{userData}}" ttl="3600"></cube-resource>
 
     <cube-websocket auto project="[[projectId]]" vendor="kubex" app="registry"
                     on-message="_appsChanged"></cube-websocket>
@@ -19,20 +19,11 @@
   <script>
     Polymer(
       {
-        is:              'cubex-registry',
-        properties:      {
+        is:         'cubex-registry',
+        properties: {
           projectData: {type: Object, notify: true},
-          userData:    {type: Object, notify: true},
-          _headers:    {type: Object, computed: '_refreshHeaders(projectId)'}
+          userData:    {type: Object, notify: true}
         },
-        _refreshHeaders: function (project)
-                         {
-                           if(project)
-                           {
-                             return {'x-cube-project': project};
-                           }
-                           return undefined;
-                         },
 
         _appsChanged: function (e)
                       {

@@ -123,8 +123,10 @@
 
     <cubex-route project-id="{{projectId}}"></cubex-route>
 
+    <cube-resource id="appResource" auto auth url="//[[getServiceHost('apps')]]/kubex/registry/project.json"
+                   data="{{_apps}}" ttl="3600"></cube-resource>
     <cube-resource id="searchResource" auto auth url="//[[getServiceHost('apps')]]/kubex/search-actions/search.json"
-                   headers="[[_headers]]" data="{{_search}}" ttl="3600"></cube-resource>
+                   data="{{_search}}" ttl="3600"></cube-resource>
 
     <cube-websocket auto project="[[projectId]]" vendor="kubex" app="registry"
                     on-message="_appsChanged"></cube-websocket>
@@ -138,7 +140,7 @@
 
     <iron-dropdown vertical-align="top" id="results" vertical-offset="45">
       <cube-list-menu slot="dropdown-content" id="searchmenu" zebra>
-        <template is="dom-repeat" items="{{_filterActions(searchQuery,_search.Actions)}}">
+        <template is="dom-repeat" items="{{_filterActions(searchQuery,_search.Actions,_apps.AppSummary)}}">
           <a href="/[[item.GlobalAppID]]/[[item.Path]]">
             <cube-li>
               <template restamp is="dom-if" if="[[item.Icon]]">
@@ -164,7 +166,6 @@
             value:              false,
             reflectToAttribute: true
           },
-          _headers:    {type: Object, computed: '_refreshHeaders(projectId)'},
           resources:   {
             type:  Object,
             value: {
@@ -185,6 +186,7 @@
                         if(e.detail.action === 'install' || e.detail.action === 'uninstall')
                         {
                           this.$.searchResource.update(true);
+                          this.$.appResource.update(true);
                         }
                       },
 
@@ -243,69 +245,69 @@
                          return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
                        },
 
-        _filterActions: function (searchQuery, actions)
+        _filterActions: function (searchQuery, actions, appSummary)
                         {
                           var filtered = [];
                           if(searchQuery)
                           {
-                            var matchWords = searchQuery.replace(/[^a-z0-9\s]+/ig, '').toLowerCase().split(/\s+/);
+                            var matchWords = searchQuery.replace(/[^a-z0-9\s]+/ig, '').toLowerCase().split(/\s+/),
+                              weight, tests;
 
+                            // iterate AppSummary
+                            for(var appGaid in appSummary)
+                            {
+                              if(appSummary.hasOwnProperty(appGaid))
+                              {
+                                weight = 0;
+                                var app = appSummary[appGaid];
+                                tests = [app.name, app.description];
+                                console.log(app);
+
+                                weight = this.__getWeight(matchWords, tests);
+                                if(weight > 0)
+                                {
+                                  filtered.push(this.__getItem(
+                                    app.name,
+                                    app.icon,
+                                    app.description,
+                                    weight,
+                                    appGaid
+                                  ));
+                                }
+                              }
+                            }
+
+                            // iterate searchActions
                             for(var actionIdx in actions)
                             {
                               if(actions.hasOwnProperty(actionIdx))
                               {
                                 var action = actions[actionIdx];
-                                action.Weight = 0;
-                                for(var matchIdx in matchWords)
-                                {
-                                  if(matchWords.hasOwnProperty(matchIdx) && matchWords[matchIdx].length > 0)
-                                  {
-                                    var word = matchWords[matchIdx],
-                                      fullTest = new RegExp('\\b' + this._escapeRegExp(word) + '\\b', 'i'),
-                                      partialTest = new RegExp('\\b' + this._escapeRegExp(word), 'i');
+                                tests = [action.Name, action.Description];
+                                Array.prototype.push.apply(tests, action.Tokens || []);
 
-                                    var tests = [action.Name, action.Description];
-                                    Array.prototype.push.apply(tests, action.Tokens || []);
-
-                                    for(var testIdx in tests)
-                                    {
-                                      if(tests.hasOwnProperty(testIdx))
-                                      {
-                                        if(fullTest.test(tests[testIdx].replace(/[^a-z0-9\s]+/ig, '')))
-                                        {
-                                          action.Weight += 2;
-                                        }
-                                        else if(partialTest.test(tests[testIdx].replace(/[^a-z0-9\s]+/ig, '')))
-                                        {
-                                          action.Weight += 1;
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                                if(action.Weight > 0)
+                                weight = this.__getWeight(matchWords, tests);
+                                if(weight > 0)
                                 {
-                                  filtered.push(action);
+                                  filtered.push(this.__getItem(
+                                    action.Name,
+                                    action.Icon,
+                                    action.Description,
+                                    weight,
+                                    action.GlobalAppID,
+                                    action.Path
+                                  ));
                                 }
                               }
                             }
                           }
                           if(filtered.length <= 0)
                           {
-                            filtered.push({Name: this.i18n("no_results") + ' "' + searchQuery + '"'});
+                            filtered.push(this.__getItem(this.i18n("no_results") + ' "' + searchQuery + '"'));
                           }
 
                           return filtered.sort(function (a, b) {return a.Weight < b.Weight});
                         },
-
-        _refreshHeaders: function (project)
-                         {
-                           if(project)
-                           {
-                             return {'x-cube-project': project};
-                           }
-                           return undefined;
-                         },
 
         _query:   function ()
                   {
@@ -327,6 +329,45 @@
                   {
                     this.$.search.inputElement.inputElement.focus();
                   },
+
+        __getWeight: function (matchWords, tests)
+                     {
+                       var weight = 0;
+                       for(var matchIdx in matchWords)
+                       {
+                         if(matchWords.hasOwnProperty(matchIdx) && matchWords[matchIdx].length > 0)
+                         {
+                           var word = matchWords[matchIdx],
+                             fullTest = new RegExp('\\b' + this._escapeRegExp(word) + '\\b', 'i'),
+                             partialTest = new RegExp('\\b' + this._escapeRegExp(word), 'i');
+
+                           for(var testIdx in tests)
+                           {
+                             if(tests.hasOwnProperty(testIdx))
+                             {
+                               var test = tests[testIdx] || '';
+                               if(fullTest.test(test.replace(/[^a-z0-9\s]+/ig, '')))
+                               {
+                                 weight += 2;
+                               }
+                               else if(partialTest.test(test.replace(/[^a-z0-9\s]+/ig, '')))
+                               {
+                                 weight += 1;
+                               }
+                             }
+                           }
+                         }
+                       }
+                       return weight;
+                     },
+
+        __getItem: function (name, icon, description, weight, gaid, path)
+                   {
+                     return {
+                       Name:        name, Icon: icon || '', Description: description || '', Weight: weight || 0,
+                       GlobalAppID: gaid, Path: path
+                     };
+                   },
 
         behaviors: [
           Polymer.IronA11yKeysBehavior,
