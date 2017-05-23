@@ -31,10 +31,13 @@
 
         _refreshHeaders: function (headers)
                          {
-                           var project = window.location.host.match(/^(.+?)\./)[1];
-                           if(project)
+                           if(this.auth)
                            {
-                             headers['x-cube-project'] = project;
+                             var project = window.location.host.match(/^(.+?)\./)[1];
+                             if(project && project !== 'console')
+                             {
+                               headers['x-cube-project'] = project;
+                             }
                            }
                            return headers;
                          },
