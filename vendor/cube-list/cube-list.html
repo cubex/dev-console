@@ -180,7 +180,7 @@ Example:
                        var
                          filterValue = this.filterValue || '',
                          visibleCount = this._doFilter(filterValue, this.$.items.assignedNodes({flatten: true}));
-                       this.noResults = filterValue && visibleCount == 0;
+                       this.noResults = filterValue && (visibleCount === 0);
                      },
         _doFilter:   function (filterValue, items)
                      {
@@ -193,26 +193,29 @@ Example:
                        this.iterate(
                          items, function (item)
                          {
-                           if(item.tagName == 'CUBE-LIST-GROUP')
+                           if(!item.hasAttribute('slot'))
                            {
-                             var vc = self._doFilter(filterValue, item.children);
-                             item.hidden = vc <= 0;
-                             visibleCount += vc;
-                           }
-                           else
-                           {
-                             var noListItem = item.tagName !== 'CUBE-LI' && (!item.querySelector('CUBE-LI'));
-                             item.hidden = noListItem
-                               || (filterValue && (item.textContent.toLowerCase()
-                                                       .indexOf(filterValue.toLowerCase()) == -1));
-                             visibleCount += item.hidden ? 0 : 1;
+                             if(item.tagName === 'CUBE-LIST-GROUP')
+                             {
+                               var vc = self._doFilter(filterValue, item.children);
+                               item.hidden = vc <= 0;
+                               visibleCount += vc;
+                             }
+                             else
+                             {
+                               var noListItem = (item.tagName !== 'CUBE-LI' && (!item.querySelector('CUBE-LI')));
+                               item.hidden = noListItem
+                                 || (filterValue && (item.textContent.toLowerCase()
+                                                         .indexOf(filterValue.toLowerCase()) === -1));
+                               visibleCount += item.hidden ? 0 : 1;
+                             }
                            }
                          }
                        );
 
                        var visible = Array.prototype.filter.call(
                          items,
-                         function (a) {return (!a.hasAttribute('hidden')) && a.tagName != 'CUBE-LIST-GROUP'}
+                         function (a) {return (!a.hidden) && a.tagName !== 'CUBE-LIST-GROUP'}
                        );
                        this.iterate(
                          visible, function (item)
@@ -226,8 +229,8 @@ Example:
                            if(li)
                            {
                              li.odd = self.zebra && idx > -1 && (idx % 2 !== 0);
-                             li.firstItem = idx == 0;
-                             li.lastItem = idx == visible.length - 1;
+                             li.firstItem = idx === 0;
+                             li.lastItem = idx === visible.length - 1;
                            }
                          }
                        );

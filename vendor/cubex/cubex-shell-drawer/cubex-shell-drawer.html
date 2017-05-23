@@ -293,7 +293,7 @@
         _filterApps: function (item)
                      {
                        return item.app_type === 'kubex.application.project'
-                         || item.ui_mode === 'full';
+                         && item.ui_mode === 'full';
                      },
 
         behaviors: [

@@ -597,14 +597,14 @@
 
         _updateHeaders: function ()
                         {
-                          var cubeHeaderRegex = /x-cube-([a-z\-]+): (.*)[\n\r]*/g,
-                            headers = {};
+                          var cubeHeaderRegex = /^x-cube-([a-z\-]+):\s*(.*)$/gmi,
+                            headers = {}, matches;
                           if(this._pageXhr)
                           {
                             var fn = function (_, v) { return v.toUpperCase(); };
                             while(matches = cubeHeaderRegex.exec(this._pageXhr.getAllResponseHeaders()))
                             {
-                              headers[matches[1].replace(/-([a-z])/, fn)] = matches[2];
+                              headers[matches[1].toLowerCase().replace(/-([a-z])/i, fn)] = matches[2];
                             }
                           }
                           this.pageData = headers;
