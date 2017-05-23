@@ -126,7 +126,7 @@
       <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/whoami/whoami.json"
                      data="{{whoami}}"></cube-resource>
       <paper-button on-tap="_toggleParent" class="closer"></paper-button>
-      <img src="../demo/resources/images/avatar/default-64.png">
+      <img src="{{avatar}}">
       <strong>[[whoami.FirstName]] [[whoami.LastName]]</strong>
       <span>[[whoami.Username]]</span>
       <template is="dom-if" if="[[project]]">
@@ -225,7 +225,10 @@
           projects:             {type: Array},
           avatar:               {
             type:  String,
-            value: "resources/images/avatar/default-64.png"
+            value: function ()
+                   {
+                     return "//" + this.getServiceHost('static-console') + "/resources/images/avatar/default-64.png";
+                   }
           },
           headColor:            {
             type: String

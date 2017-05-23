@@ -13,7 +13,7 @@ Example:
 -->
 
 <dom-module id="cube-websocket"
-            attributes="project vendor app url protocol auto subscribe-payload on-subscribe on-close on-message on-error">
+            attributes="project vendor app url protocol auto subscribe-payload on-subscribe on-close on-message on-error subscribed meta action-count message-count">
   <script>
     (function ()
     {
@@ -134,7 +134,7 @@ Example:
                           else if(message.app === this.vendor + '/' + this.app)
                           {
                             this.messageCount++;
-                            this.actionCount[message.action] = (this.actionCount[message.action] || 0) + 1;
+                            this.set(['actionCount', message.action], (this.actionCount[message.action] || 0) + 1);
                             if(message.meta)
                             {
                               for(var mIdx in message.meta)
