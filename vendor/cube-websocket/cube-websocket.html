@@ -15,209 +15,206 @@ Example:
 <dom-module id="cube-websocket"
             attributes="project vendor app url protocol auto subscribe-payload on-subscribe on-close on-message on-error subscribed meta action-count message-count">
   <script>
-    (function ()
-    {
-      var sockets = {};
-      Polymer(
-        {
-          is:           'cube-websocket',
-          behaviors:    [Polymer.CubeServiceBehavior],
-          properties:   {
-            project:          {type: String},
-            vendor:           {type: String},
-            app:              {type: String},
-            url:              {
-              type:               String,
-              value:              function ()
+    Polymer(
+      {
+        is:           'cube-websocket',
+        behaviors:    [Polymer.CubeServiceBehavior],
+        properties:   {
+          project:          {type: String},
+          vendor:           {type: String},
+          app:              {type: String},
+          url:              {
+            type:               String,
+            value:              function ()
+                                {
+                                  var protocol = 'ws:';
+                                  if(window.location.protocol === 'https:')
                                   {
-                                    var protocol = 'ws:';
-                                    if(window.location.protocol === 'https:')
-                                    {
-                                      protocol = 'wss:'
-                                    }
-                                    return protocol + '//' + this.getServiceHost('conduit');
-                                  },
-              reflectToAttribute: true
-            },
-            protocol:         {type: String},
-            subscribed:       {type: Boolean, notify: true},
-            subscribePayload: {type: String},
-            auto:             {type: Boolean, value: false},
-            meta:             {type: Object, value: function () {return {}}, notify: true},
-            actionCount:      {type: Object, value: function () {return {}}, notify: true},
-            messageCount:     {type: Number, value: 0, notify: true}
+                                    protocol = 'wss:'
+                                  }
+                                  return protocol + '//' + this.getServiceHost('conduit');
+                                },
+            reflectToAttribute: true
           },
-          _doSubscribe: function ()
-                        {
-                          // http request to subscribe to this app
-                          var
-                            self = this,
-                            subscribeUrl = '//' + this.getServiceHost('apps')
-                              + '/' + this.vendor + '/' + this.app + '/_socket/subscribe/' + this._socket.sessionId,
-                            xmlHttp = new XMLHttpRequest();
+          protocol:         {type: String},
+          subscribed:       {type: Boolean, notify: true},
+          subscribePayload: {type: String},
+          auto:             {type: Boolean, value: false},
+          meta:             {type: Object, value: function () {return {}}, notify: true},
+          actionCount:      {type: Object, value: function () {return {}}, notify: true},
+          messageCount:     {type: Number, value: 0, notify: true},
+          _sockets:         {type: Object, value: {}}
+        },
+        _doSubscribe: function ()
+                      {
+                        // http request to subscribe to this app
+                        var
+                          self = this,
+                          subscribeUrl = '//' + this.getServiceHost('apps')
+                            + '/' + this.vendor + '/' + this.app + '/_socket/subscribe/' + this._socket.sessionId,
+                          xmlHttp = new XMLHttpRequest();
 
-                          xmlHttp.onreadystatechange = function ()
+                        xmlHttp.onreadystatechange = function ()
+                        {
+                          if(xmlHttp.readyState === XMLHttpRequest.DONE)
                           {
-                            if(xmlHttp.readyState === XMLHttpRequest.DONE)
+                            if(xmlHttp.status === 200)
                             {
-                              if(xmlHttp.status === 200)
-                              {
-                                self.subscribed = true;
-                                self.fire('subscribe', xmlHttp.responseText);
-                              }
-                              else
-                              {
-                                self.fire(
-                                  'error',
-                                  'Failed to subscribe to ' + self.app + '. Status [' + xmlHttp.status + '] ' + xmlHttp.statusText
-                                );
-                              }
-                            }
-                          };
-                          xmlHttp.withCredentials = true;
-                          xmlHttp.open("POST", subscribeUrl, true);
-                          if(this.project)
-                          {
-                            xmlHttp.setRequestHeader('x-cube-project', this.project);
-                          }
-                          //noinspection JSCheckFunctionSignatures
-                          xmlHttp.send(this.subscribePayload);
-                        },
-          _onClose:     function ()
-                        {
-                          this.subscribed = false;
-                          this._socket.startTime = Math.floor(Date.now() / 1000);
-                          this._socket.reconnectTime = 1;
-                          this._tryConnect(true);
-                          this.fire('close');
-                        },
-          _onError:     function (error)
-                        {
-                          this.fire('error', error);
-                          this._tryConnect();
-                        },
-          _tryConnect:  function (now)
-                        {
-                          if(now)
-                          {
-                            this.open();
-                          }
-                          else
-                          {
-                            var self = this;
-                            if(Math.floor(Date.now() / 1000) - this._socket.startTime > 300)
-                            {
-                              this.fire('message', 'Socket connection failed after 5 minutes');
+                              self.subscribed = true;
+                              self.fire('subscribe', xmlHttp.responseText);
                             }
                             else
                             {
-                              this._socket.reconnectHnd = setTimeout(
-                                function () {self.open()},
-                                this._socket.reconnectTime * 1000
+                              self.fire(
+                                'error',
+                                'Failed to subscribe to ' + self.app + '. Status [' + xmlHttp.status + '] ' + xmlHttp.statusText
                               );
-                              this._socket.reconnectTime = Math.min(this._socket.reconnectTime * 2, 30)
                             }
                           }
-                        },
-          _onMessage:   function (event)
+                        };
+                        xmlHttp.withCredentials = true;
+                        xmlHttp.open("POST", subscribeUrl, true);
+                        if(this.project)
                         {
-                          var message = JSON.parse(event.data);
-                          if(message.app === 'conduit')
+                          xmlHttp.setRequestHeader('x-cube-project', this.project);
+                        }
+                        //noinspection JSCheckFunctionSignatures
+                        xmlHttp.send(this.subscribePayload);
+                      },
+        _onClose:     function ()
+                      {
+                        this.subscribed = false;
+                        this._socket.startTime = Math.floor(Date.now() / 1000);
+                        this._socket.reconnectTime = 1;
+                        this._tryConnect(true);
+                        this.fire('close');
+                      },
+        _onError:     function (error)
+                      {
+                        this.fire('error', error);
+                        this._tryConnect();
+                      },
+        _tryConnect:  function (now)
+                      {
+                        if(now)
+                        {
+                          this.open();
+                        }
+                        else
+                        {
+                          var self = this;
+                          if(Math.floor(Date.now() / 1000) - this._socket.startTime > 300)
                           {
-                            if(message.channel === '_conduit' && message.action === 'session-id')
-                            {
-                              this._socket.sessionId = message.payload;
-                              // socket is only open when we have received the sessionId
-                              this._doSubscribe();
-                            }
+                            this.fire('message', 'Socket connection failed after 5 minutes');
                           }
-                          else if(message.app === this.vendor + '/' + this.app)
+                          else
                           {
-                            this.messageCount++;
-                            this.set(['actionCount', message.action], (this.actionCount[message.action] || 0) + 1);
-                            if(message.meta)
+                            this._socket.reconnectHnd = setTimeout(
+                              function () {self.open()},
+                              this._socket.reconnectTime * 1000
+                            );
+                            this._socket.reconnectTime = Math.min(this._socket.reconnectTime * 2, 30)
+                          }
+                        }
+                      },
+        _onMessage:   function (event)
+                      {
+                        var message = JSON.parse(event.data);
+                        if(message.app === 'conduit')
+                        {
+                          if(message.channel === '_conduit' && message.action === 'session-id')
+                          {
+                            this._socket.sessionId = message.payload;
+                            // socket is only open when we have received the sessionId
+                            this._doSubscribe();
+                          }
+                        }
+                        else if(message.app === this.vendor + '/' + this.app)
+                        {
+                          this.messageCount++;
+                          this.set(['actionCount', message.action], (this.actionCount[message.action] || 0) + 1);
+                          if(message.meta)
+                          {
+                            for(var mIdx in message.meta)
                             {
-                              for(var mIdx in message.meta)
+                              if(message.meta.hasOwnProperty(mIdx))
                               {
-                                if(message.meta.hasOwnProperty(mIdx))
-                                {
-                                  this.meta[mIdx] = message.meta[mIdx];
-                                }
+                                this.meta[mIdx] = message.meta[mIdx];
                               }
                             }
-                            this.fire('message', message);
                           }
-                        },
-          _onOpen:      function ()
-                        {
-                          this._socket.socket.addEventListener('close', this._onClose.bind(this));
-                        },
-          ready:        function ()
-                        {
-                          this.async(
-                            function ()
-                            {
-                              this.auto && this.open();
-                            }
-                          );
-                        },
-
-          open: function ()
-                {
-                  if(!this.url)
-                  {
-                    console.error('No URL specified for socket');
-                  }
-                  else if(!this.app)
-                  {
-                    console.error('No app specified for socket');
-                  }
-                  else
-                  {
-                    if(undefined === this._socket)
-                    {
-                      this._socket = {reconnectTime: 1, startTime: Math.floor(Date.now() / 1000)};
-                    }
-                    if(undefined === this._socket.socket || this._socket.socket.readyState === WebSocket.CLOSED)
-                    {
-                      try
+                          this.fire('message', message);
+                        }
+                      },
+        _onOpen:      function ()
                       {
-                        this._socket.socket = new WebSocket(this.url, this.protocol);
-                      }
-                      catch(e)
+                        this._socket.socket.addEventListener('close', this._onClose.bind(this));
+                      },
+        ready:        function ()
                       {
-                        console.error(e);
-                      }
-                    }
-                    this._socket.socket.addEventListener('open', this._onOpen.bind(this));
-                    this._socket.socket.addEventListener('error', this._onError.bind(this));
-                    this._socket.socket.addEventListener('message', this._onMessage.bind(this));
-                    if(this._socket.sessionId)
+                        this.async(
+                          function ()
+                          {
+                            this.auto && this.open();
+                          }
+                        );
+                      },
+
+        open: function ()
+              {
+                if(!this.url)
+                {
+                  console.error('No URL specified for socket');
+                }
+                else if(!this.app)
+                {
+                  console.error('No app specified for socket');
+                }
+                else
+                {
+                  if(undefined === this._socket)
+                  {
+                    this._socket = {reconnectTime: 1, startTime: Math.floor(Date.now() / 1000)};
+                  }
+                  if(undefined === this._socket.socket || this._socket.socket.readyState === WebSocket.CLOSED)
+                  {
+                    try
                     {
-                      this._doSubscribe();
+                      this._socket.socket = new WebSocket(this.url, this.protocol);
+                    }
+                    catch(e)
+                    {
+                      console.error(e);
                     }
                   }
-                },
-          send: function (message)
-                {
-                  this._socket.socket.send(JSON.stringify({type: this.app, payload: message}));
-                },
+                  this._socket.socket.addEventListener('open', this._onOpen.bind(this));
+                  this._socket.socket.addEventListener('error', this._onError.bind(this));
+                  this._socket.socket.addEventListener('message', this._onMessage.bind(this));
+                  if(this._socket.sessionId)
+                  {
+                    this._doSubscribe();
+                  }
+                }
+              },
+        send: function (message)
+              {
+                this._socket.socket.send(JSON.stringify({type: this.app, payload: message}));
+              },
 
-          get _socket()
-          {
-            return sockets[this._socketHash];
-          },
-          set _socket(socket)
-          {
-            sockets[this._socketHash] = socket;
-          },
+        get _socket()
+        {
+          return this._sockets[this._socketHash];
+        },
+        set _socket(socket)
+        {
+          this._sockets[this._socketHash] = socket;
+        },
 
-          get _socketHash()
-          {
-            return JSON.stringify([this.url, this.protocol]);
-          }
+        get _socketHash()
+        {
+          return JSON.stringify([this.url, this.protocol]);
         }
-      )
-    }());
+      }
+    );
   </script>
 </dom-module>
