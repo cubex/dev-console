@@ -507,12 +507,12 @@ Example:
                            var bc = [];
                            if(pageData && pageData.breadcrumb)
                            {
-                             bc = typeof(pageData.breadcrumb) == 'string' ? JSON.parse(pageData.breadcrumb) : pageData.breadcrumb;
+                             bc = typeof(pageData.breadcrumb) === 'string' ? JSON.parse(pageData.breadcrumb) : pageData.breadcrumb;
                            }
 
                            if(this.appData && pageData && this.project)
                            {
-                             var prefix = '/' + this.appData.GlobalAppID;
+                             var prefix = '/' + this.appData.VendorID + '/' + this.appData.AppID;
                              for(var i in bc)
                              {
                                if(bc.hasOwnProperty(i))
@@ -520,30 +520,37 @@ Example:
                                  bc[i].Url = prefix + '/' + bc[i].Url.replace(/^\//, '');
                                }
                              }
-                             // prepend app
-                             bc.unshift(
-                               {
-                                 Title: this.i18n('app_name'),
-                                 Url:   prefix
-                               }
-                             );
-                             // prepend group
-                             if(this.appData.Group)
+
+                             if(!(this.appData.VendorID === 'kubex' && this.appData.AppID === 'dashboard' ))
                              {
+                               // prepend app
                                bc.unshift(
                                  {
-                                   Title: this.appData.Group,
-                                   Url:   '/' + this.appData.Vendor + '/' + this.appData.Group
+                                   Title: this.i18n('app_name'),
+                                   Url:   prefix
                                  }
                                );
-                             }
-                             // prepend category
-                             bc.unshift(
+                               // prepend group
+                               if(this.appData.Group)
                                {
-                                 Title: this.$.cat.getCategory(this.appData.Category, true),
-                                 Url:   '/_' + this.appData.Category
+                                 bc.unshift(
+                                   {
+                                     Title: this.appData.Group,
+                                     Url:   '/' + this.appData.Vendor + '/' + this.appData.Group
+                                   }
+                                 );
                                }
-                             );
+                               // prepend category
+                               if(this.appData.Category)
+                               {
+                                 bc.unshift(
+                                   {
+                                     Title: this.$.cat.getCategory(this.appData.Category, true),
+                                     Url:   '/_' + this.appData.Category
+                                   }
+                                 );
+                               }
+                             }
                            }
                            return bc;
                          },

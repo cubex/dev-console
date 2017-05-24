@@ -14,7 +14,7 @@
                     var elements = this.querySelectorAll('[displace]');
                     if(elements.length > 0)
                     {
-                      var fx = {height: this.offsetHeight, elements: []};
+                      var fx = {elements: []};
                       for(var i in elements)
                       {
                         if(elements.hasOwnProperty(i))
@@ -38,14 +38,16 @@
                     {
                       if(fx.elements.hasOwnProperty(i))
                       {
-                        var ele = fx.elements[i],
+                        var ele = fx.elements[i];
+                        ele.height = Math.max(ele.height, ele.element.offsetHeight);
+
+                        var
                           oldHeight = ele.element.style.maxHeight,
                           overlap = document.body.scrollHeight - window.innerHeight,
-                          newHeightFraction = (overlap > this.offsetHeight)
-                            ? (1 - Math.min(1, p)) : 1,
+                          newHeightFraction = (overlap > this.offsetHeight) ? (1 - Math.min(1, p)) : 1,
                           newHeight = (ele.height * newHeightFraction);
 
-                        if(p == 0)
+                        if(p === 0)
                         {
                           ele.element.style.maxHeight = '';
                         }

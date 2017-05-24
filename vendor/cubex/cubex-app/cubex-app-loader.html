@@ -105,7 +105,6 @@
         properties: {
           route: {type: Object, notify: true},
 
-          _project: {type: String},
           _appGaid: {type: String, observer: '_gaidChanged'},
 
           _pageDefinitionPath:           {type: String},
@@ -120,7 +119,7 @@
           appData:                       {type: Object, notify: true},
           _backPath:                     {
             type:     String,
-            computed: '_computedBackPath(_project,appData.GlobalAppID,pageData.backPath)'
+            computed: '_computedBackPath(appData.VendorID,appData.AppID,pageData.backPath)'
           },
 
           _pageContentPath:    {type: String},
@@ -140,7 +139,6 @@
         },
 
         observers: [
-          '_updateProject(projectId)',
           '_pathChanged(fullPath,projectData)',
           '_updateHeaders(_pageXhr)',
           '_updateIntegration(_integrations,appPath.path,_pageDefinitionPath,projectData)',
@@ -173,14 +171,6 @@
                                 this.$.integrationsResource.update(true);
                               },
 
-        _updateProject: function (project)
-                        {
-                          if(this._project !== project)
-                          {
-                            this._project = project;
-                          }
-                        },
-
         _computeHeaders: function (resourceType)
                          {
                            var headers = {};
@@ -191,11 +181,11 @@
                            return headers;
                          },
 
-        _computedBackPath: function (project, gaid, path)
+        _computedBackPath: function (vendor, app, path)
                            {
-                             if(project && path && path.length > 0)
+                             if(path && path.length > 0)
                              {
-                               return '/' + project + '/' + gaid + path;
+                               return '/' + vendor + '/' + app + path.replace(/\/$/, '');
                              }
                              return '';
                            },
@@ -215,7 +205,7 @@
                                function (a, b)
                                {
                                  // if one item is within the current app and one isn't, move the current one up
-                                 if((a.Hook.indexOf(a.GlobalAppID) == 0) !== (b.Hook.indexOf(b.GlobalAppID) == 0))
+                                 if((a.Hook.indexOf(a.GlobalAppID) === 0) !== (b.Hook.indexOf(b.GlobalAppID) === 0))
                                  {
                                    return (a.GlobalAppID === appData.GlobalAppID) ? -1 : 1;
                                  }
@@ -287,7 +277,7 @@
                                                 : '/' + action.Hook + '/_/' + action.ID,
                                      Icon:    action.Icon,
                                      Mode:    action.Mode,
-                                     Primary: action.GlobalAppID === 'fortifiplatform/customers'
+                                     Primary: false
                                    }
                                  );
                                }
