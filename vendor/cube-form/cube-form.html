@@ -15,7 +15,7 @@ Example:
 
 <dom-module id="cube-form" attributes="method action enctype">
   <template>
-    <iron-form id="form" header="[[_headers]]" with-credentials>
+    <iron-form id="form" headers="[[_headers]]" allow-redirect="[[allowRedirect]]" with-credentials>
       <form id="helper" action$="[[action]]" method$="[[method]]" enctype$="[[enctype]]"></form>
     </iron-form>
     <!-- This slot is observed and its elements are pushed into the form #helper -->
@@ -27,10 +27,11 @@ Example:
       {
         is:         'cube-form',
         properties: {
-          action:   {type: String, notify: true},
-          method:   {type: String, notify: true, value: 'post'},
-          enctype:  {type: String, notify: true, value: 'application/x-www-form-urlencoded'},
-          _headers: {type: Object, computed: '_refreshHeaders()'}
+          action:        {type: String},
+          method:        {type: String, value: 'post'},
+          enctype:       {type: String, value: 'application/x-www-form-urlencoded'},
+          allowRedirect: {type: Boolean, value: false},
+          _headers:      {type: Object, computed: '_refreshHeaders()'}
         },
 
         listeners: {'tap': '_onTap'},
