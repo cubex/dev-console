@@ -24,7 +24,7 @@
     "polymer": "Polymer/polymer#1.9 - 2",
     "paper-item": "PolymerElements/paper-item#1.9 - 2",
     "paper-input": "PolymerElements/paper-input#1.9 - 2",
-    "cube-icon": "PolymerElements/iron-icon",
+    "cube-icon": "CubexElements/cube-icon",
     "cube-behavior": "CubexElements/cube-behavior"
   },
   "devDependencies": {

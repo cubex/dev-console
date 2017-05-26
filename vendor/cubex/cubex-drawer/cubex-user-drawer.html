@@ -59,6 +59,7 @@
         position: absolute;
         bottom: 0;
         left: 0;
+        color: #FFFFFF;
       }
 
       :host-context([is-open],[state="2"]) cubex-user-drawer-items cube-action[active] {
@@ -115,7 +116,9 @@
         <cube-action active$="[[_isSelectedApp(app.vendor_id,app.id,_selectedApp)]]" icon="[[app.icon]]"
                      on-tap="_openUserDrawerApp" gaid$="[[app.vendor_id]]/[[app.id]]"></cube-action>
       </template>
-      <cube-action icon="icons:add" id="addUserAppAction" on-tap="_addUserApp"></cube-action>
+      <a href="/kubex/store/user-apps">
+        <cube-action icon="icons:add" id="addUserAppAction"></cube-action>
+      </a>
     </cubex-user-drawer-items>
 
     <div id="contentContainer">
@@ -182,10 +185,6 @@
                               this._drawer = drawer;
                             }
                             return this._drawer;
-                          },
-      _addUserApp:        function ()
-                          {
-                            console.error("Adding User App Method Missing");
                           },
       _openUserDrawerApp: function (e)
                           {

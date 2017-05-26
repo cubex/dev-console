@@ -9,7 +9,6 @@
   },
   "resolutions": {
     "polymer": "^2.0.0",
-    "webcomponentsjs": "^v1.0.0",
-    "iron-ajax": "^2.0.0"
+    "webcomponentsjs": "^v1.0.0"
   }
 }

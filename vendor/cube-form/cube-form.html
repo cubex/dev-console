@@ -16,7 +16,7 @@ Example:
 <dom-module id="cube-form" attributes="method action">
   <template>
     <slot id="content"></slot>
-    <iron-form id="form">
+    <iron-form id="form" with-credentials>
       <form id="helper" method="[[method]]" action="[[action]]"></form>
     </iron-form>
   </template>
@@ -70,11 +70,10 @@ Example:
         ready: function ()
                {
                  var self = this;
-                 this.$.form.addEventListener('iron-form-presubmit', function ()
-                 {
-                   this.ajax.withCredentials = true;
-                   this.ajax.contentType = 'application/x-www-form-urlencoded';
-                 });
+                 /*this.$.form.addEventListener('iron-form-presubmit', function ()
+                  {
+                  this.ajax.contentType = 'application/x-www-form-urlencoded';
+                  });*/
                  this.$.form.addEventListener('iron-form-response', function (event)
                  {
                    self.__handleFormResponse(event.detail.response);
