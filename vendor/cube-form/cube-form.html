@@ -15,7 +15,7 @@ Example:
 
 <dom-module id="cube-form" attributes="method action enctype">
   <template>
-    <iron-form id="form" with-credentials>
+    <iron-form id="form" header="[[_headers]]" with-credentials>
       <form id="helper" action$="[[action]]" method$="[[method]]" enctype$="[[enctype]]"></form>
     </iron-form>
     <!-- This slot is observed and its elements are pushed into the form #helper -->
