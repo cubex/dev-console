@@ -15,10 +15,11 @@ Example:
 
 <dom-module id="cube-form" attributes="method action enctype">
   <template>
-    <slot id="content"></slot>
-    <iron-form id="form" with-credentials headers="[[_headers]]">
-      <form id="helper" method="[[method]]" action="[[action]]" enctype="[[enctype]]"></form>
+    <iron-form id="form" action="[[action]]" method="[[method]]" enctype="[[enctype]]" with-credentials>
+      <form id="helper"></form>
     </iron-form>
+    <!-- This slot is observed and its elements are pushed into the form #helper -->
+    <slot id="content"></slot>
   </template>
 
   <script>
