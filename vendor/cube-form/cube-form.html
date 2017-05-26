@@ -16,7 +16,7 @@ Example:
 <dom-module id="cube-form" attributes="method action">
   <template>
     <slot id="content"></slot>
-    <iron-form id="form" with-credentials>
+    <iron-form id="form" with-credentials headers="[[_headers]]">
       <form id="helper" method="[[method]]" action="[[action]]"></form>
     </iron-form>
   </template>
@@ -26,8 +26,9 @@ Example:
       {
         is:         'cube-form',
         properties: {
-          action: {type: String, value: ''},
-          method: {type: String, value: ''}
+          action:   {type: String, value: ''},
+          method:   {type: String, value: ''},
+          _headers: {type: Object, computed: '_refreshHeaders()'}
         },
 
         listeners: {'tap': '_onTap'},
@@ -54,6 +55,19 @@ Example:
                     this.$.form.submit();
                   }
                 },
+
+        _refreshHeaders: function ()
+                         {
+                           var
+                             headers = {},
+                             project = window.location.host.match(/^(.+?)\./)[1];
+
+                           if(project && project !== 'console')
+                           {
+                             headers['x-cube-project'] = project;
+                           }
+                           return headers;
+                         },
 
         attached: function ()
                   {
