@@ -8,8 +8,16 @@
   {
     "name": "More Info",
     "icon": "icons:assignment",
-    "contentUrl": "/demo/content/more-wizard.html",
-    "optional": true
+    "contentUrl": "/demo/content/more-info.html",
+    "optional": true,
+    "steps": [
+      {
+        "name": "Your Details",
+        "icon": "icons:assignment",
+        "contentUrl": "/demo/content/more-form.html",
+        "optional": true
+      }
+    ]
   },
   {
     "name": "Complete",

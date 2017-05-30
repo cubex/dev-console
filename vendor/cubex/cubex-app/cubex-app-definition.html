@@ -3,7 +3,7 @@
 
 <dom-module id="cubex-app-definition" attributes="gaid app-data">
   <template>
-    <cube-resource auto url="[[_url]]" data="{{appData}}" ttl="3600"></cube-resource>
+    <cube-resource auto url="[[_url]]" data="{{appData}}" ttl="3600" norequestby></cube-resource>
   </template>
   <script>
     Polymer(

@@ -2,7 +2,10 @@
 <link rel="import" href="../../cube-input/cube-input.html">
 <h1>More</h1>
 <cube-form action="content/form-response.json" method="get">
+  <cube-input name="name" label="Name" required value="{{myName}}"></cube-input>
   <cube-input name="foo" label="Foo" required></cube-input>
   <cube-input name="bar" label="Bar"></cube-input>
 </cube-form>
 
+<cube-wizard-state key="myName" value="{{myName}}"></cube-wizard-state>
+<cube-wizard-state key="canSkip" value="true"></cube-wizard-state>

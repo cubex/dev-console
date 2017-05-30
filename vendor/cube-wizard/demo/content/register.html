@@ -2,6 +2,9 @@
 <link rel="import" href="../../cube-input/cube-input.html">
 <h1>Register</h1>
 <cube-form action="content/form-response.json" method="get">
-  <cube-input name="name" label="Name" required></cube-input>
+  <cube-input name="name" label="Name" required value="{{myName}}"></cube-input>
   <cube-input name="email" label="Email"></cube-input>
 </cube-form>
+{{myName}}
+<cube-wizard-state key="myName" value="{{myName}}"></cube-wizard-state>
+<cube-wizard-state id$="regCN" key="canNext" value="{{myName}}" default=""></cube-wizard-state>

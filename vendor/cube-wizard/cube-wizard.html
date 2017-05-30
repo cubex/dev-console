@@ -3,6 +3,8 @@
 <link rel="import" href="../cube-list/cube-li.html">
 <link rel="import" href="../cube-resource/cube-resource.html">
 <link rel="import" href="../cube-pagelet/cube-pagelet-content.html">
+<link rel="import" href="cube-wizard-state.html">
+
 
 <!--
 `cube-wizard`
@@ -50,8 +52,8 @@
         background: lightgreen;
       }
 
-      :host(:not([horizontal])) .step-wrapper[current-step]:hover cube-icon,
-      :host(:not([horizontal])) .step-wrapper:hover cube-icon {
+      :host(:not([horizontal])) .step-wrapper[current-step] cube-li:hover cube-icon,
+      :host(:not([horizontal])) .step-wrapper cube-li:hover cube-icon {
         color: lightgreen;
       }
 
@@ -111,36 +113,51 @@
         display: inline-block;
       }
 
+      .substep-wrapper {
+        margin-left: 20px;
+      }
+
     </style>
 
-    <cube-resource auto auth url="[[stepsUrl]]" data="{{_steps}}"></cube-resource>
-    <cube-resource auto auth url="[[_step.contentUrl]]" data="{{_stepContent}}"></cube-resource>
+    <cube-resource auto auth url="[[stepsUrl]]" data="{{_nestedSteps}}"></cube-resource>
+    <cube-resource auto auth url="[[_step.contentUrl]]" data="{{_content}}"></cube-resource>
 
     <div id="contentWrapper">
       <cube-list-menu id="wrapper">
-        <template is="dom-repeat" items="[[_steps]]">
-          <div class="step-wrapper" current-step$="[[_isCurrent(index,_currentStep)]]">
+        <template is="dom-repeat" items="[[_nestedSteps]]" as="step">
+          <div class="step-wrapper" current-step$="[[_isCurrent(step,_step)]]">
             <cube-li>
               <div class="step-line"></div>
-              <div class="step-item" on-tap="_tapStep" step$="[[index]]" title="[[item.name]]">
-                <cube-icon icon="[[item.icon]]"></cube-icon>
-                <span class="step-name">[[item.name]]</span>
+              <div class="step-item" on-tap="_tapStep" step$="[[index]]" title="[[step.name]]">
+                <cube-icon icon="[[step.icon]]"></cube-icon>
+                <span class="step-name">[[step.name]]</span>
               </div>
             </cube-li>
+            <template is="dom-if" if="[[_isCurrent(step,_step)]]">
+              <template is="dom-repeat" items="[[step.steps]]" as="subStep" index-as="subIndex">
+                <div class="substep-wrapper" current-step$="[[_isCurrent(subStep,_step)]]">
+                  <cube-li>
+                    <div class="step-item" on-tap="_tapStep" step$="[[index]]" title="[[subStep.name]]">
+                      <span class="step-name">[[subStep.name]]</span>
+                    </div>
+                  </cube-li>
+                </div>
+              </template>
+            </template>
           </div>
         </template>
       </cube-list-menu>
 
       <div id="content">
-        <cube-pagelet-content id="stepPagelet" html="[[_stepContent]]"></cube-pagelet-content>
+        <cube-pagelet-content id="stepPagelet" html="[[_content]]"></cube-pagelet-content>
         <!--<template is="dom-if" if="[[_stepForm]]">
           <button type="reset" on-tap="_tapReset">Reset</button>
         </template>-->
+        <cube-wizard-state key="canNext" value="{{_canNext}}"></cube-wizard-state>
+        <button disabled="[[!_canNext]]" on-tap="_tapNext">Next ></button>
+
         <template is="dom-if" if="[[_showSkip]]">
           <button type="reset" on-tap="_tapSkip">Skip ></button>
-        </template>
-        <template is="dom-if" if="[[_showNext]]">
-          <button on-tap="_tapNext">Next ></button>
         </template>
       </div>
     </div>
@@ -152,41 +169,68 @@
         is: 'cube-wizard',
 
         properties: {
-          stepsUrl:      {type: String},
-          _steps:        {type: Array, value: function () {return [];}},
-          _currentStep:  {type: Number, value: 0},
-          _step:         {type: Object, computed: '_computeStep(_steps,_currentStep)'},
-          _stepContent:  {type: String},
-          _stepForm:     {type: Object},
-          _showSkip:     {type: Boolean, computed: '_computeShowSkip(_step,_childWizard,_stepForm)'},
-          _showNext:     {
-            type:     Boolean,
-            computed: '_computeShowNext(_step,_childWizard,_steps,_currentStep,_parentWizard)'
-          },
-          _parentWizard: {type: Object},
-          _childWizard:  {type: Object},
-          horizontal:    {type: Boolean, value: false, reflectToAttribute: true}
+          stepsUrl:     {type: String},
+          _nestedSteps: {type: Array, value: function () {return [];}},
+          _steps:       {type: Array, computed: '_computeSteps(_nestedSteps)'},
+
+          _step: {type: Object, computed: '_computeStep(_steps,_currentStep)'},
+
+          _currentStep: {type: Number, value: 0},
+          _content:     {type: String},
+
+          _stepForm:  {type: Object},
+          _stepState: {type: Object},
+          _showSkip:  {type: Boolean, value: false},
+          _showNext:  {type: Boolean, value: true},
+          horizontal: {type: Boolean, value: false, reflectToAttribute: true}
         },
+
+        _refreshSubSteps: function (content)
+                          {
+                            if(content && typeof content === 'object')
+                            {
+                              return content;
+                            }
+                            return [];
+                          },
+
+        _computeSteps: function (nestedSteps)
+                       {
+                         var steps = [], stepIdx = 0;
+                         for(var i in nestedSteps)
+                         {
+                           if(nestedSteps.hasOwnProperty(i))
+                           {
+                             var step = nestedSteps[i];
+                             step._idx = stepIdx++;
+                             step._parentStep = null;
+                             steps.push(step);
+                             if(step.steps)
+                             {
+                               for(var j in step.steps)
+                               {
+                                 if(step.steps.hasOwnProperty(j))
+                                 {
+                                   var subStep = step.steps[j];
+                                   subStep._idx = stepIdx++;
+                                   subStep._parentStep = step;
+                                   steps.push(subStep);
+                                 }
+                               }
+                             }
+                           }
+                         }
+                         return steps;
+                       },
 
         attached: function ()
                   {
                     var self = this;
 
-                    var node = this;
-                    while(node = (node.parentNode && (node.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) ? node.parentNode.host : node.parentNode))
-                    {
-                      if(node.tagName === 'CUBE-WIZARD')
-                      {
-                        this._parentWizard = node;
-                        break;
-                      }
-                    }
-
                     this.$.stepPagelet.addEventListener('cube-pagelet-content-ready', function (e)
                     {
                       e.stopPropagation();
                       self._stepForm = this.querySelector('cube-form');
-                      self._childWizard = this.querySelector('cube-wizard');
                     });
                     this.addEventListener('cube-form-response', function (e)
                     {
@@ -199,14 +243,15 @@
                     });
                   },
 
-        _computeShowSkip: function (step, childWizard, form)
+        _computeShowSkip: function (step, form)
                           {
-                            return step && (!childWizard) && (step.optional && form);
+                            return !!(step && (step.optional && form));
                           },
 
-        _computeShowNext: function (step, childWizard, steps, currentStep, parentWizard)
+        _computeShowNext: function (canNext, step, steps, currentStep)
                           {
-                            return step && (!childWizard) && (steps[currentStep + 1] || parentWizard);
+                            return canNext;
+                            return !!(step && (steps[currentStep + 1]));
                           },
 
         _computeStep: function (steps, currentStep)
@@ -216,7 +261,7 @@
 
         _isCurrent: function (step, currentStep)
                     {
-                      return step.toString() === currentStep.toString();
+                      return (currentStep === step) || (currentStep._parentStep === step);
                     },
 
         _tapReset: function ()
@@ -230,13 +275,6 @@
                   },
         _tapNext: function ()
                   {
-                    // if has child, pass events over
-                    if(this._childWizard)
-                    {
-                      this._childWizard._tapNext();
-                      return;
-                    }
-
                     if(this._stepForm)
                     {
                       this._stepForm.submit();
@@ -265,10 +303,6 @@
                      {
                        this._moveToStep(this._currentStep + 1);
                      }
-                     else if(this._parentWizard)
-                     {
-                       this._parentWizard._nextStep();
-                     }
                      else
                      {
                        this.fire('cube-wizard-finished');
@@ -277,6 +311,7 @@
 
         _moveToStep: function (step)
                      {
+                       step = parseInt(step);
                        // check that we can access that step
                        // go through each previous steps, ensure that `completed` or `optional` are true
                        for(var i = 0; i < step; i++)
@@ -288,7 +323,7 @@
                            return;
                          }
                        }
-                       this._currentStep = parseInt(step);
+                       this._currentStep = step;
                      }
 
       });
