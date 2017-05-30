@@ -1,0 +1,22 @@
+{
+  "name": "cube-meta",
+  "main": "cube-meta.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.0.0"
+  },
+  "devDependencies": {
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
+  },
+  "homepage": "https://github.com/CubexElements/cube-meta",
+  "_release": "472fd9ebbb",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "472fd9ebbb58146ef549bdc6b3be19b3df9cd4c5"
+  },
+  "_source": "https://github.com/CubexElements/cube-meta.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-meta"
+}

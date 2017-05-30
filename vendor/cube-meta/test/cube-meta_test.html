@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>cube-meta test</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../cube-meta.html">
+</head>
+<body>
+
+<test-fixture id="MetaFixture">
+  <template>
+    <cube-meta key="meta_key" value="test"></cube-meta>
+  </template>
+</test-fixture>
+
+<script>
+  suite('cube-meta', function ()
+  {
+    test('check both meta are equal', function ()
+    {
+      var meta1 = fixture('MetaFixture');
+      var meta2 = fixture('MetaFixture');
+
+      assert.equal(meta1.key, 'meta_key');
+      assert.equal(meta2.value, 'test');
+
+      assert.equal(meta1.key, 'meta_key');
+      assert.equal(meta2.value, 'test');
+    });
+  });
+</script>
+
+</body>
+</html>

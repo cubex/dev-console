@@ -1,0 +1,26 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../cube-meta/cube-meta.html">
+
+
+<!--
+`cube-wizard`
+
+@demo demo/index.html
+-->
+
+<dom-module id="cube-wizard-state" attributes="key value default">
+  <template>
+    <cube-meta key="[[key]]" value="{{value}}" default="[[default]]"></cube-meta>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:         'cube-wizard-state',
+        properties: {
+          key:     {type: String, notify: true},
+          value:   {type: String, notify: true},
+          default: {type: String, notify: true}
+        }
+      });
+  </script>
+</dom-module>

@@ -1,0 +1,92 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="cube-meta" attributes="key value default">
+  <script>
+    Polymer(
+      {
+        is:         'cube-meta',
+        properties: {
+          key:     {type: String, notify: true, observer: '_keyChange'},
+          value:   {type: String, notify: true},
+          default: {type: String},
+
+          _meta:          {type: Object, value: {}},
+          _registrations: {type: Object, value: {}}
+        },
+        observers:  [
+          '_changed(key, value)',
+          '_metaChange(_meta,_meta.*)'
+        ],
+
+        attached: function ()
+                  {
+                    if(this.key && this.value === undefined)
+                    {
+                      this.value = this.default;
+                    }
+                  },
+
+        detached: function ()
+                  {
+                    if(this.key)
+                    {
+                      this._unregister(this.key);
+                    }
+                  },
+
+        _register: function (key)
+                   {
+                     this._registrations[key] = this._registrations[key] || [];
+                     this._registrations[key].push(this);
+                   },
+
+        _isRegistered: function ()
+                       {
+                         return this.key && this._registrations[this.key].indexOf(this) > -1;
+                       },
+
+        _unregister: function (key)
+                     {
+                       if(this.key && this._registrations[key])
+                       {
+                         delete this._registrations[key][this._registrations[key].indexOf(this)];
+                       }
+                     },
+
+        _keyChange: function (newKey, oldKey)
+                    {
+                      this._unregister(oldKey);
+                      this._register(newKey);
+                    },
+
+        _changed: function (key, value)
+                  {
+                    if(this._isRegistered() && key !== undefined && value !== undefined)
+                    {
+                      if(this._meta[key] !== value)
+                      {
+                        this.set(['_meta', key], value);
+                      }
+                    }
+                  },
+
+        _metaChange: function (values)
+                     {
+                       if(this.key !== undefined)
+                       {
+                         var
+                           key = this.key,
+                           value = values[this.key];
+
+                         for(var i in this._registrations[key])
+                         {
+                           if(this._registrations[key].hasOwnProperty(i) && this._registrations[key][i] !== this)
+                           {
+                             this._registrations[key][i].value = value;
+                           }
+                         }
+                       }
+                     }
+      });
+  </script>
+</dom-module>
