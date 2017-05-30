@@ -31,14 +31,7 @@
 
         _refreshHeaders: function (headers)
                          {
-                           if(this.auth)
-                           {
-                             var project = window.location.host.match(/^(.+?)\./)[1];
-                             if(project && project !== 'console')
-                             {
-                               headers['x-cube-project'] = project;
-                             }
-                           }
+                           headers['X-Requested-By'] = "cube-resource";
                            return headers;
                          },
 

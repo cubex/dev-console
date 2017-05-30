@@ -11,11 +11,11 @@
     "web-component-tester": "^6.0.0"
   },
   "homepage": "https://github.com/CubexElements/cube-pagelet",
-  "_release": "94569eeb1d",
+  "_release": "d1913376e9",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "94569eeb1d49662cce15570fd8dd723ee39c5507"
+    "commit": "d1913376e9e41be1c57bffedb305024ab0cd7658"
   },
   "_source": "https://github.com/CubexElements/cube-pagelet.git",
   "_target": "*",

@@ -73,6 +73,7 @@
                    }
                  );
                  xhr.open('GET', self._url, true);
+                 xhr.setRequestHeader("X-Requested-By", "cube-preferences");
                  xhr.withCredentials = true;
                  xhr.send();
                },
@@ -98,6 +99,7 @@
                                }
                              );
                              xhr.open(this.value === undefined ? 'DELETE' : 'PUT', this._url, true);
+                             xhr.setRequestHeader("X-Requested-By", "cube-preferences");
                              xhr.withCredentials = true;
                              xhr.send(this.value === undefined ? null : JSON.stringify(this.value));
                            }
