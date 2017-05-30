@@ -61,14 +61,8 @@ Example:
 
         _refreshHeaders: function ()
                          {
-                           var
-                             headers = {},
-                             project = window.location.host.match(/^(.+?)\./)[1];
-
-                           if(project && project !== 'console')
-                           {
-                             headers['x-cube-project'] = project;
-                           }
+                           var headers = {};
+                           headers['x-requested-by'] = "cube-form";
                            return headers;
                          },
 

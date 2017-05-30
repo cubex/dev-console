@@ -263,7 +263,7 @@
                        'PUT',
                        '//' + this.getServiceHost('apps') + '/kubex/notify/read/all'
                      );
-                     xhr.setRequestHeader('x-cube-project', this.projectId);
+                     xhr.setRequestHeader('x-requested-by', 'cubex-notifications');
                      xhr.withCredentials = true;
                      xhr.send();
                    },

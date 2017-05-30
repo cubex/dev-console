@@ -28,11 +28,11 @@
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
     "web-component-tester": "^6.0.0"
   },
-  "_release": "1a5c810ed9",
+  "_release": "94d6af29c3",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "1a5c810ed95240526dab3a50a3c8da3d33a24594"
+    "commit": "94d6af29c303de98413d5ea78f4c77ed02342fb8"
   },
   "_source": "https://github.com/CubexElements/cube-form.git",
   "_target": "*",
