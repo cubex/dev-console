@@ -74,10 +74,7 @@ Example:
                         };
                         xmlHttp.withCredentials = true;
                         xmlHttp.open("POST", subscribeUrl, true);
-                        if(this.project)
-                        {
-                          xmlHttp.setRequestHeader('x-cube-project', this.project);
-                        }
+                        xmlHttp.setRequestHeader('X-Requested-By', 'cube-websocket');
                         //noinspection JSCheckFunctionSignatures
                         xmlHttp.send(this.subscribePayload);
                       },
