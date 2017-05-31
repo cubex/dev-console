@@ -55,7 +55,7 @@ Example:
                         {
                           if(this._socket.subscribes[this._subscribeUrl] !== true)
                           {
-                            this._handleSubscribe(null, this._socket.subscribes[this._subscribeUrl]);
+                            this._handleSubscribe(this._socket.subscribes[this._subscribeUrl]);
                           }
                         }
                         else
@@ -91,9 +91,8 @@ Example:
                         }
                       },
 
-        _handleSubscribe: function (e)
+        _handleSubscribe: function (response)
                           {
-                            var response = e.detail;
                             if(response.hash === this._socketHash + this._subscribeUrl)
                             {
                               if(response.status === 200)
@@ -186,7 +185,11 @@ Example:
 
         ready: function ()
                {
-                 this.__eventBus.addEventListener('cube-websocket-subscribed', this._handleSubscribe.bind(this));
+                 this.__eventBus.addEventListener(
+                   'cube-websocket-subscribed',
+                   function (e) {this._handleSubscribe(e.detail)}.bind(this)
+                 );
+
                  this.async(
                    function ()
                    {

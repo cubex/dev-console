@@ -169,7 +169,7 @@
         <cubex-shell-drawer-panel id="projectsPanel">
           <cube-list-menu show-filter filter-label="{{i18n('filter_projects')}}">
             <cube-list-group title="{{i18n('all_projects')}}">
-              <template is="dom-repeat" items="[[projects]]">
+              <template is="dom-repeat" items="[[_projects]]">
                 <a href="//[[getServiceHost(item.id)]]">
                   <cube-li>
                     <cube-icon slot="icon" icon="communication:business"></cube-icon>
@@ -195,8 +195,8 @@
   <script>
     Polymer(
       {
-        is:              'cubex-shell-drawer',
-        properties:      {
+        is:            'cubex-shell-drawer',
+        properties:    {
           resources:            {
             type:  Object,
             value: {
@@ -222,7 +222,6 @@
           },
           _projectRegistryData: {type: Object},
           project:              {type: Object},
-          projects:             {type: Array},
           avatar:               {
             type:  String,
             value: function ()
@@ -234,36 +233,31 @@
             type: String
           }
         },
-        keyBindings:     {
+        keyBindings:   {
           ',': 'toggleDrawer'
         },
-        attached:        function ()
-                         {
-                           this.keyEventTarget = document.body;
-                         },
-        observers:       ['_updateProjects(_projects)'],
-        _updateProjects: function (projects)
-                         {
-                           this.projects = Object.keys(projects).map(function (key) { return projects[key]; });
-                         },
-
+        attached:      function ()
+                       {
+                         this.keyEventTarget = document.body;
+                       },
         _toggleParent: function ()
                        {
                          this.fire('closeParent', {});
                        },
-        toggleDrawer:  function ()
-                       {
-                         this.$.drawerPanels.selectNext();
-                         this.selectedItem = this.$.drawerPanels.selected;
-                         if(this.selectedItem == 1)
-                         {
-                           this._icon = "icons:arrow-drop-up";
-                         }
-                         else if(this.selectedItem == 0)
-                         {
-                           this._icon = "icons:arrow-drop-down";
-                         }
-                       },
+
+        toggleDrawer: function ()
+                      {
+                        this.$.drawerPanels.selectNext();
+                        this.selectedItem = this.$.drawerPanels.selected;
+                        if(this.selectedItem === 1)
+                        {
+                          this._icon = "icons:arrow-drop-up";
+                        }
+                        else if(this.selectedItem === 0)
+                        {
+                          this._icon = "icons:arrow-drop-down";
+                        }
+                      },
 
         __appGroups: function (projectRegistry)
                      {
