@@ -279,7 +279,6 @@
         attached:             function ()
                               {
                                 this.keyEventTarget = document.body;
-                                document.querySelector('body').removeAttribute('shellunloaded');
                                 window.addEventListener('WebComponentsReady', this._resetLayout.bind(this));
                                 document.addEventListener(
                                   'cubex-drawer-state-changed', this._debounceResetLayout.bind(this)
@@ -324,7 +323,6 @@
 
                                 this.updateStyles();
                               },
-        _setupClose:          false,
         _blurSearch:          function ()
                               {
                                 this.focusSearch = false;
@@ -352,21 +350,8 @@
                                   }
                                 }
                               },
-        _prepareDrawer:       function ()
-                              {
-                                if(!this._setupClose)
-                                {
-                                  this.$$('cubex-shell-drawer')
-                                      .addEventListener(
-                                        'closeParent',
-                                        function () {this.$.drawer.close();}.bind(this)
-                                      );
-                                  this._setupClose = true;
-                                }
-                              },
         _toggleDrawer:        function (e)
                               {
-                                this._prepareDrawer();
                                 if(this._isValidKeyPress(e))
                                 {
                                   this.$.drawer.toggle();

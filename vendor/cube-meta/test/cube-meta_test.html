@@ -13,26 +13,133 @@
 </head>
 <body>
 
-<test-fixture id="MetaFixture">
+<test-fixture id="MetaBasicFixture">
   <template>
     <cube-meta key="meta_key" value="test"></cube-meta>
+    <cube-meta key="meta_key" value="test2"></cube-meta>
   </template>
 </test-fixture>
+
+<test-fixture id="MetaEmptyFixture">
+  <template>
+    <cube-meta key="meta_key" value="test"></cube-meta>
+    <cube-meta key="meta_key" value=""></cube-meta>
+  </template>
+</test-fixture>
+
+<test-fixture id="MetaUnsetFixture">
+  <template>
+    <cube-meta key="meta_key" value="test"></cube-meta>
+    <cube-meta key="meta_key"></cube-meta>
+  </template>
+</test-fixture>
+<!--
+<test-fixture id="MetaPropertyFixture">
+  <template>
+    <cube-meta key="meta_key" value="test"></cube-meta>
+    <cube-meta key="meta_key" value="{{myprop}}"></cube-meta>
+  </template>
+</test-fixture>-->
 
 <script>
   suite('cube-meta', function ()
   {
     test('check both meta are equal', function ()
     {
-      var meta1 = fixture('MetaFixture');
-      var meta2 = fixture('MetaFixture');
+      var
+        fix = fixture('MetaBasicFixture'),
+        meta1 = fix[0],
+        meta2 = fix[1];
 
       assert.equal(meta1.key, 'meta_key');
-      assert.equal(meta2.value, 'test');
+      assert.equal(meta1.value, 'test2');
+
+      assert.equal(meta2.key, 'meta_key');
+      assert.equal(meta2.value, 'test2');
+
+      meta1.value = 'test3';
+
+      assert.equal(meta1.value, 'test3');
+      assert.equal(meta2.value, 'test3');
+    });
+
+    test('check empty overrides', function ()
+    {
+      var
+        fix = fixture('MetaEmptyFixture'),
+        meta1 = fix[0],
+        meta2 = fix[1];
 
       assert.equal(meta1.key, 'meta_key');
+      assert.equal(meta1.value, '');
+
+      assert.equal(meta2.key, 'meta_key');
+      assert.equal(meta2.value, '');
+
+      meta1.value = 'test';
+
+      assert.equal(meta1.value, 'test');
       assert.equal(meta2.value, 'test');
     });
+
+    test('check unset does not override', function ()
+    {
+      var
+        fix = fixture('MetaUnsetFixture'),
+        meta1 = fix[0],
+        meta2 = fix[1];
+
+      assert.equal(meta1.key, 'meta_key');
+      assert.equal(meta1.value, 'test');
+
+      assert.equal(meta2.key, 'meta_key');
+      assert.equal(meta2.value, 'test');
+
+      meta1.value = 'test3';
+
+      assert.equal(meta1.value, 'test3');
+      assert.equal(meta2.value, 'test3');
+    });
+
+    /**
+     test('check undefined does not override', function ()
+     {
+       var
+         fix = fixture('MetaPropertyFixture'),
+         meta1 = fix[0],
+         meta2 = fix[1];
+
+       assert.equal(meta1.key, 'meta_key');
+       assert.equal(meta1.value, 'test');
+
+       assert.equal(meta2.key, 'meta_key');
+       assert.equal(meta2.value, 'test');
+
+       meta1.value = 'test3';
+
+       assert.equal(meta1.value, 'test3');
+       assert.equal(meta2.value, 'test3');
+     });
+
+     test('check property does override', function ()
+     {
+       var
+         fix = fixture('MetaPropertyFixture', {myprop: ''}),
+         meta1 = fix[0],
+         meta2 = fix[1];
+
+       assert.equal(meta1.key, 'meta_key');
+       assert.equal(meta1.value, '');
+
+       assert.equal(meta2.key, 'meta_key');
+       assert.equal(meta2.value, '');
+
+       meta1.value = 'test3';
+
+       assert.equal(meta1.value, 'test3');
+       assert.equal(meta2.value, 'test3');
+     });
+     */
   });
 </script>
 

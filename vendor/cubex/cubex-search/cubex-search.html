@@ -141,7 +141,7 @@
     <iron-dropdown vertical-align="top" id="results" vertical-offset="45">
       <cube-list-menu slot="dropdown-content" id="searchmenu" zebra>
         <template is="dom-repeat" items="{{_filterActions(searchQuery,_search.Actions,_apps.AppSummary)}}">
-          <a href="/[[item.GlobalAppID]]/[[item.Path]]">
+          <a class="result-link" href="/[[item.GlobalAppID]]/[[item.Path]]">
             <cube-li>
               <template restamp is="dom-if" if="[[item.Icon]]">
                 <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
@@ -200,17 +200,34 @@
                        this.$.searchmenu.dispatchEvent(e);
                      },
 
-        attached:      function ()
-                       {
-                         this.listen(this, 'blur', '_onBlur');
-                         this.listen(this, 'focus', '_onFocus');
-                         this.listen(this.$.searchmenu, 'keydown', '_recoverFocus');
-                         this.$.results.sizingTarget = this.$.results;
-                       },
-        _onFocus:      function ()
-                       {
-                         this.focused = true;
-                       },
+        attached: function ()
+                  {
+                    document.addEventListener('click', this._checkBlur.bind(this));
+                    this.addEventListener('blur', this._onBlur.bind(this));
+                    this.addEventListener('focus', this._onFocus.bind(this));
+                    this.$.searchmenu.addEventListener('keydown', this._recoverFocus.bind(this));
+                    this.$.results.sizingTarget = this.$.results;
+                  },
+        _onFocus: function ()
+                  {
+                    this.focused = true;
+                  },
+
+        _checkBlur: function (e)
+                    {
+                      for(var i in e.path)
+                      {
+                        if(e.path.hasOwnProperty(i))
+                        {
+                          var item = e.path[i];
+                          if(item.classList && item.classList.contains('result-link'))
+                          {
+                            this.blur();
+                          }
+                        }
+                      }
+                    },
+
         _onBlur:       function ()
                        {
                          this.$.search.value = '';
@@ -261,7 +278,6 @@
                                 weight = 0;
                                 var app = appSummary[appGaid];
                                 tests = [app.name, app.description];
-                                console.log(app);
 
                                 weight = this.__getWeight(matchWords, tests);
                                 if(weight > 0)

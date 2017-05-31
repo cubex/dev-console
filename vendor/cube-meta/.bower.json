@@ -10,11 +10,11 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "homepage": "https://github.com/CubexElements/cube-meta",
-  "_release": "472fd9ebbb",
+  "_release": "1ff098b6a1",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "472fd9ebbb58146ef549bdc6b3be19b3df9cd4c5"
+    "commit": "1ff098b6a1448a49b620300f24eab19788603147"
   },
   "_source": "https://github.com/CubexElements/cube-meta.git",
   "_target": "*",

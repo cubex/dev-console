@@ -157,7 +157,7 @@
               </template>
             </cube-list-menu>
             <cube-list-menu>
-              <a id="storeLink" href="/kubex/store">
+              <a id="storeLink" href="/kubex/store" on-tap="_toggleParent">
                 <cube-li>
                   <cube-icon slot="icon" icon="icons:apps"></cube-icon>
                   App Store
@@ -170,7 +170,7 @@
           <cube-list-menu show-filter filter-label="{{i18n('filter_projects')}}">
             <cube-list-group title="{{i18n('all_projects')}}">
               <template is="dom-repeat" items="[[_projects]]">
-                <a href="//[[getServiceHost(item.id)]]">
+                <a href="//[[getServiceHost(item.id)]]" on-tap="_toggleParent">
                   <cube-li>
                     <cube-icon slot="icon" icon="communication:business"></cube-icon>
                     [[item.name]]
@@ -180,7 +180,7 @@
             </cube-list-group>
           </cube-list-menu>
           <cube-list-menu>
-            <a href="//[[getServiceHost('console')]]">
+            <a href="//[[getServiceHost('console')]]" on-tap="_toggleParent">
               <cube-li>
                 <cube-icon slot="icon" icon="icons:settings"></cube-icon>
                 Manage Projects
@@ -242,7 +242,7 @@
                        },
         _toggleParent: function ()
                        {
-                         this.fire('closeParent', {});
+                         this.parentNode.close();
                        },
 
         toggleDrawer: function ()
