@@ -46,11 +46,13 @@
 
       :host h1,
       :host h2 {
-        left: 72px;
+        left: 56px;
       }
 
       :host([trusted-vendor]) h1 {
         @apply --paper-font-title;
+        font-weight: normal;
+        font-size: 18px;
         line-height: 64px;
       }
 

@@ -19,7 +19,7 @@ Example:
 @demo demo/cube-li.html
 -->
 
-<dom-module id="cube-li" attributes="multi-line">
+<dom-module id="cube-li" attributes="multi-line compact-icon">
   <template strip-whitespace>
     <style>
       :host {
@@ -153,6 +153,10 @@ Example:
         margin-right: 56px;
       }
 
+      :host([compact-icon]) #iconSlot::slotted(*) {
+        margin-right: 16px;
+      }
+
       #container {
         display: flex;
         align-items: center;
@@ -192,10 +196,11 @@ Example:
       {
         is:         'cube-li',
         properties: {
-          odd:       {type: Boolean, reflectToAttribute: true, value: false},
-          firstItem: {type: Boolean, reflectToAttribute: true, value: false},
-          lastItem:  {type: Boolean, reflectToAttribute: true, value: false},
-          multiLine: {type: Boolean, value: false}
+          odd:         {type: Boolean, reflectToAttribute: true, value: false},
+          firstItem:   {type: Boolean, reflectToAttribute: true, value: false},
+          lastItem:    {type: Boolean, reflectToAttribute: true, value: false},
+          compactIcon: {type: Boolean, reflectToAttribute: true, value: false},
+          multiLine:   {type: Boolean, value: false}
         },
 
         /**

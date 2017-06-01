@@ -81,7 +81,6 @@
         position: absolute;
         bottom: 0;
         left: 0;
-        right: 0;
       }
 
       #lockUserDrawer {
@@ -90,9 +89,9 @@
       }
 
       #actionsContainer {
+        right: 0;
         height: 48px;
         color: var(--text-color-secondary);
-        cursor: pointer;
         border-top: 1px solid var(--cube-list-border-color, rgba(0, 0, 0, 0.06));
       }
 
@@ -113,7 +112,7 @@
     <cube-preferences name="selectedUserApp" value="{{_selectedApp}}"></cube-preferences>
     <cubex-user-drawer-items>
       <template is="dom-repeat" items="[[__appGroups(_userRegistryData)]]" as="app">
-        <cube-action active$="[[_isSelectedApp(app.vendor_id,app.id,_selectedApp)]]" icon="[[app.icon]]"
+        <cube-action active$="[[_isSelectedApp(app,_selectedApp)]]" icon="[[app.icon]]"
                      on-tap="_openUserDrawerApp" gaid$="[[app.vendor_id]]/[[app.id]]"></cube-action>
       </template>
       <a href="/kubex/store/user-apps">
@@ -140,9 +139,9 @@
         _userRegistryData: {type: Object},
         _selectedApp:      {type: String, observer: '_appChange'}
       },
-      _isSelectedApp:     function ()
+      _isSelectedApp:     function (app, selectedApp)
                           {
-                            return Array.prototype.slice.call(arguments, -1).join('/') === this._selectedApp;
+                            return app.vendor_id + '/' + app.id === selectedApp;
                           },
       _getPageletUrl:     function (page)
                           {

@@ -160,7 +160,7 @@
           <template is="dom-repeat" items="[[appData.Navigation]]">
             <cubex-link href="/[[appData.VendorID]]/[[appData.AppID]]/[[_trimPath(item.Path)]]"
                         on-tap="_collapseDrawer">
-              <cube-li>
+              <cube-li compact-icon>
                 <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
                 <bind-factory bind="[[_concat('nav_', item.ID, '_name')]]" as="{{i18nKey}}"></bind-factory>
                 [[i18n(i18nKey)]]
@@ -175,7 +175,7 @@
 
       <template is="dom-if" if="[[_configPath]]">
         <a href="/[[appData.VendorID]]/[[appData.AppID]]/[[_trimPath(_configPath)]]" on-tap="_collapseDrawer">
-          <cube-li id="configure" primary="[[i18n('configure')]]">
+          <cube-li id="configure" primary="[[i18n('configure')]]" compact-icon>
             <cube-icon slot="icon" icon="icons:settings"></cube-icon>
             [[i18n('configure')]]
             <paper-ripple></paper-ripple>
@@ -183,7 +183,7 @@
         </a>
       </template>
 
-      <cube-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]">
+      <cube-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]" compact-icon>
         <cube-icon icon="icons:chrome-reader-mode" slot="icon"></cube-icon>
         <template restamp is="dom-if" if="[[_drawerOpen]]">
           [[i18n('collapse')]]

@@ -334,7 +334,7 @@ Example:
               <template is="dom-if" if="[[pageActions.length]]">
                 <div id="app-page-actions" class="sidebar-group">
                   <template is="dom-repeat" items="[[pageActions]]">
-                    <cubex-link href="//[[getServiceHost('apps')]][[item.Path]]"
+                    <cubex-link href="[[item.Path]]"
                                 mode="[[item.Mode]]" title="[[item.Description]]">
                       <cube-action icon="[[item.Icon]]">[[item.Title]]</cube-action>
                     </cubex-link>
@@ -345,7 +345,7 @@ Example:
               <template is="dom-if" if="[[pageMenu.length]]">
                 <cube-list id="app-page-menu" class="sidebar-group" border double-border bottom-border>
                   <template is="dom-repeat" items="[[pageMenu]]">
-                    <cubex-link href="[[item.Path]]" mode="[[item.Mode]]" title="[[item.Description]]">
+                    <cubex-link href="[[item.Href]]" mode="[[item.Mode]]" title="[[item.Description]]">
                       <cube-li>[[item.Title]]</cube-li>
                     </cubex-link>
                   </template>
@@ -356,7 +356,7 @@ Example:
                 <cube-list id="app-page-panels" class="sidebar-group" border double-border bottom-border>
                   <template is="dom-repeat" items="[[panels]]">
                     <cube-li>
-                      <cube-pagelet auto auth url="//[[getServiceHost('apps')]][[item.Path]]"></cube-pagelet>
+                      <cube-pagelet auto auth url="[[item.Path]]"></cube-pagelet>
                     </cube-li>
                   </template>
                 </cube-list>

@@ -273,7 +273,7 @@
                                    {
                                      Title:   action.Title,
                                      Path:    action.Mode === 'dialog'
-                                                ? '//' + this.getServiceHost('apps') + '/' + action.GlobalAppID + '/' + action.Path
+                                                ? '/' + action.GlobalAppID + '/' + action.Path
                                                 : '/' + action.Hook + '/_/' + action.ID,
                                      Icon:    action.Icon,
                                      Mode:    action.Mode,
@@ -363,7 +363,7 @@
                                       {
                                         Title:       items[j].Title,
                                         Description: items[j].Description,
-                                        Href:        '//' + this.getServiceHost('apps') + '/' + items[j].Path,
+                                        Href:        '/' + items[j].GlobalAppID + '/' + items[j].Path,
                                         Mode:        items[j].Mode
                                       }
                                     );
@@ -371,8 +371,30 @@
                                 }
                               }
 
-                              pageActions = this._integrations.PageActions;
-                              panels = this._integrations.Panels;
+                              if(this._integrations.PageActions)
+                              {
+                                var paItems = this._integrations.PageActions;
+                                for(var pa in paItems)
+                                {
+                                  if(paItems.hasOwnProperty(pa))
+                                  {
+                                    paItems[pa].Path = '/' + paItems[pa].GlobalAppID + '/' + paItems[pa].Path;
+                                    pageActions.push(paItems[pa]);
+                                  }
+                                }
+                              }
+                              if(this._integrations.Panels)
+                              {
+                                var panItems = this._integrations.Panels;
+                                for(var pan in panItems)
+                                {
+                                  if(panItems.hasOwnProperty(pan))
+                                  {
+                                    panItems[pan].Path = '/' + panItems[pan].GlobalAppID + '/' + panItems[pan].Path;
+                                    panels.push(panItems[pan]);
+                                  }
+                                }
+                              }
                             }
                           }
                           this._pageMenus = pageMenus;
@@ -411,19 +433,18 @@
                                   integrationPath += '/_/' + pathMatches.typeId;
                                 }
 
-                                var ip = '//' + this.getServiceHost('apps') + '/kubex/integrations/integrations.json?hook=' + integrationPath;
+                                var ip = '/kubex/integrations/integrations.json?hook=' + integrationPath;
                                 if(this._integrationsPath !== ip)
                                 {
                                   this._integrationsPath = ip;
                                 }
 
-                                var pdp = '//' + this.getServiceHost('apps') + fullPath;
-                                if(this._pageDefinitionPath !== pdp)
+                                if(this._pageDefinitionPath !== fullPath)
                                 {
                                   this._addPageSpinner = setTimeout(
                                     function () { self._pageSpinnerVisible = true; }, 50
                                   );
-                                  this._pageDefinitionPath = pdp;
+                                  this._pageDefinitionPath = fullPath;
                                 }
                               }
                             }
@@ -560,7 +581,7 @@
                                       )
                                       {
                                         integration = items[i];
-                                        contentPath = '//' + this.getServiceHost('apps') + '/' + items[i].GlobalAppID + '/' + items[i].Path;
+                                        contentPath = '/' + items[i].GlobalAppID + '/' + items[i].Path;
                                         break;
                                       }
                                     }
