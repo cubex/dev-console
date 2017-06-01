@@ -1,5 +1,4 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../cube-behavior/cube-element-path-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-touch-enabled-behavior.html">
 <link rel="import" href="cubex-drawer-content.html">
 
@@ -165,8 +164,8 @@ Example:
 
     <div id="sizzler"></div>
     <div id="drawerContentContainer">
-      <div id="dragHandle" hidden="[[!_touchEnabled()]]"></div>
-      <div id="drawerContent">
+      <div id="dragHandle" hidden="[[!_touchEnabled()]]" on-track="_track" on-down="_prevent"></div>
+      <div id="drawerContent" on-tap="_prevent">
         <slot name="drawer-content"></slot>
       </div>
     </div>
@@ -175,84 +174,73 @@ Example:
     </div>
   </template>
 
-  <script>Polymer(
-    {
-      is:            'cubex-drawer',
-      properties:    {
-        position:       {type: String, value: 'left', reflectToAttribute: true},
-        transitioning:  {type: Boolean, value: false, reflectToAttribute: true},
-        isOpen:         {type: Boolean, value: false, reflectToAttribute: true},
-        minState:       {type: Number, value: 0, readOnly: true, reflectToAttribute: true},
-        maxState:       {type: Number, value: 2, readOnly: true, reflectToAttribute: true},
-        state:          {type: Number, value: 0, readOnly: true, notify: true, reflectToAttribute: true},
-        preferredState: {type: Number, value: 0, notify: true}
-      },
-      observers:     [
-        'refreshState(minState,maxState,preferredState)',
-        '_stateChanged(state,isOpen)'
-      ],
-      listeners:     {
-        'down':  '_down',
-        'track': '_track'
-      },
-      attached:      function ()
-                     {
-                       if(!this._touchEnabled())
-                       {
-                         this.listen(this.$.drawerContentContainer, 'mouseenter', '_mouseEnter');
-                         this.listen(this.$.drawerContentContainer, 'mouseleave', '_mouseLeave');
-                       }
-                       this.listen(document, 'tap', '_autoClose');
-                     },
-      _mouseEnter:   function ()
+  <script>
+    Polymer(
+      {
+        is:         'cubex-drawer',
+        properties: {
+          position:       {type: String, value: 'left', reflectToAttribute: true},
+          transitioning:  {type: Boolean, value: false, reflectToAttribute: true},
+          isOpen:         {type: Boolean, value: false, reflectToAttribute: true},
+          minState:       {type: Number, value: 0, readOnly: true, reflectToAttribute: true},
+          maxState:       {type: Number, value: 2, readOnly: true, reflectToAttribute: true},
+          state:          {type: Number, value: 0, readOnly: true, notify: true, reflectToAttribute: true},
+          preferredState: {type: Number, value: 0, notify: true}
+        },
+        observers:  [
+          'refreshState(minState,maxState,preferredState)',
+          '_stateChanged(state,isOpen)'
+        ],
+
+        attached: function ()
+                  {
+                    if(!this._touchEnabled())
+                    {
+                      this.listen(this.$.drawerContentContainer, 'mouseenter', '_mouseEnter');
+                      this.listen(this.$.drawerContentContainer, 'mouseleave', '_mouseLeave');
+                    }
+                    document.addEventListener('tap', this._autoClose.bind(this));
+                  },
+
+        _mouseEnter: function ()
                      {
                        this.setAttribute('hovered', '');
                      },
-      _mouseLeave:   function ()
+        _mouseLeave: function ()
                      {
                        this.removeAttribute('hovered');
                      },
-      _autoClose:    function (event)
-                     {
-                       var path = event.path || this.getPath(event.target);
-                       if(path.indexOf(this.$.drawerContentContainer) == -1)
-                       {
-                         this.close();
-                       }
-                     },
-      _down:         function (event)
-                     {
-                       var path = event.path || this.getPath(event.target);
-                       if(path.indexOf(this.$.dragHandle) > -1)
-                       {
-                         event.preventDefault();
-                       }
-                     },
-      _track:        function (event)
+
+        _prevent:   function (e)
+                    {
+                      e.stopPropagation();
+                    },
+        _autoClose: function ()
+                    {
+                      this.close();
+                    },
+
+        _track:      function (event)
                      {
                        // Disable user selection on desktop.
-                       var path = event.path || this.getPath(event.target);
-                       if(path.indexOf(this.$.dragHandle) > -1)
+                       if(this.state !== 2 && this.minState !== 2)
                        {
-                         if(this.state != 2 && this.minState != 2)
+                         event.preventDefault();
+                         switch(event.detail.state)
                          {
-                           event.preventDefault();
-                           switch(event.detail.state)
-                           {
-                             case 'start':
-                               this._trackStart(event);
-                               break;
-                             case 'track':
-                               this._trackMove(event);
-                               break;
-                             case 'end':
-                               this._trackEnd(event);
-                               break;
-                           }
+                           case 'start':
+                             this._trackStart(event);
+                             break;
+                           case 'track':
+                             this._trackMove(event);
+                             break;
+                           case 'end':
+                             this._trackEnd(event);
+                             break;
                          }
                        }
                      },
-      _trackStart:   function (event)
+        _trackStart: function (event)
                      {
                        if(Math.abs(event.detail.dx) > Math.abs(event.detail.dy))
                        {
@@ -260,7 +248,7 @@ Example:
                          this.$.drawerContentContainer.style.transition = 'none';
                        }
                      },
-      _trackMove:    function (event)
+        _trackMove:  function (event)
                      {
                        if(this.transitioning)
                        {
@@ -277,7 +265,7 @@ Example:
                          this.updateStyles();
                        }
                      },
-      _trackEnd:     function (event)
+        _trackEnd:   function ()
                      {
                        if(this.transitioning)
                        {
@@ -286,7 +274,7 @@ Example:
                          var width = this._getWidth();
                          if(width >= this._getMaxWidth() / 2)
                          {
-                           if(this.state != this._DRAWER_STATE.LOCKED)
+                           if(this.state !== this._DRAWER_STATE.LOCKED)
                            {
                              this.open();
                            }
@@ -303,100 +291,103 @@ Example:
                          this.$.drawerContentContainer.style.width = '';
                        }
                      },
-      _getWidth:     function ()
-                     {
-                       return parseInt(getComputedStyle(this.$.drawerContentContainer)['width']);
-                     },
-      _getPeekWidth: function ()
-                     {
-                       return parseInt(getComputedStyle(this.$.sizzler)['width']);
-                     },
-      _getMaxWidth:  function ()
-                     {
-                       return parseInt(getComputedStyle(this.$.sizzler)['maxWidth']);
-                     },
-      open:          function ()
-                     {
-                       this.toggle(true);
-                     },
-      close:         function ()
-                     {
-                       this.toggle(false);
-                       this.removeAttribute('hovered');
-                     },
-      toggle:        function (state)
-                     {
-                       if(state == undefined)
-                       {
-                         state = !this.isOpen;
-                       }
-                       this.isOpen = state;
-                       this.updateStyles();
-                     },
-      setMinState:   function (value)
-                     {
-                       if(this.minState !== value)
-                       {
-                         this._setMinState(value);
-                       }
-                     },
-      setMaxState:   function (value)
-                     {
-                       if(this.maxState !== value)
-                       {
-                         this._setMaxState(value);
-                       }
-                     },
-      setState:      function (value)
-                     {
-                       if(this.preferredState !== value)
-                       {
-                         this.preferredState = value;
-                       }
-                     },
-      refreshState:  function ()
-                     {
-                       //noinspection JSCheckFunctionSignatures
-                       this._setState(Math.min(this.maxState, Math.max(this.minState, this.preferredState)));
-                     },
 
-      _stateChanged:  function ()
+        _getWidth:     function ()
+                       {
+                         return parseInt(getComputedStyle(this.$.drawerContentContainer)['width']);
+                       },
+        _getPeekWidth: function ()
+                       {
+                         return parseInt(getComputedStyle(this.$.sizzler)['width']);
+                       },
+        _getMaxWidth:  function ()
+                       {
+                         return parseInt(getComputedStyle(this.$.sizzler)['maxWidth']);
+                       },
+
+        open:   function ()
+                {
+                  this.toggle(true);
+                },
+        close:  function ()
+                {
+                  this.toggle(false);
+                  this.removeAttribute('hovered');
+                },
+        toggle: function (state)
+                {
+                  if(state === undefined)
+                  {
+                    state = !this.isOpen;
+                  }
+                  this.isOpen = state;
+                  this.updateStyles();
+                },
+
+        setMinState:  function (value)
                       {
-                        this.debounce('_dispatchEvent', this._dispatchEvent);
+                        if(this.minState !== value)
+                        {
+                          this._setMinState(value);
+                        }
                       },
-      _dispatchEvent: function ()
+        setMaxState:  function (value)
                       {
-                        var offset = 0;
-                        if(this.state == 1)
+                        if(this.maxState !== value)
                         {
-                          offset = this._getPeekWidth();
+                          this._setMaxState(value);
                         }
-                        else if(this.state == 2)
+                      },
+        setState:     function (value)
+                      {
+                        if(this.preferredState !== value)
                         {
-                          offset = this._getMaxWidth();
+                          this.preferredState = value;
                         }
-                        document.dispatchEvent(
-                          new CustomEvent(
-                            'cubex-drawer-state-changed', {
-                              detail: {
-                                drawer:   this,
-                                state:    this.state,
-                                isOpen:   this.isOpen,
-                                position: this.position,
-                                offset:   offset
+                      },
+        refreshState: function ()
+                      {
+                        //noinspection JSCheckFunctionSignatures
+                        this._setState(Math.min(this.maxState, Math.max(this.minState, this.preferredState)));
+                      },
+
+        _stateChanged:  function ()
+                        {
+                          this.debounce('_dispatchEvent', this._dispatchEvent);
+                        },
+        _dispatchEvent: function ()
+                        {
+                          var offset = 0;
+                          if(this.state === 1)
+                          {
+                            offset = this._getPeekWidth();
+                          }
+                          else if(this.state === 2)
+                          {
+                            offset = this._getMaxWidth();
+                          }
+                          document.dispatchEvent(
+                            new CustomEvent(
+                              'cubex-drawer-state-changed', {
+                                detail: {
+                                  drawer:   this,
+                                  state:    this.state,
+                                  isOpen:   this.isOpen,
+                                  position: this.position,
+                                  offset:   offset
+                                }
                               }
-                            }
-                          )
-                        );
-                      },
+                            )
+                          );
+                        },
 
-      _DRAWER_STATE: {
-        CLOSED: 0,
-        PEEK:   1,
-        LOCKED: 2
-      },
+        _DRAWER_STATE: {
+          CLOSED: 0,
+          PEEK:   1,
+          LOCKED: 2
+        },
 
-      behaviors: [Polymer.CubeElementPathBehavior, Polymer.CubeTouchEnabledBehavior]
-    }
-  )</script>
+        behaviors: [Polymer.CubeTouchEnabledBehavior]
+      })
+  </script>
 </dom-module>
