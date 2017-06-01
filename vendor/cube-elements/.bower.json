@@ -41,6 +41,7 @@
     "cube-title": "CubexElements/cube-title",
     "cube-form": "CubexElements/cube-form",
     "cube-input": "CubexElements/cube-input",
+    "cube-color": "CubexElements/cube-color",
     "cube-wizard": "CubexElements/cube-wizard"
   },
   "resolutions": {
@@ -48,11 +49,11 @@
     "iron-ajax": "1.9 - 2",
     "webcomponentsjs": "^v1.0.0"
   },
-  "_release": "10e8285e01",
+  "_release": "a9a658d4ed",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "10e8285e01d704824249a14b84bb3895f94a79cc"
+    "commit": "a9a658d4eda04bd77d1821b9ce2ff9537380bf64"
   },
   "_source": "https://github.com/CubexElements/cube-elements.git",
   "_target": "*",
