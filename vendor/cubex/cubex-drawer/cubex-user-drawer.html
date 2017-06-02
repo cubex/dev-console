@@ -214,6 +214,7 @@
                           },
       _lockUserDrawer:    function ()
                           {
+                            this._getDrawer().open();
                             this._getDrawer().setMaxState(this._getDrawer().state === 2 ? 1 : 2);
                             this._getDrawer().setState(this._getDrawer().maxState);
                           },

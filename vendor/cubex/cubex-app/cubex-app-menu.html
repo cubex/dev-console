@@ -150,7 +150,7 @@
     <div id="content">
       <template restamp is="dom-if" if="[[appData.Name]]">
         <a href="/[[appData.VendorID]]/[[appData.AppID]]" on-tap="_collapseDrawer">
-          <cubex-app-title icon="[[appData.Icon]]" title="[[i18n('app_name')]]" vendor="[[appData.Vendor]]"
+          <cubex-app-title icon="[[appData.Icon]]" title="[[i18n('app_name')]]" vendor="[[appData.VendorID]]"
                            trusted-vendor="[[appData.TrustedVendor]]"></cubex-app-title>
         </a>
       </template>

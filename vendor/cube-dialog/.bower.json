@@ -1,0 +1,23 @@
+{
+  "name": "cube-dialog",
+  "main": "cube-dialog.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.0.0",
+    "paper-dialog": "PolymerElements/paper-dialog#^2.0.0"
+  },
+  "devDependencies": {
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
+  },
+  "homepage": "https://github.com/CubexElements/cube-dialog",
+  "_release": "d4348aff41",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "d4348aff415fa190cfa7a1449881607243168e9e"
+  },
+  "_source": "https://github.com/CubexElements/cube-dialog.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-dialog"
+}

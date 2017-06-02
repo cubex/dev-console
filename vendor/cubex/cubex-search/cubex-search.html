@@ -8,6 +8,7 @@
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
 <link rel="import" href="../cubex-route/cubex-route.html">
+<link rel="import" href="../cubex-project/cubex-project.html">
 <link rel="import" href="cubex-search-overlay.html">
 
 <dom-module id="cubex-search" attributes="focus-search">
@@ -121,14 +122,15 @@
       }
     </style>
 
-    <cubex-route project-id="{{projectId}}"></cubex-route>
+    <cubex-project projects="{{_projects}}"></cubex-project>
+    <cubex-route project-id="{{_projectId}}"></cubex-route>
 
     <cube-resource id="appResource" auto auth url="//[[getServiceHost('apps')]]/kubex/registry/project.json"
                    data="{{_apps}}" ttl="3600"></cube-resource>
     <cube-resource id="searchResource" auto auth url="//[[getServiceHost('apps')]]/kubex/search-actions/search.json"
                    data="{{_search}}" ttl="3600"></cube-resource>
 
-    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="registry"
+    <cube-websocket auto project="[[_projectId]]" vendor="kubex" app="registry"
                     on-message="_appsChanged"></cube-websocket>
 
     <div id="scrim" hidden="[[!focused]]"></div>
@@ -140,7 +142,8 @@
 
     <iron-dropdown vertical-align="top" id="results" vertical-offset="45">
       <cube-list-menu slot="dropdown-content" id="searchmenu" zebra>
-        <template is="dom-repeat" items="{{_filterActions(searchQuery,_search.Actions,_apps.AppSummary)}}">
+        <template is="dom-repeat"
+                  items="{{_filterActions(searchQuery,_search.Actions,_apps.AppSummary,_projectId,_projects)}}">
           <a class="result-link" href="/[[item.GlobalAppID]]/[[item.Path]]">
             <cube-li>
               <template restamp is="dom-if" if="[[item.Icon]]">
@@ -262,61 +265,82 @@
                          return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
                        },
 
-        _filterActions: function (searchQuery, actions, appSummary)
+        _filterActions: function (searchQuery, actions, appSummary, projectId, projects)
                         {
-                          var filtered = [];
-                          if(searchQuery)
+                          var filtered = [],
+                            matchWords = searchQuery.replace(/[^a-z0-9\s]+/ig, '').toLowerCase().split(/\s+/),
+                            weight, tests;
+
+                          if(projectId)
                           {
-                            var matchWords = searchQuery.replace(/[^a-z0-9\s]+/ig, '').toLowerCase().split(/\s+/),
-                              weight, tests;
-
-                            // iterate AppSummary
-                            for(var appGaid in appSummary)
+                            if(searchQuery)
                             {
-                              if(appSummary.hasOwnProperty(appGaid))
+                              // iterate AppSummary
+                              for(var appGaid in appSummary)
                               {
-                                weight = 0;
-                                var app = appSummary[appGaid];
-                                tests = [app.name, app.description];
-
-                                weight = this.__getWeight(matchWords, tests);
-                                if(weight > 0)
+                                if(appSummary.hasOwnProperty(appGaid))
                                 {
-                                  filtered.push(this.__getItem(
-                                    app.name,
-                                    app.icon,
-                                    app.description,
-                                    weight,
-                                    appGaid
-                                  ));
+                                  weight = 0;
+                                  var app = appSummary[appGaid];
+                                  tests = [app.name, app.description];
+
+                                  weight = this.__getWeight(matchWords, tests);
+                                  if(weight > 0)
+                                  {
+                                    filtered.push(this.__getItem(
+                                      app.name,
+                                      app.icon,
+                                      app.description,
+                                      weight,
+                                      appGaid
+                                    ));
+                                  }
                                 }
                               }
-                            }
 
-                            // iterate searchActions
-                            for(var actionIdx in actions)
-                            {
-                              if(actions.hasOwnProperty(actionIdx))
+                              // iterate searchActions
+                              for(var actionIdx in actions)
                               {
-                                var action = actions[actionIdx];
-                                tests = [action.Name, action.Description];
-                                Array.prototype.push.apply(tests, action.Tokens || []);
-
-                                weight = this.__getWeight(matchWords, tests);
-                                if(weight > 0)
+                                if(actions.hasOwnProperty(actionIdx))
                                 {
-                                  filtered.push(this.__getItem(
-                                    action.Name,
-                                    action.Icon,
-                                    action.Description,
-                                    weight,
-                                    action.GlobalAppID,
-                                    action.Path
-                                  ));
+                                  var action = actions[actionIdx];
+                                  tests = [action.Name, action.Description];
+                                  Array.prototype.push.apply(tests, action.Tokens || []);
+
+                                  weight = this.__getWeight(matchWords, tests);
+                                  if(weight > 0)
+                                  {
+                                    filtered.push(this.__getItem(
+                                      action.Name,
+                                      action.Icon,
+                                      action.Description,
+                                      weight,
+                                      action.GlobalAppID,
+                                      action.Path
+                                    ));
+                                  }
                                 }
                               }
                             }
                           }
+                          else
+                          {
+                            for(var i in projects)
+                            {
+                              if(projects.hasOwnProperty(i))
+                              {
+                                filtered.push(this.__getItem(
+                                  projects[i].name,
+                                  null,
+                                  'Project',
+                                  this.__getWeight(matchWords, [projects[i].name]),
+                                  null,
+                                  '//' + window.location.host.replace(/^[^\.]+/, projects[i].name)
+                                ));
+                              }
+                            }
+                          }
+
                           if(filtered.length <= 0)
                           {
                             filtered.push(this.__getItem(this.i18n("no_results") + ' "' + searchQuery + '"'));

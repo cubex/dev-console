@@ -1,5 +1,4 @@
 <link href="../../polymer/polymer.html" rel="import">
-<link href="../../paper-dialog/paper-dialog.html" rel="import">
 <link href="../../paper-button/paper-button.html" rel="import">
 <link href="../../cube-dropdown/cube-dropdown.html" rel="import">
 <link href="../../cube-action/cube-action.html" rel="import">
@@ -7,9 +6,11 @@
 <link href="../../cube-list/cube-list-menu.html" rel="import">
 <link href="../../cube-list/cube-list-group.html" rel="import">
 <link href="../../cube-list/cube-li.html" rel="import">
+<link href="../../cube-dialog/cube-dialog.html" rel="import">
 <link href="../../cube-behavior/cube-i18n-behavior.html" rel="import">
 <link href="../cubex-quick-actions/cubex-quick-actions.html" rel="import">
 <link href="../cubex-notifications/cubex-notifications.html" rel="import">
+<link href="../cubex-project/cubex-project.html" rel="import">
 
 
 <dom-module id="cubex-toolbar">
@@ -51,6 +52,8 @@
 
     <cubex-quick-actions></cubex-quick-actions>
 
+    <cubex-project project="{{_project}}"></cubex-project>
+
     <cube-dropdown id="additional">
       <cube-action icon="icons:more-vert" slot="trigger"></cube-action>
       <cube-list-menu border>
@@ -62,17 +65,19 @@
           <cube-li on-tap="_openCustomerAgreement">{{i18n('cust_agree')}}</cube-li>
         </cube-list-group>
         <cube-list-group>
-          <cube-li on-tap="_openProjectInfo">{{i18n('project_info')}}</cube-li>
+          <template is="dom-if" if="[[_project]]" id="pi">
+            <cube-li on-tap="_openProjectInfo">{{i18n('project_info')}}</cube-li>
+            <cube-dialog id="projectInfo"><h2>Project Info</h2></cube-dialog>
+          </template>
           <cube-li on-tap="_openSupport">{{i18n('support')}}</cube-li>
         </cube-list-group>
         <cube-list-group>
           <cube-li on-tap="_logout">{{i18n('logout')}}</cube-li>
         </cube-list-group>
       </cube-list-menu>
-
     </cube-dropdown>
 
-    <paper-dialog id="keyhelp" with-backdrop>
+    <cube-dialog id="keyhelp" with-backdrop>
       <h2>{{i18n('keyboard_shortcuts')}}</h2>
 
       <cube-list zebra border border-group>
@@ -88,7 +93,7 @@
       <div class="buttons">
         <paper-button dialog-dismiss>{{i18n('close')}}</paper-button>
       </div>
-    </paper-dialog>
+    </cube-dialog>
   </template>
   <script>
     Polymer(
@@ -136,17 +141,17 @@
         },
         openKeyboardHelp:       function ()
                                 {
-                                  this.$.additional.close();
+                                  this._closeAll();
                                   this.$.keyhelp.open();
                                 },
         _openTerms:             function ()
                                 {
-                                  this.$.additional.close();
-                                  window.location = "/kubex/legal/terms";
+                                  this._closeAll();
+                                  window.open('http://kubex.io/terms');
                                 },
         _logout:                function ()
                                 {
-                                  this.$.additional.close();
+                                  this._closeAll();
                                   if(confirm("Are you sure you wish to logout?"))
                                   {
                                     window.location = '/logout';
@@ -154,19 +159,25 @@
                                 },
         _openCustomerAgreement: function ()
                                 {
-                                  this.$.additional.close();
-                                  window.location = "/kubex/legal/customer-agreement";
+                                  this._closeAll();
+                                  window.open('http://kubex.io/customer-agreement');
                                 },
         _openProjectInfo:       function ()
                                 {
-                                  this.$.additional.close();
-                                  alert('coming soon');
+                                  this._closeAll();
+                                  this.$$('#projectInfo').open();
                                 },
         _openSupport:           function ()
                                 {
-                                  this.$.additional.close();
-                                  window.open('http://support.cubex.io');
-                                }
+                                  this._closeAll();
+                                  window.open('http://support.kubex.io');
+                                },
+
+        _closeAll: function ()
+                   {
+                     this.$.additional.close();
+                     this.$$('#projectInfo').close();
+                   }
       }
     );
   </script>

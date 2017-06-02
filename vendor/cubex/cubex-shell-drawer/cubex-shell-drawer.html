@@ -116,6 +116,11 @@
       cubex-shell-drawer-panel cube-list-menu:first-of-type {
         flex-grow: 1;
       }
+
+      .category-link {
+        color: inherit;
+        text-decoration: none;
+      }
     </style>
 
     <cubex-project project="{{project}}" projects="{{_projects}}"></cubex-project>
@@ -144,7 +149,9 @@
             <cube-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
               <template is="dom-repeat" items="[[__appGroups(_projectRegistryData)]]" as="group">
                 <cube-list-group>
-                  <cubex-category key="[[group.name]]" slot="title"></cubex-category>
+                  <a href="/_[[group.name]]" slot="title" on-tap="_toggleParent" class="category-link">
+                    <cubex-category key="[[group.name]]"></cubex-category>
+                  </a>
                   <template is="dom-repeat" items="[[group.apps]]" as="app" filter="_filterApps">
                     <a href="/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
                       <cube-li compact-icon>
