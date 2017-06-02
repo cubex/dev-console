@@ -2,6 +2,7 @@
 <link rel="import" href="../../cube-dropdown/cube-dropdown.html">
 <link rel="import" href="../../cube-action/cube-action.html">
 <link rel="import" href="../../cube-list/cube-list.html">
+<link rel="import" href="../../cube-list/cube-list-menu.html">
 <link rel="import" href="../../cube-icon/cube-icon.html">
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
@@ -20,7 +21,7 @@
         @apply(--shadow-elevation-4dp);
       }
 
-      cube-list-menu {
+      cube-list, cube-list-menu {
         @apply(--primary-800);
         min-width: 350px;
         opacity: 1;
@@ -83,7 +84,7 @@
         margin-left: 10px;
       }
 
-      :host cube-li {
+      :host cube-li.uc {
         text-transform: uppercase;
         @apply --primary-900;
       }
@@ -95,6 +96,10 @@
 
       :host #settings {
         margin-right: -5px;
+      }
+
+      a[disabled], div[disabled] {
+        @apply --text-disabled;
       }
     </style>
 
@@ -109,23 +114,36 @@
         <cube-icon icon="social:notifications"></cube-icon>
       </cube-action>
       <div id="drop">
-        <cube-li>
+        <cube-li class="uc">
           Notifications
           <a id="settings" href="/kubex/notify/_configure" slot="actions">
             <cube-action size="20" icon="icons:settings"></cube-action>
           </a>
         </cube-li>
-        <cube-list-menu id="content">
-          <template id="notificationList" is="dom-repeat" items="[[_notificationsArray]]">
-            <cubex-notification notification="[[item]]"></cubex-notification>
-          </template>
-        </cube-list-menu>
 
-        <cube-li>
-          <a href="/kubex/notify">
+        <template is="dom-if" if="[[_notificationsArray.length]]">
+          <cube-list-menu id="content">
+            <template id="notificationList" is="dom-repeat" items="[[_notificationsArray]]">
+              <cubex-notification notification="[[item]]"></cubex-notification>
+            </template>
+          </cube-list-menu>
+        </template>
+
+        <template is="dom-if" if="[[!_notificationsArray.length]]">
+          <cube-list>
+            <cube-li multi-line>You have no notifications</cube-li>
+          </cube-list>
+        </template>
+
+        <cube-li class="uc">
+          <a href="/kubex/notify" class="can-disable" disabled$="[[!_notificationsArray.length]]">
             <cube-action>See All</cube-action>
           </a>
-          <cube-action on-tap="_markRead" slot="actions">Mark all As Read</cube-action>
+          <div slot="actions" class="can-disable" disabled$="[[!_notificationsArray.length]]">
+            <cube-action on-tap="_markRead">
+              Mark all As Read
+            </cube-action>
+          </div>
         </cube-li>
       </div>
     </cube-dropdown>
@@ -146,6 +164,28 @@
             observer: '_updateList'
           }
         },
+
+        attached: function ()
+                  {
+                    var
+                      elements = this.root.querySelectorAll('.can-disable'),
+                      fn = function (e)
+                      {
+                        if(this.hasAttribute('disabled'))
+                        {
+                          e.preventDefault();
+                        }
+                      };
+
+                    for(var i in elements)
+                    {
+                      if(elements.hasOwnProperty(i))
+                      {
+                        var ele = elements[i];
+                        ele.addEventListener('tap', fn.bind(ele));
+                      }
+                    }
+                  },
 
         _notificationSubscribe: function (e)
                                 {

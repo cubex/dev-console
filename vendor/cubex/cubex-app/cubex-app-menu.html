@@ -162,8 +162,8 @@
                         on-tap="_collapseDrawer">
               <cube-li compact-icon>
                 <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
-                <bind-factory bind="[[_concat('nav_', item.ID, '_name')]]" as="{{i18nKey}}"></bind-factory>
-                [[i18n(i18nKey)]]
+                <bind-factory bind="[[_concat('nav_', item.ID, '_name')]]" as="{{item.i18nKey}}"></bind-factory>
+                [[i18n(item.i18nKey)]]
                 <paper-ripple></paper-ripple>
               </cube-li>
             </cubex-link>
