@@ -67,7 +67,7 @@
         <cube-list-group>
           <template is="dom-if" if="[[_project]]" id="pi">
             <cube-li on-tap="_openProjectInfo">{{i18n('project_info')}}</cube-li>
-            <cube-dialog id="projectInfo"><h2>Project Info</h2></cube-dialog>
+            <cube-dialog id="projectInfo" with-backdrop><h2>Project Info</h2></cube-dialog>
           </template>
           <cube-li on-tap="_openSupport">{{i18n('support')}}</cube-li>
         </cube-list-group>
@@ -176,7 +176,11 @@
         _closeAll: function ()
                    {
                      this.$.additional.close();
-                     this.$$('#projectInfo').close();
+                     var projectInfo = this.$$('#projectInfo');
+                     if(projectInfo)
+                     {
+                       projectInfo.close();
+                     }
                    }
       }
     );
