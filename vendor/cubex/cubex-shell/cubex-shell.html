@@ -242,7 +242,7 @@
             <div id="burger">
               <paper-icon-button icon="menu" on-tap="_toggleDrawer"></paper-icon-button>
             </div>
-            <cubex-pinned-apps hidden="[[_narrow]]"></cubex-pinned-apps>
+            <cubex-pinned-apps hidden="[[_narrow]]" on-tap="_closeDrawer"></cubex-pinned-apps>
             <cube-action icon="icons:toc" hidden="[[!_narrow]]" id="app-menu" on-tap="_showAppMenu"></cube-action>
             <div class="spread"></div>
             <cubex-search id="search" focus-search="[[focusSearch]]"></cubex-search>
@@ -349,7 +349,7 @@
                                 this.$.search.focus();
                                 this.listen(this.$.search, 'blur', '_blurSearch');
                               },
-        _launchSearch:        function (e)
+        _launchSearch: function (e)
                               {
                                 if(this._isValidKeyPress(e))
                                 {
@@ -365,13 +365,17 @@
                                   }
                                 }
                               },
-        _toggleDrawer:        function (e)
+        _toggleDrawer: function (e)
                               {
                                 if(this._isValidKeyPress(e))
                                 {
                                   this.$.drawer.toggle();
                                   e.preventDefault();
                                 }
+                              },
+        _closeDrawer:  function ()
+                              {
+                                this.$.drawer.close();
                               },
 
         _isValidKeyPress:  function (e)
