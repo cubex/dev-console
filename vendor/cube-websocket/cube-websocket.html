@@ -110,78 +110,81 @@ Example:
                             }
                           },
 
-        _onClose:    function ()
-                     {
-                       this.subscribed = false;
-                       this._socket.startTime = Math.floor(Date.now() / 1000);
-                       this._socket.reconnectTime = 1;
-                       this._tryConnect(true);
-                       this.fire('close');
-                     },
-        _onError:    function (error)
-                     {
-                       this.fire('error', error);
-                       this._tryConnect();
-                     },
-        _tryConnect: function (now)
-                     {
-                       if(now)
-                       {
-                         this.open();
-                       }
-                       else
-                       {
-                         var self = this;
-                         if(Math.floor(Date.now() / 1000) - this._socket.startTime > 300)
-                         {
-                           this.fire('message', 'Socket connection failed after 5 minutes');
-                         }
-                         else
-                         {
-                           this._socket.reconnectHnd = setTimeout(
-                             function () {self.open()},
-                             this._socket.reconnectTime * 1000
-                           );
-                           this._socket.reconnectTime = Math.min(this._socket.reconnectTime * 2, 30)
-                         }
-                       }
-                     },
-        _onMessage:  function (event)
-                     {
-                       var message = JSON.parse(event.data);
-                       if(message.app === 'conduit')
-                       {
-                         if(message.channel === '_conduit' && message.action === 'session-id')
-                         {
-                           this._socket.sessionId = message.payload;
-                           this._subscribeUrl = '//' + this.getServiceHost('apps')
-                             + '/' + this.vendor + '/' + this.app + '/_socket/subscribe/' + this._socket.sessionId;
+        _onClose:         function ()
+                          {
+                            this.subscribed = false;
+                            this._socket.startTime = Math.floor(Date.now() / 1000);
+                            this._socket.reconnectTime = 1;
+                            this._tryConnect(true);
+                            this.fire('close');
+                          },
+        _onError:         function (error)
+                          {
+                            this.fire('error', error);
+                            this._tryConnect();
+                          },
+        _tryConnect:      function (now)
+                          {
+                            if(now)
+                            {
+                              this.open();
+                            }
+                            else
+                            {
+                              var self = this;
+                              if(Math.floor(Date.now() / 1000) - this._socket.startTime > 300)
+                              {
+                                this.fire('message', 'Socket connection failed after 5 minutes');
+                              }
+                              else
+                              {
+                                this._socket.reconnectHnd = setTimeout(
+                                  function () {self.open()},
+                                  this._socket.reconnectTime * 1000
+                                );
+                                this._socket.reconnectTime = Math.min(this._socket.reconnectTime * 2, 30)
+                              }
+                            }
+                          },
+        _onMessage:       function (event)
+                          {
+                            var message = JSON.parse(event.data);
+                            if(message.app === 'conduit')
+                            {
+                              if(message.channel === '_conduit' && message.action === 'session-id')
+                              {
+                                this._socket.sessionId = message.payload;
+                                this._setSubscribeUrl(this._socket.sessionId);
 
-                           // socket is only open when we have received the sessionId
-                           this._doSubscribe();
-                         }
-                       }
-                       else if(message.app === this.vendor + '/' + this.app)
-                       {
-                         this.messageCount++;
-                         this.set(['actionCount', message.action], (this.actionCount[message.action] || 0) + 1);
-                         if(message.meta)
-                         {
-                           for(var mIdx in message.meta)
-                           {
-                             if(message.meta.hasOwnProperty(mIdx))
-                             {
-                               this.meta[mIdx] = message.meta[mIdx];
-                             }
-                           }
-                         }
-                         this.fire('message', message);
-                       }
-                     },
-        _onOpen:     function ()
-                     {
-                       this._socket.socket.addEventListener('close', this._onClose.bind(this));
-                     },
+                                // socket is only open when we have received the sessionId
+                                this._doSubscribe();
+                              }
+                            }
+                            else if(message.app === this.vendor + '/' + this.app)
+                            {
+                              this.messageCount++;
+                              this.set(['actionCount', message.action], (this.actionCount[message.action] || 0) + 1);
+                              if(message.meta)
+                              {
+                                for(var mIdx in message.meta)
+                                {
+                                  if(message.meta.hasOwnProperty(mIdx))
+                                  {
+                                    this.meta[mIdx] = message.meta[mIdx];
+                                  }
+                                }
+                              }
+                              this.fire('message', message);
+                            }
+                          },
+        _onOpen:          function ()
+                          {
+                            this._socket.socket.addEventListener('close', this._onClose.bind(this));
+                          },
+        _setSubscribeUrl: function (sessionID)
+                          {
+                            this._subscribeUrl = '/' + this.vendor + '/' + this.app + '/_socket/subscribe/' + sessionID
+                          },
 
         ready: function ()
                {
@@ -231,6 +234,7 @@ Example:
                   this._socket.socket.addEventListener('message', this._onMessage.bind(this));
                   if(this._socket.sessionId)
                   {
+                    this._setSubscribeUrl(this._socket.sessionId);
                     this._doSubscribe();
                   }
                 }
