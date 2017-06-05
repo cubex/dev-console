@@ -395,7 +395,7 @@ Example:
           narrow:              {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:             {type: Object, value: null, observer: '_updateResources'},
           pageData:            {type: Object},
-          breadcrumbs:         {type: Object, computed: '_updateCrumbs(pageData,project)'},
+          breadcrumbs:         {type: Object, computed: '_updateCrumbs(pageData,project,appData)'},
           drawerDisabled:      {
             type:               Boolean,
             value:              false,
@@ -502,17 +502,18 @@ Example:
                              }
                            }
                          },
-        _updateCrumbs:   function (pageData)
+        _updateCrumbs:   function (pageData, project, appData)
                          {
+                           this._updateResources(appData);
                            var bc = [];
                            if(pageData && pageData.breadcrumb)
                            {
                              bc = typeof(pageData.breadcrumb) === 'string' ? JSON.parse(pageData.breadcrumb) : pageData.breadcrumb;
                            }
 
-                           if(this.appData && pageData && this.project)
+                           if(appData && pageData && project)
                            {
-                             var prefix = '/' + this.appData.VendorID + '/' + this.appData.AppID;
+                             var prefix = '/' + appData.VendorID + '/' + appData.AppID;
                              for(var i in bc)
                              {
                                if(bc.hasOwnProperty(i))
@@ -521,7 +522,7 @@ Example:
                                }
                              }
 
-                             if(!(this.appData.VendorID === 'kubex' && this.appData.AppID === 'dashboard' ))
+                             if(!(appData.VendorID === 'kubex' && appData.AppID === 'dashboard' ))
                              {
                                // prepend app
                                bc.unshift(
@@ -531,12 +532,12 @@ Example:
                                  }
                                );
                                // prepend group
-                               if(this.appData.Group)
+                               if(appData.Group)
                                {
                                  bc.unshift(
                                    {
-                                     Title: this.appData.Group,
-                                     Url:   '/' + this.appData.Vendor + '/' + this.appData.Group
+                                     Title: appData.Group,
+                                     Url:   '/' + appData.Vendor + '/' + appData.Group
                                    }
                                  );
                                }
@@ -545,8 +546,8 @@ Example:
                                {
                                  bc.unshift(
                                    {
-                                     Title: this.$.cat.getCategory(this.appData.Category, true),
-                                     Url:   '/_' + this.appData.Category
+                                     Title: this.$.cat.getCategory(appData.Category, true),
+                                     Url:   '/_' + appData.Category
                                    }
                                  );
                                }

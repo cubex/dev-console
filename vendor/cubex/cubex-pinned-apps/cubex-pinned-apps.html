@@ -1,5 +1,6 @@
 <link href="../../polymer/polymer.html" rel="import">
 <link href="../../cube-websocket/cube-websocket.html" rel="import">
+<link href="../../cube-meta/cube-meta.html" rel="import">
 <link href="../../cube-action/cube-action.html" rel="import">
 <link href="../../paper-tooltip/paper-tooltip.html" rel="import">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
@@ -46,6 +47,7 @@
       <paper-tooltip for="pinned-[[item.ID]]" position="center" animation-delay="100"><strong>[[item.Name]]</strong>
       </paper-tooltip>
     </template>
+    <cube-meta key="cubex-pinned-apps" value="{{pinnedApps}}"></cube-meta>
   </template>
   <script>
     Polymer(
