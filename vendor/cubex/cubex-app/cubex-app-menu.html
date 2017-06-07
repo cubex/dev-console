@@ -96,16 +96,6 @@
         background: var(--accent-700-color);
       }
 
-      #configure {
-        align-self: flex-end;
-        background: var(--theme-500-color);
-      }
-
-      #configure:hover {
-        background: var(--theme-600-color);
-        color: var(--accent-700-color);
-      }
-
       #toggler {
         @apply --accent-400;
         @apply --cubex-app-menu-toggler;
@@ -173,16 +163,6 @@
 
       <div class="flex"></div>
 
-      <template is="dom-if" if="[[_configPath]]">
-        <a href="/[[appData.VendorID]]/[[appData.AppID]]/[[_trimPath(_configPath)]]" on-tap="_collapseDrawer">
-          <cube-li id="configure" primary="[[i18n('configure')]]" compact-icon>
-            <cube-icon slot="icon" icon="icons:settings"></cube-icon>
-            [[i18n('configure')]]
-            <paper-ripple></paper-ripple>
-          </cube-li>
-        </a>
-      </template>
-
       <cube-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]" compact-icon>
         <cube-icon icon="icons:chrome-reader-mode" slot="icon"></cube-icon>
         <template restamp is="dom-if" if="[[_drawerOpen]]">
@@ -203,7 +183,6 @@
 
         properties: {
           appData:     {type: Object, notify: true, observer: '_resetResources'},
-          _configPath: {type: String, computed: '_calculateConfigure(appData,projectId)'},
           _drawerOpen: {type: Boolean, value: false}
         },
 
@@ -267,13 +246,6 @@
                            }
                          },
 
-        _calculateConfigure: function ()
-                             {
-                               return (this.appData && this.appData.Config && '_configure')
-                                 || (this.appData && this.appData.AdvancedConfigPath)
-                                 || null;
-                             },
-
         _concat:   function ()
                    {
                      return Array.prototype.slice.call(arguments).join('');
@@ -287,9 +259,8 @@
                          {
                            // reset resources
                            var newRes = {
-                             'configure': {'en': 'Configure', 'fr': 'Configurer'},
-                             'collapse':  {'en': 'Collapse Menu', 'fr': 'Réduire Menu'},
-                             'keep_out':  {'en': 'Keep Menu Out', 'fr': 'Gardez Menu Out'}
+                             'collapse': {'en': 'Collapse Menu', 'fr': 'Réduire Menu'},
+                             'keep_out': {'en': 'Keep Menu Out', 'fr': 'Gardez Menu Out'}
                            };
 
                            if(this.appData && this.appData.Name)

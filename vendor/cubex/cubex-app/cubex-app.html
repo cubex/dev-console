@@ -286,6 +286,19 @@ Example:
         color: white;
         text-shadow: 0 0 9px rgba(0, 0, 0, 0.45);
       }
+
+      div.configure {
+        margin: 8px 0 0 0;
+        float: right;
+        width: 48px;
+        height: 48px;
+        overflow: hidden;
+      }
+
+      div.configure a {
+        @apply --primary-50-text;
+        @apply --text-secondary;
+      }
     </style>
 
     <iron-media-query query="(max-width: 375px)" query-matches="{{narrow}}"></iron-media-query>
@@ -302,6 +315,13 @@ Example:
       <slot slot="drawer-content" name="drawer-content"></slot>
       <app-header-layout id="ahl">
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
+          <template is="dom-if" if="[[_configPath]]">
+            <div class="configure">
+              <a href="/[[appData.VendorID]]/[[appData.AppID]]/[[_trimPath(_configPath)]]">
+                <cube-action slot="icon" icon="icons:settings"></cube-action>
+              </a>
+            </div>
+          </template>
           <cubex-breadcrumb crumbs="[[breadcrumbs]]" category="[[appData.Category]]"></cubex-breadcrumb>
           <app-toolbar sticky>
             <cubex-app-header actions="[[headerActions]]" menu="[[headerMenu]]">
@@ -316,7 +336,8 @@ Example:
                 <cube-icon slot="header" src="[[pageData.icon]]"></cube-icon>
               </template>
 
-              <h1 id="app-heading" slot="header"><a href="[[pagePath]]" id="page-title">[[pageData.title]]</a></h1>
+              <h1 id="app-heading" slot="header"><a href="[[pagePath]]"
+                                                    id="page-title">[[pageData.title]]</a></h1>
 
               <div displace id="hero" slot="hero">
                 <slot name="hero"></slot>
@@ -345,7 +366,8 @@ Example:
               <template is="dom-if" if="[[pageMenu.length]]">
                 <cube-list id="app-page-menu" class="sidebar-group" border double-border bottom-border>
                   <template is="dom-repeat" items="[[pageMenu]]">
-                    <cubex-link href="[[item.Href]]" mode="[[item.Mode]]" title="[[item.Description]]">
+                    <cubex-link href="[[item.Href]]" mode="[[item.Mode]]"
+                                title="[[item.Description]]">
                       <cube-li>[[item.Title]]</cube-li>
                     </cubex-link>
                   </template>
@@ -353,7 +375,8 @@ Example:
               </template>
 
               <template is="dom-if" if="[[panels.length]]">
-                <cube-list id="app-page-panels" class="sidebar-group" border double-border bottom-border>
+                <cube-list id="app-page-panels" class="sidebar-group" border double-border
+                           bottom-border>
                   <template is="dom-repeat" items="[[panels]]">
                     <cube-li>
                       <cube-pagelet auto auth url="[[item.Path]]"></cube-pagelet>
@@ -401,6 +424,7 @@ Example:
             value:              false,
             reflectToAttribute: true
           },
+          _configPath:         {type: String, computed: '_calculateConfigure(appData)'},
           _lock:               {type: Boolean, value: false},
           _peek:               {type: Boolean, value: false},
           _collapse:           {type: Boolean, value: false}
@@ -449,7 +473,10 @@ Example:
                      }
                    }.bind(this)
                  );
-                 this.async(function () {this._viewChanged(this._lock, this._peek);});
+                 this.async(function ()
+                            {
+                              this._viewChanged(this._lock, this._peek);
+                            });
                },
 
         _computeHeroHeader: function (hasHero, fraction)
@@ -597,15 +624,31 @@ Example:
                           }
                         },
 
-        _updateResources: function (appData)
-                          {
-                            var newRes = {};
-                            if(appData)
-                            {
-                              newRes['app_name'] = appData.Name;
-                            }
-                            this.hydrateResources(newRes, true);
-                          },
+        _updateResources:    function (appData)
+                             {
+                               var newRes = {};
+                               if(appData)
+                               {
+                                 newRes['app_name'] = appData.Name;
+                               }
+                               this.hydrateResources(newRes, true);
+                             },
+        _calculateConfigure: function (appData)
+                             {
+                               if(appData && appData.Config && appData.Config.length)
+                               {
+                                 return '_configure';
+                               }
+                               else if(appData && appData.AdvancedConfigPath !== "")
+                               {
+                                 return appData.AdvancedConfigPath;
+                               }
+                               return null;
+                             },
+        _trimPath:           function (path)
+                             {
+                               return (path || '').replace(/^\/+/, '');
+                             },
 
         /**
          * Retrieve the drawer element for this app
