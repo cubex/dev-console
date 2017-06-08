@@ -315,7 +315,7 @@ Example:
       <slot slot="drawer-content" name="drawer-content"></slot>
       <app-header-layout id="ahl">
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
-          <template is="dom-if" if="[[_configPath]]">
+          <template is="dom-if" if="[[_hasConfig]]">
             <div class="configure">
               <a href="/[[appData.VendorID]]/[[appData.AppID]]/[[_trimPath(_configPath)]]">
                 <cube-action slot="icon" icon="icons:settings"></cube-action>
@@ -424,7 +424,14 @@ Example:
             value:              false,
             reflectToAttribute: true
           },
-          _configPath:         {type: String, computed: '_calculateConfigure(appData)'},
+          _configPath:         {
+            type:     String,
+            computed: '_calculateConfigure(appData.Config.length,appData.AdvancedConfigPath)'
+          },
+          _hasConfig:          {
+            type:     Boolean,
+            computed: '_hasConfigure(appData.Config.length,appData.AdvancedConfigPath)'
+          },
           _lock:               {type: Boolean, value: false},
           _peek:               {type: Boolean, value: false},
           _collapse:           {type: Boolean, value: false}
@@ -633,17 +640,21 @@ Example:
                                }
                                this.hydrateResources(newRes, true);
                              },
-        _calculateConfigure: function (appData)
+        _calculateConfigure: function (ConfigItems, AdvancedConfigPath)
                              {
-                               if(appData && appData.Config && appData.Config.length)
+                               if(ConfigItems)
                                {
                                  return '_configure';
                                }
-                               else if(appData && appData.AdvancedConfigPath !== "")
+                               if(AdvancedConfigPath !== "")
                                {
-                                 return appData.AdvancedConfigPath;
+                                 return AdvancedConfigPath;
                                }
                                return null;
+                             },
+        _hasConfigure:       function (ConfigItems, AdvancedConfigPath)
+                             {
+                               return ConfigItems > 0 || AdvancedConfigPath !== "";
                              },
         _trimPath:           function (path)
                              {
