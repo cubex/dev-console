@@ -430,7 +430,7 @@ Example:
           },
           _hasConfig:          {
             type:     Boolean,
-            computed: '_hasConfigure(appData.Config.length,appData.AdvancedConfigPath)'
+            computed: '_hasConfigure(appData.VendorID,appData.AppID, appData.Config.length,appData.AdvancedConfigPath)'
           },
           _lock:               {type: Boolean, value: false},
           _peek:               {type: Boolean, value: false},
@@ -652,9 +652,9 @@ Example:
                                }
                                return null;
                              },
-        _hasConfigure:       function (ConfigItems, AdvancedConfigPath)
+        _hasConfigure:       function (VendorID, AppID, ConfigItems, AdvancedConfigPath)
                              {
-                               return ConfigItems > 0 || AdvancedConfigPath !== "";
+                               return VendorID && AppID && (ConfigItems > 0 || AdvancedConfigPath !== "");
                              },
         _trimPath:           function (path)
                              {
