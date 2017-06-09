@@ -9,6 +9,7 @@
 <link rel="import" href="../../cube-behavior/cube-touch-enabled-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="../../cube-pagelet/cube-pagelet-content.html">
 <link rel="import" href="../../cube-list/cube-list.html">
 <link rel="import" href="../../cube-list/cube-li.html">
 <link rel="import" href="../../cube-pagelet/cube-pagelet.html">
@@ -257,7 +258,7 @@ Example:
         padding: 7px;
       }
 
-      #app-heading {
+      #page-title h1 {
         @apply --paper-font-title;
         font-weight: normal;
         line-height: 64px;
@@ -265,11 +266,16 @@ Example:
         padding: 0;
       }
 
-      :host([narrow]) #app-heading {
+      #page-title h1 em {
+        font-style: normal;
+        color: var(--accent-700-color);
+      }
+
+      :host([narrow]) #page-title {
         line-height: 48px;
       }
 
-      #app-heading a {
+      #page-title {
         @apply --paper-font-title;
         font-weight: normal;
 
@@ -336,8 +342,9 @@ Example:
                 <cube-icon slot="header" src="[[pageData.icon]]"></cube-icon>
               </template>
 
-              <h1 id="app-heading" slot="header"><a href="[[pagePath]]"
-                                                    id="page-title">[[pageData.title]]</a></h1>
+              <a href="[[pagePath]]" slot="header" id="page-title">
+                <cube-pagelet-content html="[[_pageTitle]]"></cube-pagelet-content>
+              </a>
 
               <div displace id="hero" slot="hero">
                 <slot name="hero"></slot>
@@ -423,6 +430,10 @@ Example:
             type:               Boolean,
             value:              false,
             reflectToAttribute: true
+          },
+          _pageTitle:          {
+            type:     String,
+            computed: '_calculatePageTitle(pageData.title)'
           },
           _configPath:         {
             type:     String,
@@ -639,6 +650,49 @@ Example:
                                  newRes['app_name'] = appData.Name;
                                }
                                this.hydrateResources(newRes, true);
+                             },
+        _calculatePageTitle: function (pageTitle)
+                             {
+                               if(!pageTitle)
+                               {
+                                 return "";
+                               }
+                               var title = "<h1 id=\"app-heading\">", closeEm = false, previous = "", current = "";
+                               for(var i = 0; i < pageTitle.length; i++)
+                               {
+                                 current = pageTitle[i];
+                                 if(current === "*")
+                                 {
+                                   if(previous === "*")
+                                   {
+                                     if(closeEm)
+                                     {
+                                       title += "</em>";
+                                       closeEm = false;
+                                     }
+                                     else
+                                     {
+                                       title += "<em>";
+                                       closeEm = true;
+                                     }
+                                     current = ""
+                                   }
+                                 }
+                                 else if(previous === "*")
+                                 {
+                                   title += previous + current;
+                                 }
+                                 else
+                                 {
+                                   title += current;
+                                 }
+                                 previous = current;
+                               }
+                               if(closeEm)
+                               {
+                                 title += "</em>";
+                               }
+                               return title + "</h1>";
                              },
         _calculateConfigure: function (ConfigItems, AdvancedConfigPath)
                              {

@@ -77,7 +77,7 @@
 
     <cubex-category id="cat"></cubex-category>
 
-    <page-title page-title="[[pageData.title]]"></page-title>
+    <page-title page-title="[[_pageTitle]]"></page-title>
 
     <cubex-app id="app" app-data="[[appData]]" page-data="[[pageData]]"
                back-path="[[_backPath]]" page-path="[[_pagePath]]"
@@ -120,6 +120,10 @@
           _backPath:                     {
             type:     String,
             computed: '_computedBackPath(appData.VendorID,appData.AppID,pageData.backPath)'
+          },
+          _pageTitle:                    {
+            type:     String,
+            computed: '_computedPageTitle(pageData.title)'
           },
 
           _pageContentPath:    {type: String},
@@ -189,6 +193,16 @@
                              }
                              return '';
                            },
+
+        _computedPageTitle: function (title)
+                            {
+                              console.log(title);
+                              if(title && title.length > 0)
+                              {
+                                return title.replace('**', '');
+                              }
+                              return ' ';
+                            },
 
         _updateHeader: function (integration, integrations, appData)
                        {
