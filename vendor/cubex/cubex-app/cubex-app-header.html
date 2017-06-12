@@ -177,9 +177,9 @@
           <cube-action icon="icons:more-vert" slot="trigger" id="more-actions"></cube-action>
           <cube-list-menu>
             <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,0)}}" sort="_sort" observe="primary">
-              <a href="[[item.Path]]">
+              <cubex-link href="[[item.Path]]" mode="[[item.Mode]]" match="[[item.Match]]">
                 <cube-li>[[item.Title]]</cube-li>
-              </a>
+              </cubex-link>
             </template>
           </cube-list-menu>
         </cube-dropdown>
@@ -213,37 +213,33 @@
         _small:   {type: Boolean}
       },
 
-      _filter: function (small, position)
-               {
-                 small = !!small;
-                 position = !!position;
-                 return function (item)
-                 {
-                   var primary = item.hasOwnProperty('Primary') && item.Primary;
-                   if(position)
-                   { // primary
-                     return (!small) && primary;
-                   }
-                   else
-                   { // secondary
-                     return small || (!primary);
-                   }
-                 }
-               },
+      _filter: function (small, position) {
+        small = !!small;
+        position = !!position;
+        return function (item) {
+          var primary = item.hasOwnProperty('Primary') && item.Primary;
+          if(position)
+          { // primary
+            return (!small) && primary;
+          }
+          else
+          { // secondary
+            return small || (!primary);
+          }
+        }
+      },
 
-      _sort: function (a, b)
-             {
-               return a.primary > b.primary;
-             },
+      _sort: function (a, b) {
+        return a.primary > b.primary;
+      },
 
-      _hasDropdownActions: function (actions, small, primary)
-                           {
-                             if(actions && small !== undefined && primary !== undefined)
-                             {
-                               return actions.slice(0).filter(this._filter(small, 0), this).length > 0;
-                             }
-                             return false;
-                           }
+      _hasDropdownActions: function (actions, small, primary) {
+        if(actions && small !== undefined && primary !== undefined)
+        {
+          return actions.slice(0).filter(this._filter(small, 0), this).length > 0;
+        }
+        return false;
+      }
     }
   )</script>
 </dom-module>

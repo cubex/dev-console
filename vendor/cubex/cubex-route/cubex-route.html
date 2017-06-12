@@ -5,10 +5,10 @@
 <dom-module id="cubex-route" attributes="full-path project-id vendor-id app-id app-path query">
   <template>
     <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:vendor" active="{{vendorActive}}"
-               data="{{vendorRouteData}}" tail="{{vendorTail}}" query-params="{{query}}"></app-route>
-    <app-route route="[[vendorTail]]" pattern="/:app" active="{{appActive}}"
-               data="{{appRouteData}}" tail="{{appTail}}"></app-route>
+    <app-route route="[[route]]" pattern="/:vendor" active="{{_vendorActive}}"
+               data="{{vendorRouteData}}" tail="{{_vendorTail}}" query-params="{{query}}"></app-route>
+    <app-route route="[[_vendorTail]]" pattern="/:app" active="{{_appActive}}"
+               data="{{appRouteData}}" tail="{{_appTail}}"></app-route>
   </template>
   <script>
     Polymer(
@@ -24,20 +24,19 @@
         },
 
         observers:      ['_computeValues(route.path)'],
-        _computeValues: function ()
-                        {
-                          var project = window.location.host.match(/^(.+?)\./)[1];
-                          this.setProperties(
-                            {
-                              'fullPath':  this.route.path,
-                              'projectId': project == 'console' ? '' : project,
-                              'vendorId':  this.vendorActive ? this.vendorRouteData.vendor : '',
-                              'appId':     this.appActive ? this.appRouteData.app : '',
-                              'appPath':   this.appActive ? this.appTail.path : '',
-                              'query':     this.projectActive ? this.query : ''
-                            }
-                          );
-                        }
+        _computeValues: function () {
+          var project = window.location.host.match(/^(.+?)\./)[1];
+          this.setProperties(
+            {
+              'fullPath':  this.route.path,
+              'projectId': project === 'console' ? '' : project,
+              'vendorId':  this._vendorActive ? this.vendorRouteData.vendor : '',
+              'appId':     this._appActive ? this.appRouteData.app : '',
+              'appPath':   this._appActive ? this._appTail.path : '',
+              'query':     this.projectActive ? this.query : ''
+            }
+          );
+        }
       }
     );
   </script>
