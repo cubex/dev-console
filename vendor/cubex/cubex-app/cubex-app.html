@@ -321,9 +321,9 @@ Example:
       <slot slot="drawer-content" name="drawer-content"></slot>
       <app-header-layout id="ahl">
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
-          <template is="dom-if" if="[[_hasConfig]]">
+          <template is="dom-if" if="[[_configPath]]">
             <div class="configure">
-              <a href="/[[appData.VendorID]]/[[appData.AppID]]/[[_trimPath(_configPath)]]">
+              <a href="/[[appData.VendorID]]/[[appData.AppID]]/[[_configPath]]">
                 <cube-action slot="icon" icon="icons:settings"></cube-action>
               </a>
             </div>
@@ -423,7 +423,7 @@ Example:
           backPath:            {type: String},
           pagePath:            {type: String},
           narrow:              {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
-          appData:             {type: Object, value: null, observer: '_updateResources'},
+          appData:             {type: Object, value: function () { return {}; }, observer: '_updateResources'},
           pageData:            {type: Object},
           breadcrumbs:         {type: Object, computed: '_updateCrumbs(pageData,project,appData)'},
           drawerDisabled:      {
@@ -438,10 +438,6 @@ Example:
           _configPath:         {
             type:     String,
             computed: '_calculateConfigure(appData.Config.length,appData.AdvancedConfigPath)'
-          },
-          _hasConfig:          {
-            type:     Boolean,
-            computed: '_hasConfigure(appData.VendorID,appData.AppID, appData.Config.length,appData.AdvancedConfigPath)'
           },
           _lock:               {type: Boolean, value: false},
           _peek:               {type: Boolean, value: false},
@@ -700,19 +696,11 @@ Example:
                                {
                                  return '_configure';
                                }
-                               if(AdvancedConfigPath !== "")
+                               if(AdvancedConfigPath && AdvancedConfigPath !== "")
                                {
-                                 return AdvancedConfigPath;
+                                 return AdvancedConfigPath.replace(/^\/+/, '');
                                }
-                               return null;
-                             },
-        _hasConfigure:       function (VendorID, AppID, ConfigItems, AdvancedConfigPath)
-                             {
-                               return VendorID && AppID && (ConfigItems > 0 || AdvancedConfigPath !== "");
-                             },
-        _trimPath:           function (path)
-                             {
-                               return (path || '').replace(/^\/+/, '');
+                               return "";
                              },
 
         /**
