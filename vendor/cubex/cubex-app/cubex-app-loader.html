@@ -146,9 +146,9 @@
         observers: [
           '_pathChanged(fullPath,projectData)',
           '_updateHeaders(_pageXhr)',
-          '_updateIntegration(_integrations,appPath,appData,_pageDefinitionPath,projectData)',
+          '_updateIntegration(_integrations,appPath,appData,_appGaid,_pageDefinitionPath,projectData)',
           '_updateHeader(_integration,_integrations,appData,_appGaid,projectData)',
-          '_updateSidebar(_integration,_integrations,appPath,projectData)',
+          '_updateSidebar(_integration,_integrations,appPath,_appGaid,projectData)',
           '_pageHtmlChanged(_pageDefinitionHtml,_pageContentHtml)'
         ],
 
@@ -254,9 +254,10 @@
                       newMenu.push(
                         {
                           Title: this.$.cat.getCategory(category, true),
-                          Path:  '/' + headerMenu[i].Hook + '/~/' + category
-                                 + '/h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
-                          Match: '/' + headerMenu[i].Hook + '/~/' + category,
+                          Path:  '/' + headerMenu[i].Hook + '/~/'
+                                 + 'h-' + category + '-'
+                                 + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
+                          Match: '/' + headerMenu[i].Hook + '/~/h-' + category,
                           Mode:  'page'
                         }
                       );
@@ -293,20 +294,20 @@
           this._headerActions = newActions;
         },
 
-        _updateSidebar: function (integration, integrations) {
+        _updateSidebar: function (integration, integrations, appPath, appGaid, projectData) {
           var pageMenus = [],
             pageActions = [],
             panels = [];
 
-          if(integrations && this.projectData && this.projectData.AppSummary)
+          if(integrations && projectData && projectData.AppSummary && appPath)
           {
-            var pathMatches = this._parsePath(this.appPath);
+            var pathMatches = this._parsePath(appPath);
             if(integration
-              && this.projectData.AppSummary[integration.GlobalAppID]
-              && pathMatches.type === '~')
+              && projectData.AppSummary[integration.GlobalAppID]
+              && pathMatches.pageletId)
             {
               var
-                intData = this.projectData.AppSummary[integration.GlobalAppID],
+                intData = projectData.AppSummary[integration.GlobalAppID],
                 category = intData.category,
                 headerMenu = this._integrations.HeaderMenuItems;
 
@@ -314,15 +315,16 @@
               {
                 if(headerMenu.hasOwnProperty(i))
                 {
-                  if(this.projectData.AppSummary[headerMenu[i].GlobalAppID].category === category
-                    && headerMenu[i].GlobalAppID !== this._appGaid)
+                  if(projectData.AppSummary[headerMenu[i].GlobalAppID].category === category
+                    && headerMenu[i].GlobalAppID !== appGaid)
                   {
                     pageMenus.push(
                       {
                         Title:       headerMenu[i].Title,
                         Description: headerMenu[i].Description,
-                        Path:        this._getBasePath() + pathMatches.pagePath + '/~/' + category
-                                     + '/h-' + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
+                        Path:        this._getBasePath(pathMatches) + '/~/'
+                                     + 'h-' + category + '-'
+                                     + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
                         Mode:        'page'
                       }
                     );
@@ -347,7 +349,7 @@
                       {
                         Title:       items[j].Title,
                         Description: items[j].Description,
-                        Path:        this._getBasePath() + pathMatches.pagePath + '/~/p-'
+                        Path:        this._getBasePath(pathMatches) + '/~/m-'
                                      + this._hash32(items[j].GlobalAppID + '/' + items[j].ID),
                         Mode:        'page'
                       }
@@ -423,9 +425,9 @@
                     integrationPath = fullPath;
                   this._pagePath = fullPath;
 
-                  if(pathMatches.type === '_')
+                  if(pathMatches.integrationId)
                   {
-                    integrationPath += '/_/' + pathMatches.typeId;
+                    integrationPath += '/_/' + pathMatches.integrationId;
                   }
 
                   var ip = '/kubex/integrations/integrations.json?hook=' + integrationPath;
@@ -515,35 +517,31 @@
           }
         },
 
-        _updateIntegration: function (_integrations, appPath, appData, _pageDefinitionPath, projectData) {
+        _updateIntegration: function (_integrations, appPath, appData, appGaid, _pageDefinitionPath, projectData) {
           var integration = null, contentPath = this._pageDefinitionPath;
 
           if(_integrations && projectData && projectData.AppSummary && appPath && appData)
           {
             var pathMatches = this._parsePath(appPath);
-            var items = null;
+            var items = null, pageletPrefix, pageletHash;
             if(pathMatches.pageletId)
             {
-              var hashType = pathMatches.pageletId.substr(0, 2),
-                hash = pathMatches.pageletId.substr(2);
-              if(hashType === 'm-')
+              pageletPrefix = pathMatches.pageletId.substr(0, 2);
+              pageletHash = pathMatches.pageletId.substr(-8);
+              if(pageletPrefix === 'm-')
               {
                 items = _integrations.PageMenuItems;
               }
-              else if(hashType === 'a-')
+              else if(pageletPrefix === 'a-')
               {
                 items = _integrations.PageActions;
               }
-              else if(hashType === 'h-')
+              else if(pageletPrefix === 'h-')
               {
                 items = _integrations.HeaderMenuItems;
               }
             }
-            else if(pathMatches.type === '~' && pathMatches.typeId)
-            {
-              items = _integrations.HeaderMenuItems;
-            }
-            else if(pathMatches.type === '_' && pathMatches.typeId)
+            else if(pathMatches.integrationId)
             {
               items = _integrations.HeaderMenuItems;
             }
@@ -559,20 +557,22 @@
                   return (a.Title < b.Title) ? -1 : 1;
                 }
               );
+
               for(var i in items)
               {
                 if(items.hasOwnProperty(i))
                 {
-                  var gaidHash = this._hash32(items[i].GlobalAppID + '/' + items[i].ID);
+                  // if we have a pageletId, and it matches, use it
+                  var itemHash = this._hash32(items[i].GlobalAppID + '/' + items[i].ID);
                   if(
-                    ((!pathMatches.pageletId)
-                      && (pathMatches.type === '~' && pathMatches.typeId === projectData.AppSummary[items[i].GlobalAppID].category)
-                      || (pathMatches.type === '_' && items[i].GlobalAppID === (appData.VendorID + '/' + appData.AppID) && items[i].ID === pathMatches.typeId)
-                    )
-                    || (gaidHash === hash)
-                  )
+                    (items[i].GlobalAppID === appGaid && items[i].ID === pathMatches.integrationId)
+                    || (itemHash === pageletHash))
                   {
-                    integration = items[i];
+                    // if we have a pagelet, and it's "h-" - change the menu - set the integration
+                    if(pageletPrefix === 'h-')
+                    {
+                      integration = items[i];
+                    }
                     contentPath = '/' + items[i].GlobalAppID + '/' + items[i].Path;
                     break;
                   }
@@ -587,7 +587,7 @@
           }
 
           if(projectData && projectData.AppSummary
-            && projectData.AppSummary[integration ? integration.GlobalAppID : this._appGaid])
+            && projectData.AppSummary[integration ? integration.GlobalAppID : appGaid])
           {
             this._pageContentPath = contentPath;
             this.$.pageContentResource.update();
@@ -615,28 +615,27 @@
         },
 
         _parsePath: function (path) {
-          var matches = path.match(/(.+?)(\/(_|~)(\/([^\/]+)(\/([^\/]+))?(.*)))?$/);
+          var result = {
+            pagePath:      path,
+            integrationId: undefined,
+            pageletId:     undefined,
+            pageletPath:   undefined
+          };
+          var matches = path.match(/^(.+?)(\/_\/([^\/]+))?(\/~\/([^\/]+?)(\/([^\/]+?)(\/(.*))?)?)?$/);
           if(matches)
           {
-            return {
-              pagePath:  matches[1],
-              type:      matches[3],
-              typeId:    matches[5],
-              pageletId: matches[7],
-              subPath:   matches[8]
-            };
+            result.pagePath = matches[1];
+            result.integrationId = matches[3];
+            result.pageletId = matches[5];
+            result.pageletPath = matches[7];
           }
-          return {
-            pagePath:  path,
-            type:      '',
-            typeId:    '',
-            pageletId: '',
-            subPath:   ''
-          };
+          return result;
         },
 
-        _getBasePath: function () {
-          return '/' + this.vendorId + '/' + this.appId;
+        _getBasePath: function (pathMatches) {
+          return '/' + this.vendorId + '/' + this.appId
+            + pathMatches.pagePath
+            + (pathMatches.integrationId ? '/_/' + pathMatches.integrationId : '');
         },
 
         _pageHtmlChanged: function () {
