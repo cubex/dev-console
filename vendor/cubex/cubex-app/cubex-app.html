@@ -669,13 +669,13 @@ Example:
           var path = '';
           if(appData)
           {
-            if(appData.AdvancedConfigPath)
-            {
-              path = '/' + appData.VendorID + '/' + appData.AppID + '/' + AdvancedConfigPath.replace(/^\/+/, '');
-            }
-            else if(appData.Config.length > 0)
+            if(appData.Config && appData.Config.length > 0)
             {
               path = '/' + appData.VendorID + '/' + appData.AppID + '/_configure';
+            }
+            else if(appData.AdvancedConfigPath)
+            {
+              path = '/' + appData.VendorID + '/' + appData.AppID + '/' + appData.AdvancedConfigPath.replace(/^\/+/, '');
             }
           }
           return path;
