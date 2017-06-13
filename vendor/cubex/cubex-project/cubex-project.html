@@ -12,7 +12,7 @@ Example:
 @demo demo/index.html
 -->
 
-<dom-module id="cubex-project" attributes="project projects">
+<dom-module id="cubex-project" attributes="project-id project projects">
   <template>
     <cubex-route project-id="{{projectId}}"></cubex-route>
     <cube-websocket auto project="[[projectId]]" vendor="kubex" app="project"
@@ -23,49 +23,44 @@ Example:
       {
         is:                 'cubex-project',
         properties:         {
+          projectId:       {type: String, notify: true},
           project:         {type: Object, notify: true, readOnly: true},
-          projects:        {type: Array, value: function () {return []}, notify: true, readOnly: true},
+          projects:        {type: Array, notify: true, readOnly: true},
           _projectsObject: {type: Object, value: function () {return {}}}
         },
         observers:          ['_projectChanged(projects,projectId)'],
-        _projectSubscribed: function (e, message)
-                            {
-                              var projects = JSON.parse(message).projects;
-                              if(projects)
-                              {
-                                this._projectsObject = projects;
-                                this._setProjects(Object.keys(projects).map(function (i) {return projects[i]}));
-                              }
-                            },
-        _projectUpdate:     function (e, message)
-                            {
-                              var projects = this.projects;
-                              if(message.action === 'create' || message.action === 'join')
-                              {
-                                this.push('projects', message.payload);
-                              }
-                              else if(message.action === 'leave')
-                              {
-                                for(var i in this.projects)
-                                {
-                                  if(this.projects.hasOwnProperty(i))
-                                  {
-                                    if(this.projects[i].id === message.payload.id)
-                                    {
-                                      this.splice('projects', i, 1);
-                                      break;
-                                    }
-                                  }
-                                }
-                              }
-                            },
-        _projectChanged:    function ()
-                            {
-                              if(this._projectsObject && this.projectId)
-                              {
-                                this._setProject(this._projectsObject[this.projectId]);
-                              }
-                            }
+        _projectSubscribed: function (e, message) {
+          var projects = JSON.parse(message).projects || [];
+          this._projectsObject = projects;
+          this._setProjects(Object.keys(projects).map(function (i) {return projects[i]}));
+        },
+        _projectUpdate:     function (e, message) {
+          var projects = this.projects;
+          if(message.action === 'create' || message.action === 'join')
+          {
+            this.push('projects', message.payload);
+          }
+          else if(message.action === 'leave')
+          {
+            for(var i in this.projects)
+            {
+              if(this.projects.hasOwnProperty(i))
+              {
+                if(this.projects[i].id === message.payload.id)
+                {
+                  this.splice('projects', i, 1);
+                  break;
+                }
+              }
+            }
+          }
+        },
+        _projectChanged:    function () {
+          if(this._projectsObject && this.projectId)
+          {
+            this._setProject(this._projectsObject[this.projectId]);
+          }
+        }
       }
     );
   </script>

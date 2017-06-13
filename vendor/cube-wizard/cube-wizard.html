@@ -17,6 +17,8 @@
     <style>
       :host {
         display: block;
+        position: relative;
+
         --cube-list-items-content-container: {
           display: flex;
           flex-direction: column;
@@ -185,146 +187,130 @@
           horizontal: {type: Boolean, value: false, reflectToAttribute: true}
         },
 
-        _refreshSubSteps: function (content)
-                          {
-                            if(content && typeof content === 'object')
-                            {
-                              return content;
-                            }
-                            return [];
-                          },
+        _refreshSubSteps: function (content) {
+          if(content && typeof content === 'object')
+          {
+            return content;
+          }
+          return [];
+        },
 
-        _computeSteps: function (nestedSteps)
-                       {
-                         var steps = [], stepIdx = 0;
-                         for(var i in nestedSteps)
-                         {
-                           if(nestedSteps.hasOwnProperty(i))
-                           {
-                             var step = nestedSteps[i];
-                             step._idx = stepIdx++;
-                             step._parentStep = null;
-                             steps.push(step);
-                             if(step.steps)
-                             {
-                               for(var j in step.steps)
-                               {
-                                 if(step.steps.hasOwnProperty(j))
-                                 {
-                                   var subStep = step.steps[j];
-                                   subStep._idx = stepIdx++;
-                                   subStep._parentStep = step;
-                                   steps.push(subStep);
-                                 }
-                               }
-                             }
-                           }
-                         }
-                         return steps;
-                       },
-
-        attached: function ()
+        _computeSteps: function (nestedSteps) {
+          var steps = [], stepIdx = 0;
+          for(var i in nestedSteps)
+          {
+            if(nestedSteps.hasOwnProperty(i))
+            {
+              var step = nestedSteps[i];
+              step._idx = stepIdx++;
+              step._parentStep = null;
+              steps.push(step);
+              if(step.steps)
+              {
+                for(var j in step.steps)
+                {
+                  if(step.steps.hasOwnProperty(j))
                   {
-                    var self = this;
+                    var subStep = step.steps[j];
+                    subStep._idx = stepIdx++;
+                    subStep._parentStep = step;
+                    steps.push(subStep);
+                  }
+                }
+              }
+            }
+          }
+          return steps;
+        },
 
-                    this.$.stepPagelet.addEventListener('cube-pagelet-content-ready', function (e)
-                    {
-                      e.stopPropagation();
-                      self._stepForm = this.querySelector('cube-form');
-                    });
-                    this.addEventListener('cube-form-response', function (e)
-                    {
-                      e.stopPropagation();
-                      if(Object.keys(e.detail.Errors).length <= 0)
-                      {
-                        self._step.completed = true;
-                        self._nextStep();
-                      }
-                    });
-                  },
+        attached: function () {
+          var self = this;
 
-        _computeShowSkip: function (step, form)
-                          {
-                            return !!(step && (step.optional && form));
-                          },
+          this.$.stepPagelet.addEventListener('cube-pagelet-content-ready', function (e) {
+            e.stopPropagation();
+            self._stepForm = this.querySelector('cube-form');
+          });
+          this.addEventListener('cube-form-response', function (e) {
+            e.stopPropagation();
+            if(Object.keys(e.detail.Errors).length <= 0)
+            {
+              self._step.completed = true;
+              self._nextStep();
+            }
+          });
+        },
 
-        _computeShowNext: function (canNext, step, steps, currentStep)
-                          {
-                            return canNext;
-                            return !!(step && (steps[currentStep + 1]));
-                          },
+        _computeShowSkip: function (step, form) {
+          return !!(step && (step.optional && form));
+        },
 
-        _computeStep: function (steps, currentStep)
-                      {
-                        return steps[currentStep];
-                      },
+        _computeShowNext: function (canNext, step, steps, currentStep) {
+          return canNext;
+          return !!(step && (steps[currentStep + 1]));
+        },
 
-        _isCurrent: function (step, currentStep)
-                    {
-                      return (currentStep === step) || (currentStep._parentStep === step);
-                    },
+        _computeStep: function (steps, currentStep) {
+          return steps[currentStep];
+        },
 
-        _tapReset: function ()
-                   {
-                     this._stepForm.reset();
-                   },
+        _isCurrent: function (step, currentStep) {
+          return (currentStep === step) || (currentStep._parentStep === step);
+        },
 
-        _tapSkip: function ()
-                  {
-                    this._nextStep();
-                  },
-        _tapNext: function ()
-                  {
-                    if(this._stepForm)
-                    {
-                      this._stepForm.submit();
-                    }
-                    else
-                    {
-                      this._nextStep();
-                    }
-                  },
-        _tapStep: function (event)
-                  {
-                    this._moveToStep(event.currentTarget.getAttribute('step'));
-                  },
+        _tapReset: function () {
+          this._stepForm.reset();
+        },
 
-        _leaveStep: function ()
-                    {
-                      if(this._stepForm)
-                      {
-                        this._stepForm.submit();
-                      }
-                    },
+        _tapSkip: function () {
+          this._nextStep();
+        },
+        _tapNext: function () {
+          if(this._stepForm)
+          {
+            this._stepForm.submit();
+          }
+          else
+          {
+            this._nextStep();
+          }
+        },
+        _tapStep: function (event) {
+          this._moveToStep(event.currentTarget.getAttribute('step'));
+        },
 
-        _nextStep: function ()
-                   {
-                     if(this._currentStep < this._steps.length - 1)
-                     {
-                       this._moveToStep(this._currentStep + 1);
-                     }
-                     else
-                     {
-                       this.fire('cube-wizard-finished');
-                     }
-                   },
+        _leaveStep: function () {
+          if(this._stepForm)
+          {
+            this._stepForm.submit();
+          }
+        },
 
-        _moveToStep: function (step)
-                     {
-                       step = parseInt(step);
-                       // check that we can access that step
-                       // go through each previous steps, ensure that `completed` or `optional` are true
-                       for(var i = 0; i < step; i++)
-                       {
-                         if(!(this._steps[i].completed || this._steps[i].optional))
-                         {
-                           console.error('Cannot progress to that step. You must complete this step first.');
-                           this._currentStep = i;
-                           return;
-                         }
-                       }
-                       this._currentStep = step;
-                     }
+        _nextStep: function () {
+          if(this._currentStep < this._steps.length - 1)
+          {
+            this._moveToStep(this._currentStep + 1);
+          }
+          else
+          {
+            this.fire('cube-wizard-finished');
+          }
+        },
+
+        _moveToStep: function (step) {
+          step = parseInt(step);
+          // check that we can access that step
+          // go through each previous steps, ensure that `completed` or `optional` are true
+          for(var i = 0; i < step; i++)
+          {
+            if(!(this._steps[i].completed || this._steps[i].optional))
+            {
+              console.error('Cannot progress to that step. You must complete this step first.');
+              this._currentStep = i;
+              return;
+            }
+          }
+          this._currentStep = step;
+        }
 
       });
   </script>

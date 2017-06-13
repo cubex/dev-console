@@ -15,6 +15,11 @@ Example:
 
 <dom-module id="cube-form" attributes="method action enctype">
   <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
     <iron-form id="form" headers="[[_headers]]" allow-redirect="[[allowRedirect]]" with-credentials>
       <form id="helper" action$="[[action]]" method$="[[method]]" enctype$="[[enctype]]"></form>
     </iron-form>
@@ -36,111 +41,100 @@ Example:
 
         listeners: {'tap': '_onTap'},
 
-        submit: function ()
+        submit: function () {
+          return this.$.form.submit();
+        },
+
+        reset: function () {
+          return this.$.form.reset();
+        },
+
+        validate: function () {
+          return this.$.form.validate();
+        },
+
+        _onTap: function (e) {
+          if(e.detail.sourceEvent.target.tagName === 'PAPER-BUTTON')
+          {
+            this.$.form.submit();
+          }
+        },
+
+        _refreshHeaders: function () {
+          var headers = {};
+          headers['x-requested-by'] = "cube-form";
+          return headers;
+        },
+
+        attached: function () {
+          this._nodeObserver = Polymer.dom(this.$.content).observeNodes(
+            function (mutations) {
+              for(var i = 0; i < mutations.addedNodes.length; i++)
+              {
+                this.$.helper.appendChild(mutations.addedNodes[i]);
+              }
+            }.bind(this));
+        },
+
+        ready: function () {
+          var self = this;
+          this.$.form.addEventListener('iron-form-response', function (event) {
+            self.__handleFormResponse(event.detail.response);
+          });
+        },
+
+        __handleFormResponse: function (response) {
+          var evt = this.fire('cube-form-response', response, {cancelable: true});
+          if(evt.defaultPrevented)
+          {
+            return;
+          }
+
+          if(response.Errors)
+          {
+            for(var field in response.Errors)
+            {
+              if(response.Errors.hasOwnProperty(field))
+              {
+                var ele = this.$.helper.querySelector('[name="' + field + '"]'),
+                  errors = response.Errors[field],
+                  errs = [];
+
+                for(var i in errors)
                 {
-                  return this.$.form.submit();
-                },
-
-        reset: function ()
-               {
-                 return this.$.form.reset();
-               },
-
-        validate: function ()
+                  if(errors.hasOwnProperty(i))
                   {
-                    return this.$.form.validate();
-                  },
-
-        _onTap: function (e)
-                {
-                  if(e.detail.sourceEvent.target.tagName === 'PAPER-BUTTON')
-                  {
-                    this.$.form.submit();
+                    errs.push(errors[i]);
                   }
-                },
+                }
 
-        _refreshHeaders: function ()
-                         {
-                           var headers = {};
-                           headers['x-requested-by'] = "cube-form";
-                           return headers;
-                         },
+                if(ele && ele.setTemporaryError)
+                {
+                  ele.setTemporaryError(errs.join(', '));
+                }
+                else
+                {
+                  console.error(errs);
+                }
+              }
+            }
+          }
 
-        attached: function ()
-                  {
-                    this._nodeObserver = Polymer.dom(this.$.content).observeNodes(
-                      function (mutations)
-                      {
-                        for(var i = 0; i < mutations.addedNodes.length; i++)
-                        {
-                          this.$.helper.appendChild(mutations.addedNodes[i]);
-                        }
-                      }.bind(this));
-                  },
+          if(response.ToastMessage)
+          {
+            var toast = document.createElement('paper-toast');
+            toast.addEventListener('iron-overlay-closed', function () {
+              document.body.removeChild(this);
+            });
+            document.body.appendChild(toast);
+            toast.show({text: response.ToastMessage, duration: 3000});
+          }
 
-        ready: function ()
-               {
-                 var self = this;
-                 this.$.form.addEventListener('iron-form-response', function (event)
-                 {
-                   self.__handleFormResponse(event.detail.response);
-                 });
-               },
-
-        __handleFormResponse: function (response)
-                              {
-                                var evt = this.fire('cube-form-response', response, {cancelable: true});
-                                if(evt.defaultPrevented)
-                                {
-                                  return;
-                                }
-
-                                if(response.Errors)
-                                {
-                                  for(var field in response.Errors)
-                                  {
-                                    if(response.Errors.hasOwnProperty(field))
-                                    {
-                                      var ele = this.$.helper.querySelector('[name="' + field + '"]'),
-                                        errors = response.Errors[field],
-                                        errs = [];
-
-                                      for(var i in errors)
-                                      {
-                                        if(errors.hasOwnProperty(i))
-                                        {
-                                          errs.push(errors[i]);
-                                        }
-                                      }
-
-                                      if(ele && ele.setTemporaryError)
-                                      {
-                                        ele.setTemporaryError(errs.join(', '));
-                                      }
-                                      else
-                                      {
-                                        console.error(errs);
-                                      }
-                                    }
-                                  }
-                                }
-
-                                if(response.ToastMessage)
-                                {
-                                  var toast = document.createElement('paper-toast');
-                                  toast.addEventListener('iron-overlay-closed', function ()
-                                  {
-                                    document.body.removeChild(this);
-                                  });
-                                  document.body.appendChild(toast);
-                                  toast.show({text: response.ToastMessage, duration: 3000});
-                                }
-
-                                if(response.RedirectPath)
-                                {
-                                  window.location = response.RedirectPath;
-                                }
-                              }
+          if(response.RedirectPath)
+          {
+            window.location = response.RedirectPath;
+          }
+        }
       }
     );
   </script>
