@@ -61,15 +61,9 @@
           <cube-li on-tap="openKeyboardHelp">{{i18n('keyboard_shortcuts')}}</cube-li>
         </cube-list-group>
         <cube-list-group>
+          <cube-li on-tap="_openSupport">{{i18n('support')}}</cube-li>
           <cube-li on-tap="_openTerms">{{i18n('terms_service')}}</cube-li>
           <cube-li on-tap="_openCustomerAgreement">{{i18n('cust_agree')}}</cube-li>
-        </cube-list-group>
-        <cube-list-group>
-          <template is="dom-if" if="[[_project]]" id="pi">
-            <cube-li on-tap="_openProjectInfo">{{i18n('project_info')}}</cube-li>
-            <cube-dialog id="projectInfo" with-backdrop><h2>Project Info</h2></cube-dialog>
-          </template>
-          <cube-li on-tap="_openSupport">{{i18n('support')}}</cube-li>
         </cube-list-group>
         <cube-list-group>
           <cube-li on-tap="_logout">{{i18n('logout')}}</cube-li>
@@ -116,7 +110,6 @@
                 "close":              "Close",
                 "search":             "Search",
                 "terms_service":      "Terms of Service",
-                "project_info":       "Project Info",
                 "cust_agree":         "Customer Agreement",
                 "support":            "Support",
                 "logout":             "Logout"
@@ -131,7 +124,6 @@
                 "close":              "Fermer",
                 "search":             "Chercher",
                 "terms_service":      "Conditions d'utilisation",
-                "project_info":       "Projet Infos",
                 "cust_agree":         "Accord client",
                 "support":            "Soutien",
                 "logout":             "Se déconnecter"
