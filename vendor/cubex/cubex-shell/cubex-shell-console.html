@@ -291,113 +291,127 @@
           '/': '_launchSearch',
           '?': '_keyboardHelp'
         },
-        attached:             function () {
-          this.keyEventTarget = document.body;
-          window.addEventListener('WebComponentsReady', this._resetLayout.bind(this));
-          document.addEventListener(
-            'cubex-drawer-state-changed', this._debounceResetLayout.bind(this)
-          );
-          document.addEventListener(
-            'cube-pagelet-content-ready', this._resetLayout.bind(this)
-          );
-        },
-        _debounceResetLayout: function () {
-          this.debounce('_resetLayout', this._resetLayout.bind(this), 210);
-        },
-        _resetLayout:         function () {
-          this.$.adl.resetLayout();
-        },
-        _keyboardHelp:        function (e) {
-          if(this._isValidKeyPress(e))
-          {
-            this.$.drawer.close();
-            this.$.toolbar.openKeyboardHelp();
-            e.preventDefault();
-          }
-        },
-        _viewChanged:         function (peek, narrow) {
-          if(narrow)
-          {
-            this.$.userDrawer.setMaxState(0);
-          }
-          else
-          {
-            this.$.userDrawer.setMinState(0);
-            this.$.userDrawer.setMaxState(2);
+        attached:             function ()
+                              {
+                                this.keyEventTarget = document.body;
+                                window.addEventListener('WebComponentsReady', this._resetLayout.bind(this));
+                                document.addEventListener(
+                                  'cubex-drawer-state-changed', this._debounceResetLayout.bind(this)
+                                );
+                                document.addEventListener(
+                                  'cube-pagelet-content-ready', this._resetLayout.bind(this)
+                                );
+                              },
+        _debounceResetLayout: function ()
+                              {
+                                this.debounce('_resetLayout', this._resetLayout.bind(this), 210);
+                              },
+        _resetLayout:         function ()
+                              {
+                                this.$.adl.resetLayout();
+                              },
+        _keyboardHelp:        function (e)
+                              {
+                                if(this._isValidKeyPress(e))
+                                {
+                                  this.$.drawer.close();
+                                  this.$.toolbar.openKeyboardHelp();
+                                  e.preventDefault();
+                                }
+                              },
+        _viewChanged:         function (peek, narrow)
+                              {
+                                if(narrow)
+                                {
+                                  this.$.userDrawer.setMaxState(0);
+                                }
+                                else
+                                {
+                                  this.$.userDrawer.setMinState(0);
+                                  this.$.userDrawer.setMaxState(2);
 
-            if(peek && this.$.userDrawer.state === 0)
-            {
-              this.$.userDrawer.setState(1);
-            }
-          }
+                                  if(peek && this.$.userDrawer.state === 0)
+                                  {
+                                    this.$.userDrawer.setState(1);
+                                  }
+                                }
 
-          this.updateStyles();
-        },
-        _blurSearch:          function () {
-          this.focusSearch = false;
-          this.unlisten(this.$.search, 'blur', '_blurSearch');
-        },
-        _searchFocus:         function () {
-          this.focusSearch = true;
-          this.$.search.focus();
-          this.listen(this.$.search, 'blur', '_blurSearch');
-        },
-        _launchSearch:        function (e) {
-          if(this._isValidKeyPress(e))
-          {
-            this.$.drawer.close();
-            e.preventDefault();
-            if(this.$.search.getComputedStyleValue('display') === 'block')
-            {
-              this.$.search.focus();
-            }
-            else
-            {
-              this._searchFocus();
-            }
-          }
-        },
-        _toggleDrawer:        function (e) {
-          if(this._isValidKeyPress(e))
-          {
-            this.$.drawer.toggle();
-            e.preventDefault();
-          }
-        },
-        _closeDrawer:         function () {
-          this.$.drawer.close();
-        },
+                                this.updateStyles();
+                              },
+        _blurSearch:          function ()
+                              {
+                                this.focusSearch = false;
+                                this.unlisten(this.$.search, 'blur', '_blurSearch');
+                              },
+        _searchFocus:         function ()
+                              {
+                                this.focusSearch = true;
+                                this.$.search.focus();
+                                this.listen(this.$.search, 'blur', '_blurSearch');
+                              },
+        _launchSearch:        function (e)
+                              {
+                                if(this._isValidKeyPress(e))
+                                {
+                                  this.$.drawer.close();
+                                  e.preventDefault();
+                                  if(this.$.search.getComputedStyleValue('display') === 'block')
+                                  {
+                                    this.$.search.focus();
+                                  }
+                                  else
+                                  {
+                                    this._searchFocus();
+                                  }
+                                }
+                              },
+        _toggleDrawer:        function (e)
+                              {
+                                if(this._isValidKeyPress(e))
+                                {
+                                  this.$.drawer.toggle();
+                                  e.preventDefault();
+                                }
+                              },
+        _closeDrawer:         function ()
+                              {
+                                this.$.drawer.close();
+                              },
 
-        _isValidKeyPress:  function (e) {
-          if(e && e.detail && e.detail.keyboardEvent)
-          {
-            return e.detail.keyboardEvent.target.tagName === 'BODY';
-          }
-          return true;
-        },
-        _toggleUserDrawer: function () {
-          if(this.$.userDrawer.maxState === 0 || this.$.userDrawer.state === 0)
-          {
-            this.$.userDrawer.setMaxState(2);
-            this.$.userDrawer.setState(1);
-          }
-          else
-          {
-            this.$.userDrawer.setMaxState(0);
-          }
-        },
+        _isValidKeyPress:  function (e)
+                           {
+                             if(e && e.detail && e.detail.keyboardEvent)
+                             {
+                               return e.detail.keyboardEvent.target.tagName === 'BODY';
+                             }
+                             return true;
+                           },
+        _toggleUserDrawer: function ()
+                           {
+                             if(this.$.userDrawer.maxState === 0 || this.$.userDrawer.state === 0)
+                             {
+                               this.$.userDrawer.setMaxState(2);
+                               this.$.userDrawer.setState(1);
+                             }
+                             else
+                             {
+                               this.$.userDrawer.setMaxState(0);
+                             }
+                           },
 
-        _userDrawerStateChanged: function (newState) {
-          if(newState > this.$.userDrawer.state)
-          {
-            this.$.userDrawer.setMaxState(2);
-          }
-        },
+        _userDrawerStateChanged: function (newState)
+                                 {
+                                   if(newState > this.$.userDrawer.state)
+                                   {
+                                     this.$.userDrawer.setMaxState(2);
+                                   }
+                                 },
 
-        _showAppMenu: function (e) {
-          document.dispatchEvent(new CustomEvent('cubex-app-drawer-toggle'));
-          e.stopPropagation();
-        },
+        _showAppMenu: function (e)
+                      {
+                        document.dispatchEvent(new CustomEvent('cubex-app-drawer-toggle'));
+                        e.stopPropagation();
+                      },
 
         behaviors: [
           Polymer.IronA11yKeysBehavior,

@@ -439,253 +439,272 @@ Example:
         ],
 
         listeners:        {'cube-displace-changed': '_displaceChanged'},
-        _displaceChanged: function (e) {
-          this._heroHeaderFraction = e.detail.fraction;
-        },
+        _displaceChanged: function (e)
+                          {
+                            this._heroHeaderFraction = e.detail.fraction;
+                          },
 
         keyBindings: {'f': '_alertFid'},
-        _alertFid:   function (e) {
-          if(e.detail.keyboardEvent.shiftKey && e.detail.keyboardEvent.target.tagName === 'BODY'
-            && this.pageData && this.pageData.pageFid)
-          {
-            prompt('You are viewing an entity with a FID of:', this.pageData.pageFid);
-          }
-        },
+        _alertFid:   function (e)
+                     {
+                       if(e.detail.keyboardEvent.shiftKey && e.detail.keyboardEvent.target.tagName === 'BODY'
+                         && this.pageData && this.pageData.pageFid)
+                       {
+                         prompt('You are viewing an entity with a FID of:', this.pageData.pageFid);
+                       }
+                     },
 
-        ready: function () {
-          this.keyEventTarget = document.body;
-          document.addEventListener(
-            'cubex-app-drawer-toggle', function (e) {
-              this.$.appDrawer.toggle();
-            }.bind(this)
-          );
-          document.addEventListener(
-            'cubex-drawer-state-changed', function (e) {
-              if(e.detail.position === 'left')
-              {
-                this.$.ah.style.left = (e.detail.offset + 24) + 'px';
-              }
-              else if(e.detail.position === 'right')
-              {
-                this.$.ah.style.right = (e.detail.offset + 24) + 'px';
-              }
-            }.bind(this)
-          );
-          this.async(function () {
-            this._viewChanged(this._lock, this._peek);
-          });
-        },
+        ready: function ()
+               {
+                 this.keyEventTarget = document.body;
+                 document.addEventListener(
+                   'cubex-app-drawer-toggle', function (e)
+                   {
+                     this.$.appDrawer.toggle();
+                   }.bind(this)
+                 );
+                 document.addEventListener(
+                   'cubex-drawer-state-changed', function (e)
+                   {
+                     if(e.detail.position === 'left')
+                     {
+                       this.$.ah.style.left = (e.detail.offset + 24) + 'px';
+                     }
+                     else if(e.detail.position === 'right')
+                     {
+                       this.$.ah.style.right = (e.detail.offset + 24) + 'px';
+                     }
+                   }.bind(this)
+                 );
+                 this.async(function ()
+                            {
+                              this._viewChanged(this._lock, this._peek);
+                            });
+               },
 
-        _computeHeroHeader: function (hasHero, fraction) {
-          if(hasHero)
-          {
-            if(fraction < 1)
-            {
-              this.updateStyles({'--cube-app-header-background': 'white'});
-              return false;
-            }
-            else
-            {
-              this.updateStyles({'--cube-app-header-background': null});
-            }
-          }
-          return hasHero;
-        },
+        _computeHeroHeader: function (hasHero, fraction)
+                            {
+                              if(hasHero)
+                              {
+                                if(fraction < 1)
+                                {
+                                  this.updateStyles({'--cube-app-header-background': 'white'});
+                                  return false;
+                                }
+                                else
+                                {
+                                  this.updateStyles({'--cube-app-header-background': null});
+                                }
+                              }
+                              return hasHero;
+                            },
 
-        _computeHasSidebar: function (pageMenu, pageActions, panels) {
-          var items = 0;
-          if(pageMenu)
-          {
-            items += pageMenu.length;
-          }
-          if(pageActions)
-          {
-            items += pageActions.length;
-          }
-          if(panels)
-          {
-            items += panels.length;
-          }
-          return items > 0;
-        },
+        _computeHasSidebar: function (pageMenu, pageActions, panels)
+                            {
+                              var items = 0;
+                              if(pageMenu)
+                              {
+                                items += pageMenu.length;
+                              }
+                              if(pageActions)
+                              {
+                                items += pageActions.length;
+                              }
+                              if(panels)
+                              {
+                                items += panels.length;
+                              }
+                              return items > 0;
+                            },
 
-        _updateDrawer:   function (appData) {
-          if(this.narrow || !(appData && appData.Navigation && appData.Navigation.length))
-          {
-            this.$.appDrawer.setMaxState(0);
-          }
-          else
-          {
-            this.$.appDrawer.setMaxState(2);
-            if(this._collapse)
-            {
-              this.$.appDrawer.preferredState = 1;
-            }
-          }
-        },
-        _updateCrumbs:   function (pageData, project, appData) {
-          this._updateResources(appData);
-          var bc = [];
-          if(pageData && pageData.breadcrumb)
-          {
-            bc = typeof(pageData.breadcrumb) === 'string' ? JSON.parse(pageData.breadcrumb) : pageData.breadcrumb;
-          }
+        _updateDrawer:   function (appData)
+                         {
+                           if(this.narrow || !(appData && appData.Navigation && appData.Navigation.length))
+                           {
+                             this.$.appDrawer.setMaxState(0);
+                           }
+                           else
+                           {
+                             this.$.appDrawer.setMaxState(2);
+                             if(this._collapse)
+                             {
+                               this.$.appDrawer.preferredState = 1;
+                             }
+                           }
+                         },
+        _updateCrumbs:   function (pageData, project, appData)
+                         {
+                           this._updateResources(appData);
+                           var bc = [];
+                           if(pageData && pageData.breadcrumb)
+                           {
+                             bc = typeof(pageData.breadcrumb) === 'string' ? JSON.parse(pageData.breadcrumb) : pageData.breadcrumb;
+                           }
 
-          if(appData && pageData && project)
-          {
-            var prefix = '/' + appData.VendorID + '/' + appData.AppID;
-            for(var i in bc)
-            {
-              if(bc.hasOwnProperty(i))
-              {
-                bc[i].Url = prefix + '/' + bc[i].Url.replace(/^\//, '');
-              }
-            }
+                           if(appData && pageData && project)
+                           {
+                             var prefix = '/' + appData.VendorID + '/' + appData.AppID;
+                             for(var i in bc)
+                             {
+                               if(bc.hasOwnProperty(i))
+                               {
+                                 bc[i].Url = prefix + '/' + bc[i].Url.replace(/^\//, '');
+                               }
+                             }
 
-            if(!(appData.VendorID === 'kubex' && appData.AppID === 'dashboard' ))
-            {
-              // prepend app
-              bc.unshift(
-                {
-                  Title: this.i18n('app_name'),
-                  Url:   prefix
-                }
-              );
-              // prepend group
-              if(appData.Group)
-              {
-                bc.unshift(
-                  {
-                    Title: appData.Group,
-                    Url:   '/' + appData.Vendor + '/' + appData.Group
-                  }
-                );
-              }
-              // prepend category
-              if(this.appData.Category)
-              {
-                bc.unshift(
-                  {
-                    Title: this.$.cat.getCategory(appData.Category, true),
-                    Url:   '/_' + appData.Category
-                  }
-                );
-              }
-            }
-          }
-          return bc;
-        },
-        _viewChanged:    function (lock, peek, narrow) {
-          var drawer = this.drawer;
-          if(drawer)
-          {
-            if(this._touchEnabled())
-            {
-              drawer.setMinState(0);
-            }
-            else
-            {
-              drawer.setMinState(1);
-            }
+                             if(!(appData.VendorID === 'kubex' && appData.AppID === 'dashboard' ))
+                             {
+                               // prepend app
+                               bc.unshift(
+                                 {
+                                   Title: this.i18n('app_name'),
+                                   Url:   prefix
+                                 }
+                               );
+                               // prepend group
+                               if(appData.Group)
+                               {
+                                 bc.unshift(
+                                   {
+                                     Title: appData.Group,
+                                     Url:   '/' + appData.Vendor + '/' + appData.Group
+                                   }
+                                 );
+                               }
+                               // prepend category
+                               if(this.appData.Category)
+                               {
+                                 bc.unshift(
+                                   {
+                                     Title: this.$.cat.getCategory(appData.Category, true),
+                                     Url:   '/_' + appData.Category
+                                   }
+                                 );
+                               }
+                             }
+                           }
+                           return bc;
+                         },
+        _viewChanged:    function (lock, peek, narrow)
+                         {
+                           var drawer = this.drawer;
+                           if(drawer)
+                           {
+                             if(this._touchEnabled())
+                             {
+                               drawer.setMinState(0);
+                             }
+                             else
+                             {
+                               drawer.setMinState(1);
+                             }
 
-            if(lock)
-            {
-              drawer.setState(2);
-            }
-            else if(((narrow && !this._touchEnabled()) || peek) && (drawer.state < 1 || narrow))
-            {
-              drawer.setState(1);
-            }
-          }
-        },
-        _updateMaxState: function (narrow) {
-          if(this.drawer)
-          {
-            this.drawer.maxState = narrow ? 1 : 2;
-          }
-        },
+                             if(lock)
+                             {
+                               drawer.setState(2);
+                             }
+                             else if(((narrow && !this._touchEnabled()) || peek) && (drawer.state < 1 || narrow))
+                             {
+                               drawer.setState(1);
+                             }
+                           }
+                         },
+        _updateMaxState: function (narrow)
+                         {
+                           if(this.drawer)
+                           {
+                             this.drawer.maxState = narrow ? 1 : 2;
+                           }
+                         },
 
-        setDrawerState: function (state) {
-          var drawer = this.drawer;
-          drawer.setState(state);
-          if(state == 1)
-          {
-            drawer.close();
-          }
-        },
+        setDrawerState: function (state)
+                        {
+                          var drawer = this.drawer;
+                          drawer.setState(state);
+                          if(state == 1)
+                          {
+                            drawer.close();
+                          }
+                        },
 
-        _updateResources:    function (appData) {
-          var newRes = {};
-          if(appData)
-          {
-            newRes['app_name'] = appData.Name;
-          }
-          this.hydrateResources(newRes, true);
-        },
-        _calculatePageTitle: function (pageTitle) {
-          if(!pageTitle)
-          {
-            return "";
-          }
-          var title = "<h1 id=\"app-heading\">", closeEm = false, previous = "", current = "";
-          for(var i = 0; i < pageTitle.length; i++)
-          {
-            current = pageTitle[i];
-            if(current === "*")
-            {
-              if(previous === "*")
-              {
-                if(closeEm)
-                {
-                  title += "</em>";
-                  closeEm = false;
-                }
-                else
-                {
-                  title += "<em>";
-                  closeEm = true;
-                }
-                current = ""
-              }
-            }
-            else if(previous === "*")
-            {
-              title += previous + current;
-            }
-            else
-            {
-              title += current;
-            }
-            previous = current;
-          }
-          if(closeEm)
-          {
-            title += "</em>";
-          }
-          return title + "</h1>";
-        },
+        _updateResources:    function (appData)
+                             {
+                               var newRes = {};
+                               if(appData)
+                               {
+                                 newRes['app_name'] = appData.Name;
+                               }
+                               this.hydrateResources(newRes, true);
+                             },
+        _calculatePageTitle: function (pageTitle)
+                             {
+                               if(!pageTitle)
+                               {
+                                 return "";
+                               }
+                               var title = "<h1 id=\"app-heading\">", closeEm = false, previous = "", current = "";
+                               for(var i = 0; i < pageTitle.length; i++)
+                               {
+                                 current = pageTitle[i];
+                                 if(current === "*")
+                                 {
+                                   if(previous === "*")
+                                   {
+                                     if(closeEm)
+                                     {
+                                       title += "</em>";
+                                       closeEm = false;
+                                     }
+                                     else
+                                     {
+                                       title += "<em>";
+                                       closeEm = true;
+                                     }
+                                     current = ""
+                                   }
+                                 }
+                                 else if(previous === "*")
+                                 {
+                                   title += previous + current;
+                                 }
+                                 else
+                                 {
+                                   title += current;
+                                 }
+                                 previous = current;
+                               }
+                               if(closeEm)
+                               {
+                                 title += "</em>";
+                               }
+                               return title + "</h1>";
+                             },
 
-        _calculateConfigure: function (appData) {
-          var path = '';
-          if(appData)
-          {
-            if(appData.Config && appData.Config.length > 0)
-            {
-              path = '/' + appData.VendorID + '/' + appData.AppID + '/_configure';
-            }
-            else if(appData.AdvancedConfigPath)
-            {
-              path = '/' + appData.VendorID + '/' + appData.AppID + '/' + appData.AdvancedConfigPath.replace(/^\/+/, '');
-            }
-          }
-          return path;
-        },
+        _calculateConfigure: function (appData)
+                             {
+                               var path = '';
+                               if(appData)
+                               {
+                                 if(appData.Config && appData.Config.length > 0)
+                                 {
+                                   path = '/' + appData.VendorID + '/' + appData.AppID
+                                     + '/_configure';
+                                 }
+                                 else if(appData.AdvancedConfigPath)
+                                 {
+                                   path = '/' + appData.VendorID + '/' + appData.AppID
+                                     + '/' + AdvancedConfigPath.replace(/^\/+/, '');
+                                 }
+                               }
+                               return path;
+                             },
 
         /**
          * Retrieve the drawer element for this app
          * @returns {Element}
          */
-        get drawer() {
+        get drawer()
+        {
           return this.querySelector('#appDrawer') || this.root.querySelector('#appDrawer');
         },
 

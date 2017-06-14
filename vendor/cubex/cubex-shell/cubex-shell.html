@@ -24,12 +24,14 @@
           _showConsole: {type: Boolean, value: false, computed: '_computeShowConsole(_projects,_project)'},
           _showSignup:  {type: Boolean, value: false, computed: '_computeShowSignup(_projects,_project)'}
         },
-        _computeShowConsole: function (projects, project) {
-          return project || (projects && projects.length > 0);
-        },
-        _computeShowSignup:  function (projects, project) {
-          return (!project) && (projects && projects.length <= 0);
-        }
+        _computeShowConsole: function (projects, project)
+                             {
+                               return project || (projects && projects.length > 0);
+                             },
+        _computeShowSignup:  function (projects, project)
+                             {
+                               return (!project) && (projects && projects.length <= 0);
+                             }
       });
   </script>
 </dom-module>

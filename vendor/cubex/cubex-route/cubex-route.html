@@ -24,19 +24,20 @@
         },
 
         observers:      ['_computeValues(route.path)'],
-        _computeValues: function () {
-          var project = window.location.host.match(/^(.+?)\./)[1];
-          this.setProperties(
-            {
-              'fullPath':  this.route.path,
-              'projectId': project === 'console' ? '' : project,
-              'vendorId':  this._vendorActive ? this.vendorRouteData.vendor : '',
-              'appId':     this._appActive ? this.appRouteData.app : '',
-              'appPath':   this._appActive ? this._appTail.path : '',
-              'query':     this.projectActive ? this.query : ''
-            }
-          );
-        }
+        _computeValues: function ()
+                        {
+                          var project = window.location.host.match(/^(.+?)\./)[1];
+                          this.setProperties(
+                            {
+                              'fullPath':  this.route.path,
+                              'projectId': project === 'console' ? '' : project,
+                              'vendorId':  this._vendorActive ? this.vendorRouteData.vendor : '',
+                              'appId':     this._appActive ? this.appRouteData.app : '',
+                              'appPath':   this._appActive ? this._appTail.path : '',
+                              'query':     this.projectActive ? this.query : ''
+                            }
+                          );
+                        }
       }
     );
   </script>
