@@ -10,6 +10,7 @@
 <link rel="import" href="../cubex-hash/cubex-hash.html">
 <link rel="import" href="../cubex-category/cubex-category.html">
 <link rel="import" href="../cubex-category/cubex-category-page.html">
+<link rel="import" href="../cubex-group/cubex-group-page.html">
 <link rel="import" href="../cubex-vendor/cubex-vendor-page.html">
 <link rel="import" href="../cubex-error/cubex-error.html">
 <link rel="import" href="../cubex-route/cubex-route.html">
@@ -455,6 +456,30 @@
                                   this._pageDefinitionPath = fullPath;
                                 }
                               }
+                            }
+                            else if(projectData.GroupSummary[gaid])
+                            {
+                              this._integrationsPath = null;
+                              this._pageDefinitionPath = null;
+                              this._pageContentPath = null;
+                              this._loadedPath = null;
+                              this._appGaid = null;
+
+                              this.pageData = {
+                                title:      projectData.GroupSummary[gaid].description,
+                                breadcrumb: [
+                                  {
+                                    Title: this.$.cat.getCategory(projectData.GroupSummary[gaid].category, true),
+                                    Url:   '/_' + projectData.GroupSummary[gaid].category
+                                  },
+                                  {
+                                    Title: projectData.GroupSummary[gaid].name,
+                                    Url:   this.fullPath
+                                  }
+                                ]
+                              };
+                              this._pageDefinitionHtml = '';
+                              this._pageContentHtml = '<cubex-group-page group-id="' + gaid + '"></cubex-group-page>';
                             }
                             else
                             {

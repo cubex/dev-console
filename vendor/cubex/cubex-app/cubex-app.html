@@ -327,7 +327,7 @@ Example:
             </a>
           </div>
 
-          <cubex-breadcrumb crumbs="[[breadcrumbs]]" category="[[appData.Category]]"></cubex-breadcrumb>
+          <cubex-breadcrumb crumbs="[[breadcrumbs]]"></cubex-breadcrumb>
           <app-toolbar sticky>
             <cubex-app-header actions="[[headerActions]]" menu="[[headerMenu]]">
 
@@ -562,17 +562,17 @@ Example:
                                  }
                                );
                                // prepend group
-                               if(appData.Group)
+                               if(appData.GroupID)
                                {
                                  bc.unshift(
                                    {
-                                     Title: appData.Group,
-                                     Url:   '/' + appData.Vendor + '/' + appData.Group
+                                     Title: appData.GroupID,
+                                     Url:   '/' + appData.VendorID + '/' + appData.GroupID
                                    }
                                  );
                                }
                                // prepend category
-                               if(this.appData.Category)
+                               if(appData.Category)
                                {
                                  bc.unshift(
                                    {

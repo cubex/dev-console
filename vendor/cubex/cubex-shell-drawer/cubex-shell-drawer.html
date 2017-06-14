@@ -123,13 +123,6 @@
         text-decoration: none;
       }
 
-      span.pin {
-        float: right;
-        height: 30px;
-        display: block;
-        width: 30px;
-      }
-
       cubex-pinned {
         display: none;
       }
@@ -141,6 +134,10 @@
       cubex-pinned[pinned] {
         color: var(--accent-400-color);
         display: block;
+      }
+
+      .app-vendor {
+        font-size: 12px;
       }
     </style>
 
@@ -168,20 +165,19 @@
         <template is="dom-if" if="[[project]]">
           <cubex-shell-drawer-panel>
             <cube-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
-              <template is="dom-repeat" items="[[__appGroups(_projectRegistryData)]]" as="group">
+              <template is="dom-repeat" items="[[__toArray(_groupedApps)]]" as="category">
                 <cube-list-group>
                   <a href="/_[[group.name]]" slot="title" on-tap="_toggleParent" class="category-link">
-                    <cubex-category key="[[group.name]]"></cubex-category>
+                    <cubex-category key="[[category.name]]"></cubex-category>
                   </a>
-                  <template is="dom-repeat" items="[[group.apps]]" as="app" filter="_filterApps">
+                  <template is="dom-repeat" items="[[__toArray(category.apps)]]" as="app">
                     <a href="/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
-                      <cube-li compact-icon highlight="[[app.Pinned]]">
-                          <span class="pin">
-                            <cubex-pinned vendor="[[app.vendor_id]]" app="[[app.id]]"
-                                          pinned="{{app.Pinned}}"></cubex-pinned>
-                          </span>
+                      <cube-li compact-icon highlight="[[app.pinned]]">
+                        <cubex-pinned vendor="[[app.vendor_id]]" app="[[app.id]]" pinned="{{app.pinned}}"
+                                      slot="actions"></cubex-pinned>
                         <cube-icon slot="icon" icon="[[app.icon]]"></cube-icon>
                         [[app.name]]
+                        <span slot="secondary" class="app-vendor">by [[app.vendor_id]]</span>
                       </cube-li>
                     </a>
                   </template>
@@ -253,6 +249,7 @@
             value: "icons:arrow-drop-down"
           },
           _projectRegistryData: {type: Object},
+          _groupedApps:         {type: Object, computed: '_computeGroupedApps(_projectRegistryData)'},
           project:              {type: Object},
           avatar:               {
             type:  String,
@@ -291,35 +288,53 @@
                         }
                       },
 
-        __appGroups: function (projectRegistry)
-                     {
-                       var groups = {};
-                       if(projectRegistry)
-                       {
-                         for(var idx in projectRegistry.AppSummary)
-                         {
-                           if(projectRegistry.AppSummary.hasOwnProperty(idx))
-                           {
-                             var app = projectRegistry.AppSummary[idx];
-                             if(this._filterApps(app))
+        __toArray: function (o)
+                   {
+                     return Object.keys(o).map(function (i) {return o[i];});
+                   },
+
+        _computeGroupedApps: function (projectRegistry)
                              {
-                               if(!groups[app.category])
+                               var idx, categories = {}, groups = [];
+
+                               if(projectRegistry)
                                {
-                                 groups[app.category] = {name: app.category, apps: []};
+                                 for(idx in projectRegistry.AppSummary)
+                                 {
+                                   if(projectRegistry.AppSummary.hasOwnProperty(idx))
+                                   {
+                                     var app = projectRegistry.AppSummary[idx];
+                                     if(this._filterApps(app))
+                                     {
+                                       if(!categories[app.category])
+                                       {
+                                         categories[app.category] = {name: app.category, apps: []};
+                                       }
+                                       var category = categories[app.category];
+
+                                       if(app.group)
+                                       {
+                                         var groupId = app.vendor_id + '/' + app.group;
+                                         if(groups.indexOf(groupId) === -1)
+                                         {
+                                           category.apps.push(projectRegistry.GroupSummary[groupId]);
+                                           groups.push(groupId);
+                                         }
+                                       }
+                                       else
+                                       {
+                                         category.apps.push(app);
+                                       }
+                                     }
+                                   }
+                                 }
                                }
-                               var group = groups[app.category];
-                               group.apps.push(app);
-                             }
-                           }
-                         }
-                       }
-                       return Object.keys(groups).map(function (i) {return groups[i];});
-                     },
+                               return categories;
+                             },
 
         _filterApps: function (item)
                      {
-                       return item.app_type === 'kubex.application.project'
-                         && item.ui_mode === 'full';
+                       return item.app_type === 'kubex.application.project' && item.ui_mode === 'full';
                      },
 
         behaviors: [

@@ -76,17 +76,17 @@
         };
       }
 
-      :host cubex-link[active] {
+      :host cubex-link[active] cube-li {
         --cube-li-style: {
           @apply --paper-font-body2;
-          background: var(--accent-50-color) !important;
+          background: var(--accent-50-color);
         };
         --cube-li-content-style: {
           color: var(--accent-400-color);
         };
       }
 
-      :host cube-li[active]:before {
+      :host cubex-link[active] cube-li:before {
         content: ' ';
         position: absolute;
         left: 0;
