@@ -80,14 +80,14 @@
 
     <page-title page-title="[[_pageTitle]]"></page-title>
 
-    <cubex-app id="app" app-data="[[appData]]" page-data="[[pageData]]"
+    <cubex-app id="app" app-data="[[_appData]]" page-data="[[pageData]]"
                back-path="[[_backPath]]" page-path="[[_pagePath]]"
                header-menu="[[_headerMenus]]" header-actions="[[_headerActions]]"
                page-menu="[[_pageMenus]]" page-actions="[[_pageActions]]"
                panels="[[_panels]]"
                has-hero="[[_pageDefinitionContentHasHero]]">
       <cubex-drawer-content slot="drawer-content" id="appDrawerContent">
-        <cubex-app-menu app-data="[[appData]]"></cubex-app-menu>
+        <cubex-app-menu app-data="[[_appData]]"></cubex-app-menu>
       </cubex-drawer-content>
       <cubex-app-spinner slot="spinner" hidden$="[[!_pageSpinnerVisible]]"></cubex-app-spinner>
 
@@ -118,6 +118,7 @@
           _pageSpinnerVisible:           {type: Boolean, value: false},
           pageData:                      {type: Object, notify: true},
           appData:                       {type: Object, notify: true},
+          _appData:                      {type: Object, notify: true, computed: '_computeAppData(appData,projectData)'},
           _backPath:                     {
             type:     String,
             computed: '_computedBackPath(appData.VendorID,appData.AppID,pageData.backPath)'
@@ -152,6 +153,61 @@
           '_updateSidebar(_integration,_integrations,appPath,_appGaid,projectData)',
           '_pageHtmlChanged(_pageDefinitionHtml,_pageContentHtml)'
         ],
+
+        _computeAppData: function (appData, projectData)
+                         {
+                           if(projectData && ((appData && appData.GroupID) || (!appData && this.vendorId && this.appId)))
+                           {
+                             // update the nav
+                             var groupGaid;
+                             if(appData && appData.GroupID)
+                             {
+                               groupGaid = this.vendorId + '/' + appData.GroupID;
+                             }
+                             else
+                             {
+                               groupGaid = this.vendorId + '/' + this.appId;
+                             }
+
+                             if(projectData.GroupSummary[groupGaid])
+                             {
+                               var group = projectData.GroupSummary[groupGaid];
+                               // create navigation array
+                               var navigation = [];
+                               for(var idx in projectData.GroupSummary[groupGaid].apps)
+                               {
+                                 if(projectData.GroupSummary[groupGaid].apps.hasOwnProperty(idx))
+                                 {
+                                   var appId = this.vendorId + '/' + projectData.GroupSummary[groupGaid].apps[idx],
+                                     app = projectData.AppSummary[appId];
+                                   navigation.push(
+                                     {
+                                       Path: '/' + appId,
+                                       Icon: app.icon,
+                                       ID:   appId,
+                                       Name: {en: app.name}
+                                     });
+                                 }
+                               }
+
+                               // update appData
+                               if(!appData)
+                               {
+                                 appData = {};
+                               }
+                               appData.Name = {en: group.name};
+                               appData.VendorID = group.vendor_id;
+                               appData.AppID = group.id;
+                               appData.Icon = group.icon;
+                               appData.Navigation = navigation;
+                             }
+                             else if(!appData)
+                             {
+                               appData = this._appData;
+                             }
+                           }
+                           return appData;
+                         },
 
         _appsChanged:         function (e)
                               {
@@ -465,6 +521,7 @@
                               this._loadedPath = null;
                               this._appGaid = null;
 
+                              this.appData = null;
                               this.pageData = {
                                 title:      projectData.GroupSummary[gaid].description,
                                 breadcrumb: [
@@ -492,6 +549,7 @@
                               if(projectData.Relationships && projectData.Relationships[gaid])
                               {
                                 // no permission? 401
+                                this.appData = null;
                                 this.pageData = {title: 'Unauthorized'};
                                 this._pagePath = null;
                                 this._pageDefinitionHtml = '<cubex-error code="401">(401) Unauthorized</cubex-error>';
@@ -501,6 +559,7 @@
                               else
                               {
                                 // no relationship? 404
+                                this.appData = null;
                                 this.pageData = {title: 'Page Not Found'};
                                 this._pagePath = null;
                                 this._pageDefinitionHtml = '<cubex-error code="400">(404) Page Not Found</cubex-error>';
@@ -522,6 +581,7 @@
                               if(this.vendorId[0] === '_')
                               {
                                 var cat = this.vendorId.substring(1);
+                                this.appData = null;
                                 this.pageData = {
                                   title:      this.$.cat.getCategory(cat),
                                   breadcrumb: [{Title: this.$.cat.getCategory(cat, true), Url: this.fullPath}]
@@ -534,6 +594,7 @@
                               else
                               {
                                 var vendor = this.vendorId;
+                                this.appData = null;
                                 this.pageData = {
                                   title:      vendor,
                                   breadcrumb: [{Title: vendor, Url: this.fullPath}]
@@ -545,6 +606,7 @@
                             }
                             else
                             {
+                              this.appData = null;
                               this.pageData = null;
                               this._pageDefinitionHtml = '';
                               this._pageContentHtml = '';

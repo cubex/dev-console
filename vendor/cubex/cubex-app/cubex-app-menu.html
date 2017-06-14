@@ -145,15 +145,13 @@
         </a>
       </template>
 
-      <template restamp is="dom-if" if="[[appData.Navigation.length]]">
+      <template restamp is="dom-if" if="[[_navigation]]">
         <cube-list>
-          <template is="dom-repeat" items="[[appData.Navigation]]">
-            <cubex-link href="/[[appData.VendorID]]/[[appData.AppID]]/[[_trimPath(item.Path)]]"
-                        on-tap="_collapseDrawer">
+          <template is="dom-repeat" items="[[_navigation]]">
+            <cubex-link href="[[item.Path]]" on-tap="_collapseDrawer">
               <cube-li compact-icon>
                 <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
-                <bind-factory bind="[[_concat('nav_', item.ID, '_name')]]" as="{{item.i18nKey}}"></bind-factory>
-                [[i18n(item.i18nKey)]]
+                [[item.i18n_name]]
                 <paper-ripple></paper-ripple>
               </cube-li>
             </cubex-link>
@@ -183,8 +181,26 @@
 
         properties: {
           appData:     {type: Object, notify: true, observer: '_resetResources'},
+          _navigation: {type: Array, computed: '_updateNav(appData.Navigation,resources)'},
           _drawerOpen: {type: Boolean, value: false}
         },
+
+        _updateNav: function (nav, resources)
+                    {
+                      if(nav && resources)
+                      {
+                        for(var i in nav)
+                        {
+                          if(nav.hasOwnProperty(i))
+                          {
+                            var i18nKey = 'nav_' + nav[i].ID + '_name';
+                            nav[i].i18n_name = this.i18n(i18nKey);
+                          }
+                        }
+                        return nav;
+                      }
+                      return [];
+                    },
 
         attached: function ()
                   {
@@ -195,7 +211,7 @@
 
         _refreshDrawerState: function ()
                              {
-                               this._drawerOpen = this._getApp().drawer.state == 2;
+                               this._drawerOpen = this._getApp().drawer.state === 2;
                              },
 
         _getApp:         function ()
@@ -204,7 +220,7 @@
                            this.iterate(
                              this.getPath(this), function (parent)
                              {
-                               if(parent.tagName == 'CUBEX-APP')
+                               if(parent.tagName === 'CUBEX-APP')
                                {
                                  app = parent;
                                  return false;
@@ -224,7 +240,7 @@
                            {
                              app.drawer.close();
                            }
-                           else if(app.drawer.state != 2)
+                           else if(app.drawer.state !== 2)
                            {
                              this._setDrawerState(1);
                            }
@@ -236,7 +252,7 @@
                            {
                              app.drawer.toggle();
                            }
-                           else if(app.drawer.state == 2)
+                           else if(app.drawer.state === 2)
                            {
                              this._setDrawerState(1);
                            }
