@@ -16,6 +16,8 @@
     "paper-button": "PolymerElements/paper-button#1.9 - 2",
     "paper-tooltip": "PolymerElements/paper-tooltip#1.9 - 2",
     "paper-input": "PolymerElements/paper-input#1.9 - 2",
+    "paper-checkbox": "PolymerElements/paper-checkbox#1.9 - 2",
+    "paper-radio-button": "PolymerElements/paper-radio-button#1.9 - 2",
     "iron-icon": "PolymerElements/iron-icon#1.9 - 2",
     "iron-icons": "PolymerElements/iron-icons#1.9 - 2",
     "app-route": "PolymerElements/app-route#1.9 - 2",
@@ -35,11 +37,11 @@
     "iron-ajax": "1.9 - 2"
   },
   "homepage": "https://github.com/CubexElements/cubex",
-  "_release": "19476a8183",
+  "_release": "952236b3de",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "19476a8183bec4aac0e77b318895226e19ca068e"
+    "commit": "952236b3defc94011e8a36883569a1a8ce0da5eb"
   },
   "_source": "https://github.com/CubexElements/cubex.git",
   "_target": "*",

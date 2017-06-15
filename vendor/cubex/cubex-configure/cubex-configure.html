@@ -18,7 +18,7 @@
       }
 
       cubex-configure-item {
-        margin-bottom: 4px;
+        margin-bottom: 15px;
       }
     </style>
 
@@ -27,24 +27,29 @@
     <h2>[[i18nResource(appData.Name)]] Settings</h2>
 
     <!-- menu -->
-    <div id="wrapper">
-      <div>
-        <template is="dom-if" if="[[appData.Config]]">
-          <cube-action icon="icons:settings" on-tap="_tapMenu" data-id="0"></cube-action>
-        </template>
-      </div>
+    <cube-form>
+      <div id="wrapper">
+        <div>
+          <template is="dom-if" if="[[appData.Config]]">
+            <cube-action icon="icons:settings" on-tap="_tapMenu" data-id="0"></cube-action>
+          </template>
+        </div>
 
-      <!-- content -->
-      <iron-pages id="configPages" selected="0">
-        <template is="dom-if" if="[[appData.Config]]">
-          <div>
-            <template is="dom-repeat" items="[[appData.Config]]">
-              <cubex-configure-item definition="[[item]]"></cubex-configure-item>
+        <!-- content -->
+        <div>
+          <iron-pages id="configPages" selected="0">
+            <template is="dom-if" if="[[appData.Config]]">
+              <div>
+                <template is="dom-repeat" items="[[appData.Config]]">
+                  <cubex-configure-item definition="[[item]]"></cubex-configure-item>
+                </template>
+              </div>
             </template>
-          </div>
-        </template>
-      </iron-pages>
-    </div>
+          </iron-pages>
+          <button>Save</button>
+        </div>
+      </div>
+    </cube-form>
   </template>
   <script>
     Polymer(
