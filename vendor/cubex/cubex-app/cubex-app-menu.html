@@ -327,11 +327,11 @@
                                {
                                  if(appData.GroupID)
                                  {
-                                   url = appData.GroupID
+                                   url = "/" + appData.VendorID + "/" + appData.GroupID
                                  }
                                  else
                                  {
-                                   url = appData.VendorID + "/" + appData.AppID
+                                   url = "/" + appData.VendorID + "/" + appData.AppID
                                  }
                                }
                                return url;
