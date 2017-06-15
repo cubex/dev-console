@@ -87,7 +87,7 @@
                panels="[[_panels]]"
                has-hero="[[_pageDefinitionContentHasHero]]">
       <cubex-drawer-content slot="drawer-content" id="appDrawerContent">
-        <cubex-app-menu app-data="[[_appData]]"></cubex-app-menu>
+        <cubex-app-menu app-data="[[_appData]]" project-data="[[projectData]]"></cubex-app-menu>
       </cubex-drawer-content>
       <cubex-app-spinner slot="spinner" hidden$="[[!_pageSpinnerVisible]]"></cubex-app-spinner>
 
@@ -194,11 +194,12 @@
                                if(!appData)
                                {
                                  appData = {};
+                                 appData.AppID = group.id;
+                                 appData.VendorID = group.vendor_id;
+                                 appData.Name = {en: group.name};
+                                 appData.Icon = group.icon;
+                                 appData.TrustedVendor = true;
                                }
-                               appData.Name = {en: group.name};
-                               appData.VendorID = group.vendor_id;
-                               appData.AppID = group.id;
-                               appData.Icon = group.icon;
                                appData.Navigation = navigation;
                              }
                              else if(!appData)

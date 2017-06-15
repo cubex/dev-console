@@ -7,7 +7,7 @@
 <link rel="import" href="../../bind-factory/bind-factory.html">
 <link rel="import" href="../cubex-route/cubex-route.html">
 
-<dom-module id="cubex-app-menu" attributes="app-data">
+<dom-module id="cubex-app-menu" attributes="app-data project-data">
   <template strip-whitespace>
     <style>
       :host {
@@ -139,8 +139,8 @@
 
     <div id="content">
       <template restamp is="dom-if" if="[[appData.Name]]">
-        <a href="/[[appData.VendorID]]/[[appData.AppID]]" on-tap="_collapseDrawer">
-          <cubex-app-title icon="[[appData.Icon]]" title="[[i18n('app_name')]]" vendor="[[appData.VendorID]]"
+        <a href="[[_titleLink]]" on-tap="_collapseDrawer">
+          <cubex-app-title icon="[[_titleIcon]]" title="[[i18n('app_name')]]" vendor="[[appData.VendorID]]"
                            trusted-vendor="[[appData.TrustedVendor]]"></cubex-app-title>
         </a>
       </template>
@@ -181,7 +181,10 @@
 
         properties: {
           appData:     {type: Object, notify: true, observer: '_resetResources'},
+          projectData: {type: Object, notify: true, observer: '_resetResources'},
           _navigation: {type: Array, computed: '_updateNav(appData.Navigation,resources)'},
+          _titleIcon:  {type: String, computed: '_calculateTitleIcon(appData,projectData)'},
+          _titleLink:  {type: String, computed: '_calculateTitleLink(appData,projectData)'},
           _drawerOpen: {type: Boolean, value: false}
         },
 
@@ -271,27 +274,68 @@
                      return (path || '').replace(/^\/+/, '');
                    },
 
-        _resetResources: function ()
-                         {
-                           // reset resources
-                           var newRes = {
-                             'collapse': {'en': 'Collapse Menu', 'fr': 'Réduire Menu'},
-                             'keep_out': {'en': 'Keep Menu Out', 'fr': 'Gardez Menu Out'}
-                           };
-
-                           if(this.appData && this.appData.Name)
-                           {
-                             newRes['app_name'] = this.appData.Name;
-                             this.iterate(
-                               this.appData.Navigation, function (nav)
+        _resetResources:     function ()
+                             {
+                               // reset resources
+                               var newRes = {
+                                 'collapse': {'en': 'Collapse Menu', 'fr': 'Réduire Menu'},
+                                 'keep_out': {'en': 'Keep Menu Out', 'fr': 'Gardez Menu Out'}
+                               };
+                               if(this.appData && this.appData.Name)
                                {
-                                 newRes['nav_' + nav.ID + '_name'] = nav.Name;
-                                 newRes['nav_' + nav.ID + '_description'] = nav.Description;
+                                 newRes['app_name'] = this.appData.Name;
+                                 if(this.appData.GroupID)
+                                 {
+                                   var groupGaid = this.appData.VendorID + "/" + this.appData.GroupID;
+                                   if(this.projectData.GroupSummary[groupGaid])
+                                   {
+                                     var groupData = this.projectData.GroupSummary[groupGaid];
+                                     newRes['app_name'] = groupData.name;
+                                   }
+                                 }
+                                 this.iterate(
+                                   this.appData.Navigation, function (nav)
+                                   {
+                                     newRes['nav_' + nav.ID + '_name'] = nav.Name;
+                                     newRes['nav_' + nav.ID + '_description'] = nav.Description;
+                                   }
+                                 );
                                }
-                             );
-                           }
-                           this.hydrateResources(newRes, true);
-                         },
+                               this.hydrateResources(newRes, true);
+                             },
+        _calculateTitleIcon: function (appData, projectData)
+                             {
+                               var icon = "";
+                               if(appData)
+                               {
+                                 icon = appData.Icon;
+                                 if(appData.GroupID && projectData)
+                                 {
+                                   var groupGaid = appData.VendorID + "/" + appData.GroupID;
+                                   if(projectData.GroupSummary[groupGaid])
+                                   {
+                                     icon = projectData.GroupSummary[groupGaid].icon;
+                                   }
+                                 }
+                               }
+                               return icon;
+                             },
+        _calculateTitleLink: function (appData)
+                             {
+                               var url = "";
+                               if(appData)
+                               {
+                                 if(appData.GroupID)
+                                 {
+                                   url = appData.GroupID
+                                 }
+                                 else
+                                 {
+                                   url = appData.VendorID + "/" + appData.AppID
+                                 }
+                               }
+                               return url;
+                             },
 
         behaviors: [
           Polymer.CubeElementPathBehavior,
