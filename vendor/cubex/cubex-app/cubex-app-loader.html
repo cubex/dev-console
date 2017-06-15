@@ -198,6 +198,7 @@
                                  appData.VendorID = group.vendor_id;
                                  appData.Name = {en: group.name};
                                  appData.Icon = group.icon;
+                                 appData.Category = group.category;
                                  appData.TrustedVendor = true;
                                }
                                appData.Navigation = navigation;
@@ -525,16 +526,7 @@
                               this.appData = null;
                               this.pageData = {
                                 title:      projectData.GroupSummary[gaid].description,
-                                breadcrumb: [
-                                  {
-                                    Title: this.$.cat.getCategory(projectData.GroupSummary[gaid].category, true),
-                                    Url:   '/_' + projectData.GroupSummary[gaid].category
-                                  },
-                                  {
-                                    Title: projectData.GroupSummary[gaid].name,
-                                    Url:   this.fullPath
-                                  }
-                                ]
+                                breadcrumb: []
                               };
                               this._pageDefinitionHtml = '';
                               this._pageContentHtml = '<cubex-group-page group-id="' + gaid + '"></cubex-group-page>';

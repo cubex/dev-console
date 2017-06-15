@@ -424,7 +424,7 @@ Example:
           narrow:              {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:             {type: Object, value: null, observer: '_updateResources'},
           pageData:            {type: Object},
-          breadcrumbs:         {type: Object, computed: '_updateCrumbs(pageData,project,appData)'},
+          breadcrumbs:         {type: Array, notify: true, computed: '_updateCrumbs(pageData,project,appData)'},
           drawerDisabled:      {type: Boolean, value: false, reflectToAttribute: true},
           _pageTitle:          {type: String, value: '', computed: '_calculatePageTitle(pageData.title)'},
           _configPath:         {type: String, value: '', computed: '_calculateConfigure(appData, appData.*)'},
@@ -538,7 +538,9 @@ Example:
                            var bc = [];
                            if(pageData && pageData.breadcrumb)
                            {
-                             bc = typeof(pageData.breadcrumb) === 'string' ? JSON.parse(pageData.breadcrumb) : pageData.breadcrumb;
+                             bc = typeof(pageData.breadcrumb) === 'string'
+                               ? JSON.parse(pageData.breadcrumb)
+                               : pageData.breadcrumb.slice(0);
                            }
 
                            if(appData && pageData && project)
