@@ -26,7 +26,8 @@
     <cubex-registry project-data="{{projectData}}"></cubex-registry>
 
     <cube-carousel count="5">
-      <template style="display:none" is="dom-repeat" items="[[_getCategories(projectData.AppSummary)]]">
+      <template style="display:none" is="dom-repeat"
+                items="[[_getCategories(projectData.GroupSummary, projectData.AppSummary)]]">
         <a href="/[[item.vendor_id]]/[[item.id]]">
           <cube-tile color="[[_getColor(index)]]" icon="[[item.icon]]" heading="[[item.name]]"
                      text="[[item.description]]"></cube-tile>
@@ -44,14 +45,26 @@
           category: {type: String},
           _colors:  {type: Array, value: ['pink', 'orange', 'teal', 'purple', 'light-green', 'red', 'green', 'blue']}
         },
-        _getCategories: function (appSummaries)
+        _getCategories: function (groupSummary, appSummaries)
                         {
-                          var cats = [];
+                          var cats = [], groups = [];
                           for(var idx in appSummaries)
                           {
-                            if(appSummaries.hasOwnProperty(idx) && appSummaries[idx].category == this.category)
+                            if(appSummaries.hasOwnProperty(idx) && appSummaries[idx].category === this.category)
                             {
-                              cats.push(appSummaries[idx]);
+                              if(appSummaries[idx].group)
+                              {
+                                var groupId = appSummaries[idx].vendor_id + '/' + appSummaries[idx].group;
+                                if(groups.indexOf(groupId) === -1)
+                                {
+                                  cats.push(groupSummary[groupId]);
+                                  groups.push(groupId);
+                                }
+                              }
+                              else
+                              {
+                                cats.push(appSummaries[idx]);
+                              }
                             }
                           }
                           return cats;
