@@ -28,11 +28,11 @@
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
     "web-component-tester": "^6.0.0"
   },
-  "_release": "a0e9f9b35f",
+  "_release": "b74a4f421d",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "a0e9f9b35fb0c184d1dfcb2ada2ea0691ae3f517"
+    "commit": "b74a4f421d96c71cf604f2f579ba5d70b5ace246"
   },
   "_source": "https://github.com/CubexElements/cube-behavior.git",
   "_target": "*",

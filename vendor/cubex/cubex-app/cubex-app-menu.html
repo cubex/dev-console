@@ -96,6 +96,16 @@
         background: var(--accent-700-color);
       }
 
+      #configure {
+        align-self: flex-end;
+        background: var(--theme-500-color);
+      }
+
+      #configure:hover {
+        background: var(--theme-600-color);
+        color: var(--accent-700-color);
+      }
+
       #toggler {
         @apply --accent-400;
         @apply --cubex-app-menu-toggler;
@@ -160,6 +170,16 @@
       </template>
 
       <div class="flex"></div>
+      <template is="dom-if" if="[[appData.AdvancedConfigPath]]">
+        <a href="/[[appData.VendorID]]/[[appData.AppID]]/[[_trimPath(appData.AdvancedConfigPath)]]"
+           on-tap="_collapseDrawer">
+          <cube-li id="configure" primary="[[i18n('configure')]]" compact-icon>
+            <cube-icon slot="icon" icon="icons:settings"></cube-icon>
+            [[i18n('configure')]]
+            <paper-ripple></paper-ripple>
+          </cube-li>
+        </a>
+      </template>
 
       <cube-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]" compact-icon>
         <cube-icon icon="icons:chrome-reader-mode" slot="icon"></cube-icon>
@@ -278,8 +298,9 @@
                              {
                                // reset resources
                                var newRes = {
-                                 'collapse': {'en': 'Collapse Menu', 'fr': 'Réduire Menu'},
-                                 'keep_out': {'en': 'Keep Menu Out', 'fr': 'Gardez Menu Out'}
+                                 'configure': {'en': 'Advanced Settings', 'fr': 'Réglages avancés'},
+                                 'collapse':  {'en': 'Collapse Menu', 'fr': 'Réduire Menu'},
+                                 'keep_out':  {'en': 'Keep Menu Out', 'fr': 'Gardez Menu Out'}
                                };
                                if(this.appData && this.appData.Name)
                                {

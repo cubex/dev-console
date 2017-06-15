@@ -1,0 +1,32 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="cubex-configure.html">
+
+<dom-module id="cubex-configure-item" attributes="definition value">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .description {
+        @apply --text-secondary;
+      }
+    </style>
+    <label>[[i18nResource(definition.Name)]]
+      <input name="id" type="url"/></label>
+    <div class="description">[[i18nResource(definition.Description)]]</div>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:         'cubex-configure-item',
+        properties: {
+          definition: {type: Object},
+          value:      {type: String}
+        },
+        behaviors:  [Polymer.CubeI18nBehavior]
+      }
+    );
+  </script>
+</dom-module>

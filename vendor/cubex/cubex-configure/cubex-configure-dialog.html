@@ -1,0 +1,32 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-dialog/cube-dialog.html">
+<link rel="import" href="cubex-configure.html">
+
+
+<dom-module id="cubex-configure-dialog" attributes="gaid">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <cube-dialog id="dlg" with-backdrop>
+      <cubex-configure gaid="[[gaid]]"></cubex-configure>
+    </cube-dialog>
+  </template>
+  <script>
+    Polymer(
+      {
+        is:         'cubex-configure-dialog',
+        properties: {
+          gaid: {type: String}
+        },
+        open:       function ()
+                    {
+                      this.$.dlg.open();
+                    }
+      }
+    );
+  </script>
+</dom-module>

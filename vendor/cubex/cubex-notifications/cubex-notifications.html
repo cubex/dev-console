@@ -6,6 +6,7 @@
 <link rel="import" href="../../cube-icon/cube-icon.html">
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
+<link rel="import" href="../cubex-configure/cubex-configure-dialog.html">
 <link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="cubex-notification.html">
 
@@ -116,9 +117,8 @@
       <div id="drop">
         <cube-li class="uc">
           Notifications
-          <a id="settings" href="/kubex/notify/_configure" slot="actions">
-            <cube-action size="20" icon="icons:settings"></cube-action>
-          </a>
+          <cube-action slot="actions" id="settings" on-tap="__openCfg" size="20" icon="icons:settings"></cube-action>
+          <cubex-configure-dialog id="configDlg" gaid="kubex/notify"></cubex-configure-dialog>
         </cube-li>
 
         <template is="dom-if" if="[[_notificationsArray.length]]">
@@ -306,6 +306,11 @@
                      xhr.setRequestHeader('x-requested-by', 'cubex-notifications');
                      xhr.withCredentials = true;
                      xhr.send();
+                   },
+
+        __openCfg: function ()
+                   {
+                     this.$.configDlg.open();
                    },
 
         behaviors: [

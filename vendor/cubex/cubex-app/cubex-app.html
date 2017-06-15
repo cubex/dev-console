@@ -22,6 +22,7 @@
 <link rel="import" href="../cubex-link/cubex-link.html">
 <link rel="import" href="../cubex-hash/cubex-hash.html">
 <link rel="import" href="../cubex-category/cubex-category.html">
+<link rel="import" href="../cubex-configure/cubex-configure-dialog.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -301,7 +302,7 @@ Example:
         overflow: hidden;
       }
 
-      div.configure a {
+      div.configure cube-action {
         @apply --primary-50-text;
         @apply --text-secondary;
       }
@@ -321,10 +322,10 @@ Example:
       <slot slot="drawer-content" name="drawer-content"></slot>
       <app-header-layout id="ahl">
         <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
-          <div class="configure" hidden="[[!_configPath]]">
-            <a href="[[_configPath]]">
-              <cube-action slot="icon" icon="icons:settings"></cube-action>
-            </a>
+          <div class="configure" hidden="[[!_hasConfig]]">
+            <cube-action on-tap="_openCfg" slot="icon" icon="icons:settings"></cube-action>
+            <cubex-configure-dialog id="configDlg"
+                                    gaid="[[appData.VendorID]]/[[appData.AppID]]"></cubex-configure-dialog>
           </div>
 
           <cubex-breadcrumb crumbs="[[breadcrumbs]]"></cubex-breadcrumb>
@@ -422,12 +423,12 @@ Example:
           backPath:            {type: String},
           pagePath:            {type: String},
           narrow:              {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
-          appData:             {type: Object, value: null, observer: '_updateResources'},
+          appData:             {type: Object, value: null},
           pageData:            {type: Object},
           breadcrumbs:         {type: Array, notify: true, computed: '_updateCrumbs(pageData,project,appData)'},
           drawerDisabled:      {type: Boolean, value: false, reflectToAttribute: true},
           _pageTitle:          {type: String, value: '', computed: '_calculatePageTitle(pageData.title)'},
-          _configPath:         {type: String, value: '', computed: '_calculateConfigure(appData, appData.*)'},
+          _hasConfig:          {type: String, value: '', computed: '_calculateConfigure(appData, appData.*)'},
           _lock:               {type: Boolean, value: false},
           _peek:               {type: Boolean, value: false},
           _collapse:           {type: Boolean, value: false}
@@ -534,7 +535,6 @@ Example:
                          },
         _updateCrumbs:   function (pageData, project, appData)
                          {
-                           this._updateResources(appData);
                            var bc = [];
                            if(pageData && pageData.breadcrumb)
                            {
@@ -559,7 +559,7 @@ Example:
                                // prepend app
                                bc.unshift(
                                  {
-                                   Title: this.i18n('app_name'),
+                                   Title: this.i18nResource(appData.Name),
                                    Url:   prefix
                                  }
                                );
@@ -629,15 +629,6 @@ Example:
                           }
                         },
 
-        _updateResources:    function (appData)
-                             {
-                               var newRes = {};
-                               if(appData)
-                               {
-                                 newRes['app_name'] = appData.Name;
-                               }
-                               this.hydrateResources(newRes, true);
-                             },
         _calculatePageTitle: function (pageTitle)
                              {
                                if(!pageTitle)
@@ -684,21 +675,11 @@ Example:
 
         _calculateConfigure: function (appData)
                              {
-                               var path = '';
-                               if(appData)
-                               {
-                                 if(appData.Config && appData.Config.length > 0)
-                                 {
-                                   path = '/' + appData.VendorID + '/' + appData.AppID
-                                     + '/_configure';
-                                 }
-                                 else if(appData.AdvancedConfigPath)
-                                 {
-                                   path = '/' + appData.VendorID + '/' + appData.AppID
-                                     + '/' + AdvancedConfigPath.replace(/^\/+/, '');
-                                 }
-                               }
-                               return path;
+                               return appData && appData.Config && appData.Config.length > 0;
+                             },
+        _openCfg:            function ()
+                             {
+                               this.$.configDlg.open();
                              },
 
         /**
