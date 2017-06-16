@@ -65,13 +65,13 @@
   "resolutions": {
     "webcomponentsjs": "^1.0.0"
   },
-  "_release": "ced91a2bff",
+  "_release": "ae18f2548c",
   "_resolution": {
     "type": "branch",
-    "branch": "2.0-preview",
-    "commit": "ced91a2bffcb6a11dfe2850a8663dd405e446fc5"
+    "branch": "recursive-elements",
+    "commit": "ae18f2548c4baab91234c6227cef2792d9494753"
   },
-  "_source": "https://github.com/PolymerElements/iron-form.git",
-  "_target": "2.0-preview",
-  "_originalSource": "PolymerElements/iron-form"
+  "_source": "https://github.com/TomK/iron-form.git",
+  "_target": "recursive-elements",
+  "_originalSource": "TomK/iron-form"
 }

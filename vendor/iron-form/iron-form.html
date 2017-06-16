@@ -361,23 +361,30 @@ attach it to the `<iron-form>`:
       },
 
       _getSubmittableElements: function() {
-        var nodes = Polymer.dom(this._form).children;
+        return this._findElements(this._form);
+      },
+
+      _findElements: function(parent) {
+        var nodes = Polymer.dom(parent).children;
         var submittable = [];
 
         for (var i = 0; i < nodes.length; i++) {
-          // This element might contain other potentially submittable elements
-          // which we need to look at. For example, this could be a <p> node
-          // containing a bunch of inputs.
-          var elements = Array.prototype.slice.call(Polymer.dom(nodes[i]).querySelectorAll('*')) || [];
-
-          // We also want to check this element.
-          elements.push(nodes[i]);
-
-          // An element is submittable if it is not disabled, and if it has a
-          // 'name' attribute.
-          for (var el, j = 0; el = elements[j], j < elements.length; j++) {
-            if (!el.disabled && el.name) {
-              submittable.push(el);
+          var node = nodes[i];
+          // Only element nodes are submittable, or can contain submittable elements
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            // An element is submittable if it is not disabled, and if it has a
+            // 'name' attribute.
+            if(!node.disabled && node.name) {
+              submittable.push(node);
+            }
+            else {
+              // This element might contain other potentially submittable elements
+              // which we need to look at. For example, this could be a <p> node
+              // containing a bunch of inputs.
+              Array.prototype.push.apply(submittable, this._findElements(node));
+              if(node.root) {
+                Array.prototype.push.apply(submittable, this._findElements(node.root));
+              }
             }
           }
         }
