@@ -4,6 +4,7 @@
 <link rel="import" href="../../cube-card/cube-card.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../cubex-route/cubex-route.html">
+<link rel="import" href="../../cube-card/cube-card-container.html">
 
 <dom-module id="cubex-category-page" attributes="category">
   <template>
@@ -35,7 +36,10 @@
       </template>
     </cube-carousel>
 
-    <cube-pagelet auto auth url="//[[getServiceHost('apps')]]/kubex/dashpanel?category=[[category]]"></cube-pagelet>
+    <cube-card-container>
+      <cube-pagelet auto auth url="//[[getServiceHost('apps')]]/kubex/dashpanel?category=[[category]]"></cube-pagelet>
+      <cube-pagelet auto auth url="//[[getServiceHost('apps')]]/kubex/cardfeed?category=[[category]]"></cube-pagelet>
+    </cube-card-container>
   </template>
   <script>
     Polymer(
