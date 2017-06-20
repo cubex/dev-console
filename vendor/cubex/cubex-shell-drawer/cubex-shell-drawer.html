@@ -167,7 +167,7 @@
             <cube-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
               <template is="dom-repeat" items="[[__toArray(_groupedApps)]]" as="category">
                 <cube-list-group>
-                  <a href="/_[[category.name]]" slot="title" on-tap="_toggleParent" class="category-link">
+                  <a href="/_[[group.name]]" slot="title" on-tap="_toggleParent" class="category-link">
                     <cubex-category key="[[category.name]]"></cubex-category>
                   </a>
                   <template is="dom-repeat" items="[[__toArray(category.apps)]]" as="app">
@@ -273,20 +273,23 @@
                        {
                          this.parentNode.close();
                        },
-
-        toggleDrawer: function ()
-                      {
-                        this.$.drawerPanels.selectNext();
-                        this.selectedItem = this.$.drawerPanels.selected;
-                        if(this.selectedItem === 1)
-                        {
-                          this._icon = "icons:arrow-drop-up";
-                        }
-                        else if(this.selectedItem === 0)
-                        {
-                          this._icon = "icons:arrow-drop-down";
-                        }
-                      },
+        selectPanel:   function (panel)
+                       {
+                         this.$.drawerPanels.select(panel);
+                       },
+        toggleDrawer:  function ()
+                       {
+                         this.$.drawerPanels.selectNext();
+                         this.selectedItem = this.$.drawerPanels.selected;
+                         if(this.selectedItem === 1)
+                         {
+                           this._icon = "icons:arrow-drop-up";
+                         }
+                         else if(this.selectedItem === 0)
+                         {
+                           this._icon = "icons:arrow-drop-down";
+                         }
+                       },
 
         __toArray: function (o)
                    {

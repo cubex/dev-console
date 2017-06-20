@@ -233,7 +233,7 @@
 
     <app-drawer-layout id="adl" fullbleed force-narrow>
       <app-drawer slot="drawer" id="drawer" opened="{{drawerOpened}}">
-        <cubex-shell-drawer></cubex-shell-drawer>
+        <cubex-shell-drawer id="shellDrawer"></cubex-shell-drawer>
       </app-drawer>
 
       <app-header-layout>
@@ -370,6 +370,7 @@
                                 if(this._isValidKeyPress(e))
                                 {
                                   this.$.drawer.toggle();
+                                  this.$.shellDrawer.selectPanel(0);
                                   e.preventDefault();
                                 }
                               },
