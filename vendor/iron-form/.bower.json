@@ -65,11 +65,11 @@
   "resolutions": {
     "webcomponentsjs": "^1.0.0"
   },
-  "_release": "ae18f2548c",
+  "_release": "c171b5ee80",
   "_resolution": {
     "type": "branch",
     "branch": "recursive-elements",
-    "commit": "ae18f2548c4baab91234c6227cef2792d9494753"
+    "commit": "c171b5ee80679545bef0e6c810ddfd0122ef2a80"
   },
   "_source": "https://github.com/TomK/iron-form.git",
   "_target": "recursive-elements",

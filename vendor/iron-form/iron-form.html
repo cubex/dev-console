@@ -125,6 +125,11 @@ attach it to the `<iron-form>`:
           value: false
         },
       },
+      /**
+       * Fired if the form cannot be submitted because it's invalid.
+       *
+       * @event iron-form-invalid
+       */
 
       /**
        * Fired after the form is submitted.
@@ -211,6 +216,9 @@ attach it to the `<iron-form>`:
           var validatable = /** @type {{validate: (function() : boolean)}} */ (el);
           if (validatable.validate) {
             valid = !!validatable.validate() && valid;
+            if (!valid) {
+              return false;
+            }
           }
         }
         return valid;
@@ -221,11 +229,17 @@ attach it to the `<iron-form>`:
        */
       submit: function(event) {
         // We are not using this form for submission, so always cancel its event.
-        if (event)
+        if (event) {
           event.preventDefault();
+        }
 
         // If you've called this before distribution happened, bail out.
-        if (!this._form || !this.validate()) {
+        if (!this._form) {
+          return;
+        }
+
+        if (!this.validate()) {
+          this.fire('iron-form-invalid');
           return;
         }
 
@@ -243,6 +257,12 @@ attach it to the `<iron-form>`:
           for (element in json) {
             this.$.helper.appendChild(this._createHiddenElement(element, json[element]));
           }
+
+          // Copy the original form attributes.
+          this.$.helper.action = this._form.getAttribute('action');
+          this.$.helper.method = this._form.getAttribute('method') || 'GET';
+          this.$.helper.contentType = this._form.getAttribute('enctype');
+
           this.$.helper.submit();
           this.fire('iron-form-submit');
         } else {
@@ -259,8 +279,9 @@ attach it to the `<iron-form>`:
           event.preventDefault();
 
         // If you've called this before distribution happened, bail out.
-        if (!this._form)
+        if (!this._form) {
           return;
+        }
 
         // Load the initial values.
         var nodes = this._getSubmittableElements();
@@ -268,12 +289,8 @@ attach it to the `<iron-form>`:
           var node = nodes[i];
           if (this._defaults.has(node)) {
             var defaults = this._defaults.get(node);
-            if (node.value != null) {
-              node.value = defaults.value;
-            }
-            if (node.checked != null) {
-              node.checked = defaults.checked;
-            }
+            node.value = defaults.value;
+            node.checked = defaults.checked;
           }
         }
       },
@@ -338,53 +355,30 @@ attach it to the `<iron-form>`:
       },
 
       _getValidatableElements: function() {
-        var nodes = Polymer.dom(this._form).children;
-        var validatable = [];
-
-        for (var i = 0; i < nodes.length; i++) {
-          // This element might contain other potentially validatable elements
-          // which we need to look at. For example, this could be a <p> node
-          // containing a bunch of inputs.
-          var elements = Array.prototype.slice.call(Polymer.dom(nodes[i]).querySelectorAll('*')) || [];
-
-          // We also want to check this element.
-          elements.push(nodes[i]);
-
-          // An element is validatable if it is not disabled
-          for (var el, j = 0; el = elements[j], j < elements.length; j++) {
-            if (!el.disabled) {
-              validatable.push(el);
-            }
-          }
-        }
-        return validatable;
+        return this._findElements(this._form, true);
       },
 
       _getSubmittableElements: function() {
-        return this._findElements(this._form);
+        return this._findElements(this._form, false);
       },
 
-      _findElements: function(parent) {
-        var nodes = Polymer.dom(parent).children;
+      _findElements: function(parent, ignoreName) {
+        var nodes = Polymer.dom(parent).querySelectorAll('*');
         var submittable = [];
 
         for (var i = 0; i < nodes.length; i++) {
           var node = nodes[i];
-          // Only element nodes are submittable, or can contain submittable elements
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            // An element is submittable if it is not disabled, and if it has a
-            // 'name' attribute.
-            if(!node.disabled && node.name) {
-              submittable.push(node);
-            }
-            else {
-              // This element might contain other potentially submittable elements
-              // which we need to look at. For example, this could be a <p> node
-              // containing a bunch of inputs.
-              Array.prototype.push.apply(submittable, this._findElements(node));
-              if(node.root) {
-                Array.prototype.push.apply(submittable, this._findElements(node.root));
-              }
+          // An element is submittable if it is not disabled, and if it has a
+          // 'name' attribute.
+          if(!node.disabled && (ignoreName || node.name)) {
+            submittable.push(node);
+          }
+          else {
+            // This element might contain other potentially submittable elements
+            // which we need to look at. For example, this could be a <p> node
+            // containing a bunch of inputs.
+            if(node.root) {
+              Array.prototype.push.apply(submittable, this._findElements(node.root, ignoreName));
             }
           }
         }
