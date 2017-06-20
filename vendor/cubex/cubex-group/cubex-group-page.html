@@ -9,8 +9,8 @@
   <template>
     <cubex-route project-id="{{projectId}}"></cubex-route>
     <cube-card-container>
-      <cube-pagelet auto auth url="//[[getServiceHost('apps')]]/kubex/dashpanel?group=[[groupId]]"></cube-pagelet>
-      <cube-pagelet auto auth url="//[[getServiceHost('apps')]]/kubex/cardfeed?group=[[groupId]]"></cube-pagelet>
+      <cube-pagelet local auto auth url="//[[getServiceHost('apps')]]/kubex/dashpanel?group=[[groupId]]"></cube-pagelet>
+      <cube-pagelet local auto auth url="//[[getServiceHost('apps')]]/kubex/cardfeed?group=[[groupId]]"></cube-pagelet>
     </cube-card-container>
   </template>
   <script>
