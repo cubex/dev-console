@@ -258,7 +258,7 @@
                             {
                               if(title && title.length > 0)
                               {
-                                return title.replace('**', '');
+                                return title.replace(/\*\*/g, '');
                               }
                               return ' ';
                             },
