@@ -4,6 +4,7 @@
 <link rel="import" href="../../iron-pages/iron-pages.html">
 <link rel="import" href="../../cube-action/cube-action.html">
 <link rel="import" href="../../cube-form/cube-form.html">
+<link rel="import" href="../../paper-spinner/paper-spinner-lite.html">
 
 <dom-module id="cubex-configure" attributes="gaid">
   <template>
@@ -14,6 +15,23 @@
 
       #wrapper {
         display: flex;
+        position: relative;
+        padding-bottom: 20px;
+      }
+
+      #saving {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+      }
+
+      #saved[hide] {
+        display: none;
+      }
+
+      paper-spinner-lite {
+        height: 15px;
+        width: 15px;
       }
     </style>
 
@@ -30,12 +48,15 @@
       </div>
 
       <!-- content -->
-      <div>
-        <iron-pages id="configPages" selected="0">
-          <template is="dom-if" if="[[appData.Config]]">
-            <cube-pagelet auth url="/kubex/config/[[appData.VendorID]]/[[appData.AppID]]"></cube-pagelet>
-          </template>
-        </iron-pages>
+      <iron-pages id="configPages" selected="0">
+        <template is="dom-if" if="[[appData.Config]]">
+          <cube-pagelet auth url="/kubex/config/[[appData.VendorID]]/[[appData.AppID]]"></cube-pagelet>
+        </template>
+      </iron-pages>
+      <div id="saving">
+        <template is="dom-if" if="[[_saving]]">Saving</template>
+        <span id="saved" hide$="[[!_showSaved]]">Saved</span>
+        <paper-spinner-lite active="[[_saving]]"></paper-spinner-lite>
       </div>
     </div>
   </template>
@@ -44,8 +65,10 @@
       {
         is:         'cubex-configure',
         properties: {
-          gaid:    {type: String},
-          appData: {type: Object}
+          gaid:       {type: String},
+          appData:    {type: Object},
+          _saving:    {type: Boolean, value: false},
+          _showSaved: {type: Number, value: 0}
         },
 
         attached: function ()
@@ -55,6 +78,8 @@
                     {
                       this.updatePagelets();
                     }
+                    this.addEventListener('iron-form-presubmit', this._handleFormSubmit.bind(this));
+                    this.addEventListener('cube-form-response', this._handleFormResponse.bind(this));
                   },
 
         updatePagelets: function ()
@@ -73,6 +98,30 @@
                   {
                     this.$.configPages.select(e.target.getAttribute('data-id'));
                   },
+
+        _handleFormSubmit:   function ()
+                             {
+                               this._saving = true;
+                               this._showSaved = 0;
+                             },
+        _handleFormResponse: function (e)
+                             {
+                               if(e.target === this && Array.prototype.slice.call(e.detail.Errors).length === 0)
+                               {
+                                 this._saving = false;
+                                 this._showSaved = Date.now() + 2500;
+                                 setTimeout(
+                                   function ()
+                                   {
+                                     if(this._showSaved <= Date.now())
+                                     {
+                                       this._showSaved = 0;
+                                     }
+                                   }.bind(this),
+                                   2500
+                                 );
+                               }
+                             },
 
         behaviors: [Polymer.CubeI18nBehavior]
       }
