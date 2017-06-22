@@ -12,7 +12,7 @@
     </style>
 
     <cube-dialog id="dlg" with-backdrop>
-      <cubex-configure gaid="[[gaid]]"></cubex-configure>
+      <cubex-configure id="cfg" gaid="[[gaid]]"></cubex-configure>
     </cube-dialog>
   </template>
   <script>
@@ -24,6 +24,7 @@
         },
         open:       function ()
                     {
+                      this.$.cfg.updatePagelets();
                       this.$.dlg.open();
                     }
       }

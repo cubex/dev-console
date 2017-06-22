@@ -3,7 +3,6 @@
 <link rel="import" href="../cubex-app/cubex-app-definition.html">
 <link rel="import" href="../../iron-pages/iron-pages.html">
 <link rel="import" href="../../cube-action/cube-action.html">
-<link rel="import" href="./cubex-configure-item.html">
 <link rel="import" href="../../cube-form/cube-form.html">
 
 <dom-module id="cubex-configure" attributes="gaid">
@@ -15,10 +14,6 @@
 
       #wrapper {
         display: flex;
-      }
-
-      cubex-configure-item {
-        margin-bottom: 15px;
       }
     </style>
 
@@ -38,14 +33,7 @@
       <div>
         <iron-pages id="configPages" selected="0">
           <template is="dom-if" if="[[appData.Config]]">
-            <cube-form id="form" method="post" action="/kubex/config/[[appData.VendorID]]/[[appData.AppID]]">
-              <div>
-                <template is="dom-repeat" items="[[appData.Config]]">
-                  <cubex-configure-item definition="[[item]]"></cubex-configure-item>
-                </template>
-              </div>
-              <button>Save</button>
-            </cube-form>
+            <cube-pagelet auth url="/kubex/config/[[appData.VendorID]]/[[appData.AppID]]"></cube-pagelet>
           </template>
         </iron-pages>
       </div>
@@ -59,6 +47,27 @@
           gaid:    {type: String},
           appData: {type: Object}
         },
+
+        attached: function ()
+                  {
+                    // if parent is not dialog update pagelet
+                    if(this.parentNode.tagName !== 'CUBE-DIALOG' && this.parentNode.tagName !== 'PAPER-DIALOG')
+                    {
+                      this.updatePagelets();
+                    }
+                  },
+
+        updatePagelets: function ()
+                        {
+                          var pagelets = this.root.querySelectorAll('cube-pagelet');
+                          for(var i in pagelets)
+                          {
+                            if(pagelets.hasOwnProperty(i))
+                            {
+                              pagelets[i].update();
+                            }
+                          }
+                        },
 
         _tapMenu: function (e)
                   {
