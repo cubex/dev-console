@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-styles/shadow.html">
-<dom-module id="cube-hero-sticker" attributes="src color">
+<dom-module id="cube-hero-sticker" attributes="src color borderless flat">
   <template>
     <style>
       :host {
@@ -20,6 +20,17 @@
         background-image: var(--hero-sticker-background-image);
 
         color: #FFFFFF;
+
+        @apply --hero-sticker;
+
+      }
+
+      :host([borderless]) {
+        border: 0;
+      }
+
+      :host([flat]) {
+        @apply --shadow-none;
       }
 
       #wrapper {
@@ -43,20 +54,21 @@
       {
         is:         'cube-hero-sticker',
         properties: {
-          'src':   {
-            type: String
-          },
-          'color': {
-            type: String
-          }
+          'src':        {type: String},
+          'color':      {type: String},
+          'borderless': {type: Boolean},
+          'flat':       {type: Boolean}
         },
         ready:      function ()
                     {
                       if(this.src)
                       {
-                        this.updateStyles({'--hero-sticker-background-image': 'url(' + this.src + ')'});
+                        this.updateStyles({
+                                            '--hero-sticker-background-image': 'url(' + this.src + ')',
+                                            '--hero-sticker-background-color': 'transparent'
+                                          });
                       }
-                      else if(this.color)
+                      if(this.color)
                       {
                         this.updateStyles({'--hero-sticker-background-color': this.color});
                       }
