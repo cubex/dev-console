@@ -95,7 +95,14 @@
                     {
                       if(this.background)
                       {
-                        this.updateStyles({'--hero-background-image': 'url(' + this.background + ')'});
+                        if(this.background.substr(0, 2) === '//' || 'http' === this.background.substr(0, 4))
+                        {
+                          this.updateStyles({'--hero-background-image': 'url(' + this.background + ')'});
+                        }
+                        else
+                        {
+                          this.updateStyles({'--hero-background-image': this.background});
+                        }
                       }
                       else if(this.color)
                       {
