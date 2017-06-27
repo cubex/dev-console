@@ -5,6 +5,7 @@
 <link rel="import" href="../../cube-action/cube-action.html">
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-element-path-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../cube-pagelet/cube-pagelet.html">
 
 
@@ -113,7 +114,7 @@
     <cubex-user-drawer-items>
       <template is="dom-repeat" items="[[__appGroups(_userRegistryData)]]" as="app">
         <cube-action active$="[[_isSelectedApp(app,_selectedApp)]]" icon="[[app.icon]]"
-                     on-tap="_openUserDrawerApp" gaid$="[[app.vendor_id]]/[[app.id]]"></cube-action>
+                     on-tap="_tapDrawerAction" gaid$="[[app.vendor_id]]/[[app.id]]"></cube-action>
       </template>
       <a href="/kubex/store/user-apps">
         <cube-action icon="icons:add" id="addUserAppAction"></cube-action>
@@ -132,92 +133,87 @@
   </template>
   <script>Polymer(
     {
-      is:                 'cubex-user-drawer',
-      properties:         {
+      is:               'cubex-user-drawer',
+      properties:       {
         _drawer:           {type: Object},
         _drawerOpen:       {type: Object},
         _userRegistryData: {type: Object},
         _selectedApp:      {type: String, observer: '_appChange'}
       },
-      _isSelectedApp:     function (app, selectedApp)
+      _isSelectedApp:   function (app, selectedApp)
+                        {
+                          return app.vendor_id + '/' + app.id === selectedApp;
+                        },
+      _getPageletUrl:   function (page)
+                        {
+                          if(page)
                           {
-                            return app.vendor_id + '/' + app.id === selectedApp;
-                          },
-      _getPageletUrl:     function (page)
-                          {
-                            if(page)
+                            return '//' + this.getServiceHost('apps') + '/' + page;
+                          }
+                          return undefined;
+                        },
+      attached:         function ()
+                        {
+                          document.addEventListener(
+                            'cubex-drawer-state-changed', function (e)
                             {
-                              return '//' + this.getServiceHost('apps') + '/' + page;
-                            }
-                            return undefined;
-                          },
-      attached:           function ()
-                          {
-                            document.addEventListener(
-                              'cubex-drawer-state-changed', function (e)
+                              if(this._getDrawer() === e.detail.drawer)
                               {
-                                if(this._getDrawer() === e.detail.drawer)
+                                if(e.detail.state !== 2 && e.detail.isOpen === false)
                                 {
-                                  if(e.detail.state !== 2 && e.detail.isOpen === false)
-                                  {
-                                    this._selectedApp = null;
-                                  }
+                                  this._selectedApp = null;
                                 }
-                              }.bind(this)
+                              }
+                            }.bind(this)
+                          );
+                        },
+      _getDrawer:       function ()
+                        {
+                          if(!this._drawer)
+                          {
+                            var drawer = null;
+                            this.iterate(
+                              this.getPath(this), function (parent)
+                              {
+                                if(parent.tagName === 'CUBEX-DRAWER')
+                                {
+                                  drawer = parent;
+                                  return true;
+                                }
+                              }
                             );
-                          },
-      _getDrawer:         function ()
+                            this._drawer = drawer;
+                          }
+                          return this._drawer;
+                        },
+      _tapDrawerAction: function (e)
+                        {
+                          if(e.currentTarget.getAttribute('gaid') === this._selectedApp)
                           {
-                            if(!this._drawer)
-                            {
-                              var drawer = null;
-                              this.iterate(
-                                this.getPath(this), function (parent)
-                                {
-                                  if(parent.tagName === 'CUBEX-DRAWER')
-                                  {
-                                    drawer = parent;
-                                    return true;
-                                  }
-                                }
-                              );
-                              this._drawer = drawer;
-                            }
-                            return this._drawer;
-                          },
-      _openUserDrawerApp: function (e)
+                            this._selectedApp = null;
+                          }
+                          else
                           {
-                            if(e.currentTarget.getAttribute('gaid') === this._selectedApp)
-                            {
-                              this._selectedApp = null;
-                            }
-                            else
-                            {
-                              this._selectedApp = e.currentTarget.getAttribute('gaid');
-                            }
-
-                            if(this._getDrawer().state === 2)
-                            {
-                              this._getDrawer().setMaxState(1);
-                            }
-                          },
-      _appChange:         function ()
-                          {
-                            if(this._selectedApp)
-                            {
-                              this._getDrawer().open();
-                            }
-                            else
-                            {
-                              this._getDrawer().close();
-                            }
-                          },
-      _lockUserDrawer:    function ()
+                            this._selectedApp = e.currentTarget.getAttribute('gaid');
+                          }
+                        },
+      _appChange:       function ()
+                        {
+                          if(this._selectedApp)
                           {
                             this._getDrawer().open();
-                            this._getDrawer().setMaxState(this._getDrawer().state === 2 ? 1 : 2);
-                            this._getDrawer().setState(this._getDrawer().maxState);
-                          },
+                          }
+                          else
+                          {
+                            this._getDrawer().close();
+                          }
+                        },
+      _lockUserDrawer:  function ()
+                        {
+                          this._getDrawer().open();
+                          this._getDrawer().setMaxState(this._getDrawer().state === 2 ? 1 : 2);
+                          this._getDrawer().setState(this._getDrawer().maxState);
+                        },
 
       __appGroups: function (userRegistry)
                    {
