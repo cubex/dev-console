@@ -191,6 +191,11 @@
                           if(e.currentTarget.getAttribute('gaid') === this._selectedApp)
                           {
                             this._selectedApp = null;
+
+                            if(this._getDrawer().state === 2)
+                            {
+                              this._getDrawer().setMaxState(1);
+                            }
                           }
                           else
                           {
