@@ -161,12 +161,10 @@ attach it to the `<iron-form>`:
         this._nodeObserver = Polymer.dom(this).observeNodes(
           function(mutations) {
             for (var i = 0; i < mutations.addedNodes.length; i++) {
-              if (mutations.addedNodes[i].tagName === 'FORM') {
-                if (!this._alreadyCalledInit) {
-                  this._alreadyCalledInit = true;
-                  this._form = mutations.addedNodes[i];
-                  this._init();
-                }
+              if (mutations.addedNodes[i].tagName === 'FORM' && !this._alreadyCalledInit) {
+                this._alreadyCalledInit = true;
+                this._form = mutations.addedNodes[i];
+                this._init();
               }
             }
           }.bind(this));
@@ -216,9 +214,6 @@ attach it to the `<iron-form>`:
           var validatable = /** @type {{validate: (function() : boolean)}} */ (el);
           if (validatable.validate) {
             valid = !!validatable.validate() && valid;
-            if (!valid) {
-              return false;
-            }
           }
         }
         return valid;
@@ -244,9 +239,7 @@ attach it to the `<iron-form>`:
         }
 
         // Remove any existing children in the submission form (from a previous submit).
-        while (this.$.helper.children.length !== 0) {
-          this.$.helper.removeChild(this.$.helper.children[0]);
-        }
+        this.$.helper.textContent = '';
 
         var json = this.serializeForm();
 
@@ -374,9 +367,7 @@ attach it to the `<iron-form>`:
             submittable.push(node);
           }
           else {
-            // This element might contain other potentially submittable elements
-            // which we need to look at. For example, this could be a <p> node
-            // containing a bunch of inputs.
+            // This element has a root which could contain more submittable elements.
             if(node.root) {
               Array.prototype.push.apply(submittable, this._findElements(node.root, ignoreName));
             }

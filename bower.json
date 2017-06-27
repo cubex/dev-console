@@ -9,12 +9,10 @@
     "paper-slider": "PolymerElements/paper-slider#1.9 - 2",
     "paper-checkbox": "PolymerElements/paper-checkbox#1.9 - 2",
     "paper-radio-group": "PolymerElements/paper-radio-group#1.9 - 2",
-    "paper-radio-button": "PolymerElements/paper-radio-button#1.9 - 2",
-    "iron-form": "TomK/iron-form#recursive-elements"
+    "paper-radio-button": "PolymerElements/paper-radio-button#1.9 - 2"
   },
   "resolutions": {
     "polymer": "^2.0.0",
-    "webcomponentsjs": "^v1.0.0",
-    "iron-form": "recursive-elements"
+    "webcomponentsjs": "^v1.0.0"
   }
 }

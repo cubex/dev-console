@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#1.9 - 2",
-    "iron-form": "PolymerElements/iron-form#2.0-preview",
+    "iron-form": "PolymerElements/iron-form#1.9 - 2",
     "paper-toast": "PolymerElements/paper-toast#1.9 - 2"
   },
   "devDependencies": {
