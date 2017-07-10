@@ -60,23 +60,24 @@
 
     <cubex-route project-id="{{projectId}}"></cubex-route>
 
-    <cubex-notification-definition notification-id="[[notification.NotificationId]]"
-                                   definition="{{definition}}" gaid="{{gaid}}"></cubex-notification-definition>
+    <cubex-notification-definition notification-id="[[notification.notification_id]]"
+                                   definition="{{_definition}}" gaid="{{gaid}}"></cubex-notification-definition>
 
     <a href="[[_notificationPath]]">
       <cube-li multi-line>
-        <cube-icon slot="icon" icon="[[definition.Icon]]"></cube-icon>
-        [[i18nData(_messageKey,notification.Data)]]
+        <cube-icon slot="icon" icon="[[_definition.Icon]]"></cube-icon>
+        [[i18nResourceData(_definition.Message,notification.data)]]
         <div slot="secondary">
-          <cube-time input-format="X" datetime="[[notification.UpdateTime]]" from="now">
-            [[_dateTime(notification.UpdateTime)]]
+          <cube-time input-format="x" datetime="[[_lastUpdateMs]]" from="now">
+            [[_dateTime(_lastUpdateMs)]]
           </cube-time>
         </div>
 
         <template is="dom-if" if="[[running]]">
           <div id="spinner" slot="actions">
-            <paper-spinner-lite active="[[running]]" title="[[definition.message]]"></paper-spinner-lite>
-            [[notification.Percentage]]
+            <paper-spinner-lite active="[[running]]"
+                                title="[[i18nResourceData(_definition.Message,notification.data)]]"></paper-spinner-lite>
+            [[percentage]]
           </div>
         </template>
         <template is="dom-if" if="[[!running]]">
@@ -94,90 +95,83 @@
         is:         'cubex-notification',
         properties: {
           notification:      {type: Object},
-          definition:        {type: Object, observer: '_resetResources'},
-          resources:         {type: Object, value: this._resetResources},
+          _definition:       {type: Object},
           running:           {
             type:               Boolean,
             readOnly:           true,
             reflectToAttribute: true,
-            computed:           '_computeRunning(notification.Percentage)'
+            computed:           '_computeRunning(percentage)'
           },
           read:              {
             type:               Boolean,
             readOnly:           true,
             reflectToAttribute: true,
-            computed:           '_computeRead(notification.Read)'
+            computed:           '_computeRead(notification.read)'
           },
-          _notificationPath: {type: String, computed: '_computeNotificationPath(gaid,_pathKey,notification,i18nData)'},
-          _pathKey:          {type: String, computed: '_computeI18nKey(definition.ID,"path")'},
-          _messageKey:       {type: String, computed: '_computeI18nKey(definition.ID,"message")'}
+          percentage:        {
+            type:     Number,
+            readOnly: true,
+            computed: '_computePercentage(notification.percentage)'
+          },
+          _lastUpdateMs:     {type: Number, computed: '_computeLastUpdate(notification.last_update)'},
+          _notificationPath: {
+            type:     String,
+            computed: '_computeNotificationPath(gaid,_definition.Path,notification,i18nResourceData)'
+          }
         },
-
-        _computeI18nKey: function ()
-                         {
-                           var args = [];
-                           for(var i in arguments)
-                           {
-                             if(arguments.hasOwnProperty(i))
-                             {
-                               if(arguments[i] === undefined)
-                               {
-                                 return undefined;
-                               }
-                               args.push(arguments[i]);
-                             }
-                           }
-                           return args.join('_');
-                         },
 
         _computeRead: function (read)
                       {
-                        return !!read;
+                        return read || false;
                       },
+
+        _computePercentage: function (percentage)
+                            {
+                              return percentage || 100;
+                            },
 
         _computeRunning: function (percentage)
                          {
                            return percentage < 100;
                          },
 
+        _computeLastUpdate: function (updateTime)
+                            {
+                              return Math.floor(updateTime / 1000000);
+                            },
+
         _dateTime: function (updateTime)
                    {
-                     return (new Date(updateTime * 1000)).toISOString();
+                     if(updateTime)
+                     {
+                       return (new Date(updateTime)).toISOString();
+                     }
+                     return '';
                    },
 
-        _resetResources: function (def)
-                         {
-                           var newRes = {};
-                           if(def)
-                           {
-                             newRes[this._computeI18nKey(def.ID, 'message')] = def.Message;
-                             newRes[this._computeI18nKey(def.ID, 'description')] = def.Description;
-                             newRes[this._computeI18nKey(def.ID, 'path')] = def.Path;
-                           }
-                           this.hydrateResources(newRes, true);
-                         },
-
-        _markRead: function ()
+        _markRead: function (e)
                    {
+                     e.stopPropagation();
+                     e.preventDefault();
                      var xhr = new XMLHttpRequest();
                      xhr.open(
                        'PUT',
-                       '//' + this.getServiceHost('apps') + '/kubex/notify/read/' + this.notification.NotificationUid
+                       '//' + this.getServiceHost('apps') + '/kubex/notify/read/' + this.notification.notification_uid
                      );
                      xhr.setRequestHeader('x-requested-by', 'cubex-notifications');
                      xhr.withCredentials = true;
                      xhr.send();
                    },
 
-        _computeNotificationPath: function (gaid, pathKey, notification, i18nData)
+        _computeNotificationPath: function (gaid, path, notification, i18nData)
                                   {
                                     if(gaid === 'kubex/project')
                                     {
                                       return '//' + this.getServiceHost('console');
                                     }
-                                    else if(gaid && pathKey && notification.NotificationId.indexOf(gaid) === 0)
+                                    else if(gaid && notification.notification_uid.indexOf(gaid) === 0)
                                     {
-                                      return '/' + gaid + '/' + i18nData(pathKey, notification.Data);
+                                      return '/' + gaid + '/' + i18nData(path, notification.data);
                                     }
                                   },
 

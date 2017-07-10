@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>cube-repeat demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../cube-repeat.html">
+
+    <custom-style>
+        <style is="custom-style" include="demo-pages-shared-styles">
+        </style>
+    </custom-style>
+</head>
+<body>
+
+<div class="vertical-section-container centered">
+    <h3>Basic cube-repeat demo</h3>
+    <demo-snippet>
+        <template>
+            <cube-repeat items='[{"name":"Carrot"}]'>
+                <template>
+                    <div><b>[[item.name]]</b></div>
+                </template>
+            </cube-repeat>
+        </template>
+    </demo-snippet>
+
+    <h3>Custom Template cube-repeat demo</h3>
+    <demo-snippet>
+        <template>
+            <cube-repeat template-url="tpl.html" items-url="items.json">
+                <template>
+                    <div>[[item.name]]</div>
+                </template>
+            </cube-repeat>
+        </template>
+    </demo-snippet>
+
+    <h3>Custom 'invalid' Template cube-repeat demo</h3>
+    <demo-snippet>
+        <template>
+            <cube-repeat template-url="tpls.html" items-url="items.json">
+                <template>
+                    <div><em>[[item.name]]</em></div>
+                </template>
+            </cube-repeat>
+        </template>
+    </demo-snippet>
+</div>
+</body>
+</html>

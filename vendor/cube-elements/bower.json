@@ -44,7 +44,8 @@
     "cube-input": "CubexElements/cube-input",
     "cube-color": "CubexElements/cube-color",
     "cube-dialog": "CubexElements/cube-dialog",
-    "cube-wizard": "CubexElements/cube-wizard"
+    "cube-wizard": "CubexElements/cube-wizard",
+    "cube-repeat": "CubexElements/cube-repeat"
   },
   "resolutions": {
     "polymer": "1.9 - 2",

@@ -1,0 +1,186 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../cube-resource/cube-resource.html">
+
+<dom-module id="cube-repeat" attributes="template-url items-url items auth">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+
+        <cube-resource auto="[[itemsUrl]]" url="[[itemsUrl]]" data="{{items}}"></cube-resource>
+
+        <cube-resource auto="[[templateUrl]]" url="[[templateUrl]]"
+                       data="{{_pendingTpl}}" status="{{_status}}"></cube-resource>
+
+        <dom-repeat id="rep" items="[[data]]"></dom-repeat>
+
+        <template id="cont"></template>
+        <slot id="content"></slot>
+    </template>
+
+
+    <script>
+      /**
+       * `cube-repeat`
+       * Repeat a provided template using a provided dataset
+       *
+       * @customElement
+       * @polymer
+       * @demo demo/index.html
+       */
+      class CubeRepeat extends Polymer.DomRepeat {
+        static get is() {
+          return 'cube-repeat';
+        }
+
+        static get properties() {
+          return {
+            items: {
+              type: Array, value: function() {
+                return [];
+              },
+            },
+            itemsUrl: {type: String, value: '', observer: '_itemsUrlChanged'},
+            templateUrl: {type: String, value: '', observer: '_templateUrlChanged'},
+            auth: {type: Boolean, value: false},
+
+            /**
+             * Delete this (and `__applyFullRefresh` method) if https://github.com/Polymer/polymer/pull/4721 gets merged
+             */
+            limit: {
+              type: Number,
+              value: 0,
+              observer: '__limitChanged',
+            },
+          };
+        }
+
+        __limitChanged() {
+          if (this.items) {
+            this.__debounceRender(this.__render);
+          }
+        }
+
+        _itemsUrlChanged(url) {
+          if (url) {
+            let self = this;
+            this._sendRequest(
+                url,
+                function() {
+                  if (this.readyState === XMLHttpRequest.DONE) {
+                    self.items = JSON.parse(this.responseText);
+                  }
+                },
+            );
+          }
+        }
+
+        _templateUrlChanged(url) {
+          if (url) {
+            let self = this;
+            this._sendRequest(
+                url,
+                function() {
+                  if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    let tpl = document.createElement('template');
+                    tpl.innerHTML = this.responseText;
+                    self.__replaceTemplate(tpl);
+                  }
+                },
+            );
+          }
+        }
+
+        _sendRequest(url, callback) {
+          let xhr = new XMLHttpRequest();
+          xhr.addEventListener('readystatechange', callback);
+          xhr.open('GET', url);
+          xhr.withCredentials = Boolean(this.auth);
+          xhr.send();
+        }
+
+        __replaceTemplate(template) {
+          this.__resetRepeat();
+          this.textContent = '';
+          this.appendChild(template);
+          this.render();
+        }
+
+        __resetRepeat() { // remove old instances
+          for (let instanceIdx in this.__instances) {
+            if (this.__instances.hasOwnProperty(instanceIdx)) {
+              for (let nodeIdx in this.__instances[instanceIdx].children) {
+                if (this.__instances[instanceIdx].children.hasOwnProperty(nodeIdx)) {
+                  this.parentNode.removeChild(this.__instances[instanceIdx].children[nodeIdx]);
+                }
+              }
+            }
+          }
+
+          this.__instances = [];
+          this.__pool = [];
+          this.__renderDebouncer = null;
+          this.__itemsIdxToInstIdx = {};
+          this.__chunkCount = null;
+          this.__lastChunkTime = null;
+          this.__needFullRefresh = false;
+          this.__sortFn = null;
+          this.__filterFn = null;
+          this.__observePaths = null;
+          this.__ctor = null;
+        }
+
+        /**
+         * Delete this (and `limit` property) if https://github.com/Polymer/polymer/pull/4721 gets merged
+         * @private
+         */
+        __applyFullRefresh() {
+          const items = this.items || [];
+          let isntIdxToItemsIdx = new Array(items.length);
+          for (let i = 0; i < items.length; i++) {
+            isntIdxToItemsIdx[i] = i;
+          }
+          // Apply user filter
+          if (this.__filterFn) {
+            isntIdxToItemsIdx = isntIdxToItemsIdx.filter((i, idx, array) =>
+                this.__filterFn(items[i], idx, array));
+          }
+          // Apply user sort
+          if (this.__sortFn) {
+            isntIdxToItemsIdx.sort((a, b) => this.__sortFn(items[a], items[b]));
+          }
+
+          // items->inst map kept for item path forwarding
+          const itemsIdxToInstIdx = this.__itemsIdxToInstIdx = {};
+          let instIdx = 0;
+          // Generate instances and assign items
+          let limit = Math.min(isntIdxToItemsIdx.length, this.__limit);
+          if (this.limit > 0 && this.limit < limit) {
+            limit = this.limit;
+          }
+          for (; instIdx < limit; instIdx++) {
+            let inst = this.__instances[instIdx];
+            let itemIdx = isntIdxToItemsIdx[instIdx];
+            let item = items[itemIdx];
+            itemsIdxToInstIdx[itemIdx] = instIdx;
+            if (inst && instIdx < this.__limit) {
+              inst._setPendingProperty(this.as, item);
+              inst._setPendingProperty(this.indexAs, instIdx);
+              inst._setPendingProperty(this.itemsIndexAs, itemIdx);
+              inst._flushProperties();
+            } else {
+              this.__insertInstance(item, instIdx, itemIdx);
+            }
+          }
+          // Remove any extra instances from previous state
+          for (let i = this.__instances.length - 1; i >= instIdx; i--) {
+            this.__detachAndRemoveInstance(i);
+          }
+        }
+      }
+
+      window.customElements.define(CubeRepeat.is, CubeRepeat);
+    </script>
+</dom-module>
