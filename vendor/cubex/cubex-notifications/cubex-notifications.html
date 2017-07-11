@@ -79,7 +79,9 @@
       }
 
       :host #trigger[running] cube-icon {
-        transform: scale(0.8);
+        width: 20px;
+        height: 20px;
+        margin: 2px;
       }
 
       :host cube-list-menu#content cube-action {
@@ -158,8 +160,8 @@
       {
         is:         'cubex-notifications',
         properties: {
-          _running:             {type: Boolean, notify: true, computed: '__hasRunning(_notificationStatus)'},
-          _unread:              {type: Boolean, notify: true, computed: '__hasUnread(_notificationStatus)'},
+          _running:             {type: Boolean, computed: '__hasRunning(_notifications,_notifications.*)'},
+          _unread:              {type: Boolean, computed: '__hasUnread(_notifications,_notifications.*)'},
           _notifications:       {type: Array, notify: true, value: function () {return [];}},
           _notificationIndexes: {type: Object, notify: true, value: function () {return {};}},
           _isReady:             {type: Boolean, value: false}
@@ -290,22 +292,22 @@
                                return 0;
                              },
 
-        __hasRunning: function (statuses)
+        __hasRunning: function (notifications)
                       {
-                        for(var i in statuses)
+                        for(var i = 0; i < notifications.length; i++)
                         {
-                          if(statuses.hasOwnProperty(i) && statuses[i].percentage < 100)
+                          if(notifications[i].percentage < 100)
                           {
                             return true;
                           }
                         }
                         return false;
                       },
-        __hasUnread:  function (statuses)
+        __hasUnread:  function (notifications)
                       {
-                        for(var i in statuses)
+                        for(var i = 0; i < notifications.length; i++)
                         {
-                          if(statuses.hasOwnProperty(i) && statuses[i].percentage >= 100 && !statuses[i].read)
+                          if(notifications[i].percentage >= 100 && !notifications[i].read)
                           {
                             return true;
                           }
