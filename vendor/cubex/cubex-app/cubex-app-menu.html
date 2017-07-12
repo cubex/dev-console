@@ -4,6 +4,7 @@
 <link rel="import" href="../../cube-behavior/cube-element-path-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-touch-enabled-behavior.html">
 <link rel="import" href="../cubex-route/cubex-route.html">
 
 <dom-module id="cubex-app-menu" attributes="app-data project-data">
@@ -257,14 +258,17 @@
                          },
         _collapseDrawer: function ()
                          {
-                           var app = this._getApp();
-                           if(app.narrow)
+                           if(this._touchEnabled())
                            {
-                             app.drawer.close();
-                           }
-                           else if(app.drawer.state !== 2)
-                           {
-                             this._setDrawerState(1);
+                             var app = this._getApp();
+                             if(app.narrow)
+                             {
+                               app.drawer.close();
+                             }
+                             else if(app.drawer.state !== 2)
+                             {
+                               this._setDrawerState(1);
+                             }
                            }
                          },
         _toggleDrawer:   function ()
@@ -306,7 +310,7 @@
                                  newRes['app_name'] = this.appData.Name;
                                  if(this.appData.GroupID)
                                  {
-                                   var groupGaid = this.appData.VendorID + "/" + this.appData.GroupID;
+                                   var groupGaid = this.appData.VendorID + '/' + this.appData.GroupID;
                                    if(this.projectData.GroupSummary[groupGaid])
                                    {
                                      var groupData = this.projectData.GroupSummary[groupGaid];
@@ -325,13 +329,13 @@
                              },
         _calculateTitleIcon: function (appData, projectData)
                              {
-                               var icon = "";
+                               var icon = '';
                                if(appData)
                                {
                                  icon = appData.Icon;
                                  if(appData.GroupID && projectData)
                                  {
-                                   var groupGaid = appData.VendorID + "/" + appData.GroupID;
+                                   var groupGaid = appData.VendorID + '/' + appData.GroupID;
                                    if(projectData.GroupSummary[groupGaid])
                                    {
                                      icon = projectData.GroupSummary[groupGaid].icon;
@@ -342,16 +346,16 @@
                              },
         _calculateTitleLink: function (appData)
                              {
-                               var url = "";
+                               var url = '';
                                if(appData)
                                {
                                  if(appData.GroupID)
                                  {
-                                   url = "/" + appData.VendorID + "/" + appData.GroupID
+                                   url = '/' + appData.VendorID + '/' + appData.GroupID;
                                  }
                                  else
                                  {
-                                   url = "/" + appData.VendorID + "/" + appData.AppID
+                                   url = '/' + appData.VendorID + '/' + appData.AppID;
                                  }
                                }
                                return url;
@@ -360,9 +364,10 @@
         behaviors: [
           Polymer.CubeElementPathBehavior,
           Polymer.CubeIteratorBehavior,
-          Polymer.CubeI18nBehavior
+          Polymer.CubeI18nBehavior,
+          Polymer.CubeTouchEnabledBehavior
         ]
       }
-    )
+    );
   </script>
 </dom-module>
