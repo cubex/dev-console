@@ -198,7 +198,7 @@
           <cube-list-menu show-filter filter-label="{{i18n('filter_projects')}}">
             <cube-list-group title="{{i18n('all_projects')}}">
               <template is="dom-repeat" items="[[_projects]]">
-                <a href="//[[getServiceHost(item.id)]]" on-tap="_toggleParent">
+                <a href="//[[getServiceHost(item.alias)]]" on-tap="_toggleParent">
                   <cube-li compact-icon>
                     <cube-icon slot="icon" icon="communication:business"></cube-icon>
                     [[item.name]]

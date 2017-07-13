@@ -160,10 +160,12 @@ Example:
                   <div slot="secondary">Pending</div>
                   <cube-action slot="actions" title="Accept" style="color:green" icon="icons:thumb-up"
                                on-tap="_processInvite" data-accept-type="1"
-                               data-accept-id$="[[item.project.id]]"></cube-action>
+                               data-accept-id$="[[item.project.id]]"
+                               data-verify$="[[item.status.verification]]"></cube-action>
                   <cube-action slot="actions" title="Reject" style="color:red" icon="icons:thumb-down"
                                on-tap="_processInvite" data-accept-type="0"
-                               data-accept-id$="[[item.project.id]]"></cube-action>
+                               data-accept-id$="[[item.project.id]]"
+                               data-verify$="[[item.status.verification]]"></cube-action>
                 </cube-li>
               </template>
             </cube-list>
@@ -176,7 +178,7 @@ Example:
             <p>Please choose a project</p>
             <cube-list border double-border>
               <template is="dom-repeat" items="[[_projects]]">
-                <a href="//[[getServiceHost(item.id)]]">
+                <a href="//[[getServiceHost(item.alias)]]">
                   <cube-li>
                     <cube-icon icon="communication:business" slot="icon"></cube-icon>
                     [[item.name]]
@@ -254,17 +256,18 @@ Example:
                           {
                             xhr.open(
                               'PUT',
-                              '//' + this.getServiceHost('apps') + '/kubex/project/approval/' + actionData.acceptId
+                              '//' + this.getServiceHost('apps') + '/kubex/project/approval/' + actionData.acceptId + '/' + actionData.verify
                             );
                           }
                           else if(actionData.acceptType === '0')
                           {
                             xhr.open(
                               'DELETE',
-                              '//' + this.getServiceHost('apps') + '/kubex/project/approval/' + actionData.acceptId
+                              '//' + this.getServiceHost('apps') + '/kubex/project/approval/' + actionData.acceptId + '/' + actionData.verify
                             );
                           }
                           xhr.withCredentials = true;
+                          xhr.setRequestHeader("X-Requested-By", "cubex-projects");
                           xhr.send();
                         },
 
