@@ -33,11 +33,11 @@
     "iron-ajax": "1.9 - 2"
   },
   "homepage": "https://github.com/CubexElements/cubex",
-  "_release": "683958e4be",
+  "_release": "41dd54669d",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "683958e4be08322f6562bacb2f4331faccd5455f"
+    "commit": "41dd54669d8f116dc09e687df449d219a1af6e90"
   },
   "_source": "https://github.com/CubexElements/cubex.git",
   "_target": "*",

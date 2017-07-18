@@ -118,10 +118,14 @@
           _pageSpinnerVisible:           {type: Boolean, value: false},
           pageData:                      {type: Object, notify: true},
           appData:                       {type: Object, notify: true},
-          _appData:                      {type: Object, notify: true, computed: '_computeAppData(appData,projectData)'},
+          _appData:                      {
+            type:     Object,
+            notify:   true,
+            computed: '_computeAppData(appData,projectData,pageData)'
+          },
           _backPath:                     {
             type:     String,
-            computed: '_computedBackPath(appData.VendorID,appData.AppID,pageData.backPath)'
+            computed: '_computedBackPath(_appData.VendorID,_appData.AppID,pageData.backPath)'
           },
           _pageTitle:                    {
             type:     String,
@@ -148,8 +152,8 @@
         observers: [
           '_pathChanged(fullPath,projectData)',
           '_updateHeaders(_pageXhr)',
-          '_updateIntegration(_integrations,appPath,appData,_appGaid,_pageDefinitionPath,projectData)',
-          '_updateHeader(_integration,_integrations,appData,_appGaid,projectData)',
+          '_updateIntegration(_integrations,appPath,_appData,_appGaid,_pageDefinitionPath,projectData)',
+          '_updateHeader(_integration,_integrations,_appData,_appGaid,projectData)',
           '_updateSidebar(_integration,_integrations,appPath,_appGaid,projectData)',
           '_pageHtmlChanged(_pageDefinitionHtml,_pageContentHtml)'
         ],
@@ -745,6 +749,6 @@
           Polymer.CubeHashBehavior
         ]
       }
-    )
+    );
   </script>
 </dom-module>
