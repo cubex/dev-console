@@ -13,7 +13,7 @@ Example:
 @hero hero.svg
 -->
 
-<dom-module id="cube-form" attributes="method action enctype">
+<dom-module id="cube-form" attributes="method action enctype close-on-success">
   <template>
     <style>
       :host {
@@ -32,11 +32,12 @@ Example:
       {
         is:         'cube-form',
         properties: {
-          action:        {type: String},
-          method:        {type: String, value: 'post'},
-          enctype:       {type: String, value: 'application/x-www-form-urlencoded'},
-          allowRedirect: {type: Boolean, value: false},
-          _headers:      {type: Object, computed: '_refreshHeaders()'}
+          action:         {type: String},
+          closeOnSuccess: {type: Boolean, value: false},
+          method:         {type: String, value: 'post'},
+          enctype:        {type: String, value: 'application/x-www-form-urlencoded'},
+          allowRedirect:  {type: Boolean, value: false},
+          _headers:       {type: Object, computed: '_refreshHeaders()'}
         },
 
         listeners: {'tap': '_onTap'},
@@ -67,7 +68,7 @@ Example:
         _refreshHeaders: function ()
                          {
                            var headers = {};
-                           headers['x-requested-by'] = "cube-form";
+                           headers['x-requested-by'] = 'cube-form';
                            return headers;
                          },
 
@@ -100,7 +101,7 @@ Example:
                                   return;
                                 }
 
-                                if(response.Errors)
+                                if(!response.WasSuccessful)
                                 {
                                   for(var field in response.Errors)
                                   {
@@ -128,6 +129,7 @@ Example:
                                       }
                                     }
                                   }
+                                  return;
                                 }
 
                                 if(response.ToastMessage)
@@ -144,6 +146,11 @@ Example:
                                 if(response.RedirectPath)
                                 {
                                   window.location = response.RedirectPath;
+                                }
+
+                                if(this.closeOnSuccess)
+                                {
+                                  this.fire('cube-form-close');
                                 }
                               }
       }

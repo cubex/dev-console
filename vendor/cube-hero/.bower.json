@@ -1,5 +1,6 @@
 {
   "name": "cube-hero",
+  "version": "0.1.0",
   "authors": [
     "Anonymous <anonymous@example.com>"
   ],
@@ -26,10 +27,10 @@
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
     "web-component-tester": "^6.0.0"
   },
-  "_release": "64d28394c7",
+  "_release": "0.1.0",
   "_resolution": {
-    "type": "branch",
-    "branch": "master",
+    "type": "version",
+    "tag": "0.1.0",
     "commit": "64d28394c73f25be295acd80c21105d383ebddd8"
   },
   "_source": "https://github.com/CubexElements/cube-hero.git",
