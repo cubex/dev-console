@@ -14,8 +14,12 @@
         @apply --shadow-elevation-2dp;
         @apply --cube-dropdown-style;
       }
+
+      .triggerContainer {
+        line-height: normal;
+      }
     </style>
-    <div style="line-height: normal" on-tap="open">
+    <div class="triggerContainer" on-tap="toggle">
       <slot name="trigger"></slot>
     </div>
     <iron-dropdown id="dropdown"
@@ -36,11 +40,11 @@
         properties: {
           verticalAlign:       {
             type:  String,
-            value: "top"
+            value: 'top'
           },
           horizontalAlign:     {
             type:  String,
-            value: "auto"
+            value: 'auto'
           },
           disabled:            Boolean,
           openAnimationConfig: {
@@ -81,6 +85,17 @@
           }
         },
 
+        attached: function ()
+                  {
+                    this.addEventListener('iron-overlay-canceled', function (e)
+                    {
+                      if(e.detail.path.indexOf(this) > -1)
+                      {
+                        e.preventDefault();
+                      }
+                    }.bind(this));
+                  },
+
         refit: function ()
                {
                  this.$.dropdown.refit();
@@ -94,7 +109,12 @@
         close: function ()
                {
                  this.$.dropdown.close();
-               }
+               },
+
+        toggle: function ()
+                {
+                  this.$.dropdown.toggle();
+                }
       }
     );
   </script>

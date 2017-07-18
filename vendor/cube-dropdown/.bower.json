@@ -31,11 +31,11 @@
     "web-component-tester": "^6.0.0",
     "paper-item": "PolymerElements/paper-item#1.9 - 2"
   },
-  "_release": "abeee488c2",
+  "_release": "af59ae7259",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "abeee488c2a10c2f3f1477a6d0645d9f1c8ecb5e"
+    "commit": "af59ae72592d1a4ac944007b0f200dbf28ebe1d3"
   },
   "_source": "https://github.com/CubexElements/cube-dropdown.git",
   "_target": "*",
