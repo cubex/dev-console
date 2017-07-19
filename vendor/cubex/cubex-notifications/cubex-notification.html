@@ -77,7 +77,7 @@
           <div id="spinner" slot="actions">
             <paper-spinner-lite active="[[running]]"
                                 title="[[i18nResourceData(_definition.Message,notification.data)]]"></paper-spinner-lite>
-            [[percentage]]
+            [[_percentageText]]
           </div>
         </template>
         <template is="dom-if" if="[[!running]]">
@@ -113,6 +113,11 @@
             readOnly: true,
             computed: '_computePercentage(notification.percentage)'
           },
+          _percentageText:   {
+            type:     String,
+            readOnly: true,
+            computed: '_computePercentageText(percentage)'
+          },
           _lastUpdateMs:     {type: Number, computed: '_computeLastUpdate(notification.last_update)'},
           _notificationPath: {
             type:     String,
@@ -127,8 +132,13 @@
 
         _computePercentage: function (percentage)
                             {
-                              return percentage || 100;
+                              return percentage !== undefined ? percentage : 100;
                             },
+
+        _computePercentageText: function (percentage)
+                                {
+                                  return percentage || '';
+                                },
 
         _computeRunning: function (percentage)
                          {
