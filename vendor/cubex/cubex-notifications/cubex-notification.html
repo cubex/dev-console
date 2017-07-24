@@ -68,7 +68,7 @@
         <cube-icon slot="icon" icon="[[_definition.Icon]]"></cube-icon>
         [[i18nResourceData(_definition.Message,notification.data)]]
         <div slot="secondary">
-          <cube-time input-format="x" datetime="[[_lastUpdateMs]]" from="now">
+          <cube-time timestamp="[[_lastUpdateMs]]" from="now">
             [[_dateTime(_lastUpdateMs)]]
           </cube-time>
         </div>
