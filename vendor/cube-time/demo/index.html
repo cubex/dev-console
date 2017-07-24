@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>cube-time Demo</title>
-  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="../cube-time.html">
 </head>
 <body unresolved>
@@ -12,59 +12,89 @@
 <h2>Current Date</h2>
 <p>
   Local date:
-  <cube-time output-format="YYYY/MM/DD"></cube-time>
+  <cube-time format="YYYY/MM/DD"></cube-time>
 </p>
 
 <p>
   Local time:
-  <cube-time output-format="h:mm:ss"></cube-time>
+  <cube-time format="h:mm:ss"></cube-time>
 </p>
 
 <p>
   Local date and time:
-  <cube-time output-format="dddd Do MMMM YYYY HH:mm:ss"></cube-time>
+  <cube-time format="dddd Do MMMM YYYY HH:mm:ss"></cube-time>
+</p>
+
+<p>
+  GMT date:
+  <cube-time format="YYYY/MM/DD" offset="0"></cube-time>
+</p>
+
+<p>
+  GMT time:
+  <cube-time format="h:mm:ss" offset="0"></cube-time>
+</p>
+
+<p>
+  GMT date and time:
+  <cube-time format="dddd Do MMMM YYYY HH:mm:ss" offset="0"></cube-time>
+</p>
+
+<p>
+  PST date:
+  <cube-time format="YYYY/MM/DD" offset="-8"></cube-time>
+</p>
+
+<p>
+  PST time:
+  <cube-time format="h:mm:ss" offset="-8"></cube-time>
+</p>
+
+<p>
+  PST date and time:
+  <cube-time format="dddd Do MMMM YYYY HH:mm:ss" offset="-8"></cube-time>
 </p>
 
 <h2>Past Date</h2>
 <p>
   Local date:
-  <cube-time datetime="1970-01-01T00:00:00.000Z" output-format="YYYY/MM/DD"></cube-time>
+  <cube-time timestamp="763084800" format="YYYY/MM/DD"></cube-time>
 </p>
 
 <p>
   Local time:
-  <cube-time datetime="1970-01-01T00:00:00.000Z" output-format="h:mm:ss"></cube-time>
+  <cube-time timestamp="763084800" format="h:mm:ss"></cube-time>
 </p>
 
 <p>
   Local date and time:
-  <cube-time datetime="1970-01-01T00:00:00.000Z" output-format="dddd Do MMMM YYYY HH:mm:ss"></cube-time>
+  <cube-time timestamp="763084800" format="dddd Do MMMM YYYY HH:mm:ss"></cube-time>
 </p>
 
 <p>
   Time since:
-  <cube-time datetime="1970-01-01T00:00:00.000Z" from="now"></cube-time>
+  <cube-time timestamp="763084800" from="now"></cube-time>
 </p>
 
 <p>
   Time ago:
-  <cube-time datetime="1970-01-01T00:00:00.000Z" to="now"></cube-time>
+  <cube-time timestamp="763084800" to="now"></cube-time>
 </p>
 
 <h2>Future Date</h2>
 <p>
   Local date:
-  <cube-time datetime="2027-01-01T00:00:00.000Z" output-format="YYYY/MM/DD"></cube-time>
+  <cube-time datetime="2027-01-01T00:00:00.000Z" format="YYYY/MM/DD"></cube-time>
 </p>
 
 <p>
   Local time:
-  <cube-time datetime="2027-01-01T00:00:00.000Z" output-format="h:mm:ss"></cube-time>
+  <cube-time datetime="2027-01-01T00:00:00.000Z" format="h:mm:ss"></cube-time>
 </p>
 
 <p>
   Local date and time:
-  <cube-time datetime="2027-01-01T00:00:00.000Z" output-format="dddd Do MMMM YYYY HH:mm:ss"></cube-time>
+  <cube-time datetime="2027-01-01T00:00:00.000Z" format="dddd Do MMMM YYYY HH:mm:ss"></cube-time>
 </p>
 
 <p>

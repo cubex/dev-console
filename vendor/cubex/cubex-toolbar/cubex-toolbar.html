@@ -26,6 +26,10 @@
         opacity: 1;
       }
 
+      cube-list-menu a {
+        @apply(--primary-800);
+      }
+
       cube-action {
         @apply(--primary-700-text-secondary);
         line-height: normal;
@@ -58,6 +62,9 @@
       <cube-action icon="icons:more-vert" slot="trigger"></cube-action>
       <cube-list-menu border>
         <cube-list-group>
+          <a href="/kubex/project">
+            <cube-li>{{i18n('project_info')}}</cube-li>
+          </a>
           <cube-li on-tap="openKeyboardHelp">{{i18n('keyboard_shortcuts')}}</cube-li>
         </cube-list-group>
         <cube-list-group>
@@ -100,33 +107,35 @@
           resources: {
             type:  Object,
             value: {
-              "en": {
-                "general":            "General",
-                "navigation":         "Navigation",
-                "keyboard_shortcuts": "Keyboard Shortcuts",
-                "show_apps_projects": "Show Applications & Project",
-                "launch_search":      "Launch Search",
-                "open_shortcut_help": "Open Shortcut Help",
-                "close":              "Close",
-                "search":             "Search",
-                "terms_service":      "Terms of Service",
-                "cust_agree":         "Customer Agreement",
-                "support":            "Support",
-                "logout":             "Logout"
+              'en': {
+                'general':            'General',
+                'navigation':         'Navigation',
+                'keyboard_shortcuts': 'Keyboard Shortcuts',
+                'project_info':       'Project Information',
+                'show_apps_projects': 'Show Applications & Project',
+                'launch_search':      'Launch Search',
+                'open_shortcut_help': 'Open Shortcut Help',
+                'close':              'Close',
+                'search':             'Search',
+                'terms_service':      'Terms of Service',
+                'cust_agree':         'Customer Agreement',
+                'support':            'Support',
+                'logout':             'Logout'
               },
-              "fr": {
-                "general":            "Général",
-                "navigation":         "La navigation",
-                "keyboard_shortcuts": "Raccourcis clavier",
-                "show_apps_projects": "Voir Applications & Projet",
-                "launch_search":      "Lancer la recherche",
-                "open_shortcut_help": "Ouvrir Aide Raccourci",
-                "close":              "Fermer",
-                "search":             "Chercher",
-                "terms_service":      "Conditions d'utilisation",
-                "cust_agree":         "Accord client",
-                "support":            "Soutien",
-                "logout":             "Se déconnecter"
+              'fr': {
+                'general':            'Général',
+                'navigation':         'La navigation',
+                'keyboard_shortcuts': 'Raccourcis clavier',
+                'project_info':       'Informations du projet',
+                'show_apps_projects': 'Voir applications & projet',
+                'launch_search':      'Lancer la recherche',
+                'open_shortcut_help': 'Ouvrir aide raccourci',
+                'close':              'Fermer',
+                'search':             'Chercher',
+                'terms_service':      'Conditions d\'utilisation',
+                'cust_agree':         'Accord client',
+                'support':            'Soutien',
+                'logout':             'Se déconnecter'
               }
             }
           }

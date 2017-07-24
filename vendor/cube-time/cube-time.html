@@ -1,22 +1,40 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../moment-element/moment-element.html">
 
-<dom-module id="cube-time" attributes="datetime input-format output-format from to">
+<dom-module id="cube-time" attributes="timestamp offset format from to">
   <template>
-    <moment-element datetime="[[datetime]]" input-format="[[inputFormat]]" output-format="[[outputFormat]]"
+    <moment-element id="moment" datetime="[[timestamp]]" input-format="[[_momentFormat]]" output-format="[[format]]"
                     from="[[from]]" to="[[to]]"></moment-element>
   </template>
   <script>
     Polymer(
       {
-        is:         'cube-time',
-        properties: {
-          datetime:     {type: String},
-          inputFormat:  {type: String},
-          outputFormat: {type: String},
-          from:         {type: String},
-          to:           {type: String}
-        }
+        is:             'cube-time',
+        properties:     {
+          format:        {type: String},
+          to:            {type: String},
+          from:          {type: String},
+          timestamp:     {type: Number, value: function () {return Date.now();}},
+          offset:        {type: String},
+          _momentFormat: {type: String, computed: '_computeFormat(timestamp)'}
+        },
+        observers:      ['_offsetChanged(offset,timestamp,format)'],
+        _offsetChanged: function (offset)
+                        {
+                          if(offset !== undefined && offset !== 'local' && offset !== '')
+                          {
+                            this.$.moment.getMoment().utcOffset(Number(offset));
+                            this.$.moment.update();
+                          }
+                        },
+        _computeFormat: function (timestamp)
+                        {
+                          if(timestamp <= 2147483647)
+                          {
+                            return 'X';
+                          }
+                          return 'x';
+                        }
       }
     );
   </script>
