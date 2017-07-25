@@ -63,7 +63,7 @@
       <cube-list-menu border>
         <cube-list-group>
           <a href="/kubex/project">
-            <cube-li>{{i18n('project_info')}}</cube-li>
+            <cube-li on-tap="_tapProjectInfo">{{i18n('project_info')}}</cube-li>
           </a>
           <cube-li on-tap="openKeyboardHelp">{{i18n('keyboard_shortcuts')}}</cube-li>
         </cube-list-group>
@@ -160,10 +160,9 @@
                                   this._closeAll();
                                   window.open('http://kubex.io/customer-agreement');
                                 },
-        _openProjectInfo:       function ()
+        _tapProjectInfo:        function ()
                                 {
                                   this._closeAll();
-                                  this.$$('#projectInfo').open();
                                 },
         _openSupport:           function ()
                                 {
@@ -174,11 +173,6 @@
         _closeAll: function ()
                    {
                      this.$.additional.close();
-                     var projectInfo = this.$$('#projectInfo');
-                     if(projectInfo)
-                     {
-                       projectInfo.close();
-                     }
                    }
       }
     );

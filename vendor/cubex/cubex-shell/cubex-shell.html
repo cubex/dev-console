@@ -5,7 +5,7 @@
 
 <dom-module id="cubex-shell">
   <template>
-    <cubex-project project-id="{{_project}}" projects="{{_projects}}"></cubex-project>
+    <cubex-project project-id="{{_project}}" projects="{{_projects}}" invites="{{_invites}}"></cubex-project>
     <template is="dom-if" if="[[_showConsole]]">
       <cubex-shell-console></cubex-shell-console>
     </template>
@@ -21,16 +21,17 @@
         properties:          {
           _project:     {type: String},
           _projects:    {type: Array},
-          _showConsole: {type: Boolean, value: false, computed: '_computeShowConsole(_projects,_project)'},
-          _showSignup:  {type: Boolean, value: false, computed: '_computeShowSignup(_projects,_project)'}
+          _invites:     {type: Array},
+          _showConsole: {type: Boolean, value: false, computed: '_computeShowConsole(_projects,_project,_invites)'},
+          _showSignup:  {type: Boolean, value: false, computed: '_computeShowSignup(_projects,_project,_invites)'}
         },
-        _computeShowConsole: function (projects, project)
+        _computeShowConsole: function (projects, project, invites)
                              {
-                               return project || (projects && projects.length > 0);
+                               return project || ((projects.length || 0) + (invites.length || 0) > 0);
                              },
-        _computeShowSignup:  function (projects, project)
+        _computeShowSignup:  function (projects, project, invites)
                              {
-                               return (!project) && (projects && projects.length <= 0);
+                               return (!project) && ((projects.length || 0) + (invites.length || 0) <= 0);
                              }
       });
   </script>

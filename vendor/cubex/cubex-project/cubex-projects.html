@@ -135,9 +135,7 @@ Example:
     </style>
 
     <cubex-distributor distributor="{{_distributor}}"></cubex-distributor>
-    <cubex-project projects="{{_projects}}"></cubex-project>
-    <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/project/invites"
-                   data="{{_invites}}"></cube-resource>
+    <cubex-project projects="{{_projects}}" invites="{{_invites}}"></cubex-project>
 
     <div id="heading">
       <template is="dom-if" if="[[_distributor.LogoUrl]]">
@@ -148,12 +146,12 @@ Example:
 
     <div id="wrapper">
       <div id="container">
-        <template is="dom-if" if="[[_invites.Invites.length]]">
+        <template is="dom-if" if="[[_invites.length]]">
           <div class="project-section">
             <h2>Your Invites</h2>
             <p>You have been invited to the following projects</p>
             <cube-list border double-border>
-              <template is="dom-repeat" items="[[_invites.Invites]]">
+              <template is="dom-repeat" items="[[_invites]]">
                 <cube-li>
                   <cube-icon icon="icons:add-circle-outline" slot="icon"></cube-icon>
                   [[item.project.name]]
@@ -214,7 +212,7 @@ Example:
             type:               Boolean,
             value:              false,
             reflectToAttribute: true,
-            computed:           '_computeTwoColumn(_projects,_invites.Invites)'
+            computed:           '_computeTwoColumn(_projects,_invites)'
           }
         },
 
@@ -237,13 +235,13 @@ Example:
                               {
                                 if(this.status === 200)
                                 {
-                                  for(var i in self._invites.Invites)
+                                  for(var i in self._invites)
                                   {
-                                    if(self._invites.Invites.hasOwnProperty(i))
+                                    if(self._invites.hasOwnProperty(i))
                                     {
-                                      if(self._invites.Invites[i].project.id === actionData.acceptId)
+                                      if(self._invites[i].project.id === actionData.acceptId)
                                       {
-                                        self.splice('_invites.Invites', i, 1);
+                                        self.splice('_invites', i, 1);
                                         break;
                                       }
                                     }
@@ -267,7 +265,7 @@ Example:
                             );
                           }
                           xhr.withCredentials = true;
-                          xhr.setRequestHeader("X-Requested-By", "cubex-projects");
+                          xhr.setRequestHeader('X-Requested-By', 'cubex-projects');
                           xhr.send();
                         },
 

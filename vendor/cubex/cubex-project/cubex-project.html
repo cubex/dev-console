@@ -13,11 +13,13 @@ Example:
 @demo demo/index.html
 -->
 
-<dom-module id="cubex-project" attributes="project-id project projects">
+<dom-module id="cubex-project" attributes="project-id project projects invites">
   <template>
     <cubex-route project-id="{{projectId}}"></cubex-route>
     <cube-websocket auto project="[[projectId]]" vendor="kubex" app="project"
                     on-subscribe="_projectSubscribed" on-message="_projectUpdate"></cube-websocket>
+    <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/project/invites.json"
+                   data="{{_invites}}"></cube-resource>
   </template>
   <script>
     Polymer(
@@ -27,16 +29,32 @@ Example:
           _subscribed:     {type: Boolean, value: false},
           projectId:       {type: String, notify: true},
           project:         {type: Object, notify: true, readOnly: true},
-          projects:        {type: Array, notify: true, readOnly: true},
-          _projectsObject: {type: Object, value: function () {return {}}}
+          projects:        {
+            type:  Array, notify: true, readOnly: true,
+            value: function () {return [];}
+          },
+          invites:         {
+            type:  Array, notify: true, readOnly: true,
+            value: function () {return [];}, computed: '_computeInvites(_invites)'
+          },
+          _invites:        {type: Object, value: function () {return {};}},
+          _projectsObject: {type: Object, value: function () {return {};}}
         },
         observers:          ['_projectChanged(projects,projectId)'],
+        _computeInvites:    function (invites)
+                            {
+                              if(invites && invites.Invites)
+                              {
+                                return invites.Invites;
+                              }
+                              return [];
+                            },
         _projectSubscribed: function (e, message)
                             {
                               var projects = JSON.parse(message).projects || [];
                               this._projectsObject = projects;
                               this._subscribed = true;
-                              this._setProjects(Object.keys(projects).map(function (i) {return projects[i]}));
+                              this._setProjects(Object.keys(projects).map(function (i) {return projects[i];}));
                             },
         _projectUpdate:     function (e, message)
                             {
@@ -66,7 +84,7 @@ Example:
                               {
                                 if(this._subscribed && !this._projectsObject[this.projectId])
                                 {
-                                  window.location = "//" + this.getServiceHost('console');
+                                  window.location = '//' + this.getServiceHost('console');
                                 }
                                 else
                                 {
