@@ -13,7 +13,7 @@
     "parse",
     "format"
   ],
-  "license": "https://abdonrd.github.io/LICENSE.txt",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/abdonrd/moment-element.git"
@@ -43,14 +43,14 @@
       }
     }
   },
-  "homepage": "https://github.com/TomK/moment-element",
-  "_release": "32da4ee720",
+  "homepage": "https://github.com/abdonrd/moment-element",
+  "_release": "5d4edfcf5c",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "32da4ee720b761abc500d32aab8deeddc367691a"
+    "commit": "5d4edfcf5c2c67ddc3a3db500d18e1b414187926"
   },
-  "_source": "https://github.com/TomK/moment-element.git",
+  "_source": "https://github.com/abdonrd/moment-element.git",
   "_target": "master",
-  "_originalSource": "TomK/moment-element"
+  "_originalSource": "abdonrd/moment-element"
 }

@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#1.9 - 2",
-    "moment-element": "TomK/moment-element#master"
+    "moment-element": "abdonrd/moment-element#master"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
@@ -30,11 +30,11 @@
   "resolutions": {
     "webcomponentsjs": "^v1.0.0"
   },
-  "_release": "5c52139221",
+  "_release": "bfb91f9623",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "5c52139221306c0dd07b743a6fc5d5a92d714f71"
+    "commit": "bfb91f962312b9448cb0213c6aaeb6b0722358c6"
   },
   "_source": "https://github.com/CubexElements/cube-time.git",
   "_target": "*",
