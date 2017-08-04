@@ -6,7 +6,6 @@
 <link rel="import" href="../../cube-time/cube-time.html">
 <link rel="import" href="../../paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="../cubex-app/cubex-app-definition.html">
-<link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="cubex-notification-definition.html">
 
 <dom-module id="cubex-notification" attributes="notification">
@@ -57,8 +56,6 @@
         top: 0;
       }
     </style>
-
-    <cubex-route project-id="{{projectId}}"></cubex-route>
 
     <cubex-notification-definition notification-id="[[notification.notification_id]]"
                                    definition="{{_definition}}" gaid="{{gaid}}"></cubex-notification-definition>

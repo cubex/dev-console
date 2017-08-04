@@ -1,7 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
-<link rel="import" href="../cubex-route/cubex-route.html">
+<link rel="import" href="cubex-project-behavior.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -13,10 +13,9 @@ Example:
 @demo demo/index.html
 -->
 
-<dom-module id="cubex-project" attributes="project-id project projects invites">
+<dom-module id="cubex-project" attributes="project-alias project projects invites">
   <template>
-    <cubex-route project-id="{{projectId}}"></cubex-route>
-    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="project"
+    <cube-websocket auto project="[[projectAlias]]" vendor="kubex" app="project"
                     on-subscribe="_projectSubscribed" on-message="_projectUpdate"></cube-websocket>
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/project/invites.json"
                    data="{{_invites}}"></cube-resource>
@@ -27,7 +26,6 @@ Example:
         is:                 'cubex-project',
         properties:         {
           _subscribed:     {type: Boolean, value: false},
-          projectId:       {type: String, notify: true},
           project:         {type: Object, notify: true, readOnly: true},
           projects:        {
             type:  Array, notify: true, readOnly: true,
@@ -40,7 +38,7 @@ Example:
           _invites:        {type: Object, value: function () {return {};}},
           _projectsObject: {type: Object, value: function () {return {};}}
         },
-        observers:          ['_projectChanged(projects,projectId)'],
+        observers:          ['_projectChanged(_projectsObject,projectAlias)'],
         _computeInvites:    function (invites)
                             {
                               if(invites && invites.Invites)
@@ -78,22 +76,23 @@ Example:
                                 }
                               }
                             },
-        _projectChanged:    function ()
+        _projectChanged:    function (projects, alias)
                             {
-                              if(this._projectsObject && this.projectId)
+                              if(projects && alias)
                               {
-                                if(this._subscribed && !this._projectsObject[this.projectId])
+                                if(this._subscribed && !projects[alias])
                                 {
                                   window.location = '//' + this.getServiceHost('console');
                                 }
                                 else
                                 {
-                                  this._setProject(this._projectsObject[this.projectId]);
+                                  this._setProject(projects[alias]);
                                 }
                               }
                             },
         behaviors:          [
-          Polymer.CubeServiceBehavior
+          Polymer.CubeServiceBehavior,
+          Polymer.CubexProjectBehavior
         ]
       }
     );

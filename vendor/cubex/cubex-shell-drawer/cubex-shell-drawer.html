@@ -3,6 +3,8 @@
 <link href="../cubex-category/cubex-category.html" rel="import">
 <link href="../cubex-project/cubex-project.html" rel="import">
 <link href="../../iron-selector/iron-selector.html" rel="import">
+<link href="../../paper-tabs/paper-tabs.html" rel="import">
+<link href="../../paper-tabs/paper-tab.html" rel="import">
 <link href="../../paper-button/paper-button.html" rel="import">
 <link href="../../cube-list/cube-list-menu.html" rel="import">
 <link href="../../cube-list/cube-list-group.html" rel="import">
@@ -10,33 +12,61 @@
 <link href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html" rel="import">
 <link href="../../cube-behavior/cube-i18n-behavior.html" rel="import">
 <link href="../../cube-behavior/cube-service-behavior.html" rel="import">
+<link href="../../cube-behavior/cube-touch-enabled-behavior.html" rel="import">
 <link href="../cubex-pinned-apps/cubex-pinned.html" rel="import">
+<link href="../../cube-dropdown/cube-dropdown.html" rel="import">
 
-<dom-module id="cubex-shell-drawer">
+<dom-module id="cubex-shell-drawer" attributes="app-nav">
   <template>
     <style>
       :host {
+        @apply --primary-700;
+        @apply(--paper-font-body2);
         display: flex;
         flex-direction: column;
         overflow: auto;
         height: 100%;
       }
 
-      #user-view {
-        background: var(--accent-700-color);
-        position: relative;
+      cube-dropdown cube-list-menu {
+        @apply(--shadow-elevation-4dp);
+      }
+
+      .rightAlign {
+        display: flex;
+        justify-content: flex-end;
+        flex-shrink: 0;
         width: 100%;
-        height: 146px;
-        @apply(--paper-font-body2);
-        color: var(--accent-700-text-color);
+      }
+
+      .rightAlign > * {
+        flex-shrink: 0;
+        min-width: 100%;
+      }
+
+      #user-view {
+        width: var(--cubex-drawer-width);
+        height: var(--cubex-drawer-offset-top);
         border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        box-sizing: border-box;
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        @apply --primary-900;
+      }
+
+      #user-view strong {
+        text-transform: uppercase;
+      }
+
+      #user-view span {
+        font-size: 12px;
       }
 
       #user-view strong,
       #user-view span {
-        padding-left: 98px;
         display: block;
-        padding-top: 26px;
       }
 
       #user-view span {
@@ -45,60 +75,48 @@
       }
 
       #user-view img {
+        margin-left: -10px;
         border-radius: 50%;
-        border: solid 3px rgba(255, 255, 255, 0.4);
-        width: 64px;
+        width: 42px;
+        height: 42px;
+      }
+
+      #menuTab {
         height: 64px;
-        position: absolute;
-        top: 17px;
-        left: 13px;
+        width: var(--cubex-drawer-width);
+        --paper-tabs-selection-bar-color: var(--accent-400-color);
+        @apply --primary-800;
       }
 
-      .toggle {
+      #menuTab paper-tab {
+        flex-grow: 0;
+        --paper-tab-ink: var(--accent-400-color);
+      }
 
-        display: block;
-        position: absolute;
-        top: 90px;
-        left: 0;
-        right: 0;
-        margin: 0;
-        padding: 0 16px;
-        cursor: pointer;
+      #menuTab paper-tab:first-of-type {
+        --paper-tab-content: {
+          justify-content: flex-start;
+        };
+        text-transform: uppercase;
         text-align: left;
-
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-
-        text-transform: none;
-        @apply(--paper-font-body2);
-        height: 56px;
-        line-height: 56px;
+        flex-grow: 1;
       }
 
-      .toggle iron-icon {
-        float: right;
-        top: 18px;
-      }
-
-      .closer {
-        position: absolute;
-        z-index: 100;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 90px;
+      #burger {
+        margin-right: -10px;
       }
 
       #drawerPanelContainer {
+        display: flex;
+        flex-direction: column;
         position: relative;
-        flex-grow: 1
+        flex-grow: 1;
       }
 
       #drawerPanels {
         height: 100%;
         width: 100%;
+        overflow: scroll;
       }
 
       :host cube-list-menu {
@@ -106,7 +124,7 @@
         --cube-list-filter-focus-color: var(--primary-800-text-color);
       }
 
-      :host cube-li {
+      #drawerPanelContainer cube-li {
         @apply --primary-700;
       }
 
@@ -139,40 +157,123 @@
       .app-vendor {
         font-size: 12px;
       }
+
+      .stretch {
+        flex-grow: 1;
+      }
+
+      cube-li#kubexMenu {
+        @apply --primary-900;
+        color: white;
+        text-transform: uppercase;
+        font-size: 15px;
+        font-weight: bold;
+        letter-spacing: 4px;
+      }
+
+      #kubexMenu span {
+        color: var(--accent-700-color);
+      }
+
+      #kubexMenu a {
+        color: white;
+        display: block;
+        text-decoration: none;
+      }
+
+      #kubexMenu img {
+        margin-left: -5px;
+        display: block;
+        width: 30px;
+        height: 30px;
+      }
+
+      #keyhelp {
+        padding-top: 20px;
+        width: 500px;
+        text-align: left;
+
+        --cube-li-style: {
+          background: var(--theme-2-color);
+        }
+      }
     </style>
 
     <cubex-project project="{{project}}" projects="{{_projects}}"></cubex-project>
 
     <cubex-registry project-data="{{_projectRegistryData}}"></cubex-registry>
+    <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/whoami/whoami.json"
+                   data="{{whoami}}"></cube-resource>
 
-    <div id="user-view">
-      <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/whoami/whoami.json"
-                     data="{{whoami}}"></cube-resource>
-      <paper-button on-tap="_toggleParent" class="closer"></paper-button>
-      <img src="{{avatar}}">
-      <strong>[[whoami.FirstName]] [[whoami.LastName]]</strong>
-      <span>[[whoami.Username]]</span>
-      <template is="dom-if" if="[[project]]">
-        <paper-button on-tap="toggleDrawer" class="toggle" selected-drawer="{{selectedItem}}">
-          [[project.name]]
-          <iron-icon icon="[[_icon]]"></iron-icon>
-        </paper-button>
-      </template>
+    <div class="rightAlign">
+      <div id="user-view">
+        <cube-li compact>
+          <img slot="icon" src="[[avatar]]">
+          <strong>[[whoami.FirstName]] [[whoami.LastName]]</strong>
+          <span slot="secondary">[[whoami.Username]]</span>
+          <cube-action id="burger" slot="actions" icon="icons:menu" on-tap="_toggleDrawer"></cube-action>
+        </cube-li>
+      </div>
+    </div>
+    <div class="rightAlign">
+      <paper-tabs id="menuTab" selected="{{__selectedPanel}}" on-tap="_openParent">
+        <paper-tab>Menu</paper-tab>
+        <paper-tab>
+          <cube-icon icon="communication:business"></cube-icon>
+        </paper-tab>
+        <paper-tab>
+          <cube-icon icon="icons:apps"></cube-icon>
+        </paper-tab>
+      </paper-tabs>
     </div>
     <div id="drawerPanelContainer">
-      <iron-selector selected="0" id="drawerPanels">
-        <slot></slot>
+      <iron-selector selected="{{__selectedPanel}}" id="drawerPanels">
+        <cubex-shell-drawer-panel>
+          <cube-list-menu>
+            <template is="dom-repeat" items="[[appNav]]">
+              <a href="[[item.Path]]">
+                <cube-li compact>
+                  <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
+                  [[i18nResource(item.Name)]]
+                </cube-li>
+              </a>
+            </template>
+          </cube-list-menu>
+        </cubex-shell-drawer-panel>
+        <cubex-shell-drawer-panel id="projectsPanel">
+          <cube-list-menu show-filter filter-label="{{i18n('filter_projects')}}">
+            <cube-list-group title="{{i18n('all_projects')}}">
+              <template is="dom-repeat" items="[[_projects]]">
+                <a href="//[[getServiceHost(item.alias)]]">
+                  <cube-li compact>
+                    <cube-icon slot="icon" icon="communication:business"></cube-icon>
+                    [[item.name]]
+                    <div slot="secondary">[[item.alias]]</div>
+                  </cube-li>
+                </a>
+              </template>
+            </cube-list-group>
+          </cube-list-menu>
+          <cube-list-menu>
+            <a href="//[[getServiceHost('console')]]">
+              <cube-li compact>
+                <cube-icon slot="icon" icon="icons:settings"></cube-icon>
+                Manage Projects
+              </cube-li>
+            </a>
+          </cube-list-menu>
+        </cubex-shell-drawer-panel>
         <template is="dom-if" if="[[project]]">
-          <cubex-shell-drawer-panel>
+          <cubex-shell-drawer-panel id="appsPanel">
             <cube-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
               <template is="dom-repeat" items="[[__toArray(_groupedApps)]]" as="category">
                 <cube-list-group>
-                  <a href="/_[[category.name]]" slot="title" on-tap="_toggleParent" class="category-link">
+                  <a href="/_[[category.name]]" slot="title" class="category-link">
                     <cubex-category key="[[category.name]]"></cubex-category>
                   </a>
                   <template is="dom-repeat" items="[[__toArray(category.apps)]]" as="app">
-                    <a href="/[[app.vendor_id]]/[[app.id]]" on-tap="_toggleParent">
-                      <cube-li compact-icon highlight="[[app.pinned]]">
+                    <a href="/[[app.vendor_id]]/[[app.id]]">
+                      <cube-li compact highlight="[[app.pinned]]">
                         <cubex-pinned vendor="[[app.vendor_id]]" app="[[app.id]]" pinned="{{app.pinned}}"
                                       slot="actions"></cubex-pinned>
                         <cube-icon slot="icon" icon="[[app.icon]]"></cube-icon>
@@ -185,8 +286,8 @@
               </template>
             </cube-list-menu>
             <cube-list-menu>
-              <a id="storeLink" href="/kubex/store" on-tap="_toggleParent">
-                <cube-li compact-icon>
+              <a id="storeLink" href="/kubex/store">
+                <cube-li compact>
                   <cube-icon slot="icon" icon="icons:apps"></cube-icon>
                   App Store
                 </cube-li>
@@ -194,61 +295,105 @@
             </cube-list-menu>
           </cubex-shell-drawer-panel>
         </template>
-        <cubex-shell-drawer-panel id="projectsPanel">
-          <cube-list-menu show-filter filter-label="{{i18n('filter_projects')}}">
-            <cube-list-group title="{{i18n('all_projects')}}">
-              <template is="dom-repeat" items="[[_projects]]">
-                <a href="//[[getServiceHost(item.alias)]]" on-tap="_toggleParent">
-                  <cube-li compact-icon>
-                    <cube-icon slot="icon" icon="communication:business"></cube-icon>
-                    [[item.name]]
-                    <div slot="secondary">[[item.alias]]</div>
-                  </cube-li>
-                </a>
-              </template>
+      </iron-selector>
+
+      <div class="stretch"></div>
+      <cube-li compact id="kubexMenu">
+        <a slot="icon" href="/">
+          <img src="[[__logoUrl]]"/>
+        </a>
+        <a href="/">
+          Kube<span>x</span>
+        </a>
+
+        <cube-dropdown slot="actions" id="additional" vertical-align="bottom">
+          <cube-action icon="icons:more-horiz" slot="trigger"></cube-action>
+          <cube-list-menu border>
+            <cube-list-group>
+              <a href="/kubex/project">
+                <cube-li compact on-tap="_tapProjectInfo">{{i18n('project_info')}}</cube-li>
+              </a>
+              <cube-li compact on-tap="openKeyboardHelp">{{i18n('keyboard_shortcuts')}}</cube-li>
+            </cube-list-group>
+            <cube-list-group>
+              <cube-li compact on-tap="_openSupport">{{i18n('support')}}</cube-li>
+              <cube-li compact on-tap="_openTerms">{{i18n('terms_service')}}</cube-li>
+              <cube-li compact on-tap="_openCustomerAgreement">{{i18n('cust_agree')}}</cube-li>
+            </cube-list-group>
+            <cube-list-group>
+              <cube-li compact on-tap="_logout">{{i18n('logout')}}</cube-li>
             </cube-list-group>
           </cube-list-menu>
-          <cube-list-menu>
-            <a href="//[[getServiceHost('console')]]" on-tap="_toggleParent">
-              <cube-li compact-icon>
-                <cube-icon slot="icon" icon="icons:settings"></cube-icon>
-                Manage Projects
-              </cube-li>
-            </a>
-          </cube-list-menu>
-        </cubex-shell-drawer-panel>
-      </iron-selector>
+        </cube-dropdown>
+      </cube-li>
     </div>
+
+    <cube-dialog id="keyhelp" with-backdrop>
+      <h2>{{i18n('keyboard_shortcuts')}}</h2>
+
+      <cube-list zebra border border-group>
+        <cube-list-group title="{{i18n('navigation')}}">
+          <cube-li>{{i18n('show_apps_projects')}} <span slot="secondary">.</span></cube-li>
+          <cube-li>{{i18n('launch_search')}} <span slot="secondary">/</span></cube-li>
+        </cube-list-group>
+        <cube-list-group title="{{i18n('general')}}">
+          <cube-li>{{i18n('open_shortcut_help')}} <span slot="secondary">?</span></cube-li>
+        </cube-list-group>
+      </cube-list>
+
+      <div class="buttons">
+        <paper-button dialog-dismiss>{{i18n('close')}}</paper-button>
+      </div>
+    </cube-dialog>
   </template>
 
   <script>
     Polymer(
       {
-        is:            'cubex-shell-drawer',
-        properties:    {
+        is:         'cubex-shell-drawer',
+        properties: {
           resources:            {
             type:  Object,
             value: {
-              "en": {
-                "filter_apps":     "Filter Applications",
-                "filter_projects": "Filter Projects",
-                "all_projects":    "All Projects"
+              'en': {
+                'filter_apps':        'Filter Applications',
+                'filter_projects':    'Filter Projects',
+                'all_projects':       'All Projects',
+                'project_info':       'Project Information',
+                'keyboard_shortcuts': 'Keyboard Shortcuts',
+                'support':            'Support',
+                'terms_service':      'Terms of Service',
+                'cust_agree':         'Customer Agreement',
+                'logout':             'Logout',
+                'general':            'General',
+                'navigation':         'Navigation',
+                'show_apps_projects': 'Show Applications & Project',
+                'launch_search':      'Launch Search',
+                'close':              'Close',
+                'open_shortcut_help': 'Open Shortcut Help',
+                'search':             'Search'
               },
-              "fr": {
-                "filter_apps":     "Filtre Applications",
-                "filter_projects": "Filtre les projects",
-                "all_projects":    "Toutes les projects"
+              'fr': {
+                'filter_apps':        'Filtre Applications',
+                'filter_projects':    'Filtre les projects',
+                'all_projects':       'Toutes les projects',
+                'keyboard_shortcuts': 'Raccourcis clavier',
+                'project_info':       'Informations du projet',
+                'support':            'Soutien',
+                'terms_service':      'Conditions d\'utilisation',
+                'cust_agree':         'Accord client',
+                'logout':             'Se déconnecter',
+                'general':            'Général',
+                'navigation':         'La navigation',
+                'show_apps_projects': 'Voir applications & projet',
+                'launch_search':      'Lancer la recherche',
+                'close':              'Fermer',
+                'open_shortcut_help': 'Ouvrir aide raccourci',
+                'search':             'Chercher'
               }
             }
           },
-          selectedItem:         {
-            type:  Number,
-            value: 0
-          },
-          _icon:                {
-            type:  String,
-            value: "icons:arrow-drop-down"
-          },
+          appNav:               {type: Array},
           _projectRegistryData: {type: Object},
           _groupedApps:         {type: Object, computed: '_computeGroupedApps(_projectRegistryData)'},
           project:              {type: Object},
@@ -256,41 +401,100 @@
             type:  String,
             value: function ()
                    {
-                     return "//" + this.getServiceHost('static-console') + "/resources/images/avatar/default-64.png";
+                     return '//' + this.getServiceHost('static-console') + '/resources/images/avatar/default-64.png';
                    }
           },
-          headColor:            {
-            type: String
-          }
+          __selectedPanel:      {type: Number, value: 0},
+          __logoUrl:            {type: String, computed: '__computeLogoUrl()'}
         },
-        keyBindings:   {
-          ',': 'toggleDrawer'
+
+        attached: function ()
+                  {
+                    this.listen(this.parentNode, 'cubex-drawer-state-changed', '__parentStateChanged');
+                    this.listen(this.$.drawerPanels, 'tap', '_tappedPanelItem');
+                    this.keyEventTarget = document.body;
+                  },
+
+        _tappedPanelItem: function (e)
+                          {
+                            if(this.parentNode.state !== 2 && this.parentNode.isOpen)
+                            {
+                              for(var i = 0; i <= e.path.length; i++)
+                              {
+                                if(e.path[i].tagName === 'A')
+                                {
+                                  this._closeDrawer();
+                                  break;
+                                }
+                              }
+                            }
+                          },
+
+        keyBindings:       {
+          ',': 'toggleDrawerPanel'
         },
-        attached:      function ()
-                       {
-                         this.keyEventTarget = document.body;
-                       },
-        _toggleParent: function ()
-                       {
-                         this.parentNode.close();
-                       },
+        toggleDrawerPanel: function ()
+                           {
+                             if(this.parentNode.state === 2 || this.parentNode.isOpen)
+                             {
+                               this.$.drawerPanels.selectNext();
+                             }
+                           },
+
+        __parentStateChanged: function (e)
+                              {
+                                if(e.detail.state !== 2 && e.detail.isOpen === false)
+                                {
+                                  this.$.drawerPanels.select(0);
+                                }
+                              },
+
         selectPanel:   function (panel)
                        {
                          this.$.drawerPanels.select(panel);
+                         this._openDrawer();
                        },
-        toggleDrawer:  function ()
+        _closeDrawer:  function ()
                        {
-                         this.$.drawerPanels.selectNext();
-                         this.selectedItem = this.$.drawerPanels.selected;
-                         if(this.selectedItem === 1)
+                         this.$.drawerPanels.select(0);
+                         if(!this._touchEnabled())
                          {
-                           this._icon = "icons:arrow-drop-up";
+                           this.parentNode.setState(1);
                          }
-                         else if(this.selectedItem === 0)
+                         this.parentNode.close();
+                       },
+        _openDrawer:   function ()
+                       {
+                         this.$.drawerPanels.select(0);
+                         if(this._touchEnabled())
                          {
-                           this._icon = "icons:arrow-drop-down";
+                           this.parentNode.open();
+                         }
+                         else
+                         {
+                           this.parentNode.setState(2);
                          }
                        },
+        _toggleDrawer: function ()
+                       {
+                         if(this.parentNode.isOpen || (this.parentNode.state === 2))
+                         {
+                           this._closeDrawer();
+                         }
+                         else
+                         {
+                           this._openDrawer();
+                         }
+                       },
+        _openParent:   function ()
+                       {
+                         this.parentNode.open();
+                       },
+
+        _menuTap: function (e)
+                  {
+                    this.selectPanel(Array.prototype.slice.call(e.target.parentNode.children).indexOf(e.target));
+                  },
 
         __toArray: function (o)
                    {
@@ -341,10 +545,55 @@
                        return item.app_type === 'kubex.application.project' && item.ui_mode === 'full';
                      },
 
+        __computeLogoUrl: function ()
+                          {
+                            return this.resolveUrl('../resources/kubex-icon.svg');
+                          },
+
+        __isSelectedPanel: function (idx, panel)
+                           {
+                             return idx === panel;
+                           },
+
+        openKeyboardHelp:       function ()
+                                {
+                                  this._closeAll();
+                                  this.$.keyhelp.open();
+                                },
+        _openTerms:             function ()
+                                {
+                                  this._closeAll();
+                                  window.open('http://kubex.io/terms');
+                                },
+        _logout:                function ()
+                                {
+                                  this._closeAll();
+                                  window.location = '/logout';
+                                },
+        _openCustomerAgreement: function ()
+                                {
+                                  this._closeAll();
+                                  window.open('http://kubex.io/customer-agreement');
+                                },
+        _tapProjectInfo:        function ()
+                                {
+                                  this._closeAll();
+                                },
+        _openSupport:           function ()
+                                {
+                                  this._closeAll();
+                                  window.open('http://support.kubex.io');
+                                },
+        _closeAll:              function ()
+                                {
+                                  this.$.additional.close();
+                                },
+
         behaviors: [
           Polymer.IronA11yKeysBehavior,
           Polymer.CubeI18nBehavior,
-          Polymer.CubeServiceBehavior
+          Polymer.CubeServiceBehavior,
+          Polymer.CubeTouchEnabledBehavior
         ]
       }
     );

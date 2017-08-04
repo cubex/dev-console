@@ -3,18 +3,26 @@
 
 <dom-module id="cubex-app-definition" attributes="gaid app-data">
   <template>
-    <cube-resource auto url="[[_url]]" data="{{appData}}" ttl="3600" no-request-by></cube-resource>
+    <cube-resource auto url="[[_url]]" data="{{_appData}}" status="{{_status}}" ttl="3600"
+                   no-request-by></cube-resource>
   </template>
   <script>
     Polymer(
       {
         is:         'cubex-app-definition',
         properties: {
-          gaid:    {type: String},
-          appData: {type: Object, notify: true},
-          _url:    {type: String}
+          gaid:     {type: String},
+          appData:  {type: Object, notify: true, computed: '_computeAppData(_status,_appData)'},
+          _url:     {type: String},
+          _appData: {type: Object},
+          _status:  {type: String}
         },
         observers:  ['_updateUrl(gaid)'],
+
+        _computeAppData: function (status, appData)
+                         {
+                           return status === 200 && appData ? appData : undefined;
+                         },
 
         _updateUrl: function ()
                     {

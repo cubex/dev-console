@@ -7,7 +7,6 @@
 <link rel="import" href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
-<link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="../cubex-project/cubex-project.html">
 <link rel="import" href="cubex-search-overlay.html">
 
@@ -26,12 +25,13 @@
         };
 
         --iron-overlay-backdrop: {
-          top: 64px;
+          top: var(--cubex-drawer-offset-top);
         };
 
         --iron-overlay-backdrop-opened: {
           display: none;
         };
+        @apply --theme-500;
       }
 
       iron-dropdown {
@@ -59,12 +59,13 @@
       }
 
       :host([focused]) paper-input cube-icon {
-        color: var(--theme-text-secondary);
+        color: var(--theme-text);
       }
 
       paper-input cube-icon {
         padding: 0;
         margin: 0 12px;
+        color: var(--theme-text-secondary);
       }
 
       :host([focus-search]), #results {
@@ -100,7 +101,7 @@
         @apply --shadow-elevation-2dp;
         background: var(--theme-100-color, white);
         color: var(--theme-text, black);
-        --cube-li-focus-color: var(--primary-800-color);
+        --cube-li-focus-color: var(--primary-50-color);
       }
 
       #searchmenu a {
@@ -122,15 +123,14 @@
       }
     </style>
 
-    <cubex-project projects="{{_projects}}"></cubex-project>
-    <cubex-route project-id="{{_projectId}}"></cubex-route>
+    <cubex-project project-alias="{{_projectAlias}}" projects="{{_projects}}"></cubex-project>
 
     <cube-resource id="appResource" auto auth url="//[[getServiceHost('apps')]]/kubex/registry/project.json"
                    data="{{_apps}}" ttl="3600"></cube-resource>
     <cube-resource id="searchResource" auto auth url="//[[getServiceHost('apps')]]/kubex/search-actions/search.json"
                    data="{{_search}}" ttl="3600"></cube-resource>
 
-    <cube-websocket auto project="[[_projectId]]" vendor="kubex" app="registry"
+    <cube-websocket auto project="[[_projectAlias]]" vendor="kubex" app="registry"
                     on-message="_appsChanged"></cube-websocket>
 
     <div id="scrim" hidden="[[!focused]]"></div>
@@ -143,9 +143,9 @@
     <iron-dropdown vertical-align="top" id="results" vertical-offset="45">
       <cube-list-menu slot="dropdown-content" id="searchmenu" zebra>
         <template is="dom-repeat"
-                  items="{{_filterActions(searchQuery,_search.Actions,_apps.AppSummary,_projectId,_projects)}}">
+                  items="{{_filterActions(searchQuery,_search.Actions,_apps.AppSummary,_projectAlias,_projects)}}">
           <a class="result-link" href="/[[item.GlobalAppID]]/[[item.Path]]">
-            <cube-li>
+            <cube-li compact>
               <template restamp is="dom-if" if="[[item.Icon]]">
                 <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
               </template>
@@ -172,13 +172,13 @@
           resources:   {
             type:  Object,
             value: {
-              "en": {
-                "search":     "Find products and features",
-                "no_results": "No results matching"
+              'en': {
+                'search':     'Find products and features',
+                'no_results': 'No results matching'
               },
-              "fr": {
-                "search":     "Trouver des produits et des fonctionnalités",
-                "no_results": "Aucun résultat pour"
+              'fr': {
+                'search':     'Trouver des produits et des fonctionnalités',
+                'no_results': 'Aucun résultat pour'
               }
             }
           }
@@ -262,7 +262,7 @@
 
         _escapeRegExp: function (str)
                        {
-                         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+                         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
                        },
 
         _filterActions: function (searchQuery, actions, appSummary, projectId, projects)
@@ -343,10 +343,10 @@
 
                           if(filtered.length <= 0)
                           {
-                            filtered.push(this.__getItem(this.i18n("no_results") + ' "' + searchQuery + '"'));
+                            filtered.push(this.__getItem(this.i18n('no_results') + ' "' + searchQuery + '"'));
                           }
 
-                          return filtered.sort(function (a, b) {return a.Weight < b.Weight});
+                          return filtered.sort(function (a, b) {return a.Weight < b.Weight;});
                         },
 
         _query:   function ()

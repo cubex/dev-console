@@ -1,6 +1,5 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../app-layout/app-header/app-header.html">
-<link rel="import" href="../../paper-styles/typography.html">
 
 <link rel="import" href="../../app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../../app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -22,9 +21,10 @@
 <link rel="import" href="../cubex-search/cubex-search.html">
 <link rel="import" href="../cubex-toolbar/cubex-toolbar.html">
 <link rel="import" href="../cubex-drawer/cubex-drawer.html">
+<link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="../cubex-drawer/cubex-user-drawer.html">
 <link rel="import" href="../cubex-drawer/cubex-drawer-content.html">
-<link rel="import" href="../cubex-loader/cubex-loader.html">
+<link rel="import" href="./cubex-shell-content.html">
 <link rel="import" href="../../cube-preferences/cube-preferences.html">
 
 <link rel="import" href="../../iron-icon/iron-icon.html">
@@ -47,7 +47,7 @@
     <style>
       :host {
         --app-drawer-width: 320px;
-        --cubex-drawer-offset-top: 64px;
+        --cubex-drawer-offset-top: 56px;
         --cubex-drawer-peek-width: 56px;
         --cubex-drawer-width: 320px;
       }
@@ -68,40 +68,13 @@
 
       app-drawer {
         z-index: 1000;
-        top: var(--cubex-drawer-offset-top);
         --app-drawer-content-container: {
           @apply --primary-700;
           @apply --shadow-elevation-8dp;
-          top: -184px;
         };
       }
 
-      #waterfall {
-        z-index: 2;
-        position: fixed;
-        right: 0;
-        top: var(--cubex-drawer-offset-top);
-        left: 0;
-        width: 100%;
-        height: 5px;
-        content: "";
-        transition: opacity 0.4s;
-        pointer-events: none;
-        box-shadow: inset 0 5px 3px -3px rgba(0, 0, 0, 0.2);
-        will-change: opacity;
-        @apply(--app-header-shadow);
-      }
-
-      app-drawer-layout {
-        /* fix over scrolling on small content pages */
-        height: 0;
-      }
-
       app-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
         @apply --primary-800;
       }
 
@@ -118,9 +91,9 @@
         z-index: 1000;
         @apply --layout-horizontal;
         width: 100%;
-        transition: 0.2s ease !important;
+        transition: 200ms ease !important;
         transition-property: background-color, transform, left, margin !important;
-        @apply --primary-700;
+        @apply --theme-100;
       }
 
       #flex-toolbar paper-icon-button {
@@ -133,11 +106,11 @@
 
       :host([drawer-opened]) #flex-toolbar {
         @apply --primary-800;
-        margin-left: var(--app-drawer-width, 268px) !important;
+
       }
 
       #flex-toolbar cubex-search {
-        margin: 12px 0;
+        margin: 8px 0;
       }
 
       #search-shortcut {
@@ -170,13 +143,11 @@
         display: none;
       }
 
-      :host([focus-search]) #burger,
       :host([focus-search]) #search-shortcut,
       :host([focus-search]) #user-panel-action,
       :host([focus-search]) #app-menu,
       :host([focus-search]) cubex-pinned-apps,
       :host([focus-search]) cubex-toolbar,
-      :host([drawer-opened]) #burger,
       :host([drawer-opened]) #search-shortcut,
       :host([drawer-opened]) #user-panel-action,
       :host([drawer-opened]) #app-menu,
@@ -186,11 +157,11 @@
       }
 
       #user-panel-action:hover {
-        @apply --text-primary;
+        @apply --primary-100-text;
       }
 
       #user-panel-action, #app-menu {
-        --cube-icon-color: var(--primary-700-text-color);
+        --cube-icon-color: var(--primary-100-text-color);
         @apply --text-secondary;
       }
 
@@ -205,16 +176,16 @@
         display: inline-block;
         border: 5px solid transparent;
         position: absolute;
-        top: 13px;
+        top: 12px;
       }
 
       :host([user-drawer-state="0"]) #user-panel-action:before {
-        border-right-color: var(--primary-700-text-color);
+        border-right-color: var(--primary-100-text-color);
         left: -6px;
       }
 
       :host(:not([user-drawer-state="0"])) #user-panel-action:after {
-        border-left-color: var(--primary-700-text-color);
+        border-left-color: var(--primary-100-text-color);
         right: -6px;
       }
 
@@ -225,72 +196,79 @@
       cubex-user-drawer-items cube-action {
         padding: 12px
       }
+
+      #userDrawer {
+        max-height: calc(100vh - var(--cubex-drawer-offset-top));
+      }
+
+      #toolbar {
+        position: relative;
+        z-index: 1;
+      }
+
+      #shellDrawer, #toolbar, cubex-drawer-content {
+        @apply --shadow-elevation-2dp;
+      }
     </style>
 
     <app-location route="{{route}}"></app-location>
     <iron-media-query query="(min-width: 1000px)" query-matches="{{_peek}}"></iron-media-query>
     <iron-media-query query="(max-width: 375px)" query-matches="{{_narrow}}"></iron-media-query>
 
-    <app-drawer-layout id="adl" fullbleed force-narrow>
-      <app-drawer slot="drawer" id="drawer" opened="{{drawerOpened}}">
-        <cubex-shell-drawer id="shellDrawer"></cubex-shell-drawer>
-      </app-drawer>
+    <cube-preferences name="shellDrawerState" value="{{shellDrawerState}}" live-update></cube-preferences>
+    <cubex-drawer id="shellDrawer" min-state="1" preferred-state="[[shellDrawerState]]" state="{{shellDrawerState}}">
+      <cubex-shell-drawer id="shellDrawerContent" slot="drawer-content" app-nav="[[_appNav]]"></cubex-shell-drawer>
 
-      <app-header-layout>
-        <app-header fixed slot="header">
-          <div id="flex-toolbar">
-            <div id="burger">
-              <paper-icon-button icon="menu" on-tap="_toggleDrawer"></paper-icon-button>
-            </div>
-            <cubex-pinned-apps hidden="[[_narrow]]" on-tap="_closeDrawer"></cubex-pinned-apps>
-            <cube-action icon="icons:toc" hidden="[[!_narrow]]" id="app-menu" on-tap="_showAppMenu"></cube-action>
-            <div class="spread"></div>
-            <cubex-search id="search" focus-search="[[focusSearch]]"></cubex-search>
-            <div class="spread"></div>
-            <div id="search-shortcut">
-              <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
-            </div>
-            <cubex-toolbar id="toolbar"></cubex-toolbar>
-
-            <cube-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action" size="24"
-                         on-tap="_toggleUserDrawer"></cube-action>
+      <div id="toolbar">
+        <div id="flex-toolbar">
+          <cubex-pinned-apps hidden="[[_narrow]]" on-tap="_closeDrawer"></cubex-pinned-apps>
+          <cube-action icon="icons:toc" hidden="[[!_narrow]]" id="app-menu" on-tap="_showAppMenu"></cube-action>
+          <div class="spread"></div>
+          <cubex-search id="search" focus-search="[[focusSearch]]"></cubex-search>
+          <div class="spread"></div>
+          <div id="search-shortcut">
+            <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
           </div>
-        </app-header>
+          <cubex-toolbar></cubex-toolbar>
 
-        <div id="waterfall"></div>
+          <cube-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action" size="24"
+                       on-tap="_toggleUserDrawer"></cube-action>
+        </div>
+      </div>
 
+      <div id="contentContainer">
         <cube-preferences name="userDrawerState" value="{{userDrawerState}}" live-update></cube-preferences>
-
-        <cubex-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]" state="{{userDrawerState}}"
-                      preferred-state="[[userDrawerState]]" position="right">
+        <cubex-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]" position="right"
+                      state="{{userDrawerState}}" preferred-state="[[userDrawerState]]">
           <cubex-drawer-content slot="drawer-content">
             <cubex-user-drawer></cubex-user-drawer>
           </cubex-drawer-content>
 
-          <cubex-loader></cubex-loader>
+          <cubex-shell-content app-nav="{{_appNav}}"></cubex-shell-content>
         </cubex-drawer>
-      </app-header-layout>
-
-    </app-drawer-layout>
+      </div>
+    </cubex-drawer>
 
   </template>
   <script>
     Polymer(
       {
-        is:                   'cubex-shell-console',
-        properties:           {
-          drawerOpened:    {type: Boolean, reflectToAttribute: true},
-          focusSearch:     {type: Boolean, reflectToAttribute: true},
-          userDrawerState: {type: Number, reflectToAttribute: true, observer: '_userDrawerStateChanged'}
+        is:          'cubex-shell-console',
+        properties:  {
+          drawerOpened:     {type: Boolean, reflectToAttribute: true},
+          focusSearch:      {type: Boolean, reflectToAttribute: true},
+          userDrawerState:  {type: Number, value: 0, reflectToAttribute: true, observer: '_userDrawerStateChanged'},
+          shellDrawerState: {type: Number, value: 1, reflectToAttribute: true, observer: '_shellDrawerStateChanged'}
         },
-        observers:            [
-          '_viewChanged(_peek,_narrow)'
+        observers:   [
+          '_viewChanged(_peek,_narrow,_isTouchDevice)'
         ],
-        keyBindings:          {
+        keyBindings: {
           '.': '_toggleDrawer',
           '/': '_launchSearch',
           '?': '_keyboardHelp'
         },
+
         attached:             function ()
                               {
                                 this.keyEventTarget = document.body;
@@ -308,19 +286,22 @@
                               },
         _resetLayout:         function ()
                               {
-                                this.$.adl.resetLayout();
                               },
         _keyboardHelp:        function (e)
                               {
                                 if(this._isValidKeyPress(e))
                                 {
-                                  this.$.drawer.close();
+                                  this.$.shellDrawer.close();
                                   this.$.toolbar.openKeyboardHelp();
                                   e.preventDefault();
                                 }
                               },
-        _viewChanged:         function (peek, narrow)
+        _viewChanged:         function (peek, narrow, touch)
                               {
+                                var maxTouch = touch ? 1 : 2;
+                                // shell drawer max is always either peek or open
+                                this.$.shellDrawer.setMaxState(maxTouch);
+
                                 if(narrow)
                                 {
                                   this.$.userDrawer.setMaxState(0);
@@ -328,15 +309,13 @@
                                 else
                                 {
                                   this.$.userDrawer.setMinState(0);
-                                  this.$.userDrawer.setMaxState(2);
+                                  this.$.userDrawer.setMaxState(maxTouch);
 
                                   if(peek && this.$.userDrawer.state === 0)
                                   {
                                     this.$.userDrawer.setState(1);
                                   }
                                 }
-
-                                this.updateStyles();
                               },
         _blurSearch:          function ()
                               {
@@ -353,7 +332,7 @@
                               {
                                 if(this._isValidKeyPress(e))
                                 {
-                                  this.$.drawer.close();
+                                  this.$.shellDrawer.close();
                                   e.preventDefault();
                                   if(this.$.search.getComputedStyleValue('display') === 'block')
                                   {
@@ -369,14 +348,21 @@
                               {
                                 if(this._isValidKeyPress(e))
                                 {
-                                  this.$.drawer.toggle();
-                                  this.$.shellDrawer.selectPanel(0);
+                                  if(this.$.shellDrawer.state === 2)
+                                  {
+                                    this.$.shellDrawer.setState(1);
+                                  }
+                                  else
+                                  {
+                                    this.$.shellDrawer.setState(2);
+                                  }
+                                  this.$.shellDrawerContent.selectPanel(0);
                                   e.preventDefault();
                                 }
                               },
         _closeDrawer:         function ()
                               {
-                                this.$.drawer.close();
+                                this.$.shellDrawer.close();
                               },
 
         _isValidKeyPress:  function (e)
@@ -407,6 +393,14 @@
                                      this.$.userDrawer.setMaxState(2);
                                    }
                                  },
+
+        _shellDrawerStateChanged: function (newState)
+                                  {
+                                    if(newState < 1)
+                                    {
+                                      this.$.shellDrawer.setState(1);
+                                    }
+                                  },
 
         _showAppMenu: function (e)
                       {

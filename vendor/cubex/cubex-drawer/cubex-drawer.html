@@ -22,40 +22,39 @@ Example:
   <template>
     <style>
       :host {
-        display: block;
+        display: flex;
         position: relative;
-      }
-
-      :host #drawerContent ::slotted(*) {
-        position: relative;
-        min-width: 100%;
-        min-height: 100%;
-        display: block;
+        overflow: hidden;
+        max-height: 100vh;
+        height: 100vh;
       }
 
       :host > #sizzler {
         display: none;
-        top: var(--cubex-drawer-offset-top, 0);
         width: var(--cubex-drawer-peek-width, 50px);
         max-width: var(--cubex-drawer-width, 256px);
       }
 
-      :host > #drawerContentContainer {
-        position: fixed;
-        top: var(--cubex-drawer-offset-top, 0);
-        right: auto;
+      #drawerContentContainer {
+        position: relative;
+        order: 1;
         height: 100%;
-        left: 0;
         width: 0;
         max-width: var(--cubex-drawer-width, 256px);
         transition: width ease 0.2s, max-width ease 0.2s;
         padding: 0;
         box-sizing: border-box;
-        border-bottom: var(--cubex-drawer-offset-top, 0) solid var(--theme-100-color, transparent);
         z-index: 1;
+        flex-shrink: 0;
       }
 
-      :host > #drawerContentContainer > #drawerContent {
+      #drawerContent {
+        width: 100%;
+        max-width: var(--cubex-drawer-width, 256px);
+        transition: width ease 0.2s, max-width ease 0.2s;
+      }
+
+      #drawerContentContainer > #drawerContent {
         position: absolute;
         top: 0;
         right: 0;
@@ -66,16 +65,15 @@ Example:
         background: var(--theme-100-color, white);
       }
 
-      :host([position=right]) > #drawerContentContainer {
-        right: 0;
-        left: auto;
+      :host([position=right]) #drawerContentContainer {
+        order: 9;
       }
 
-      :host > #drawerContentContainer > #dragHandle[hidden] {
+      #drawerContentContainer > #dragHandle[hidden] {
         display: none;
       }
 
-      :host([swipe-open]:not([state="2"])) > #drawerContentContainer > #dragHandle {
+      :host([swipe-open]:not([state="2"])) #drawerContentContainer > #dragHandle {
         visibility: visible;
         position: absolute;
         top: 0;
@@ -87,90 +85,78 @@ Example:
         content: '';
       }
 
-      :host([swipe-open][position=right]) > #drawerContentContainer > #dragHandle {
+      :host([swipe-open][position=right]) #drawerContentContainer > #dragHandle {
         right: 100%;
         left: auto;
       }
 
-      :host([state="0"]) > #drawerContentContainer {
+      :host([state="0"]) #drawerContentContainer {
         width: 0;
       }
 
-      :host([max-state="1"]:not([state="2"]):not([is-open])) > #drawerContentContainer {
-        max-width: var(--cubex-drawer-peek-width, 50px);
-      }
-
-      :host([state="1"]) > #drawerContentContainer {
-        width: var(--cubex-drawer-peek-width, 50px);
-      }
-
-      :host > #drawerContentContainer > #drawerContent {
-        box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.05);
-      }
-
-      :host([hovered][hover-popout]:not([state="2"]):not([max-state="1"])) > #drawerContentContainer > #drawerContent,
-      :host([transitioning]) > #drawerContentContainer > #drawerContent,
-      :host([is-open]:not([state="2"])) > #drawerContentContainer > #drawerContent {
-        box-shadow: 2px 0 2px 0 rgba(0, 0, 0, 0.1);
-      }
-
-      :host([position="right"]) > #drawerContentContainer > #drawerContent {
-        box-shadow: -1px 0 2px 0 rgba(0, 0, 0, 0.05);
-      }
-
-      :host([position="right"][hovered][hover-popout]:not([state="2"]):not([max-state="1"])) > #drawerContentContainer > #drawerContent,
-      :host([position="right"][transitioning]) > #drawerContentContainer > #drawerContent,
-      :host([position="right"][is-open]:not([state="2"])) > #drawerContentContainer > #drawerContent {
-        box-shadow: -2px 0 2px 0 rgba(0, 0, 0, 0.1);
-      }
-
-      :host([hover-popout][state="1"][hovered]) > #drawerContentContainer,
-      :host([is-open]) > #drawerContentContainer,
-      :host([state="2"]) > #drawerContentContainer {
+      :host([is-open]) #drawerContent {
         width: var(--cubex-drawer-width, 256px);
       }
 
-      :host([state="0"][position="left"]) > #content {
-        padding-left: 0;
+      :host([max-state="1"]:not([state="2"]):not([is-open])) #drawerContentContainer {
+        max-width: var(--cubex-drawer-peek-width, 50px);
       }
 
-      :host([state="1"][position="left"]) > #content {
-        padding-left: var(--cubex-drawer-peek-width, 50px);
+      :host([state="1"]) #drawerContentContainer {
+        width: var(--cubex-drawer-peek-width, 50px);
       }
 
-      :host([state="2"][position="left"]) > #content {
-        padding-left: var(--cubex-drawer-width, 256px);
+      :host #drawerContentContainer > #drawerContent {
+        box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.05);
       }
 
-      :host([state="0"][position="right"]) > #content {
-        padding-right: 0;
+      :host([hovered][hover-popout]:not([state="2"]):not([max-state="1"])) #drawerContentContainer > #drawerContent,
+      :host([transitioning]) #drawerContentContainer > #drawerContent,
+      :host([is-open]:not([state="2"])) #drawerContentContainer > #drawerContent {
+        box-shadow: 2px 0 2px 0 rgba(0, 0, 0, 0.1);
       }
 
-      :host([state="1"][position="right"]) > #content {
-        padding-right: var(--cubex-drawer-peek-width, 50px);
+      :host([position="right"]) #drawerContentContainer > #drawerContent {
+        box-shadow: -1px 0 2px 0 rgba(0, 0, 0, 0.05);
       }
 
-      :host([state="2"][position="right"]) > #content {
-        padding-right: var(--cubex-drawer-width, 256px);
+      :host([position="right"][hovered][hover-popout]:not([state="2"]):not([max-state="1"])) #drawerContentContainer > #drawerContent,
+      :host([position="right"][transitioning]) #drawerContentContainer > #drawerContent,
+      :host([position="right"][is-open]:not([state="2"])) #drawerContentContainer > #drawerContent {
+        box-shadow: -2px 0 2px 0 rgba(0, 0, 0, 0.1);
       }
 
-      :host > #content {
+      :host([hover-popout][state="1"][hovered]) #drawerContentContainer,
+      :host([state="2"]) #drawerContentContainer {
+        width: var(--cubex-drawer-width, 256px);
+      }
+
+      #flexContainer {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+      }
+
+      #content {
+        order: 5;
         position: relative;
-        transition: 0.2s ease padding;
-        overflow: hidden;
+        flex-grow: 1;
+        overflow-y: scroll;
+        overflow-x: hidden;
       }
-
     </style>
 
     <div id="sizzler"></div>
-    <div id="drawerContentContainer">
-      <div id="dragHandle" hidden="[[!_touchEnabled()]]" on-track="_track" on-down="_prevent"></div>
-      <div id="drawerContent" on-tap="_prevent">
-        <slot name="drawer-content"></slot>
+    <div id="flexContainer">
+      <div id="drawerContentContainer">
+        <div id="dragHandle" hidden="[[!_touchEnabled()]]" on-track="_track" on-down="_prevent"></div>
+        <div id="drawerContent" on-tap="_prevent">
+          <slot name="drawer-content"></slot>
+        </div>
       </div>
-    </div>
-    <div id="content">
-      <slot></slot>
+      <div id="content">
+        <slot></slot>
+      </div>
     </div>
   </template>
 
@@ -366,19 +352,13 @@ Example:
                           {
                             offset = this._getMaxWidth();
                           }
-                          document.dispatchEvent(
-                            new CustomEvent(
-                              'cubex-drawer-state-changed', {
-                                detail: {
-                                  drawer:   this,
-                                  state:    this.state,
-                                  isOpen:   this.isOpen,
-                                  position: this.position,
-                                  offset:   offset
-                                }
-                              }
-                            )
-                          );
+                          this.fire('cubex-drawer-state-changed', {
+                            drawer:   this,
+                            state:    this.state,
+                            isOpen:   this.isOpen,
+                            position: this.position,
+                            offset:   offset
+                          });
                         },
 
         _DRAWER_STATE: {
@@ -388,6 +368,6 @@ Example:
         },
 
         behaviors: [Polymer.CubeTouchEnabledBehavior]
-      })
+      });
   </script>
 </dom-module>

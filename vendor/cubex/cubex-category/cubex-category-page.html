@@ -3,7 +3,6 @@
 <link rel="import" href="../../cube-tile/cube-tile.html">
 <link rel="import" href="../../cube-card/cube-card.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
-<link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="../../cube-card/cube-card-container.html">
 
 <dom-module id="cubex-category-page" attributes="category">
@@ -22,8 +21,6 @@
       }
     </style>
 
-    <cubex-route project-id="{{projectId}}"></cubex-route>
-
     <cubex-registry project-data="{{projectData}}"></cubex-registry>
 
     <cube-carousel count="5">
@@ -37,8 +34,10 @@
     </cube-carousel>
 
     <cube-card-container>
-      <cube-pagelet local auto auth url="//[[getServiceHost('apps')]]/kubex/dashpanel?category=[[category]]"></cube-pagelet>
-      <cube-pagelet local auto auth url="//[[getServiceHost('apps')]]/kubex/cardfeed?category=[[category]]"></cube-pagelet>
+      <cube-pagelet local auto auth
+                    url="//[[getServiceHost('apps')]]/kubex/dashpanel?category=[[category]]"></cube-pagelet>
+      <cube-pagelet local auto auth
+                    url="//[[getServiceHost('apps')]]/kubex/cardfeed?category=[[category]]"></cube-pagelet>
     </cube-card-container>
   </template>
   <script>

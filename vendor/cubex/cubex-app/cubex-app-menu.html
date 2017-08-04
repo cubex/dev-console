@@ -5,7 +5,6 @@
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-touch-enabled-behavior.html">
-<link rel="import" href="../cubex-route/cubex-route.html">
 
 <dom-module id="cubex-app-menu" attributes="app-data project-data">
   <template strip-whitespace>
@@ -145,8 +144,6 @@
       }
     </style>
 
-    <cubex-route project-id="{{projectId}}"></cubex-route>
-
     <div id="content">
       <template restamp is="dom-if" if="[[appData.Name]]">
         <a href="[[_titleLink]]" on-tap="_collapseDrawer">
@@ -159,7 +156,7 @@
         <cube-list>
           <template is="dom-repeat" items="[[_navigation]]">
             <cubex-link href="[[item.Path]]" on-tap="_collapseDrawer">
-              <cube-li compact-icon>
+              <cube-li compact>
                 <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
                 [[item.i18n_name]]
                 <paper-ripple></paper-ripple>
@@ -173,7 +170,7 @@
       <template is="dom-if" if="[[appData.AdvancedConfigPath]]">
         <a href="/[[appData.VendorID]]/[[appData.AppID]]/[[_trimPath(appData.AdvancedConfigPath)]]"
            on-tap="_collapseDrawer">
-          <cube-li id="configure" primary="[[i18n('configure')]]" compact-icon>
+          <cube-li id="configure" primary="[[i18n('configure')]]" compact>
             <cube-icon slot="icon" icon="icons:settings"></cube-icon>
             [[i18n('configure')]]
             <paper-ripple></paper-ripple>
@@ -181,7 +178,7 @@
         </a>
       </template>
 
-      <cube-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]" compact-icon>
+      <cube-li id="toggler" on-tap="_toggleDrawer" drawer-open$="[[_drawerOpen]]" compact>
         <cube-icon icon="icons:chrome-reader-mode" slot="icon"></cube-icon>
         <template restamp is="dom-if" if="[[_drawerOpen]]">
           [[i18n('collapse')]]

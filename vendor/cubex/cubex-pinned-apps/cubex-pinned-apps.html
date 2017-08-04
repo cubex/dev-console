@@ -4,7 +4,7 @@
 <link href="../../cube-action/cube-action.html" rel="import">
 <link href="../../paper-tooltip/paper-tooltip.html" rel="import">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
-<link rel="import" href="../cubex-route/cubex-route.html">
+<link rel="import" href="../cubex-project/cubex-project-behavior.html">
 
 <dom-module id="cubex-pinned-apps">
   <template>
@@ -16,11 +16,11 @@
 
       a {
         display: inline-flex;
-        @apply(--primary-700-text-secondary);
+        @apply(--primary-100-text-secondary);
       }
 
       a:hover {
-        @apply(--primary-700-text);
+        @apply(--primary-100-text);
       }
 
       paper-tooltip {
@@ -31,14 +31,20 @@
         --paper-tooltip-text-color: var(--primary-800-text-color);
         --paper-tooltip-background: var(--primary-800-color);
         --paper-tooltip: {
+          opacity: 1;
           font-size: 12px;
           border: 1px solid var(--primary-400-color);
           @apply --shadow-elevation-4dp;
         }
       }
     </style>
-    <cubex-route project-id="{{projectId}}"></cubex-route>
-    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="pinned"
+
+
+    <a href="/">
+      <cube-action icon="icons:home"></cube-action>
+    </a>
+
+    <cube-websocket auto project="[[projectAlias]]" vendor="kubex" app="pinned"
                     on-subscribe="_pinnedSub" on-message="_pinnedMsg"></cube-websocket>
     <template is="dom-repeat" items="[[pinnedApps]]">
       <a href="/[[item.GlobalAppID]]">
@@ -53,6 +59,7 @@
     Polymer(
       {
         is:         'cubex-pinned-apps',
+        behaviors:  [Polymer.CubexProjectBehavior],
         properties: {
           pinnedApps: {type: Array, value: function () {return [];}}
         },

@@ -1,4 +1,5 @@
 <link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../cubex-project/cubex-project-behavior.html">
 <link rel="import" href="../cubex-app/cubex-app-loader.html">
 <link rel="import" href="../cubex-project/cubex-projects.html">
 
@@ -9,18 +10,18 @@
         display: block;
       }
     </style>
-    <cubex-route project-id="{{projectId}}"></cubex-route>
-    <template is="dom-if" if="[[projectId]]">
+    <template is="dom-if" if="[[projectAlias]]">
       <cubex-app-loader></cubex-app-loader>
     </template>
-    <template is="dom-if" if="[[!projectId]]">
+    <template is="dom-if" if="[[!projectAlias]]">
       <cubex-projects></cubex-projects>
     </template>
   </template>
   <script>
     Polymer(
       {
-        is: 'cubex-loader'
+        is:        'cubex-loader',
+        behaviors: [Polymer.CubexProjectBehavior]
       }
     );
   </script>

@@ -1,43 +1,193 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../app-route/app-route.html">
 <link rel="import" href="../../app-route/app-location.html">
+<link rel="import" href="../../cube-websocket/cube-websocket.html">
+<link rel="import" href="../../cube-resource/cube-resource.html">
 
-<dom-module id="cubex-route" attributes="full-path project-id vendor-id app-id app-path query">
+<!--
+
+specialType
+ _e       entity
+ _ev      event
+ _socket  socket action
+
+-->
+<dom-module id="cubex-route"
+            attributes="full-path project gaid vendor app special-type page pagelet section query definition-path content-path integration">
   <template>
-    <app-location route="{{route}}"></app-location>
-    <app-route route="[[route]]" pattern="/:vendor" active="{{_vendorActive}}"
-               data="{{vendorRouteData}}" tail="{{_vendorTail}}" query-params="{{query}}"></app-route>
-    <app-route route="[[_vendorTail]]" pattern="/:app" active="{{_appActive}}"
-               data="{{appRouteData}}" tail="{{_appTail}}"></app-route>
+    <app-location route="{{route}}" query-params="{{query}}"></app-location>
+
+    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="registry"
+                    on-message="_appsChanged"></cube-websocket>
+    <cube-resource id="integrationsResource" auto auth url="[[__integrationPath]]" data="{{__integrations}}"
+                   ttl="3600"></cube-resource>
   </template>
   <script>
     Polymer(
       {
         is:         'cubex-route',
         properties: {
-          fullPath:  {type: String, notify: true, value: ''},
-          projectId: {type: String, notify: true, value: ''},
-          vendorId:  {type: String, notify: true, value: ''},
-          appId:     {type: String, notify: true, value: ''},
-          appPath:   {type: String, notify: true, value: ''},
-          query:     {type: Object, notify: true, value: function () {return {};}}
+          fullPath:    {type: String, notify: true, value: ''},
+          project:     {type: String, notify: true, value: ''},
+          category:    {type: String, notify: true, value: ''},
+          vendor:      {type: String, notify: true, value: ''},
+          app:         {type: String, notify: true, value: ''},
+          gaid:        {type: String, notify: true, value: '', computed: '_computeGaid(vendor,app)'},
+          specialType: {type: String, notify: true, value: ''},
+          page:        {type: String, notify: true, value: ''},
+          pagelet:     {type: String, notify: true, value: ''},
+          section:     {type: String, notify: true, value: ''},
+          query:       {type: Object, notify: true, value: function () {return {};}},
+
+          definitionPath: {type: String, notify: true, value: ''},
+          contentPath:    {type: String, notify: true, value: ''},
+
+          integration:              {type: Object, notify: true, value: function () {return {};}},
+          __integrations:           {type: Object, notify: true, value: function () {return {};}},
+          __integrationPath:        {
+            type:     String,
+            notify:   true,
+            value:    '',
+            computed: '__computeIntegrationPath(vendor,app,specialType,page,pagelet)'
+          },
+          _refreshIntegrationsList: {type: Array, value: function () {return [];}}
         },
 
-        observers:      ['_computeValues(route.path)'],
-        _computeValues: function ()
+        observers: [
+          '_computeValues(route.path,route,route.*)',
+          '_updateIntegration(__integrations,vendor,app,page,pagelet,section)'
+        ],
+
+        _computeGaid: function (vendor, app)
+                      {
+                        if(vendor && app)
+                        {
+                          return vendor + '/' + app;
+                        }
+                        return '';
+                      },
+
+        _computeValues: function (path)
                         {
                           var project = window.location.host.match(/^(.+?)\./)[1];
-                          this.setProperties(
+                          this.project = project === 'console' ? '' : project;
+                          this.fullPath = this.route.path;
+
+                          var matches = path.match(
+                            /^\/((_(.+))|([^\/\s]+)(\/([^\/\s]+))?)?(\/_([^\/\s]+))?(.+?)??(\/_\/([^\/\s]+?))?(\/~\/(.+?))?(\?.+?)?$/);
+                          this.category = matches ? matches[3] : '';
+                          this.vendor = matches ? matches[4] : '';
+                          this.app = matches ? matches[6] : '';
+                          this.specialType = matches ? matches[8] : '';
+                          this.page = matches ? matches[9] : '';
+                          this.pagelet = matches ? matches[11] : '';
+                          this.section = matches ? matches[13] : '';
+                        },
+
+        __computeIntegrationPath: function (vendor, app, specialType, page, pagelet)
+                                  {
+                                    var integrationPath = vendor + '/' + app;
+                                    if(specialType)
+                                    {
+                                      integrationPath += '/_' + specialType;
+                                    }
+                                    if(page)
+                                    {
+                                      integrationPath += '/' + page;
+                                    }
+                                    if(pagelet)
+                                    {
+                                      integrationPath += '/_/' + pagelet;
+                                    }
+                                    return '/kubex/integrations/integrations.json?hook=' + integrationPath;
+                                  },
+
+        _appsChanged:         function (e)
+                              {
+                                if(e.detail.action === 'install' || e.detail.action === 'uninstall')
+                                {
+                                  this._refreshIntegrationsList.push(e.detail.payload);
+                                  this._refreshIntegrations();
+                                }
+                              },
+        _gaidChanged:         function (gaid)
+                              {
+                                if(gaid)
+                                {
+                                  var idx = this._refreshIntegrationsList.indexOf(gaid);
+                                  if(idx > -1)
+                                  {
+                                    this.async(this._refreshIntegrations);
+                                  }
+                                }
+                              },
+        _refreshIntegrations: function ()
+                              {
+                                this.$.integrationsResource.update(true);
+                              },
+
+        _updateIntegration: function (_integrations, vendor, app, page, pagelet, section)
                             {
-                              'fullPath':  this.route.path,
-                              'projectId': project === 'console' ? '' : project,
-                              'vendorId':  this._vendorActive ? this.vendorRouteData.vendor : '',
-                              'appId':     this._appActive ? this.appRouteData.app : '',
-                              'appPath':   this._appActive ? this._appTail.path : '',
-                              'query':     this.projectActive ? this.query : ''
+                              page = page || '';
+                              var
+                                appGaid = vendor + '/' + app,
+                                definitionPath = '/' + appGaid + page,
+                                contentPath = definitionPath;
+
+                              var integration = null;
+
+                              if(_integrations && page)
+                              {
+                                var items = null;
+
+                                if(pagelet && pagelet[0] === '_')
+                                {
+                                  items = _integrations.HeaderMenuItems;
+                                }
+                                else
+                                {
+                                  items = _integrations.PageMenuItems;
+                                }
+
+                                if(items)
+                                {
+                                  items.sort(
+                                    function (a, b)
+                                    {
+                                      if(a.Title === b.Title)
+                                      {
+                                        return 0;
+                                      }
+                                      return (a.Title < b.Title) ? -1 : 1;
+                                    }
+                                  );
+
+                                  for(var i in items)
+                                  {
+                                    if(items.hasOwnProperty(i))
+                                    {
+                                      // if we have a pageletId, and it matches, use it
+                                      if(
+                                        (items[i].GlobalAppID === appGaid && items[i].ID === pagelet)
+                                        || (this._hash32(items[i].GlobalAppID + '/' + items[i].ID) === section))
+                                      {
+                                        // if we have a section, and it's "h-" - change the menu - set the integration
+                                        if(section)
+                                        {
+                                          integration = items[i];
+                                        }
+                                        contentPath = '/' + items[i].GlobalAppID + '/' + items[i].Path;
+                                        break;
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+
+                              this.definitionPath = definitionPath;
+                              this.contentPath = contentPath;
+                              this.integration = integration;
                             }
-                          );
-                        }
+
       }
     );
   </script>

@@ -19,8 +19,8 @@
   </div>
   <cube-action icon="icons:build" slot="actions"></cube-action>
   <div slot="footer">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus esse exercitationem impedit in
-                     perspiciatis similique, temporibus. Assumenda at commodi eligendi error impedit perspiciatis quia
-                     quo reprehenderit! Corporis excepturi nesciunt voluptatibus?
+    perspiciatis similique, temporibus. Assumenda at commodi eligendi error impedit perspiciatis quia
+    quo reprehenderit! Corporis excepturi nesciunt voluptatibus?
   </div>
 </cube-li>
 <cube-li>
@@ -57,6 +57,36 @@
 </cube-li>
 <cube-li>
   some text here
+</cube-li>
+<cube-li>
+  compact
+</cube-li>
+<cube-li>
+  <cube-icon icon="icons:remove-circle" slot="icon"></cube-icon>
+  with secondary
+  <span slot="secondary">secondary</span>
+</cube-li>
+<cube-li compact>
+  <cube-icon icon="icons:remove-circle" slot="icon"></cube-icon>
+  compact with secondary
+  <span slot="secondary">secondary</span>
+</cube-li>
+
+
+<cube-li>
+  <cube-icon icon="icons:remove-circle" slot="icon"></cube-icon>
+  no multi line
+  <span slot="secondary">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam cupiditate et facere hic in, itaque labore modi nesciunt, sapiente sit suscipit veritatis! Accusantium aperiam enim non obcaecati, perferendis quo veniam.</span>
+</cube-li>
+<cube-li multi-line>
+  <cube-icon icon="icons:remove-circle" slot="icon"></cube-icon>
+  multi line
+  <span slot="secondary">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam cupiditate et facere hic in, itaque labore modi nesciunt, sapiente sit suscipit veritatis! Accusantium aperiam enim non obcaecati, perferendis quo veniam.</span>
+</cube-li>
+<cube-li compact multi-line>
+  <cube-icon icon="icons:remove-circle" slot="icon"></cube-icon>
+  compact multi line
+  <span slot="secondary">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam cupiditate et facere hic in, itaque labore modi nesciunt, sapiente sit suscipit veritatis! Accusantium aperiam enim non obcaecati, perferendis quo veniam.</span>
 </cube-li>
 </body>
 </html>

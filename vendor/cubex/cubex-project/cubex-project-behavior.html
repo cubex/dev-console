@@ -1,0 +1,16 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<script>
+  /** @polymerBehavior */
+  Polymer.CubexProjectBehavior = {
+    properties: {
+      projectAlias: {
+        type: String, notify: true, value: function ()
+        {
+          var project = window.location.host.match(/^(.+?)\./)[1];
+          return project === 'console' ? '' : project;
+        }
+      }
+    }
+  };
+</script>

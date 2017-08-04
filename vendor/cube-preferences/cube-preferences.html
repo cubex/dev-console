@@ -2,7 +2,6 @@
 <link rel="import" href="../iron-ajax/iron-request.html">
 <link rel="import" href="../cube-indexeddb-mirror/cube-indexeddb-mirror.html">
 <link rel="import" href="../cube-behavior/cube-service-behavior.html">
-<link rel="import" href="../cubex/cubex-route/cubex-route.html">
 <link rel="import" href="../cube-websocket/cube-websocket.html">
 
 <dom-module id="cube-preferences" attributes="gaid name value cache live-update">
@@ -12,8 +11,7 @@
                              key="[[name]]"></cube-indexeddb-mirror>
     </template>
 
-    <cubex-route project-id="{{projectId}}"></cubex-route>
-    <cube-websocket auto="[[liveUpdate]]" project="[[projectId]]" vendor="kubex" app="preference"
+    <cube-websocket auto="[[liveUpdate]]" project="[[_projectId]]" vendor="kubex" app="preference"
                     on-message="_socketMsg"></cube-websocket>
   </template>
   <script>
@@ -30,7 +28,14 @@
           lastUpdated:  {type: Number, value: 0},
           liveUpdate:   {type: Boolean, value: false},
           _url:         {type: String, computed: '_computeUrl(name,gaid)', readonly: true},
-          _localUpdate: {type: Boolean, value: true}
+          _localUpdate: {type: Boolean, value: true},
+          _projectId:   {
+            type: String, value: function ()
+            {
+              var project = window.location.host.match(/^(.+?)\./)[1];
+              return project === 'console' ? '' : project;
+            }
+          }
         },
         _oldValue:    null,
         observers:    ['_valueChanged(value,value.*)'],
@@ -73,7 +78,7 @@
                    }
                  );
                  xhr.open('GET', self._url, true);
-                 xhr.setRequestHeader("X-Requested-By", "cube-preferences");
+                 xhr.setRequestHeader('X-Requested-By', 'cube-preferences');
                  xhr.withCredentials = true;
                  xhr.send();
                },
@@ -99,7 +104,7 @@
                                }
                              );
                              xhr.open(this.value === undefined ? 'DELETE' : 'PUT', this._url, true);
-                             xhr.setRequestHeader("X-Requested-By", "cube-preferences");
+                             xhr.setRequestHeader('X-Requested-By', 'cube-preferences');
                              xhr.withCredentials = true;
                              xhr.send(this.value === undefined ? null : JSON.stringify(this.value));
                            }

@@ -1,0 +1,169 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-action/cube-action.html">
+<link rel="import" href="../../cube-list/cube-li.html">
+<link rel="import" href="../../cube-pagelet/cube-pagelet-content.html">
+<link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-service-behavior.html">
+<link rel="import" href="../../page-title/page-title.html">
+<link rel="import" href="../../cube-websocket/cube-websocket.html">
+<link rel="import" href="../cubex-drawer/cubex-drawer.html">
+<link rel="import" href="../cubex-hash/cubex-hash.html">
+<link rel="import" href="../cubex-category/cubex-category.html">
+<link rel="import" href="../cubex-category/cubex-category-page.html">
+<link rel="import" href="../cubex-group/cubex-group-page.html">
+<link rel="import" href="../cubex-vendor/cubex-vendor-page.html">
+<link rel="import" href="../cubex-error/cubex-error.html">
+<link rel="import" href="../cubex-route/cubex-route.html">
+<link rel="import" href="../cubex-app/cubex-app.html">
+<link rel="import" href="../cubex-app/cubex-app-title.html">
+<link rel="import" href="../cubex-app/cubex-app-header.html">
+<link rel="import" href="../cubex-app/cubex-app-menu.html">
+<link rel="import" href="../cubex-app/cubex-app-spinner.html">
+
+<dom-module id="cubex-shell-content" attributes="app-nav">
+  <template>
+    <style>
+      :host {
+        display: block;
+        height: 100%;
+      }
+    </style>
+    <cubex-route full-path="{{fullPath}}" gaid="{{_gaid}}" vendor="{{vendorId}}" app="{{appId}}"></cubex-route>
+    <cubex-registry project-data="{{_projectData}}"></cubex-registry>
+
+    <template is="dom-if" if="[[_isApp]]">
+      <cubex-app-definition gaid="{{_appGaid}}" app-data="{{_appData}}"></cubex-app-definition>
+      <cubex-app app-data="[[_appData]]"></cubex-app>
+    </template>
+    <template is="dom-if" if="[[_isGroup]]">
+      GROUP PAGE
+      <cubex-group-page group-id="[[_groupGaid]]"></cubex-group-page>
+    </template>
+  </template>
+
+  <script>
+    Polymer(
+      {
+        is:         'cubex-shell-content',
+        properties: {
+          appNav:       {type: Array, notify: true, computed: '_computeNav(_appData,_groupData,_projectData)'},
+          _appData:     {type: Object},
+          _gaid:        {type: String},
+          _projectData: {type: Object},
+          _appGaid:     {type: String, computed: '_computeAppGaid(_projectData,_gaid)'},
+          _groupGaid:   {type: String, computed: '_computeGroupGaid(_projectData,_gaid,_appData)'},
+          _groupData:   {type: Boolean, computed: '_computeGroupData(_projectData,_groupGaid)'},
+
+          _isApp:   {type: Boolean, computed: '_computeIsApp(_appGaid,_projectData)'},
+          _isGroup: {type: Boolean, computed: '_computeIsGroup(_appGaid,_groupGaid,_projectData)'}
+        },
+
+        _computeIsApp: function (_appGaid, _projectData)
+                       {
+                         return !!(_appGaid && _projectData && _projectData.AppSummary[_appGaid]);
+                       },
+
+        _computeIsGroup: function (_appGaid, _groupGaid, _projectData)
+                         {
+                           return !!((!_appGaid) && _groupGaid && _projectData && _projectData.GroupSummary[_groupGaid]);
+                         },
+
+        _computeAppGaid: function (projectData, gaid)
+                         {
+                           if(gaid && projectData && projectData.AppSummary[gaid])
+                           {
+                             return gaid;
+                           }
+                           return undefined;
+                         },
+
+        _computeGroupGaid: function (projectData, gaid, appData)
+                           {
+                             if(gaid && projectData && projectData.GroupSummary[gaid])
+                             {
+                               return gaid;
+                             }
+                             else if(appData && appData.GroupID)
+                             {
+
+                               var groupGaid = appData.VendorID + '/' + appData.GroupID;
+                               if(projectData.GroupSummary[groupGaid])
+                               {
+                                 return groupGaid;
+                               }
+                             }
+                             return undefined;
+                           },
+
+        _computeGroupData: function (projectData, groupGaid)
+                           {
+                             return projectData && projectData.GroupSummary[groupGaid];
+                           },
+
+        _computeNav: function (appData, groupData, projectData)
+                     {
+                       var navigation = [];
+                       if(groupData)
+                       {
+                         // add group
+                         navigation.push(
+                           {
+                             Path: '/' + groupData.vendor_id + '/' + groupData.id,
+                             Icon: groupData.icon,
+                             ID:   groupData.id,
+                             Name: {en: groupData.name}
+                           });
+                         // add apps
+                         for(var idx in groupData.apps)
+                         {
+                           if(groupData.apps.hasOwnProperty(idx))
+                           {
+                             var
+                               appId = groupData.vendor_id + '/' + groupData.apps[idx],
+                               app = projectData.AppSummary[appId];
+                             navigation.push(
+                               {
+                                 Path: '/' + appId,
+                                 Icon: app.icon,
+                                 ID:   appId,
+                                 Name: {en: app.name}
+                               });
+                           }
+                         }
+
+                         // update appData
+                         if(!appData)
+                         {
+                           appData = {};
+                           appData.AppID = groupData.id;
+                           appData.VendorID = groupData.vendor_id;
+                           appData.Name = {en: groupData.name};
+                           appData.Icon = groupData.icon;
+                           appData.Category = groupData.category;
+                           appData.TrustedVendor = true;
+                         }
+                         appData.Navigation = navigation;
+                       }
+                       else if(appData)
+                       {
+                         navigation = appData.Navigation;
+                         navigation.unshift({
+                           Path: '/' + appData.VendorID + '/' + appData.AppID,
+                           Icon: appData.Icon,
+                           ID:   appData.AppID,
+                           Name: appData.Name
+                         });
+                       }
+
+                       return navigation;
+                     },
+
+        behaviors: [
+          Polymer.CubeIteratorBehavior,
+          Polymer.CubeServiceBehavior,
+          Polymer.CubeHashBehavior
+        ]
+      }
+    );
+  </script>
+</dom-module>

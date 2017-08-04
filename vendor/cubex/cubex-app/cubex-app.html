@@ -10,15 +10,13 @@
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
 <link rel="import" href="../../cube-pagelet/cube-pagelet-content.html">
+<link rel="import" href="../../cube-hero/cube-hero.html">
 <link rel="import" href="../../cube-list/cube-list.html">
 <link rel="import" href="../../cube-list/cube-li.html">
 <link rel="import" href="../../cube-pagelet/cube-pagelet.html">
-<link rel="import" href="../cubex-drawer/cubex-drawer.html">
-<link rel="import" href="../cubex-drawer/cubex-drawer-content.html">
 <link rel="import" href="../cubex-breadcrumb/cubex-breadcrumb.html">
 <link rel="import" href="../cubex-app/cubex-app-definition.html">
 <link rel="import" href="../cubex-app/cubex-app-header.html">
-<link rel="import" href="../cubex-effects/displace-element.html">
 <link rel="import" href="../cubex-link/cubex-link.html">
 <link rel="import" href="../cubex-hash/cubex-hash.html">
 <link rel="import" href="../cubex-category/cubex-category.html">
@@ -43,39 +41,23 @@ Example:
     <style>
       :host {
         display: block;
-        --cubex-drawer-peek-width: 56px;
+        height: 100%;
       }
 
       cubex-app-header {
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
         overflow: hidden;
       }
 
       app-header-layout {
         min-width: 100px;
         @apply --shadow-elevation-2dp;
-        margin: 60px 24px 24px;
-        border-radius: 3px;
-      }
-
-      @media (max-width: 1000px) {
-        app-header-layout {
-          margin-left: 16px;
-          margin-right: 16px;
-        }
       }
 
       :host([narrow]) app-header-layout {
-        border-radius: 0;
         @apply --shadow-none;
-        margin: calc(60px + var(--cubex-drawer-offset-top, 0)) 0px 0px;
       }
 
       #app-container {
-        margin-top: -60px;
-        border-bottom-left-radius: 3px;
-        border-bottom-right-radius: 3px;
         @apply --theme-600;
         overflow: hidden;
       }
@@ -126,14 +108,7 @@ Example:
       }
 
       :host app-header {
-        margin-top: var(--cubex-drawer-offset-top, 0);
         transition: left ease 0.2s, right ease 0.2s !important;
-      }
-
-      :host app-header::after {
-        @apply --shadow-elevation-2dp;
-        bottom: 1px;
-        height: 1px;
       }
 
       :host #hero {
@@ -143,13 +118,7 @@ Example:
         flex-direction: row;
       }
 
-      :host([drawer-disabled]) {
-        --cubex-drawer-peek-width: 0;
-        --cubex-drawer-width: 0;
-      }
-
       :host([narrow]) {
-        --cubex-drawer-width: 90%;
         --cubex-app-menu-toggler: {
           display: none;
         };
@@ -241,10 +210,6 @@ Example:
         }
       }
 
-      :host([narrow]) #app-content {
-        margin: 8px;
-      }
-
       #app-back {
         margin-left: -24px;
         margin-right: 8px;
@@ -288,26 +253,39 @@ Example:
         transition: color 400ms;
       }
 
-      :host([hero-header]) #app-back,
-      :host([hero-header]) #page-title,
-      :host([hero-header]) #app-heading a {
+      #hero {
+        width: 100%;
+        align-self: flex-end;
+        margin-top: -64px;
+        padding-top: 64px;
+      }
+
+      #hero cube-hero {
+        padding-top: 48px;
+        overflow: visible;
+      }
+
+      :host(:not([hero-header])) cubex-app-header,
+      app-header[shadow] cubex-app-header {
+        @apply --theme-50;
+        border-bottom: 1px solid var(--theme-700-color);
+      }
+
+      :host([hero-header]) app-header:not([shadow]) #app-back,
+      :host([hero-header]) app-header:not([shadow]) #page-title,
+      :host([hero-header]) app-header:not([shadow]) #app-heading a {
         color: white;
         text-shadow: 0 0 9px rgba(0, 0, 0, 0.45);
       }
-
-      div.configure {
-        margin: 8px 0 0 0;
-        float: right;
-        width: 48px;
-        height: 48px;
-        overflow: hidden;
-      }
-
-      div.configure cube-action {
-        @apply --primary-50-text;
-        @apply --text-secondary;
-      }
     </style>
+
+    <cubex-route full-path="{{fullPath}}" gaid="{{_gaid}}" vendor="{{vendorId}}" app="{{appId}}"
+                 page="{{_pagePath}}" pagelet="{{_pageletId}}" section="{{_sectionId}}"
+                 definition-path="{{_definitionPath}}" content-path="{{_contentPath}}"
+                 integration="{{_integration}}"></cubex-route>
+
+    <cube-resource auto auth url="[[_definitionPath]]" data="{{_pageDefinition}}" xhr="{{_pageDefXhr}}"
+                   headers="[[_definitionHeaders]]" status="{{_pageDefinitionStatus}}"></cube-resource>
 
     <iron-media-query query="(max-width: 375px)" query-matches="{{narrow}}"></iron-media-query>
     <iron-media-query query="(max-width: 650px)" query-matches="{{_collapse}}"></iron-media-query>
@@ -317,91 +295,76 @@ Example:
     <cubex-project project="{{project}}"></cubex-project>
     <cubex-category id="cat"></cubex-category>
 
-    <cube-preferences name="appDrawerPosition" value="{{appDrawerState}}"></cube-preferences>
-    <cubex-drawer id="appDrawer" hover-popout swipe-open position="left" preferred-state="{{appDrawerState}}"
-                  max-state="[[_hideDrawer]]">
-      <slot slot="drawer-content" name="drawer-content"></slot>
-      <app-header-layout id="ahl">
-        <app-header id="ah" slot="header" reveals condenses effects="displace-element waterfall">
-          <div class="configure" hidden="[[!_hasConfig]]">
-            <cube-action on-tap="_openCfg" slot="icon" icon="icons:settings"></cube-action>
-            <cubex-configure-dialog id="configDlg"
-                                    gaid="[[appData.VendorID]]/[[appData.AppID]]"></cubex-configure-dialog>
-          </div>
-
-          <cubex-breadcrumb crumbs="[[breadcrumbs]]"></cubex-breadcrumb>
-          <app-toolbar sticky>
-            <cubex-app-header actions="[[headerActions]]" menu="[[headerMenu]]">
-
-              <template is="dom-if" if="[[backPath]]" strip-whitespace>
-                <a slot="header" id="app-back" href="[[backPath]]">
-                  <cube-action icon="icons:arrow-back" size="24"></cube-action>
-                </a>
-              </template>
-
-              <template is="dom-if" if="[[pageData.icon]]">
-                <cube-icon slot="header" src="[[pageData.icon]]"></cube-icon>
-              </template>
-
-              <a href="[[pagePath]]" slot="header" id="page-title">
-                <cube-pagelet-content html="[[_pageTitle]]"></cube-pagelet-content>
+    <app-header-layout has-scrolling-region id="ahl">
+      <app-header id="ah" slot="header" fixed="[[!narrow]]" reveals="[[narrow]]" condenses effects="waterfall">
+        <app-toolbar>
+          <cubex-app-header actions="[[headerActions]]" menu="[[headerMenu]]">
+            <template is="dom-if" if="[[backPath]]" strip-whitespace>
+              <a slot="header" id="app-back" href="[[backPath]]">
+                <cube-action icon="icons:arrow-back" size="24"></cube-action>
               </a>
+            </template>
 
-              <div displace id="hero" slot="hero">
-                <slot name="hero"></slot>
+            <template is="dom-if" if="[[_pageData.icon]]">
+              <cube-icon slot="header" src="[[_pageData.icon]]"></cube-icon>
+            </template>
+
+            <a href="[[pagePath]]" slot="header" id="page-title">
+              <cube-pagelet-content html="[[_pageTitle]]"></cube-pagelet-content>
+            </a>
+
+          </cubex-app-header>
+        </app-toolbar>
+      </app-header>
+
+      <cube-pagelet-content id="hero" html="[[_pageDefinition]]"></cube-pagelet-content>
+
+      <slot slot="header" name="spinner"></slot>
+
+      <div id="app-container" style="height:3000px;">
+        <div id="app-content">
+          <div id="app-sidebar">
+            <template is="dom-if" if="[[pageActions.length]]">
+              <div id="app-page-actions" class="sidebar-group">
+                <template is="dom-repeat" items="[[pageActions]]">
+                  <cubex-link href="[[item.Path]]"
+                              mode="[[item.Mode]]" title="[[item.Description]]">
+                    <cube-action icon="[[item.Icon]]">[[item.Title]]</cube-action>
+                  </cubex-link>
+                </template>
               </div>
+            </template>
 
-            </cubex-app-header>
-          </app-toolbar>
-        </app-header>
+            <template is="dom-if" if="[[pageMenu.length]]">
+              <cube-list id="app-page-menu" class="sidebar-group" border double-border bottom-border>
+                <template is="dom-repeat" items="[[pageMenu]]">
+                  <cubex-link href="[[item.Path]]" mode="[[item.Mode]]" title="[[item.Description]]">
+                    <cube-li>[[item.Title]]</cube-li>
+                  </cubex-link>
+                </template>
+              </cube-list>
+            </template>
 
-        <slot slot="header" name="spinner"></slot>
-
-        <div id="app-container">
-          <div id="app-content">
-            <div id="app-sidebar">
-              <template is="dom-if" if="[[pageActions.length]]">
-                <div id="app-page-actions" class="sidebar-group">
-                  <template is="dom-repeat" items="[[pageActions]]">
-                    <cubex-link href="[[item.Path]]"
-                                mode="[[item.Mode]]" title="[[item.Description]]">
-                      <cube-action icon="[[item.Icon]]">[[item.Title]]</cube-action>
-                    </cubex-link>
-                  </template>
-                </div>
-              </template>
-
-              <template is="dom-if" if="[[pageMenu.length]]">
-                <cube-list id="app-page-menu" class="sidebar-group" border double-border bottom-border>
-                  <template is="dom-repeat" items="[[pageMenu]]">
-                    <cubex-link href="[[item.Path]]" mode="[[item.Mode]]" title="[[item.Description]]">
-                      <cube-li>[[item.Title]]</cube-li>
-                    </cubex-link>
-                  </template>
-                </cube-list>
-              </template>
-
-              <template is="dom-if" if="[[panels.length]]">
-                <cube-list id="app-page-panels" class="sidebar-group" border double-border
-                           bottom-border>
-                  <template is="dom-repeat" items="[[panels]]">
-                    <cube-li>
-                      <cube-pagelet auto auth url="[[item.Path]]"></cube-pagelet>
-                    </cube-li>
-                  </template>
-                </cube-list>
-              </template>
-            </div>
-
-            <div id="app-content-main">
-              <slot></slot>
-            </div>
-
-            <div style="clear:both"></div>
+            <template is="dom-if" if="[[panels.length]]">
+              <cube-list id="app-page-panels" class="sidebar-group" border double-border
+                         bottom-border>
+                <template is="dom-repeat" items="[[panels]]">
+                  <cube-li>
+                    <cube-pagelet auto auth url="[[item.Path]]"></cube-pagelet>
+                  </cube-li>
+                </template>
+              </cube-list>
+            </template>
           </div>
+
+          <div id="app-content-main">
+            <cube-pagelet auth auto url="{{_contentPath}}"></cube-pagelet>
+          </div>
+
+          <div style="clear:both"></div>
         </div>
-      </app-header-layout>
-    </cubex-drawer>
+      </div>
+    </app-header-layout>
 
   </template>
   <script>
@@ -417,88 +380,66 @@ Example:
           hasHero:             {type: Boolean},
           heroHeader:          {
             type:               Boolean,
-            computed:           '_computeHeroHeader(hasHero,_heroHeaderFraction)',
+            computed:           '_computeHeroHeader(_pageDefinition,_heroHeaderFraction)',
             reflectToAttribute: true
           },
           _heroHeaderFraction: {type: Boolean, value: 1},
           backPath:            {type: String},
           pagePath:            {type: String},
-          narrow:              {type: Boolean, value: true, reflectToAttribute: true, observer: '_updateMaxState'},
           appData:             {type: Object, value: null},
-          pageData:            {type: Object},
-          breadcrumbs:         {type: Array, notify: true, computed: '_updateCrumbs(pageData,project,appData)'},
-          drawerDisabled:      {type: Boolean, value: false, reflectToAttribute: true},
-          _pageTitle:          {type: String, value: '', computed: '_calculatePageTitle(pageData.title)'},
+          _pageData:           {type: Object, computed: '_computePageData(_pageDefXhr)'},
+          breadcrumbs:         {type: Array, notify: true, computed: '_updateCrumbs(_pageData,project,appData)'},
+          _pageTitle:          {type: String, value: '', computed: '_calculatePageTitle(_pageData.title)'},
           _hasConfig:          {type: String, value: '', computed: '_calculateConfigure(appData, appData.*)'},
           _lock:               {type: Boolean, value: false},
           _peek:               {type: Boolean, value: false},
-          _collapse:           {type: Boolean, value: false}
+          _collapse:           {type: Boolean, value: false},
+          _definitionHeaders:  {type: Object, value: {'x-cube-resource-type': 'page-definition'}}
         },
 
-        observers: [
-          '_viewChanged(_lock,_peek,narrow)',
-          '_updateDrawer(appData,narrow,_collapse)'
-        ],
-
-        listeners:        {'cube-displace-changed': '_displaceChanged'},
-        _displaceChanged: function (e)
+        _computePageData: function (xhr)
                           {
-                            this._heroHeaderFraction = e.detail.fraction;
+                            var cubeHeaderRegex = /^x-cube-([a-z\-]+):\s*(.*)$/gmi,
+                              headers = {}, matches;
+                            if(xhr)
+                            {
+                              var fn = function (_, v) { return v.toUpperCase(); };
+                              while(matches = cubeHeaderRegex.exec(xhr.getAllResponseHeaders()))
+                              {
+                                headers[matches[1].toLowerCase().replace(/-([a-z])/i, fn)] = matches[2];
+                              }
+                            }
+                            return headers;
                           },
 
         keyBindings: {'f': '_alertFid'},
         _alertFid:   function (e)
                      {
                        if(e.detail.keyboardEvent.shiftKey && e.detail.keyboardEvent.target.tagName === 'BODY'
-                         && this.pageData && this.pageData.pageFid)
+                         && this._pageData && this._pageData.pageFid)
                        {
-                         prompt('You are viewing an entity with a FID of:', this.pageData.pageFid);
+                         prompt('You are viewing an entity with a FID of:', this._pageData.pageFid);
                        }
                      },
 
         ready: function ()
                {
                  this.keyEventTarget = document.body;
-                 document.addEventListener(
-                   'cubex-app-drawer-toggle', function (e)
-                   {
-                     this.$.appDrawer.toggle();
-                   }.bind(this)
-                 );
-                 document.addEventListener(
-                   'cubex-drawer-state-changed', function (e)
-                   {
-                     if(e.detail.position === 'left')
-                     {
-                       this.$.ah.style.left = (e.detail.offset + 24) + 'px';
-                     }
-                     else if(e.detail.position === 'right')
-                     {
-                       this.$.ah.style.right = (e.detail.offset + 24) + 'px';
-                     }
-                   }.bind(this)
-                 );
-                 this.async(function ()
-                            {
-                              this._viewChanged(this._lock, this._peek);
-                            });
                },
 
-        _computeHeroHeader: function (hasHero, fraction)
+        _computeHeroHeader: function (html, fraction)
                             {
-                              if(hasHero)
+                              if(html && html.indexOf('<cube-hero') > -1)
                               {
                                 if(fraction < 1)
                                 {
                                   this.updateStyles({'--cube-app-header-background': 'white'});
                                   return false;
                                 }
-                                else
-                                {
-                                  this.updateStyles({'--cube-app-header-background': null});
-                                }
+                                this.updateStyles({'--cube-app-header-background': null});
+                                return true;
                               }
-                              return hasHero;
+                              return false;
                             },
 
         _computeHasSidebar: function (pageMenu, pageActions, panels)
@@ -519,145 +460,89 @@ Example:
                               return items > 0;
                             },
 
-        _updateDrawer:   function (appData)
+        _updateCrumbs: function (pageData, project, appData)
+                       {
+                         var bc = [];
+                         if(pageData && pageData.breadcrumb)
                          {
-                           if(this.narrow || !(appData && appData.Navigation && appData.Navigation.length))
+                           bc = typeof(pageData.breadcrumb) === 'string'
+                             ? JSON.parse(pageData.breadcrumb)
+                             : pageData.breadcrumb.slice(0);
+                         }
+
+                         if(appData && pageData && project)
+                         {
+                           var prefix = '/' + appData.VendorID + '/' + appData.AppID;
+                           for(var i in bc)
                            {
-                             this.$.appDrawer.setMaxState(0);
-                           }
-                           else
-                           {
-                             this.$.appDrawer.setMaxState(2);
-                             if(this._collapse)
+                             if(bc.hasOwnProperty(i))
                              {
-                               this.$.appDrawer.preferredState = 1;
+                               bc[i].Url = prefix + '/' + bc[i].Url.replace(/^\//, '');
                              }
                            }
-                         },
-        _updateCrumbs:   function (pageData, project, appData)
-                         {
-                           var bc = [];
-                           if(pageData && pageData.breadcrumb)
-                           {
-                             bc = typeof(pageData.breadcrumb) === 'string'
-                               ? JSON.parse(pageData.breadcrumb)
-                               : pageData.breadcrumb.slice(0);
-                           }
 
-                           if(appData && pageData && project)
+                           if(!(appData.VendorID === 'kubex' && appData.AppID === 'dashboard' ))
                            {
-                             var prefix = '/' + appData.VendorID + '/' + appData.AppID;
-                             for(var i in bc)
-                             {
-                               if(bc.hasOwnProperty(i))
+                             // prepend app
+                             bc.unshift(
                                {
-                                 bc[i].Url = prefix + '/' + bc[i].Url.replace(/^\//, '');
+                                 Title: this.i18nResource(appData.Name),
+                                 Url:   prefix
                                }
-                             }
-
-                             if(!(appData.VendorID === 'kubex' && appData.AppID === 'dashboard' ))
+                             );
+                             // prepend group
+                             if(appData.GroupID)
                              {
-                               // prepend app
                                bc.unshift(
                                  {
-                                   Title: this.i18nResource(appData.Name),
-                                   Url:   prefix
+                                   Title: appData.GroupID,
+                                   Url:   '/' + appData.VendorID + '/' + appData.GroupID
                                  }
                                );
-                               // prepend group
-                               if(appData.GroupID)
-                               {
-                                 bc.unshift(
-                                   {
-                                     Title: appData.GroupID,
-                                     Url:   '/' + appData.VendorID + '/' + appData.GroupID
-                                   }
-                                 );
-                               }
-                               // prepend category
-                               if(appData.Category)
-                               {
-                                 bc.unshift(
-                                   {
-                                     Title: this.$.cat.getCategory(appData.Category, true),
-                                     Url:   '/_' + appData.Category
-                                   }
-                                 );
-                               }
+                             }
+                             // prepend category
+                             if(appData.Category)
+                             {
+                               bc.unshift(
+                                 {
+                                   Title: this.$.cat.getCategory(appData.Category, true),
+                                   Url:   '/_' + appData.Category
+                                 }
+                               );
                              }
                            }
-                           return bc;
-                         },
-        _viewChanged:    function (lock, peek, narrow)
-                         {
-                           var drawer = this.drawer;
-                           if(drawer)
-                           {
-                             if(this._touchEnabled())
-                             {
-                               drawer.setMinState(0);
-                             }
-                             else
-                             {
-                               drawer.setMinState(1);
-                             }
-
-                             if(lock)
-                             {
-                               drawer.setState(2);
-                             }
-                             else if(((narrow && !this._touchEnabled()) || peek) && (drawer.state < 1 || narrow))
-                             {
-                               drawer.setState(1);
-                             }
-                           }
-                         },
-        _updateMaxState: function (narrow)
-                         {
-                           if(this.drawer)
-                           {
-                             this.drawer.maxState = narrow ? 1 : 2;
-                           }
-                         },
-
-        setDrawerState: function (state)
-                        {
-                          var drawer = this.drawer;
-                          drawer.setState(state);
-                          if(state == 1)
-                          {
-                            drawer.close();
-                          }
-                        },
+                         }
+                         return bc;
+                       },
 
         _calculatePageTitle: function (pageTitle)
                              {
                                if(!pageTitle)
                                {
-                                 return "";
+                                 return '';
                                }
-                               var title = "<h1 id=\"app-heading\">", closeEm = false, previous = "", current = "";
+                               var title = '<h1 id="app-heading">', closeEm = false, previous = '', current = '';
                                for(var i = 0; i < pageTitle.length; i++)
                                {
                                  current = pageTitle[i];
-                                 if(current === "*")
+                                 if(current === '*')
                                  {
-                                   if(previous === "*")
+                                   if(previous === '*')
                                    {
                                      if(closeEm)
                                      {
-                                       title += "</em>";
+                                       title += '</em>';
                                        closeEm = false;
                                      }
                                      else
                                      {
-                                       title += "<em>";
+                                       title += '<em>';
                                        closeEm = true;
                                      }
-                                     current = ""
+                                     current = '';
                                    }
                                  }
-                                 else if(previous === "*")
+                                 else if(previous === '*')
                                  {
                                    title += previous + current;
                                  }
@@ -669,9 +554,9 @@ Example:
                                }
                                if(closeEm)
                                {
-                                 title += "</em>";
+                                 title += '</em>';
                                }
-                               return title + "</h1>";
+                               return title + '</h1>';
                              },
 
         _calculateConfigure: function (appData)
@@ -683,15 +568,6 @@ Example:
                                this.$.configDlg.open();
                              },
 
-        /**
-         * Retrieve the drawer element for this app
-         * @returns {Element}
-         */
-        get drawer()
-        {
-          return this.querySelector('#appDrawer') || this.root.querySelector('#appDrawer');
-        },
-
         behaviors: [
           Polymer.IronA11yKeysBehavior,
           Polymer.CubeTouchEnabledBehavior,
@@ -700,6 +576,6 @@ Example:
           Polymer.CubeHashBehavior
         ]
       }
-    )
+    );
   </script>
 </dom-module>

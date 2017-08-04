@@ -6,7 +6,6 @@
 <link rel="import" href="../../cube-icon/cube-icon.html">
 <link rel="import" href="../../cube-resource/cube-resource.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
-<link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="../cubex-theme/cubex-theme-style.html">
 
 <dom-module id="cubex-quick-actions">
@@ -17,7 +16,7 @@
       }
 
       cube-list-menu {
-        @apply(--primary-800);
+        @apply(--primary-50);
         min-width: 200px;
         opacity: 1;
 
@@ -31,14 +30,13 @@
       }
 
       :host cube-action {
-        @apply --primary-700-text-secondary;
+        @apply --primary-100-text-secondary;
       }
 
       :host cube-action:hover {
-        @apply --primary-700-text;
+        @apply --primary-100-text;
       }
     </style>
-    <cubex-route project-id="{{projectId}}"></cubex-route>
 
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/quick-actions/actions.json"
                    data="{{actions}}" ttl="3600"></cube-resource>

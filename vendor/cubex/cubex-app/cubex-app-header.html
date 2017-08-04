@@ -16,8 +16,6 @@
       :host {
         width: 100%;
         display: block;
-        background: var(--theme-400-color);
-        border-bottom: 1px solid var(--theme-700-color);
       }
 
       :host #topHeader {
@@ -43,10 +41,6 @@
         #actions #more-actions {
           padding: 7px;
         }
-      }
-
-      :host-context(cubex-app:not([hero-header])) #topHeader {
-        background: var(--theme-50-color);
       }
 
       .flexchild {
@@ -98,12 +92,6 @@
 
       #actions #more-actions {
         @apply --accent-400;
-      }
-
-      :host-context(cubex-app[hero-header]) #actions cube-action,
-      :host-context(cubex-app[hero-header]) #actions #more-actions {
-        background: transparent;
-        color: var(--theme-50-color);
       }
 
       cube-list-menu {
@@ -184,10 +172,6 @@
           </cube-list-menu>
         </cube-dropdown>
       </div>
-    </div>
-
-    <div id="hero">
-      <slot name="hero"></slot>
     </div>
 
     <div id="menu">

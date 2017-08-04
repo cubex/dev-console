@@ -2,18 +2,16 @@
 <link rel="import" href="../../cube-resource/cube-resource.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
-<link rel="import" href="../cubex-route/cubex-route.html">
+<link rel="import" href="../cubex-project/cubex-project-behavior.html">
 
 <dom-module id="cubex-registry" attributes="project-data user-data">
   <template>
-    <cubex-route project-id="{{projectId}}"></cubex-route>
-
     <cube-resource id="project" auto auth url="//[[getServiceHost('apps')]]/kubex/registry/project.json"
                    data="{{projectData}}" ttl="3600"></cube-resource>
     <cube-resource id="user" auto auth url="//[[getServiceHost('apps')]]/kubex/registry/user.json"
                    data="{{userData}}" ttl="3600"></cube-resource>
 
-    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="registry"
+    <cube-websocket auto project="[[projectAlias]]" vendor="kubex" app="registry"
                     on-message="_appsChanged"></cube-websocket>
   </template>
   <script>
@@ -34,7 +32,10 @@
                         }
                       },
 
-        behaviors: [Polymer.CubeServiceBehavior]
+        behaviors: [
+          Polymer.CubeServiceBehavior,
+          Polymer.CubexProjectBehavior
+        ]
       }
     );
   </script>

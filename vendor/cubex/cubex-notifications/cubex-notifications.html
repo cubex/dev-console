@@ -7,9 +7,8 @@
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
 <link rel="import" href="../../cube-repeat/cube-repeat.html">
 <link rel="import" href="../cubex-configure/cubex-configure-dialog.html">
-<link rel="import" href="../cubex-route/cubex-route.html">
+<link rel="import" href="../cubex-project/cubex-project-behavior.html">
 <link rel="import" href="cubex-notification.html">
-<link rel="import" href="../../bind-factory/bind-factory.html">
 
 <dom-module id="cubex-notifications">
   <template>
@@ -25,7 +24,7 @@
       }
 
       cube-list, cube-list-menu {
-        @apply(--primary-800);
+        @apply(--primary-50);
         min-width: 350px;
         opacity: 1;
         max-height: 403px;
@@ -37,12 +36,12 @@
       }
 
       :host #trigger {
-        @apply --primary-700-text-secondary;
+        @apply --primary-100-text-secondary;
         margin: 10px 0;
       }
 
       :host #trigger:hover {
-        @apply --primary-700-text;
+        @apply --primary-100-text;
       }
 
       :host #trigger paper-spinner-lite {
@@ -95,7 +94,7 @@
       }
 
       :host cube-li a {
-        color: var(--primary-800-text-color);
+        color: var(--primary-50-text-color);
         text-decoration: none;
       }
 
@@ -108,9 +107,7 @@
       }
     </style>
 
-    <cubex-route project-id="{{projectId}}"></cubex-route>
-
-    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="notify"
+    <cube-websocket auto project="[[projectAlias]]" vendor="kubex" app="notify"
                     on-subscribe="_notificationSubscribe" on-message="_notificationMessage"></cube-websocket>
 
     <cube-dropdown id="dd" horizontal-align="right">
@@ -338,7 +335,8 @@
                    },
 
         behaviors: [
-          Polymer.CubeServiceBehavior
+          Polymer.CubeServiceBehavior,
+          Polymer.CubexProjectBehavior
         ]
       }
     );

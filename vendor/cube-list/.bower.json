@@ -31,11 +31,11 @@
     "iron-component-page": "PolymerElements/iron-component-page#1.9 - 2",
     "web-component-tester": "^6.0.0"
   },
-  "_release": "a7001403f2",
+  "_release": "26a934a8a4",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "a7001403f29868531b314bfcbbc1a678ae05bd73"
+    "commit": "26a934a8a4178d6053b8aebb69e456502bca27a1"
   },
   "_source": "https://github.com/CubexElements/cube-list.git",
   "_target": "*",
