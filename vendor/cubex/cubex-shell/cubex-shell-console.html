@@ -216,7 +216,6 @@
 
       <div id="flex-toolbar">
         <cubex-pinned-apps hidden="[[_narrow]]" on-tap="_closeDrawer"></cubex-pinned-apps>
-        <cube-action icon="icons:toc" hidden="[[!_narrow]]" id="app-menu" on-tap="_showAppMenu"></cube-action>
         <div class="spread"></div>
         <cubex-search id="search" focus-search="[[focusSearch]]"></cubex-search>
         <div class="spread"></div>
@@ -393,12 +392,6 @@
                                       this.$.shellDrawer.setState(1);
                                     }
                                   },
-
-        _showAppMenu: function (e)
-                      {
-                        document.dispatchEvent(new CustomEvent('cubex-app-drawer-toggle'));
-                        e.stopPropagation();
-                      },
 
         behaviors: [
           Polymer.IronA11yKeysBehavior,
