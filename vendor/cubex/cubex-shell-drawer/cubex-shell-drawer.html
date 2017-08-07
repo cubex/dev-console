@@ -49,7 +49,6 @@
         height: var(--cubex-drawer-offset-top);
         border-bottom: 1px solid rgba(0, 0, 0, 0.2);
         box-sizing: border-box;
-        font-size: 12px;
         font-weight: 900;
         text-transform: uppercase;
         letter-spacing: 2px;
@@ -60,17 +59,17 @@
         text-transform: uppercase;
       }
 
-      #user-view span {
-        font-size: 12px;
-      }
-
       #user-view strong,
       #user-view span {
         display: block;
+        font-size: 12px;
       }
 
       #user-view span {
         padding-top: 0;
+        text-transform: none;
+        letter-spacing: 0.5px;
+        color: var(--primary-900-text-color);
         opacity: var(--light-secondary-opacity);
       }
 
@@ -97,6 +96,8 @@
         --paper-tab-content: {
           justify-content: flex-start;
         };
+        font-size: 12px;
+        letter-spacing: 2px;
         text-transform: uppercase;
         text-align: left;
         flex-grow: 1;
@@ -130,6 +131,14 @@
 
       cube-list-menu:last-of-type cube-li {
         @apply --accent-700;
+      }
+
+      cube-list-menu:first-of-type {
+        border-top: none;
+      }
+
+      cube-list-menu {
+        border-top: 1px solid var(--light-divider-secondary-color);
       }
 
       cubex-shell-drawer-panel cube-list-menu:first-of-type {
@@ -169,6 +178,11 @@
         font-size: 15px;
         font-weight: bold;
         letter-spacing: 4px;
+      }
+
+      #kubexMenu cube-dropdown {
+        font-size: 12px;
+        letter-spacing: 2px;
       }
 
       #kubexMenu span {
@@ -211,7 +225,7 @@
           <img slot="icon" src="[[avatar]]">
           <strong>[[whoami.FirstName]] [[whoami.LastName]]</strong>
           <span slot="secondary">[[whoami.Username]]</span>
-          <cube-action id="burger" slot="actions" icon="icons:menu" on-tap="_toggleDrawer"></cube-action>
+          <cube-action id="burger" slot="actions" icon="[[_burgerIcon]]" on-tap="_toggleDrawer"></cube-action>
         </cube-li>
       </div>
     </div>
@@ -397,7 +411,9 @@
           _projectRegistryData: {type: Object},
           _groupedApps:         {type: Object, computed: '_computeGroupedApps(_projectRegistryData)'},
           appName:              {type: String, computed: '_computeAppName(appNav)'},
+          _burgerIcon:          {type: String, computed: '_computeBurgerIcon(_drawerState)'},
           project:              {type: Object},
+          _drawerState:         {type: Number},
           avatar:               {
             type:  String,
             value: function ()
@@ -436,6 +452,7 @@
         },
         toggleDrawerPanel: function ()
                            {
+                             this._drawerState = this.parentNode.state;
                              if(this.parentNode.state === 2 || this.parentNode.isOpen)
                              {
                                this.$.drawerPanels.selectNext();
@@ -444,53 +461,61 @@
 
         __parentStateChanged: function (e)
                               {
+                                this._drawerState = e.detail.state;
                                 if(e.detail.state !== 2 && e.detail.isOpen === false)
                                 {
-                                  this.$.drawerPanels.select(0);
+                                  this._showAppMenu();
                                 }
                               },
-
-        selectPanel:   function (panel)
-                       {
-                         this.$.drawerPanels.select(panel);
-                         this._openDrawer();
-                       },
-        _closeDrawer:  function ()
-                       {
-                         this.$.drawerPanels.select(0);
-                         if(!this._touchEnabled())
-                         {
-                           this.parentNode.setState(1);
-                         }
-                         this.parentNode.close();
-                       },
-        _openDrawer:   function ()
-                       {
-                         this._showAppMenu();
-                         if(this._touchEnabled())
-                         {
-                           this.parentNode.open();
-                         }
-                         else
-                         {
-                           this.parentNode.setState(2);
-                         }
-                       },
-        _toggleDrawer: function ()
-                       {
-                         if(this.parentNode.isOpen || (this.parentNode.state === 2))
-                         {
-                           this._closeDrawer();
-                         }
-                         else
-                         {
-                           this._openDrawer();
-                         }
-                       },
-        _openParent:   function ()
-                       {
-                         this.parentNode.open();
-                       },
+        _computeBurgerIcon:   function (state)
+                              {
+                                return state === 2 ? 'icons:close' : 'icons:menu';
+                              },
+        selectPanel:          function (panel)
+                              {
+                                this.$.drawerPanels.select(panel);
+                                this._openDrawer();
+                              },
+        _closeDrawer:         function ()
+                              {
+                                this._showAppMenu();
+                                if(!this._touchEnabled())
+                                {
+                                  this.parentNode.setState(1);
+                                }
+                                this.parentNode.close();
+                              },
+        _openDrawer:          function ()
+                              {
+                                this._showAppMenu();
+                                if(this._touchEnabled())
+                                {
+                                  this.parentNode.open();
+                                }
+                                else
+                                {
+                                  this.parentNode.setState(2);
+                                }
+                              },
+        _toggleDrawer:        function ()
+                              {
+                                if(this.parentNode.isOpen || (this.parentNode.state === 2))
+                                {
+                                  this._closeDrawer();
+                                }
+                                else
+                                {
+                                  this._openDrawer();
+                                }
+                              },
+        _showAppMenu:         function ()
+                              {
+                                this.$.drawerPanels.select(0);
+                              },
+        _openParent:          function ()
+                              {
+                                this.parentNode.open();
+                              },
 
         _menuTap: function (e)
                   {
