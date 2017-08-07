@@ -217,7 +217,7 @@
     </div>
     <div class="rightAlign">
       <paper-tabs id="menuTab" selected="{{__selectedPanel}}" on-tap="_openParent">
-        <paper-tab>Menu</paper-tab>
+        <paper-tab>[[appName]]</paper-tab>
         <paper-tab>
           <cube-icon icon="communication:business"></cube-icon>
         </paper-tab>
@@ -396,6 +396,7 @@
           appNav:               {type: Array},
           _projectRegistryData: {type: Object},
           _groupedApps:         {type: Object, computed: '_computeGroupedApps(_projectRegistryData)'},
+          appName:              {type: String, computed: '_computeAppName(appNav)'},
           project:              {type: Object},
           avatar:               {
             type:  String,
@@ -465,7 +466,7 @@
                        },
         _openDrawer:   function ()
                        {
-                         this.$.drawerPanels.select(0);
+                         this._showAppMenu();
                          if(this._touchEnabled())
                          {
                            this.parentNode.open();
@@ -500,6 +501,15 @@
                    {
                      return Object.keys(o).map(function (i) {return o[i];});
                    },
+
+        _computeAppName: function (nav)
+                         {
+                           if(nav && nav[0])
+                           {
+                             return this.i18nResource(nav[0].Name);
+                           }
+                           return 'Menu';
+                         },
 
         _computeGroupedApps: function (projectRegistry)
                              {
