@@ -6,10 +6,10 @@
     "promise-polyfill": "PolymerLabs/promise-polyfill",
     "web-animations-js": "web-animations/web-animations-js#2.2.2",
     "cubex": "CubexElements/cubex",
-    "paper-slider": "PolymerElements/paper-slider#1.9 - 2",
-    "paper-checkbox": "PolymerElements/paper-checkbox#1.9 - 2",
-    "paper-radio-group": "PolymerElements/paper-radio-group#1.9 - 2",
-    "paper-radio-button": "PolymerElements/paper-radio-button#1.9 - 2"
+    "paper-slider": "PolymerElements/paper-slider#^2.0.0",
+    "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.0",
+    "paper-radio-group": "PolymerElements/paper-radio-group#^2.0.0",
+    "paper-radio-button": "PolymerElements/paper-radio-button#^2.0.0"
   },
   "resolutions": {
     "polymer": "^2.0.0",

@@ -201,12 +201,7 @@
         max-height: calc(100vh - var(--cubex-drawer-offset-top));
       }
 
-      #toolbar {
-        position: relative;
-        z-index: 1;
-      }
-
-      #shellDrawer, #toolbar, cubex-drawer-content {
+      #shellDrawer, #flex-toolbar, cubex-drawer-content {
         @apply --shadow-elevation-2dp;
       }
     </style>
@@ -219,21 +214,19 @@
     <cubex-drawer id="shellDrawer" min-state="1" preferred-state="[[shellDrawerState]]" state="{{shellDrawerState}}">
       <cubex-shell-drawer id="shellDrawerContent" slot="drawer-content" app-nav="[[_appNav]]"></cubex-shell-drawer>
 
-      <div id="toolbar">
-        <div id="flex-toolbar">
-          <cubex-pinned-apps hidden="[[_narrow]]" on-tap="_closeDrawer"></cubex-pinned-apps>
-          <cube-action icon="icons:toc" hidden="[[!_narrow]]" id="app-menu" on-tap="_showAppMenu"></cube-action>
-          <div class="spread"></div>
-          <cubex-search id="search" focus-search="[[focusSearch]]"></cubex-search>
-          <div class="spread"></div>
-          <div id="search-shortcut">
-            <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
-          </div>
-          <cubex-toolbar></cubex-toolbar>
-
-          <cube-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action" size="24"
-                       on-tap="_toggleUserDrawer"></cube-action>
+      <div id="flex-toolbar">
+        <cubex-pinned-apps hidden="[[_narrow]]" on-tap="_closeDrawer"></cubex-pinned-apps>
+        <cube-action icon="icons:toc" hidden="[[!_narrow]]" id="app-menu" on-tap="_showAppMenu"></cube-action>
+        <div class="spread"></div>
+        <cubex-search id="search" focus-search="[[focusSearch]]"></cubex-search>
+        <div class="spread"></div>
+        <div id="search-shortcut">
+          <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
         </div>
+        <cubex-toolbar></cubex-toolbar>
+
+        <cube-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action" size="24"
+                     on-tap="_toggleUserDrawer"></cube-action>
       </div>
 
       <div id="contentContainer">
@@ -292,7 +285,7 @@
                                 if(this._isValidKeyPress(e))
                                 {
                                   this.$.shellDrawer.close();
-                                  this.$.toolbar.openKeyboardHelp();
+                                  this.$.shellDrawerContent.openKeyboardHelp();
                                   e.preventDefault();
                                 }
                               },

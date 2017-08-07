@@ -70,6 +70,6 @@
     "commit": "da2d1c251202bf0c76542a4cfdedec028ee3f33c"
   },
   "_source": "https://github.com/PolymerElements/app-route.git",
-  "_target": "1.9 - 2",
+  "_target": "^2.0.0",
   "_originalSource": "PolymerElements/app-route"
 }
