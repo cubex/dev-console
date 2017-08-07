@@ -36,7 +36,7 @@ Example:
 -->
 
 <dom-module id="cubex-app"
-            attributes="app-data page-data header-menu header-actions page-menu page-actions panels back-path page-path has-hero">
+            attributes="app-data definition-path content-path page-data header-menu header-actions page-menu page-actions panels back-path page-path has-hero">
   <template>
     <style>
       :host {
@@ -64,7 +64,6 @@ Example:
       #app-content {
         overflow: hidden;
         min-height: 50px;
-        margin: 16px;
       }
 
       #app-content-main {
@@ -274,12 +273,7 @@ Example:
       }
     </style>
 
-    <cubex-route full-path="{{fullPath}}" gaid="{{_gaid}}" vendor="{{vendorId}}" app="{{appId}}"
-                 page="{{_pagePath}}" pagelet="{{_pageletId}}" section="{{_sectionId}}"
-                 definition-path="{{_definitionPath}}" content-path="{{_contentPath}}"
-                 integration="{{_integration}}"></cubex-route>
-
-    <cube-resource auto auth url="[[_definitionPath]]" data="{{_pageDefinition}}" xhr="{{_pageDefXhr}}"
+    <cube-resource auto auth url="[[definitionPath]]" data="{{_pageDefinition}}" xhr="{{_pageDefXhr}}"
                    headers="[[_definitionHeaders]]" status="{{_pageDefinitionStatus}}"></cube-resource>
 
     <iron-media-query query="(max-width: 375px)" query-matches="{{narrow}}"></iron-media-query>
@@ -353,7 +347,7 @@ Example:
           </div>
 
           <div id="app-content-main">
-            <cube-pagelet auth auto url="{{_contentPath}}"></cube-pagelet>
+            <cube-pagelet auth auto url="[[contentPath]]"></cube-pagelet>
           </div>
 
           <div style="clear:both"></div>
@@ -367,6 +361,8 @@ Example:
       {
         is:         'cubex-app',
         properties: {
+          definitionPath:      {type: String},
+          contentPath:         {type: String},
           hasSidebar:          {
             type:               Boolean,
             reflectToAttribute: true,

@@ -1,4 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 <link rel="import" href="../../cube-dropdown/cube-dropdown.html">
 <link rel="import" href="../../cube-action/cube-action.html">
 <link rel="import" href="../../cube-list/cube-list.html">
@@ -14,30 +17,15 @@
   <template>
     <style>
       :host {
-        --paper-spinner-color: var(--accent-400-color);
+        --paper-spinner-color: var(--accent-700-color);
         --paper-spinner-stroke-width: 3px;
-      }
-
-      cube-dropdown #drop {
-        overflow: visible;
-        @apply(--shadow-elevation-4dp);
-      }
-
-      cube-list, cube-list-menu {
-        @apply(--primary-50);
-        min-width: 350px;
-        opacity: 1;
-        max-height: 403px;
-        overflow: auto;
-
-        --cube-li-style: {
-          color: var(--theme-2-color);
-        }
+        --app-drawer-width: 360px;
+        --app-drawer-scrim-background: transparent;
       }
 
       :host #trigger {
+        line-height: 30px;
         @apply --primary-100-text-secondary;
-        margin: 10px 0;
       }
 
       :host #trigger:hover {
@@ -88,47 +76,77 @@
         margin-left: 10px;
       }
 
-      :host cube-li.uc {
-        text-transform: uppercase;
-        @apply --primary-900;
+      :host app-drawer {
+        z-index: 9999;
       }
 
-      :host cube-li a {
-        color: var(--primary-50-text-color);
-        text-decoration: none;
+      :host app-toolbar {
+        @apply --accent-400;
+        height: 56px;
       }
 
-      :host #settings {
-        margin-right: -5px;
+      #title {
+        text-align: left;
       }
 
-      a[disabled], div[disabled] {
-        @apply --text-disabled;
+      cubex-notification {
+        --cube-li-style: {
+          @apply --theme-50;
+        };
+      }
+
+      .drawer-contents {
+        @apply --shadow-elevation-2dp;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: var(--theme-200-color);
+      }
+
+      .drawer-contents cube-list-menu:first-of-type {
+        flex-grow: 1;
+      }
+
+      .drawer-contents cube-list-menu:nth-of-type(2), .drawer-contents cube-list-menu:nth-of-type(2) a {
+        flex-grow: 0;
+        @apply --primary-100;
+        text-align: center;
       }
     </style>
 
     <cube-websocket auto project="[[projectAlias]]" vendor="kubex" app="notify"
                     on-subscribe="_notificationSubscribe" on-message="_notificationMessage"></cube-websocket>
 
-    <cube-dropdown id="dd" horizontal-align="right">
-      <cube-action id="trigger" slot="trigger" running$="[[_running]]" unread$="[[_unread]]">
-        <paper-spinner-lite active="[[_running]]"></paper-spinner-lite>
-        <cube-icon icon="social:notifications"></cube-icon>
-      </cube-action>
-      <div id="drop">
-        <cube-li class="uc">
-          Notifications
-          <cube-action slot="actions" id="settings" on-tap="__openCfg" size="20" icon="icons:settings"></cube-action>
+    <cube-action id="trigger" on-tap="_openDrawer" running$="[[_running]]" unread$="[[_unread]]" size="24">
+      <paper-spinner-lite active="[[_running]]"></paper-spinner-lite>
+      <cube-icon icon="social:notifications"></cube-icon>
+    </cube-action>
+
+    <app-drawer id="notifyDrawer" align="right" swipe-open>
+      <div class="drawer-contents">
+        <app-toolbar>
+          <cube-action icon="icons:arrow-forward" on-tap="_closeDrawer"></cube-action>
+          <div id="title" main-title>Notifications</div>
+          <cube-action on-tap="_markRead" icon="icons:done-all" disabled$="[[!_notifications.length]]"></cube-action>
+
+          <cube-action id="settings" on-tap="__openCfg" size="20" icon="icons:settings"></cube-action>
           <cubex-configure-dialog id="configDlg" gaid="kubex/notify"></cubex-configure-dialog>
-        </cube-li>
+        </app-toolbar>
 
         <template is="dom-if" if="[[_notifications.length]]">
-          <cube-list-menu id="content">
+          <cube-list-menu id="content" border>
             <cube-repeat items="[[_notifications]]" limit="20" sort="__sortNotifications">
               <template>
                 <cubex-notification notification="[[item]]"></cubex-notification>
               </template>
             </cube-repeat>
+          </cube-list-menu>
+          <cube-list-menu>
+            <cube-li>
+              <a href="/kubex/notify" class="can-disable" disabled$="[[!_notifications.length]]">
+                <cube-action>View More</cube-action>
+              </a>
+            </cube-li>
           </cube-list-menu>
         </template>
 
@@ -138,53 +156,47 @@
           </cube-list>
         </template>
 
-        <cube-li class="uc">
-          <a href="/kubex/notify" class="can-disable" disabled$="[[!_notifications.length]]">
-            <cube-action>See All</cube-action>
-          </a>
-          <div slot="actions" class="can-disable" disabled$="[[!_notifications.length]]">
-            <cube-action on-tap="_markRead">
-              Mark all As Read
-            </cube-action>
-          </div>
-        </cube-li>
       </div>
-    </cube-dropdown>
+    </app-drawer>
+
   </template>
 
   <script>
     Polymer(
       {
-        is:         'cubex-notifications',
-        properties: {
+        is:          'cubex-notifications',
+        properties:  {
           _running:             {type: Boolean, computed: '__hasRunning(_notifications,_notifications.*)'},
           _unread:              {type: Boolean, computed: '__hasUnread(_notifications,_notifications.*)'},
           _notifications:       {type: Array, notify: true, value: function () {return [];}},
           _notificationIndexes: {type: Object, notify: true, value: function () {return {};}},
           _isReady:             {type: Boolean, value: false}
         },
+        keyBindings: {
+          '\\': '_toggleDrawer'
+        },
+        attached:    function ()
+                     {
+                       this.keyEventTarget = document.body;
+                       var
+                         elements = this.root.querySelectorAll('.can-disable'),
+                         fn = function (e)
+                         {
+                           if(this.hasAttribute('disabled'))
+                           {
+                             e.preventDefault();
+                           }
+                         };
 
-        attached: function ()
-                  {
-                    var
-                      elements = this.root.querySelectorAll('.can-disable'),
-                      fn = function (e)
-                      {
-                        if(this.hasAttribute('disabled'))
-                        {
-                          e.preventDefault();
-                        }
-                      };
-
-                    for(var i in elements)
-                    {
-                      if(elements.hasOwnProperty(i))
-                      {
-                        var ele = elements[i];
-                        ele.addEventListener('tap', fn.bind(ele));
-                      }
-                    }
-                  },
+                       for(var i in elements)
+                       {
+                         if(elements.hasOwnProperty(i))
+                         {
+                           var ele = elements[i];
+                           ele.addEventListener('tap', fn.bind(ele));
+                         }
+                       }
+                     },
 
         _notificationSubscribe: function (e)
                                 {
@@ -329,12 +341,24 @@
                      xhr.send();
                    },
 
-        __openCfg: function ()
-                   {
-                     this.$.configDlg.open();
-                   },
-
-        behaviors: [
+        __openCfg:     function ()
+                       {
+                         this.$.configDlg.open();
+                       },
+        _openDrawer:   function ()
+                       {
+                         this.$.notifyDrawer.open();
+                       },
+        _closeDrawer:  function ()
+                       {
+                         this.$.notifyDrawer.close();
+                       },
+        _toggleDrawer: function ()
+                       {
+                         this.$.notifyDrawer.toggle();
+                       },
+        behaviors:     [
+          Polymer.IronA11yKeysBehavior,
           Polymer.CubeServiceBehavior,
           Polymer.CubexProjectBehavior
         ]

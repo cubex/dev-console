@@ -102,17 +102,8 @@
         @apply --theme-100;
       }
 
-      #flex-toolbar paper-icon-button {
-        @apply --primary-700-text-secondary;
-      }
-
-      #flex-toolbar paper-icon-button:hover {
-        @apply --primary-700-text;
-      }
-
       :host([drawer-opened]) #flex-toolbar {
         @apply --primary-800;
-
       }
 
       #flex-toolbar cubex-search {
@@ -120,7 +111,7 @@
       }
 
       #search-shortcut {
-        @apply --primary-700-text-secondary;
+        @apply --primary-100-text-secondary;
         display: none;
       }
 
@@ -151,29 +142,27 @@
 
       :host([focus-search]) #search-shortcut,
       :host([focus-search]) #user-panel-action,
-      :host([focus-search]) #app-menu,
       :host([focus-search]) cubex-pinned-apps,
       :host([focus-search]) cubex-toolbar,
       :host([drawer-opened]) #search-shortcut,
       :host([drawer-opened]) #user-panel-action,
-      :host([drawer-opened]) #app-menu,
       :host([drawer-opened]) cubex-search,
       :host([drawer-opened]) cubex-toolbar {
         display: none;
       }
 
       #user-panel-action:hover {
-        @apply --primary-100-text;
+        opacity: 1;
       }
 
-      #user-panel-action, #app-menu {
+      #user-panel-action {
         --cube-icon-color: var(--primary-100-text-color);
         @apply --text-secondary;
       }
 
       #user-panel-action {
         position: relative;
-        margin: 15px 8px;
+        margin: 12px 6px;
       }
 
       #user-panel-action:before,
@@ -187,12 +176,12 @@
 
       :host([user-drawer-state="0"]) #user-panel-action:before {
         border-right-color: var(--primary-100-text-color);
-        left: -6px;
+        left: -2px;
       }
 
       :host(:not([user-drawer-state="0"])) #user-panel-action:after {
         border-left-color: var(--primary-100-text-color);
-        right: -6px;
+        right: -2px;
       }
 
       cube-action[hidden] {
