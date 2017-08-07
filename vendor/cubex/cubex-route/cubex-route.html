@@ -31,7 +31,7 @@ specialType
           category:    {type: String, notify: true, value: ''},
           vendor:      {type: String, notify: true, value: ''},
           app:         {type: String, notify: true, value: ''},
-          gaid:        {type: String, notify: true, value: '', computed: '_computeGaid(vendor,app)'},
+          gaid:        {type: String, notify: true, value: ''},
           specialType: {type: String, notify: true, value: ''},
           page:        {type: String, notify: true, value: ''},
           pagelet:     {type: String, notify: true, value: ''},
@@ -54,17 +54,8 @@ specialType
 
         observers: [
           '_computeValues(route.path,route,route.*)',
-          '_updateIntegration(__integrations,vendor,app,page,pagelet,section)'
+          '_updateIntegration(__integrations,gaid,definitionPath,pagelet,section)'
         ],
-
-        _computeGaid: function (vendor, app)
-                      {
-                        if(vendor && app)
-                        {
-                          return vendor + '/' + app;
-                        }
-                        return '';
-                      },
 
         _computeValues: function (path)
                         {
@@ -75,14 +66,24 @@ specialType
                           var changes = {
                             project:     project === 'console' ? '' : project,
                             fullPath:    this.route.path,
-                            category:    matches ? matches[3] : '',
-                            vendor:      matches ? matches[4] : '',
-                            app:         matches ? matches[6] : '',
-                            specialType: matches ? matches[8] : '',
-                            page:        matches ? matches[9] : '',
-                            pagelet:     matches ? matches[11] : '',
-                            section:     matches ? matches[13] : ''
+                            category:    matches && matches[3] ? matches[3] : '',
+                            vendor:      matches && matches[4] ? matches[4] : '',
+                            app:         matches && matches[6] ? matches[6] : '',
+                            gaid:        '',
+                            specialType: matches && matches[8] ? matches[8] : '',
+                            page:        matches && matches[9] ? matches[9] : '',
+                            pagelet:     matches && matches[11] ? matches[11] : '',
+                            section:     matches && matches[13] ? matches[13] : ''
                           };
+                          if(changes.vendor && changes.app)
+                          {
+                            changes.gaid = changes.vendor + '/' + changes.app;
+                            changes.definitionPath = '/' + changes.gaid + changes.page;
+                          }
+                          if(!(changes.pagelet || changes.section))
+                          {
+                            changes.contentPath = changes.definitionPath;
+                          }
                           this.setProperties(changes);
                         },
 
@@ -132,20 +133,17 @@ specialType
                                 this.$.integrationsResource.update(true);
                               },
 
-        _updateIntegration: function (_integrations, vendor, app, page, pagelet, section)
+        _updateIntegration: function (_integrations, appGaid, definitionPath, pagelet, section)
                             {
-                              var appGaid = '', definitionPath = '', contentPath = '';
-                              page = page || '';
+                              var contentPath = '';
 
-                              if(vendor && app)
+                              if(appGaid)
                               {
-                                appGaid = vendor + '/' + app;
-                                definitionPath = '/' + appGaid + page;
                                 contentPath = definitionPath;
 
                                 var integration = null;
 
-                                if(_integrations && page)
+                                if(_integrations)
                                 {
                                   var items = null;
 
@@ -195,9 +193,8 @@ specialType
                               }
 
                               this.setProperties({
-                                definitionPath: definitionPath,
-                                contentPath:    contentPath,
-                                integration:    integration
+                                contentPath: contentPath,
+                                integration: integration
                               });
                             }
 

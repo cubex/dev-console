@@ -32,17 +32,17 @@
                  definition-path="{{_definitionPath}}" content-path="{{_contentPath}}"></cubex-route>
     <cubex-registry project-data="{{_projectData}}"></cubex-registry>
 
-    <template is="dom-if" if="[[_isDashboard]]">
+    <template restamp is="dom-if" if="[[_isDashboard]]">
       <cubex-app-definition gaid="kubex/dashboard" app-data="{{_appData}}"></cubex-app-definition>
       <cubex-app definition-path="/kubex/dashboard" content-path="/kubex/dashboard"
                  app-data="[[_appData]]"></cubex-app>
     </template>
-    <template is="dom-if" if="[[_isApp]]">
-      <cubex-app-definition gaid="{{_appGaid}}" app-data="{{_appData}}"></cubex-app-definition>
-      <cubex-app definition-path="{{_definitionPath}}" content-path="{{_contentPath}}"
+    <template restamp is="dom-if" if="[[_isApp]]">
+      <cubex-app-definition gaid="[[_appGaid]]" app-data="{{_appData}}"></cubex-app-definition>
+      <cubex-app definition-path="[[_appDefinitionPath]]" content-path="[[_appContentPath]]"
                  app-data="[[_appData]]"></cubex-app>
     </template>
-    <template is="dom-if" if="[[_isGroup]]">
+    <template restamp is="dom-if" if="[[_isGroup]]">
       <cubex-group-page group-id="[[_groupGaid]]"></cubex-group-page>
     </template>
   </template>
@@ -52,33 +52,20 @@
       {
         is:         'cubex-shell-content',
         properties: {
-          appNav:       {type: Array, notify: true, computed: '_computeNav(_appData,_groupData,_projectData)'},
-          _appData:     {type: Object},
-          _gaid:        {type: String},
-          _projectData: {type: Object},
-          _appGaid:     {type: String, computed: '_computeAppGaid(_projectData,_gaid)'},
-          _groupGaid:   {type: String, computed: '_computeGroupGaid(_projectData,_gaid,_appData)'},
-          _groupData:   {type: Boolean, computed: '_computeGroupData(_projectData,_groupGaid)'},
+          appNav:             {type: Array, notify: true, computed: '_computeNav(_appData,_groupData,_projectData)'},
+          _appData:           {type: Object},
+          _gaid:              {type: String},
+          _projectData:       {type: Object},
+          _appGaid:           {type: String, computed: '_computeAppGaid(_projectData,_gaid)'},
+          _appDefinitionPath: {type: String, computed: '_computeAppPath(_gaid,_projectData,_definitionPath)'},
+          _appContentPath:    {type: String, computed: '_computeAppPath(_gaid,_projectData,_contentPath)'},
+          _groupGaid:         {type: String, computed: '_computeGroupGaid(_projectData,_gaid,_appData)'},
+          _groupData:         {type: Boolean, computed: '_computeGroupData(_projectData,_groupGaid)'},
 
           _isDashboard: {type: Boolean, computed: '_computeIsDashboard(_gaid)'},
-          _isApp:       {type: Boolean, computed: '_computeIsApp(_appGaid,_projectData)'},
-          _isGroup:     {type: Boolean, computed: '_computeIsGroup(_appGaid,_groupGaid,_projectData)'}
+          _isApp:       {type: Boolean, computed: '_computeIsApp(_gaid,_projectData)'},
+          _isGroup:     {type: Boolean, computed: '_computeIsGroup(_gaid,_projectData)'}
         },
-
-        _computeIsDashboard: function (gaid)
-                             {
-                               return !(gaid);
-                             },
-
-        _computeIsApp: function (_appGaid, _projectData)
-                       {
-                         return !!(_appGaid && _projectData && _projectData.AppSummary[_appGaid]);
-                       },
-
-        _computeIsGroup: function (_appGaid, _groupGaid, _projectData)
-                         {
-                           return !!((!_appGaid) && _groupGaid && _projectData && _projectData.GroupSummary[_groupGaid]);
-                         },
 
         _computeAppGaid: function (projectData, gaid)
                          {
@@ -86,7 +73,26 @@
                            {
                              return gaid;
                            }
-                           return undefined;
+                           return '';
+                         },
+
+        _computeAppPath: function (gaid, proj, path)
+                         {
+                           return this._computeIsApp(gaid, proj) ? path : '';
+                         },
+
+        _computeIsDashboard: function (gaid)
+                             {
+                               return !(gaid);
+                             },
+
+        _computeIsApp:   function (_gaid, _projectData)
+                         {
+                           return !!(_gaid && _projectData && _projectData.AppSummary && _projectData.AppSummary[_gaid]);
+                         },
+        _computeIsGroup: function (_gaid, _projectData)
+                         {
+                           return !!(_gaid && _projectData && _projectData.GroupSummary && _projectData.GroupSummary[_gaid]);
                          },
 
         _computeGroupGaid: function (projectData, gaid, appData)
@@ -104,7 +110,7 @@
                                  return groupGaid;
                                }
                              }
-                             return undefined;
+                             return '';
                            },
 
         _computeGroupData: function (projectData, groupGaid)
