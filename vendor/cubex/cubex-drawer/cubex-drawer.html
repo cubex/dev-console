@@ -57,12 +57,17 @@ Example:
       #drawerContentContainer > #drawerContent {
         position: absolute;
         top: 0;
-        right: 0;
         bottom: 0;
         left: 0;
+        right: auto;
         overflow: visible;
 
         background: var(--theme-100-color, white);
+      }
+
+      :host([position=right]) #drawerContentContainer > #drawerContent {
+        left: auto;
+        right: 0;
       }
 
       :host([position=right]) #drawerContentContainer {
