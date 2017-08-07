@@ -495,7 +495,7 @@
                               },
         _closeDrawer:         function ()
                               {
-                                this._tapAppLink();
+                                this.$.drawerPanels.select(0);
                                 if(!this._touchEnabled())
                                 {
                                   this.parentNode.setState(1);
@@ -504,7 +504,7 @@
                               },
         _openDrawer:          function ()
                               {
-                                this._tapAppLink();
+                                this.$.drawerPanels.select(0);
                                 if(this._touchEnabled())
                                 {
                                   this.parentNode.open();
@@ -516,13 +516,13 @@
                               },
         _toggleDrawer:        function ()
                               {
-                                if(this.parentNode.isOpen || (this.parentNode.state === 2))
+                                if(this.parentNode.state !== 2)
                                 {
-                                  this._closeDrawer();
+                                  this._openDrawer();
                                 }
                                 else
                                 {
-                                  this._openDrawer();
+                                  this._closeDrawer();
                                 }
                               },
         _tapAppLink:          function (e)
