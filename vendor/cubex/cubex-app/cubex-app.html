@@ -64,7 +64,7 @@ Example:
       #app-content {
         overflow: hidden;
         min-height: 50px;
-        margin: 32px;
+        margin: 16px;
       }
 
       #app-content-main {
@@ -200,10 +200,6 @@ Example:
       }
 
       @media (max-width: 1000px) {
-        #app-content {
-          margin: 16px;
-        }
-
         :host([has-sidebar]) #app-content-main {
           margin-left: 212px;
         }
@@ -320,7 +316,7 @@ Example:
 
       <slot slot="header" name="spinner"></slot>
 
-      <div id="app-container" style="height:3000px;">
+      <div id="app-container">
         <div id="app-content">
           <div id="app-sidebar">
             <template is="dom-if" if="[[pageActions.length]]">

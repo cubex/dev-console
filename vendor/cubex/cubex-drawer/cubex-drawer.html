@@ -37,6 +37,7 @@ Example:
 
       #drawerContentContainer {
         position: relative;
+        z-index: 10;
         order: 1;
         height: 100%;
         width: 0;
@@ -44,7 +45,6 @@ Example:
         transition: width ease 0.2s, max-width ease 0.2s;
         padding: 0;
         box-sizing: border-box;
-        z-index: 1;
         flex-shrink: 0;
       }
 
@@ -143,6 +143,7 @@ Example:
       }
 
       #content {
+        z-index: 1;
         order: 5;
         position: relative;
         flex-grow: 1;
