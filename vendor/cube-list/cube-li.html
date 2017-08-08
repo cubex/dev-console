@@ -29,7 +29,6 @@ Example:
         display: block;
         box-sizing: border-box;
         line-height: 24px;
-        min-height: 48px;
 
         @apply --cube-li-style;
         @apply --cube-li-border-style;
@@ -111,6 +110,10 @@ Example:
       }
 
       :host paper-item-body {
+        display: flex;
+        min-height: 46px;
+        box-sizing: border-box;
+
         padding: 9px 0;
       }
 
