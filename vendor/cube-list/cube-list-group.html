@@ -14,39 +14,45 @@ Example:
 -->
 
 <dom-module id="cube-list-group" attributes="title">
-  <template strip-whitespace>
-    <style>
-      :host(:focus) {
-        outline: 0;
-      }
+    <template strip-whitespace>
+        <style>
+            :host(:focus) {
+                outline: 0;
+            }
 
-      h2 {
-        @apply --cube-header;
-        padding: 0 16px;
-        margin: 5px 0 0 0;
-        line-height: 22px;
-        @apply --cube-list-group-title;
-      }
+            #title {
+                @apply --cube-header;
+                line-height: 24px;
+                padding: 0 16px;
+                @apply --cube-list-group-title-wrapper;
+            }
 
-      :host-context([border-group]) .list-group {
-        border: 1px solid var(--cube-list-border-color, rgba(0, 0, 0, 0.12));
-      }
-    </style>
+            h2 {
+                @apply --cube-list-group-title;
+            }
 
-    <h2>[[title]]
-      <slot name="title"></slot>
-    </h2>
-    <div class="list-group">
-      <slot></slot>
-    </div>
-  </template>
+            :host-context([border-group]) .list-group {
+                border: 1px solid var(--cube-list-border-color, rgba(0, 0, 0, 0.12));
+            }
+        </style>
 
-  <script>
-      Polymer(
-          {
-              is:         'cube-list-group',
-              properties: {title: String}
-          }
-      );
-  </script>
+        <div id="title">
+            <template is="dom-if" if="[[title]]">
+                <h2>[[title]]</h2>
+            </template>
+            <slot name="title"></slot>
+        </div>
+        <div class="list-group">
+            <slot></slot>
+        </div>
+    </template>
+
+    <script>
+        Polymer(
+            {
+                is: 'cube-list-group',
+                properties: {title: String}
+            }
+        );
+    </script>
 </dom-module>

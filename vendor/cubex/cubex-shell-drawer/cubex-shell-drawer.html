@@ -151,6 +151,9 @@
 
       cubex-shell-drawer-panel {
         width: 100%;
+        --cube-list-group-title-wrapper: {
+          margin: 5px 0 0 0;
+        };
       }
 
       cubex-shell-drawer-panel cube-list-menu:first-of-type {
@@ -194,6 +197,10 @@
 
       cube-li#kubexMenu {
         @apply --primary-900;
+      }
+
+      cube-li#kubexMenu cube-list-menu {
+        @apply --primary-700;
       }
 
       #kubexMenu cube-dropdown {
