@@ -193,24 +193,23 @@
 
       cube-li#kubexMenu {
         @apply --primary-900;
-        color: white;
-        text-transform: uppercase;
-        font-size: 15px;
-        font-weight: bold;
-        letter-spacing: 4px;
       }
 
       #kubexMenu cube-dropdown {
         font-size: 12px;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
       }
 
       #kubexMenu span {
         color: var(--accent-700-color);
       }
 
-      #kubexMenu a {
+      #kubexMenu > a {
         color: white;
+        text-transform: uppercase;
+        font-size: 15px;
+        font-weight: bold;
+        letter-spacing: 4px;
         display: block;
         text-decoration: none;
       }
@@ -340,7 +339,7 @@
         </a>
 
         <cube-dropdown slot="actions" id="additional" vertical-align="bottom">
-          <cube-action icon="icons:more-horiz" slot="trigger"></cube-action>
+          <cube-action icon="icons:more-horiz" slot="trigger" ripple-center ripple-circle></cube-action>
           <cube-list-menu border>
             <cube-list-group>
               <a href="/kubex/project">
@@ -354,7 +353,10 @@
               <cube-li compact on-tap="_openCustomerAgreement">{{i18n('cust_agree')}}</cube-li>
             </cube-list-group>
             <cube-list-group>
-              <cube-li compact on-tap="_logout">{{i18n('logout')}}</cube-li>
+              <cube-li compact on-tap="_logout">
+                <cube-icon slot="icon" icon="icons:exit-to-app" size="18"></cube-icon>
+                {{i18n('logout')}}
+              </cube-li>
             </cube-list-group>
           </cube-list-menu>
         </cube-dropdown>
@@ -366,8 +368,9 @@
 
       <cube-list zebra border border-group>
         <cube-list-group title="{{i18n('navigation')}}">
-          <cube-li>{{i18n('show_apps_projects')}} <span slot="secondary">.</span></cube-li>
+          <cube-li>{{i18n('toggle_menu')}} <span slot="secondary">.</span></cube-li>
           <cube-li>{{i18n('launch_search')}} <span slot="secondary">/</span></cube-li>
+          <cube-li>{{i18n('open_notifications')}} <span slot="secondary">\</span></cube-li>
         </cube-list-group>
         <cube-list-group title="{{i18n('general')}}">
           <cube-li>{{i18n('open_shortcut_help')}} <span slot="secondary">?</span></cube-li>
@@ -400,11 +403,12 @@
                 'logout':             'Logout',
                 'general':            'General',
                 'navigation':         'Navigation',
-                'show_apps_projects': 'Show Applications & Project',
+                'toggle_menu':        'Toggle Menu',
                 'launch_search':      'Launch Search',
                 'close':              'Close',
                 'open_shortcut_help': 'Open Shortcut Help',
-                'search':             'Search'
+                'search':             'Search',
+                'open_notifications': 'Open Notifications'
               },
               'fr': {
                 'filter_apps':        'Filtre Applications',
@@ -418,11 +422,12 @@
                 'logout':             'Se déconnecter',
                 'general':            'Général',
                 'navigation':         'La navigation',
-                'show_apps_projects': 'Voir applications & projet',
+                'toggle_menu':        'Menu Toggle',
                 'launch_search':      'Lancer la recherche',
                 'close':              'Fermer',
                 'open_shortcut_help': 'Ouvrir aide raccourci',
-                'search':             'Chercher'
+                'search':             'Chercher',
+                'open_notifications': 'Ouvrir des notifications'
               }
             }
           },

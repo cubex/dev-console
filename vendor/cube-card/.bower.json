@@ -28,11 +28,11 @@
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
     "web-component-tester": "^6.0.0"
   },
-  "_release": "20b2ff71e0",
+  "_release": "56cca4f149",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "20b2ff71e0971f88c018297c2a80a0d0cc66be37"
+    "commit": "56cca4f149d8c47412267978e0de295e8c192e25"
   },
   "_source": "https://github.com/CubexElements/cube-card.git",
   "_target": "*",

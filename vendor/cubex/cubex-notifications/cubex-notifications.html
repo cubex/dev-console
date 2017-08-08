@@ -363,9 +363,20 @@
                        {
                          this.$.notifyDrawer.close();
                        },
-        _toggleDrawer: function ()
+        _toggleDrawer: function (e)
                        {
-                         this.$.notifyDrawer.toggle();
+                         if(e && e.detail && e.detail.keyboardEvent)
+                         {
+                           console.log(e.detail.keyboardEvent.target);
+                           if(e.detail.keyboardEvent.target.tagName === 'BODY')
+                           {
+                             this.$.notifyDrawer.toggle();
+                           }
+                         }
+                         else
+                         {
+                           this.$.notifyDrawer.toggle();
+                         }
                        },
         behaviors:     [
           Polymer.IronA11yKeysBehavior,
