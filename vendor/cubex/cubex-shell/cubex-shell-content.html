@@ -29,6 +29,7 @@
       }
     </style>
     <cubex-route full-path="{{fullPath}}" gaid="{{_gaid}}" vendor="{{vendorId}}" app="{{appId}}"
+                 category="{{categoryId}}"
                  definition-path="{{_definitionPath}}" content-path="{{_contentPath}}"></cubex-route>
     <cubex-registry project-data="{{_projectData}}"></cubex-registry>
 
@@ -45,6 +46,12 @@
     <template restamp is="dom-if" if="[[_isGroup]]">
       <cubex-group-page group-id="[[_groupGaid]]"></cubex-group-page>
     </template>
+    <template restamp is="dom-if" if="[[_isVendor]]">
+      <cubex-vendor-page vendor="[[vendorId]]"></cubex-vendor-page>
+    </template>
+    <template restamp is="dom-if" if="[[_isCategory]]">
+      <cubex-category-page category="[[categoryId]]"></cubex-category-page>
+    </template>
   </template>
 
   <script>
@@ -52,19 +59,24 @@
       {
         is:         'cubex-shell-content',
         properties: {
-          appNav:             {type: Array, notify: true, computed: '_computeNav(_appData,_groupData,_projectData)'},
+          appNav:     {type: Array, notify: true, computed: '_computeNav(_appData,_groupData,_projectData)'},
+          categoryId: {type: String, notify: true},
+          vendorId:   {type: String, notify: true},
+
           _appData:           {type: Object},
           _gaid:              {type: String},
           _projectData:       {type: Object},
           _appGaid:           {type: String, computed: '_computeAppGaid(_projectData,_gaid)'},
           _appDefinitionPath: {type: String, computed: '_computeAppPath(_gaid,_projectData,_definitionPath)'},
           _appContentPath:    {type: String, computed: '_computeAppPath(_gaid,_projectData,_contentPath)'},
-          _groupGaid:         {type: String, computed: '_computeGroupGaid(_projectData,_gaid,_appData)'},
+          _groupGaid:         {type: String, notify: true, computed: '_computeGroupGaid(_projectData,_gaid,_appData)'},
           _groupData:         {type: Boolean, computed: '_computeGroupData(_projectData,_groupGaid)'},
 
-          _isDashboard: {type: Boolean, computed: '_computeIsDashboard(_gaid)'},
+          _isDashboard: {type: Boolean, computed: '_computeIsDashboard(vendorId,appId,categoryId)'},
           _isApp:       {type: Boolean, computed: '_computeIsApp(_gaid,_projectData)'},
-          _isGroup:     {type: Boolean, computed: '_computeIsGroup(_gaid,_projectData)'}
+          _isGroup:     {type: Boolean, computed: '_computeIsGroup(_gaid,_projectData)'},
+          _isVendor:    {type: Boolean, computed: '_computeIsVendor(vendorId,appId,categoryId)'},
+          _isCategory:  {type: Boolean, computed: '_computeIsCategory(categoryId)'}
         },
 
         _computeAppGaid: function (projectData, gaid)
@@ -81,19 +93,26 @@
                            return this._computeIsApp(gaid, proj) ? path : '';
                          },
 
-        _computeIsDashboard: function (gaid)
+        _computeIsDashboard: function (vendor, app, categoryId)
                              {
-                               return !(gaid);
+                               return !(vendor || app || categoryId);
                              },
-
-        _computeIsApp:   function (_gaid, _projectData)
-                         {
-                           return !!(_gaid && _projectData && _projectData.AppSummary && _projectData.AppSummary[_gaid]);
-                         },
-        _computeIsGroup: function (_gaid, _projectData)
-                         {
-                           return !!(_gaid && _projectData && _projectData.GroupSummary && _projectData.GroupSummary[_gaid]);
-                         },
+        _computeIsApp:       function (_gaid, _projectData)
+                             {
+                               return !!(_gaid && _projectData && _projectData.AppSummary && _projectData.AppSummary[_gaid]);
+                             },
+        _computeIsGroup:     function (_gaid, _projectData)
+                             {
+                               return !!(_gaid && _projectData && _projectData.GroupSummary && _projectData.GroupSummary[_gaid]);
+                             },
+        _computeIsVendor:    function (vendorId, appId, categoryId)
+                             {
+                               return (!appId) && (!categoryId) && vendorId;
+                             },
+        _computeIsCategory:  function (categoryId)
+                             {
+                               return !!categoryId;
+                             },
 
         _computeGroupGaid: function (projectData, gaid, appData)
                            {

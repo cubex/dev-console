@@ -27,11 +27,11 @@
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
     "web-component-tester": "^6.0.0"
   },
-  "_release": "7002e5751d",
+  "_release": "fa8cbd2a4b",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "7002e5751ddb8eec3401ca291878ef049976f87a"
+    "commit": "fa8cbd2a4b539b5d3b14dca91600d980958e9f88"
   },
   "_source": "https://github.com/CubexElements/cube-carousel.git",
   "_target": "*",

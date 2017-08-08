@@ -3,7 +3,6 @@
 <link rel="import" href="../../cube-tile/cube-tile.html">
 <link rel="import" href="../../cube-card/cube-card.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
-<link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="../../cube-card/cube-card-container.html">
 
 <dom-module id="cubex-vendor-page" attributes="vendor">
@@ -12,14 +11,10 @@
       :host {
         --cube-carousel-style: {
           overflow: hidden;
-          margin: 20px -32px;
           background: var(--theme-400-color);
         };
       }
 
-      :host cube-carousel {
-        margin-top: -32px;
-      }
     </style>
 
     <cubex-registry project-data="{{projectData}}"></cubex-registry>
@@ -51,7 +46,7 @@
                           var vendors = [];
                           for(var idx in appSummaries)
                           {
-                            if(appSummaries.hasOwnProperty(idx) && appSummaries[idx].vendor_id == this.vendor)
+                            if(appSummaries.hasOwnProperty(idx) && appSummaries[idx].vendor_id === this.vendor)
                             {
                               vendors.push(appSummaries[idx]);
                             }

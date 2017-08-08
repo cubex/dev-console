@@ -18,7 +18,7 @@ Example:
 @hero hero.svg
 -->
 
-<dom-module id="cubex-drawer" attributes="hover-popout swipe-open position min-state max-state preferred-state state">
+<dom-module id="cubex-drawer" attributes="hover-popout position min-state max-state preferred-state state">
   <template>
     <style>
       :host {
@@ -74,27 +74,6 @@ Example:
         order: 9;
       }
 
-      #drawerContentContainer > #dragHandle[hidden] {
-        display: none;
-      }
-
-      :host([swipe-open]:not([state="2"])) #drawerContentContainer > #dragHandle {
-        visibility: visible;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 100%;
-        width: 20%;
-        min-width: 20px;
-        max-width: 50px;
-        content: '';
-      }
-
-      :host([swipe-open][position=right]) #drawerContentContainer > #dragHandle {
-        right: 100%;
-        left: auto;
-      }
-
       :host([state="0"]) #drawerContentContainer {
         width: 0;
       }
@@ -115,7 +94,6 @@ Example:
         box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.05);
       }
 
-      :host([hovered][hover-popout]:not([state="2"]):not([max-state="1"])) #drawerContentContainer > #drawerContent,
       :host([transitioning]) #drawerContentContainer > #drawerContent,
       :host([is-open]:not([state="2"])) #drawerContentContainer > #drawerContent {
         box-shadow: 2px 0 2px 0 rgba(0, 0, 0, 0.1);
@@ -125,13 +103,11 @@ Example:
         box-shadow: -1px 0 2px 0 rgba(0, 0, 0, 0.05);
       }
 
-      :host([position="right"][hovered][hover-popout]:not([state="2"]):not([max-state="1"])) #drawerContentContainer > #drawerContent,
       :host([position="right"][transitioning]) #drawerContentContainer > #drawerContent,
       :host([position="right"][is-open]:not([state="2"])) #drawerContentContainer > #drawerContent {
         box-shadow: -2px 0 2px 0 rgba(0, 0, 0, 0.1);
       }
 
-      :host([hover-popout][state="1"][hovered]) #drawerContentContainer,
       :host([state="2"]) #drawerContentContainer {
         width: var(--cubex-drawer-width, 256px);
       }
@@ -155,7 +131,6 @@ Example:
     <div id="sizzler"></div>
     <div id="flexContainer">
       <div id="drawerContentContainer">
-        <div id="dragHandle" hidden="[[!_touchEnabled()]]" on-track="_track" on-down="_prevent"></div>
         <div id="drawerContent" on-tap="_prevent">
           <slot name="drawer-content"></slot>
         </div>
@@ -186,22 +161,8 @@ Example:
 
         attached: function ()
                   {
-                    if(!this._touchEnabled())
-                    {
-                      this.listen(this.$.drawerContentContainer, 'mouseenter', '_mouseEnter');
-                      this.listen(this.$.drawerContentContainer, 'mouseleave', '_mouseLeave');
-                    }
                     document.addEventListener('tap', this._autoClose.bind(this));
                   },
-
-        _mouseEnter: function ()
-                     {
-                       this.setAttribute('hovered', '');
-                     },
-        _mouseLeave: function ()
-                     {
-                       this.removeAttribute('hovered');
-                     },
 
         _prevent:   function (e)
                     {
@@ -211,78 +172,6 @@ Example:
                     {
                       this.close();
                     },
-
-        _track:      function (event)
-                     {
-                       // Disable user selection on desktop.
-                       if(this.state !== 2 && this.minState !== 2)
-                       {
-                         event.preventDefault();
-                         switch(event.detail.state)
-                         {
-                           case 'start':
-                             this._trackStart(event);
-                             break;
-                           case 'track':
-                             this._trackMove(event);
-                             break;
-                           case 'end':
-                             this._trackEnd(event);
-                             break;
-                         }
-                       }
-                     },
-        _trackStart: function (event)
-                     {
-                       if(Math.abs(event.detail.dx) > Math.abs(event.detail.dy))
-                       {
-                         this.transitioning = true;
-                         this.$.drawerContentContainer.style.transition = 'none';
-                       }
-                     },
-        _trackMove:  function (event)
-                     {
-                       if(this.transitioning)
-                       {
-                         var maxWidth = this._getMaxWidth(), x;
-                         if(this.position === 'left')
-                         {
-                           x = Math.max(0, Math.min(maxWidth, event.detail.x));
-                         }
-                         else
-                         {
-                           x = Math.max(Math.min(event.detail.x - window.innerWidth, 0), -maxWidth);
-                         }
-                         this.$.drawerContentContainer.style.width = Math.abs(x) + 'px';
-                         this.updateStyles();
-                       }
-                     },
-        _trackEnd:   function ()
-                     {
-                       if(this.transitioning)
-                       {
-                         this.transitioning = false;
-                         this.close();
-                         var width = this._getWidth();
-                         if(width >= this._getMaxWidth() / 2)
-                         {
-                           if(this.state !== this._DRAWER_STATE.LOCKED)
-                           {
-                             this.open();
-                           }
-                         }
-                         else if(width >= this._getPeekWidth())
-                         {
-                           this.setState(this._DRAWER_STATE.PEEK);
-                         }
-                         else
-                         {
-                           this.setState(this._DRAWER_STATE.CLOSED);
-                         }
-                         this.$.drawerContentContainer.style.transition = '0.2s ease width';
-                         this.$.drawerContentContainer.style.width = '';
-                       }
-                     },
 
         _getWidth:     function ()
                        {
@@ -304,7 +193,6 @@ Example:
         close:  function ()
                 {
                   this.toggle(false);
-                  this.removeAttribute('hovered');
                 },
         toggle: function (state)
                 {

@@ -5,75 +5,91 @@
   <template>
     <cube-meta key="cubex-pinned-apps" value="{{apps}}"></cube-meta>
     <template is="dom-if" if="[[pinned]]">
-      <cube-icon icon="av:playlist-add-check" size="20" on-tap="_pinDrop"></cube-icon>
+      <cube-icon icon="[[_pinIcon]]" size="20" on-tap="_pinDrop"></cube-icon>
     </template>
     <template is="dom-if" if="[[!pinned]]">
-      <cube-icon icon="av:playlist-add" size="20" on-tap="_pinAdd"></cube-icon>
+      <cube-icon icon="mdi:pin" size="20" on-tap="_pinAdd"></cube-icon>
     </template>
   </template>
   <script>
     Polymer(
       {
-        is:         'cubex-pinned',
-        properties: {
-          apps:   {type: Object, notify: true},
-          vendor: {type: String, reflectToAttribute: true},
-          app:    {type: String, reflectToAttribute: true},
-          pinned: {
+        is:          'cubex-pinned',
+        properties:  {
+          apps:     {type: Object, notify: true},
+          vendor:   {type: String, reflectToAttribute: true},
+          _pinIcon: {type: String, value: "mdi:pin"},
+          app:      {type: String, reflectToAttribute: true},
+          pinned:   {
             type:               Boolean,
             computed:           '_isPinned(apps,vendor,app)',
             notify:             true,
             reflectToAttribute: true
           }
         },
-        _isPinned:  function (apps, vendor, app)
-                    {
-                      if(apps !== undefined)
-                      {
-                        for(var appGaid in apps)
-                        {
-                          if(apps.hasOwnProperty(appGaid)
-                            && apps[appGaid].hasOwnProperty("GlobalAppID")
-                            && apps[appGaid]["GlobalAppID"] === vendor + "/" + app)
-                          {
-                            return true;
-                          }
-                        }
-                      }
-                      return false;
-                    },
-        _pinAdd:    function (e)
-                    {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      this._pin("POST");
-                    },
-        _pinDrop:   function (e)
-                    {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      this._pin("DELETE")
-                    },
-        _pin:       function (mode)
-                    {
-                      var xhr = new XMLHttpRequest();
-                      xhr.open(mode, "/kubex/pinned/", true);
-                      xhr.setRequestHeader("X-Requested-By", "cubex-pinned");
-                      xhr.withCredentials = true;
-                      xhr.addEventListener(
-                        'readystatechange', function ()
-                        {
-                          if(this.readyState === XMLHttpRequest.DONE)
-                          {
-                            if(this.status !== 200)
-                            {
-                              console.error(this.statusText);
-                            }
-                          }
-                        }
-                      );
-                      xhr.send(this.vendor + "/" + this.app);
-                    }
+        listeners:   {
+          mouseover: '_mouseState',
+          mouseout:  '_mouseState'
+        },
+        _mouseState: function (e)
+                     {
+                       if(e.type === "mouseover")
+                       {
+                         this._pinIcon = "mdi:pin-off"
+                       }
+                       else
+                       {
+                         this._pinIcon = "mdi:pin"
+                       }
+                     },
+        _isPinned:   function (apps, vendor, app)
+                     {
+                       if(apps !== undefined)
+                       {
+                         for(var appGaid in apps)
+                         {
+                           if(apps.hasOwnProperty(appGaid)
+                             && apps[appGaid].hasOwnProperty("GlobalAppID")
+                             && apps[appGaid]["GlobalAppID"] === vendor + "/" + app)
+                           {
+                             return true;
+                           }
+                         }
+                       }
+                       return false;
+                     },
+        _pinAdd:     function (e)
+                     {
+                       e.preventDefault();
+                       e.stopPropagation();
+                       this._pin("POST");
+                     },
+        _pinDrop:    function (e)
+                     {
+                       e.preventDefault();
+                       e.stopPropagation();
+                       this._pin("DELETE")
+                     },
+        _pin:        function (mode)
+                     {
+                       var xhr = new XMLHttpRequest();
+                       xhr.open(mode, "/kubex/pinned/", true);
+                       xhr.setRequestHeader("X-Requested-By", "cubex-pinned");
+                       xhr.withCredentials = true;
+                       xhr.addEventListener(
+                         'readystatechange', function ()
+                         {
+                           if(this.readyState === XMLHttpRequest.DONE)
+                           {
+                             if(this.status !== 200)
+                             {
+                               console.error(this.statusText);
+                             }
+                           }
+                         }
+                       );
+                       xhr.send(this.vendor + "/" + this.app);
+                     }
       }
     );
   </script>
