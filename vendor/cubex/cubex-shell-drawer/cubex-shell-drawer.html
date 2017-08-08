@@ -14,6 +14,7 @@
 <link href="../../cube-behavior/cube-service-behavior.html" rel="import">
 <link href="../../cube-behavior/cube-touch-enabled-behavior.html" rel="import">
 <link href="../cubex-pinned-apps/cubex-pinned.html" rel="import">
+<link href="../cubex-route/cubex-route.html" rel="import">
 <link href="../../cube-dropdown/cube-dropdown.html" rel="import">
 
 <dom-module id="cubex-shell-drawer" attributes="app-nav">
@@ -232,7 +233,8 @@
       }
     </style>
 
-    <cubex-project project="{{project}}" projects="{{_projects}}"></cubex-project>
+    <cubex-route project="{{_projectAlias}}"></cubex-route>
+    <cubex-project project-alias="[[_projectAlias]]" project="{{project}}" projects="{{_projects}}"></cubex-project>
 
     <cubex-registry project-data="{{_projectRegistryData}}"></cubex-registry>
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/whoami/whoami.json"
@@ -254,9 +256,11 @@
         <paper-tab>
           <cube-icon icon="communication:business"></cube-icon>
         </paper-tab>
-        <paper-tab>
-          <cube-icon icon="icons:apps"></cube-icon>
-        </paper-tab>
+        <template is="dom-if" if="[[project]]">
+          <paper-tab>
+            <cube-icon icon="icons:apps"></cube-icon>
+          </paper-tab>
+        </template>
       </paper-tabs>
     </div>
     <div id="drawerPanelContainer">

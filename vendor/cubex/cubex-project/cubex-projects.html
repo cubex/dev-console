@@ -19,13 +19,12 @@ Example:
 @demo demo/index.html
 -->
 
-<dom-module id="cubex-projects" attributes="project projects">
+<dom-module id="cubex-projects" attributes="project projects nav">
   <template>
     <style>
       :host {
         display: block;
         position: relative;
-        margin: 55px 40px;
         padding: 40px 20px;
         background: var(--theme-600-color);
         min-width: 368px;
@@ -213,6 +212,19 @@ Example:
             value:              false,
             reflectToAttribute: true,
             computed:           '_computeTwoColumn(_projects,_invites)'
+          },
+          nav:       {
+            type: Array, notify: true, value: function ()
+            {
+              return [
+                {
+                  Path: '/my-account',
+                  Icon: 'social:person',
+                  ID:   'my-account',
+                  Name: {en: 'My Account'}
+                }
+              ];
+            }
           }
         },
 
