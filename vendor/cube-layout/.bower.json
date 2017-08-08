@@ -1,0 +1,38 @@
+{
+  "name": "cube-layout",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "layout"
+  ],
+  "private": true,
+  "main": "cube-layout.html",
+  "license": "MIT",
+  "homepage": "https://github.com/CubexElements/cube-layout/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/bower_components/",
+    "/node_modules/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#1.9 - 2"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
+  },
+  "_release": "a405407a5c",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "a405407a5c14984efc80a6a36d2263fee8ff529a"
+  },
+  "_source": "https://github.com/CubexElements/cube-layout.git",
+  "_target": "*",
+  "_originalSource": "CubexElements/cube-layout"
+}
