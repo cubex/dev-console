@@ -24,6 +24,7 @@
 <link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="../cubex-drawer/cubex-user-drawer.html">
 <link rel="import" href="../cubex-drawer/cubex-drawer-content.html">
+<link rel="import" href="../cubex-project/cubex-projects.html">
 <link rel="import" href="./cubex-shell-content.html">
 <link rel="import" href="../../cube-preferences/cube-preferences.html">
 
@@ -232,7 +233,13 @@
             <cubex-user-drawer></cubex-user-drawer>
           </cubex-drawer-content>
 
-          <cubex-shell-content app-nav="{{_appNav}}"></cubex-shell-content>
+          <cubex-route project="{{_projectId}}"></cubex-route>
+          <template is="dom-if" if="[[_projectId]]">
+            <cubex-shell-content app-nav="{{_appNav}}"></cubex-shell-content>
+          </template>
+          <template is="dom-if" if="[[!_projectId]]">
+            <cubex-projects></cubex-projects>
+          </template>
         </cubex-drawer>
       </div>
     </cubex-drawer>

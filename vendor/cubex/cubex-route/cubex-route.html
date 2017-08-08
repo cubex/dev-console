@@ -16,7 +16,7 @@ specialType
   <template>
     <app-location route="{{route}}" query-params="{{query}}"></app-location>
 
-    <cube-websocket auto project="[[projectId]]" vendor="kubex" app="registry"
+    <cube-websocket auto project="[[project]]" vendor="kubex" app="registry"
                     on-message="_appsChanged"></cube-websocket>
     <cube-resource id="integrationsResource" auto auth url="[[__integrationsPath]]" data="{{__integrations}}"
                    ttl="3600"></cube-resource>

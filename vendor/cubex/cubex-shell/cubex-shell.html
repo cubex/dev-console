@@ -2,10 +2,13 @@
 <link rel="import" href="cubex-shell-console.html">
 <link rel="import" href="cubex-shell-signup.html">
 <link rel="import" href="../cubex-project/cubex-project.html">
+<link rel="import" href="../cubex-route/cubex-route.html">
 
 <dom-module id="cubex-shell">
   <template>
-    <cubex-project project-id="{{_project}}" projects="{{_projects}}" invites="{{_invites}}"></cubex-project>
+    <cubex-route project="{{_projectAlias}}"></cubex-route>
+    <cubex-project project-alias="[[_projectAlias]]" project="{{_project}}" projects="{{_projects}}"
+                   invites="{{_invites}}"></cubex-project>
     <template is="dom-if" if="[[_showConsole]]">
       <cubex-shell-console></cubex-shell-console>
     </template>
@@ -22,14 +25,14 @@
           _project:     {type: String},
           _projects:    {type: Array},
           _invites:     {type: Array},
-          _showConsole: {type: Boolean, value: false, computed: '_computeShowConsole(_projects,_project,_invites)'},
-          _showSignup:  {type: Boolean, value: false, computed: '_computeShowSignup(_projects,_project,_invites)'}
+          _showConsole: {type: Boolean, value: false, computed: '_computeShowConsole(_project,_projects,_invites)'},
+          _showSignup:  {type: Boolean, value: false, computed: '_computeShowSignup(_project,_projects,_invites)'}
         },
-        _computeShowConsole: function (projects, project, invites)
+        _computeShowConsole: function (project, projects, invites)
                              {
                                return project || ((projects.length || 0) + (invites.length || 0) > 0);
                              },
-        _computeShowSignup:  function (projects, project, invites)
+        _computeShowSignup:  function (project, projects, invites)
                              {
                                return (!project) && ((projects.length || 0) + (invites.length || 0) <= 0);
                              }
