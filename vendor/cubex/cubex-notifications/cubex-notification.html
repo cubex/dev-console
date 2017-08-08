@@ -15,19 +15,20 @@
         display: block;
       }
 
-      :host #state {
-        margin-right: -5px;
+      #state {
+        margin-right: -10px;
+        margin-left: 5px;
       }
 
-      :host #state > div, :host #spinner {
+      #state > div, :host #spinner {
         display: inline-block;
         position: relative;
-        width: 28px;
-        height: 28px;
+        width: 32px;
+        height: 32px;
         text-align: center;
       }
 
-      :host #state > div::before {
+      #state > div::before {
         position: absolute;
         top: calc(5px + var(--paper-spinner-stroke-width));
         right: calc(5px + var(--paper-spinner-stroke-width));
@@ -35,11 +36,11 @@
         left: calc(5px + var(--paper-spinner-stroke-width));
         content: '';
         border-radius: 1000px;
-        border: 2px solid var(--primary-700-text-color, #666666);
+        border: 2px solid var(--accent-400-color, #666666);
       }
 
       :host(:not([read])) #state > div::before {
-        background: var(--primary-700-text-color, #666666);
+        background: var(--accent-400-color, #666666);
       }
 
       :host(:not([read])) {
@@ -61,7 +62,7 @@
                                    definition="{{_definition}}" gaid="{{gaid}}"></cubex-notification-definition>
 
     <a href="[[_notificationPath]]">
-      <cube-li multi-line>
+      <cube-li compact multi-line>
         <cube-icon slot="icon" icon="[[_definition.Icon]]"></cube-icon>
         [[i18nResourceData(_definition.Message,notification.data)]]
         <div slot="secondary">
@@ -78,7 +79,7 @@
           </div>
         </template>
         <template is="dom-if" if="[[!running]]">
-          <cube-action id="state" slot="actions" on-tap="_markRead">
+          <cube-action id="state" slot="actions" on-tap="_markRead" ripple-circle ripple-center>
             <div></div>
           </cube-action>
         </template>

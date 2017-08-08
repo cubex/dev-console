@@ -24,7 +24,6 @@
       }
 
       :host #trigger {
-        line-height: 30px;
         @apply --primary-100-text-secondary;
       }
 
@@ -96,7 +95,7 @@
       }
 
       .drawer-contents {
-        @apply --shadow-elevation-2dp;
+        @apply --shadow-elevation-12dp;
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -112,25 +111,36 @@
         @apply --primary-100;
         text-align: center;
       }
+
+      #notifyDrawer {
+        text-align: left;
+      }
+
+      app-toolbar {
+        padding: 0 7px;
+      }
     </style>
 
     <cube-websocket auto project="[[projectAlias]]" vendor="kubex" app="notify"
                     on-subscribe="_notificationSubscribe" on-message="_notificationMessage"></cube-websocket>
 
-    <cube-action id="trigger" on-tap="_openDrawer" running$="[[_running]]" unread$="[[_unread]]" size="24">
+    <cube-action id="trigger" on-tap="_openDrawer" running$="[[_running]]" unread$="[[_unread]]" size="24"
+                 ripple-circle ripple-center>
       <paper-spinner-lite active="[[_running]]"></paper-spinner-lite>
       <cube-icon icon="social:notifications"></cube-icon>
     </cube-action>
 
-    <app-drawer id="notifyDrawer" align="right" swipe-open>
+    <app-drawer id="notifyDrawer" align="right">
       <div class="drawer-contents">
         <app-toolbar>
           <cube-action icon="icons:arrow-forward" on-tap="_closeDrawer"></cube-action>
           <div id="title" main-title>Notifications</div>
-          <cube-action on-tap="_markRead" icon="icons:done-all" disabled$="[[!_notifications.length]]"></cube-action>
 
-          <cube-action id="settings" on-tap="__openCfg" size="20" icon="icons:settings"></cube-action>
+          <cube-action id="settings" on-tap="__openCfg" size="20" icon="icons:settings"
+                       ripple-circle ripple-center></cube-action>
           <cubex-configure-dialog id="configDlg" gaid="kubex/notify"></cubex-configure-dialog>
+          <cube-action on-tap="_markRead" icon="icons:done-all" disabled$="[[!_notifications.length]]"
+                       ripple-circle ripple-center></cube-action>
         </app-toolbar>
 
         <template is="dom-if" if="[[_notifications.length]]">
@@ -152,7 +162,7 @@
 
         <template is="dom-if" if="[[!_notifications.length]]">
           <cube-list>
-            <cube-li multi-line>You have no notifications</cube-li>
+            <cube-li>You have no notifications</cube-li>
           </cube-list>
         </template>
 

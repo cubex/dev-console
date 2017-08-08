@@ -81,7 +81,6 @@
 
       app-header, #flex-toolbar {
         height: var(--cubex-drawer-offset-top);
-        line-height: var(--cubex-drawer-offset-top);
       }
 
       app-header paper-icon-button {
@@ -130,7 +129,11 @@
         position: relative;
         overflow: hidden;
         display: flex;
-        align-items: flex-end;
+        align-items: center;
+      }
+
+      cubex-pinned-apps {
+        margin-left: 6px;
       }
 
       :host([drawer-opened]) cubex-pinned-apps {
@@ -159,11 +162,8 @@
       #user-panel-action {
         --cube-icon-color: var(--primary-100-text-color);
         @apply --text-secondary;
-      }
-
-      #user-panel-action {
         position: relative;
-        margin: 12px 6px;
+        margin: 6px;
       }
 
       #user-panel-action:before,
@@ -172,7 +172,7 @@
         display: inline-block;
         border: 5px solid transparent;
         position: absolute;
-        top: 12px;
+        top: 18px;
       }
 
       :host([user-drawer-state="0"]) #user-panel-action:before {
@@ -218,10 +218,10 @@
         <div id="search-shortcut">
           <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
         </div>
-        <cubex-toolbar></cubex-toolbar>
-
-        <cube-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action" size="24"
-                     on-tap="_toggleUserDrawer"></cube-action>
+        <cubex-toolbar>
+          <cube-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action" size="24"
+                       on-tap="_toggleUserDrawer" ripple-center ripple-circle></cube-action>
+        </cubex-toolbar>
       </div>
 
       <div id="contentContainer">

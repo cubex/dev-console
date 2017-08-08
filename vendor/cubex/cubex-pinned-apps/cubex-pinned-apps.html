@@ -41,14 +41,14 @@
 
 
     <a href="/">
-      <cube-action icon="icons:home"></cube-action>
+      <cube-action icon="icons:home" ripple-center ripple-circle></cube-action>
     </a>
 
     <cube-websocket auto project="[[projectAlias]]" vendor="kubex" app="pinned"
                     on-subscribe="_pinnedSub" on-message="_pinnedMsg"></cube-websocket>
     <template is="dom-repeat" items="[[pinnedApps]]">
       <a href="/[[item.GlobalAppID]]">
-        <cube-action id="pinned-[[item.ID]]" icon="[[item.Icon]]"></cube-action>
+        <cube-action id="pinned-[[item.ID]]" icon="[[item.Icon]]" ripple-center ripple-circle></cube-action>
       </a>
       <paper-tooltip for="pinned-[[item.ID]]" position="center" animation-delay="100"><strong>[[item.Name]]</strong>
       </paper-tooltip>

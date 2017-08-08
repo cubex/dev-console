@@ -6,12 +6,6 @@
 
 <dom-module id="cubex-group-page" attributes="group-id">
   <template>
-    <style>
-      :host {
-        display: block;
-        margin: 8px;
-      }
-    </style>
     <cube-card-container>
       <cube-pagelet local auto auth url="//[[getServiceHost('apps')]]/kubex/dashpanel?group=[[groupId]]"></cube-pagelet>
       <cube-pagelet local auto auth url="//[[getServiceHost('apps')]]/kubex/cardfeed?group=[[groupId]]"></cube-pagelet>
