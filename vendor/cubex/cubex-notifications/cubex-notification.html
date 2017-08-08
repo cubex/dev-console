@@ -43,12 +43,12 @@
         background: var(--accent-400-color, #666666);
       }
 
-      :host(:not([read])) {
-        @apply --primary-700;
+      :host(:not([read])) cube-li {
+        @apply --accent-50;
       }
 
-      :host([read]) {
-        @apply --primary-800;
+      :host([read]) cube-li {
+        @apply --theme-50;
       }
 
       #spinner paper-spinner-lite {

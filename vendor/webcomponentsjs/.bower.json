@@ -28,12 +28,12 @@
     "template": "webcomponents/template#^v1.0.0",
     "webcomponents-platform": "webcomponents/webcomponents-platform#^v1.0.0"
   },
-  "version": "1.0.6",
-  "_release": "1.0.6",
+  "version": "1.0.7",
+  "_release": "1.0.7",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.6",
-    "commit": "d31bb9765e2fdf1bb37f8fea6d99e9bf10449fe7"
+    "tag": "v1.0.7",
+    "commit": "b260f034d2153014e16bb3503a4ddeba6979a537"
   },
   "_source": "https://github.com/Polymer/webcomponentsjs.git",
   "_target": "^v1.0.2",

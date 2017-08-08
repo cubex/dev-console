@@ -1,7 +1,19 @@
 <link rel="import" href="../../paper-styles/default-theme.html">
 
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Lato:100,400,300,300italic,400italic,500,500italic,700,700italic">
+
 <custom-style>
   <style>
+    html, body {
+      margin: 0;
+      --paper-font-common-base: {
+        font-family: 'Lato', 'Roboto', 'Noto', sans-serif !important;
+        -webkit-font-smoothing: antialiased !important;
+      };
+      @apply --paper-font-common-base;
+    }
+
     html {
       --dark-text: rgba(0, 0, 0, 0.87);
       --dark-text-secondary: rgba(0, 0, 0, 0.54);
