@@ -158,6 +158,10 @@
 
       cubex-shell-drawer-panel cube-list-menu:first-of-type {
         overflow: scroll;
+        flex-shrink: 1;
+      }
+
+      cubex-shell-drawer-panel .stretch {
         flex-grow: 1;
       }
 
@@ -306,6 +310,8 @@
               </cube-li>
             </a>
           </cube-list-menu>
+          <div class="stretch"></div>
+          <cube-list-menu></cube-list-menu>
         </cubex-shell-drawer-panel>
         <template is="dom-if" if="[[project]]">
           <cubex-shell-drawer-panel id="appsPanel">
@@ -329,6 +335,7 @@
                 </cube-list-group>
               </template>
             </cube-list-menu>
+            <div class="stretch"></div>
             <cube-list-menu>
               <a id="storeLink" href="/kubex/store" on-tap="_tapAppLink">
                 <cube-li compact>

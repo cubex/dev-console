@@ -20,9 +20,12 @@ Example:
                 outline: 0;
             }
 
-            #title {
+            #title, h2 {
                 @apply --cube-header;
                 line-height: 24px;
+            }
+
+            #title {
                 padding: 0 16px;
                 @apply --cube-list-group-title-wrapper;
             }
@@ -50,7 +53,7 @@ Example:
     <script>
         Polymer(
             {
-                is: 'cube-list-group',
+                is:         'cube-list-group',
                 properties: {title: String}
             }
         );
