@@ -21,8 +21,10 @@ Example:
       }
 
       h2 {
-        padding: 0 16px;
         @apply --cube-header;
+        padding: 0 16px;
+        margin: 5px 0 0 0;
+        line-height: 22px;
         @apply --cube-list-group-title;
       }
 
@@ -40,11 +42,11 @@ Example:
   </template>
 
   <script>
-    Polymer(
-      {
-        is:         'cube-list-group',
-        properties: {title: String}
-      }
-    );
+      Polymer(
+          {
+              is:         'cube-list-group',
+              properties: {title: String}
+          }
+      );
   </script>
 </dom-module>
