@@ -158,7 +158,7 @@
       <div id="actions">
         <iron-media-query query="(max-width: 700px)" query-matches="{{_small}}"></iron-media-query>
         <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,1)}}" sort="_sort" observe="primary">
-          <cubex-link href="[[item.Path]]" mode="[[item.Mode]]" match="[[item.Match]]">
+          <cubex-link href="dialog" mode="[[item.Mode]]" match="[[item.Match]]">
             <cube-action icon="[[item.Icon]]"></cube-action>
           </cubex-link>
         </template>
@@ -166,7 +166,7 @@
           <cube-action icon="icons:more-vert" slot="trigger" id="more-actions"></cube-action>
           <cube-list-menu>
             <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,0)}}" sort="_sort" observe="primary">
-              <cubex-link href="[[item.Path]]" mode="[[item.Mode]]" match="[[item.Match]]">
+              <cubex-link href="[[item.Path]]" mode="dialog" match="[[item.Match]]">
                 <cube-li>[[item.Title]]</cube-li>
               </cubex-link>
             </template>
@@ -177,7 +177,7 @@
 
     <div id="menu">
       <template is="dom-repeat" items="[[menu]]">
-        <cubex-link href="[[item.Path]]" mode="[[item.Mode]]" match="[[item.Match]]">
+        <cubex-link href="[[item.Path]]" mode="page" match="[[item.Match]]">
           <template is="dom-if" if="[[!item.Category]]">
             [[item.Title]]
           </template>

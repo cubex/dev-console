@@ -327,7 +327,7 @@ Example:
             <template is="dom-if" if="[[pageMenu.length]]">
               <cube-list id="app-page-menu" class="sidebar-group" border double-border bottom-border>
                 <template is="dom-repeat" items="[[pageMenu]]">
-                  <cubex-link href="[[item.Path]]" mode="[[item.Mode]]" title="[[item.Description]]">
+                  <cubex-link href="[[item.Path]]" mode="pagelet" title="[[item.Description]]">
                     <cube-li>[[item.Title]]</cube-li>
                   </cubex-link>
                 </template>

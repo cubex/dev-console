@@ -30,7 +30,8 @@
     </style>
     <cubex-route full-path="{{fullPath}}" gaid="{{_gaid}}" vendor="{{vendorId}}" app="{{appId}}"
                  category="{{categoryId}}"
-                 definition-path="{{_definitionPath}}" content-path="{{_contentPath}}"></cubex-route>
+                 definition-path="{{_definitionPath}}" content-path="{{_contentPath}}"
+                 page-integrations="{{_integrations}}"></cubex-route>
     <cubex-registry project-data="{{_projectData}}"></cubex-registry>
 
     <template restamp is="dom-if" if="[[_isDashboard]]">
@@ -41,7 +42,8 @@
     <template restamp is="dom-if" if="[[_isApp]]">
       <cubex-app-definition gaid="[[_appGaid]]" app-data="{{_appData}}"></cubex-app-definition>
       <cubex-app definition-path="[[_appDefinitionPath]]" content-path="[[_appContentPath]]"
-                 app-data="[[_appData]]"></cubex-app>
+                 app-data="[[_appData]]" header-menu="[[_appHeaderMenu]]" header-actions="[[_appHeaderActions]]"
+                 page-menu="[[_appPageMenu]]" page-actions="[[_appPageActions]]" panels="[[_appPanels]]"></cubex-app>
     </template>
     <template restamp is="dom-if" if="[[_isGroup]]">
       <cubex-group-page group-id="[[_groupGaid]]"></cubex-group-page>
@@ -71,6 +73,12 @@
           _appContentPath:    {type: String, computed: '_computeAppPath(_gaid,_projectData,_contentPath)'},
           _groupGaid:         {type: String, notify: true, computed: '_computeGroupGaid(_projectData,_gaid,_appData)'},
           _groupData:         {type: Boolean, computed: '_computeGroupData(_projectData,_groupGaid)'},
+
+          _appHeaderMenu:    {type: Object, computed: '_computeAppHeaderMenu(_integrations)'},
+          _appHeaderActions: {type: Object, computed: '_computeAppHeaderActions(_integrations)'},
+          _appPageMenu:      {type: Object, computed: '_computeAppPageMenu(_integrations)'},
+          _appPageActions:   {type: Object, computed: '_computeAppPageActions(_integrations)'},
+          _appPanels:        {type: Object, computed: '_computeAppPanels(_integrations)'},
 
           _isDashboard: {type: Boolean, computed: '_computeIsDashboard(vendorId,appId,categoryId)'},
           _isApp:       {type: Boolean, computed: '_computeIsApp(_gaid,_projectData)'},
@@ -137,63 +145,83 @@
                              return projectData && projectData.GroupSummary[groupGaid];
                            },
 
-        _computeNav: function (appData, groupData, projectData)
-                     {
-                       var navigation = [];
-                       if(groupData)
-                       {
-                         // add group
-                         navigation.push(
-                           {
-                             Path: '/' + groupData.vendor_id + '/' + groupData.id,
-                             Icon: groupData.icon,
-                             ID:   groupData.id,
-                             Name: {en: groupData.name}
-                           });
-                         // add apps
-                         for(var idx in groupData.apps)
-                         {
-                           if(groupData.apps.hasOwnProperty(idx))
-                           {
-                             var
-                               appId = groupData.vendor_id + '/' + groupData.apps[idx],
-                               app = projectData.AppSummary[appId];
-                             navigation.push(
-                               {
-                                 Path: '/' + appId,
-                                 Icon: app.icon,
-                                 ID:   appId,
-                                 Name: {en: app.name}
-                               });
-                           }
-                         }
+        _computeNav:              function (appData, groupData, projectData)
+                                  {
+                                    var navigation = [];
+                                    if(groupData)
+                                    {
+                                      // add group
+                                      navigation.push(
+                                        {
+                                          Path: '/' + groupData.vendor_id + '/' + groupData.id,
+                                          Icon: groupData.icon,
+                                          ID:   groupData.id,
+                                          Name: {en: groupData.name}
+                                        });
+                                      // add apps
+                                      for(var idx in groupData.apps)
+                                      {
+                                        if(groupData.apps.hasOwnProperty(idx))
+                                        {
+                                          var
+                                            appId = groupData.vendor_id + '/' + groupData.apps[idx],
+                                            app = projectData.AppSummary[appId];
+                                          navigation.push(
+                                            {
+                                              Path: '/' + appId,
+                                              Icon: app.icon,
+                                              ID:   appId,
+                                              Name: {en: app.name}
+                                            });
+                                        }
+                                      }
 
-                         // update appData
-                         if(!appData)
-                         {
-                           appData = {};
-                           appData.AppID = groupData.id;
-                           appData.VendorID = groupData.vendor_id;
-                           appData.Name = {en: groupData.name};
-                           appData.Icon = groupData.icon;
-                           appData.Category = groupData.category;
-                           appData.TrustedVendor = true;
-                         }
-                         appData.Navigation = navigation;
-                       }
-                       else if(appData)
-                       {
-                         navigation = appData.Navigation;
-                         navigation.unshift({
-                           Path: '/' + appData.VendorID + '/' + appData.AppID,
-                           Icon: appData.Icon,
-                           ID:   appData.AppID,
-                           Name: appData.Name
-                         });
-                       }
+                                      // update appData
+                                      if(!appData)
+                                      {
+                                        appData = {};
+                                        appData.AppID = groupData.id;
+                                        appData.VendorID = groupData.vendor_id;
+                                        appData.Name = {en: groupData.name};
+                                        appData.Icon = groupData.icon;
+                                        appData.Category = groupData.category;
+                                        appData.TrustedVendor = true;
+                                      }
+                                      appData.Navigation = navigation;
+                                    }
+                                    else if(appData)
+                                    {
+                                      navigation = appData.Navigation;
+                                      navigation.unshift({
+                                                           Path: '/' + appData.VendorID + '/' + appData.AppID,
+                                                           Icon: appData.Icon,
+                                                           ID:   appData.AppID,
+                                                           Name: appData.Name
+                                                         });
+                                    }
 
-                       return navigation;
-                     },
+                                    return navigation;
+                                  },
+        _computeAppHeaderMenu:    function (integrations)
+                                  {
+                                    return integrations && integrations.HeaderMenuItems ? integrations.HeaderMenuItems : [];
+                                  },
+        _computeAppHeaderActions: function (integrations)
+                                  {
+                                    return integrations && integrations.HeaderActions ? integrations.HeaderActions : [];
+                                  },
+        _computeAppPageMenu:      function (integrations)
+                                  {
+                                    return integrations && integrations.PageMenuItems ? integrations.PageMenuItems : [];
+                                  },
+        _computeAppPageActions:   function (integrations)
+                                  {
+                                    return integrations && integrations.PageActions ? integrations.PageActions : [];
+                                  },
+        _computeAppPanels:        function (integrations)
+                                  {
+                                    return integrations && integrations.Panels ? integrations.Panels : [];
+                                  },
 
         behaviors: [
           Polymer.CubeIteratorBehavior,

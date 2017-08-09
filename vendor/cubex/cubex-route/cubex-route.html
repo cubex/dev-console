@@ -12,13 +12,13 @@ specialType
 
 -->
 <dom-module id="cubex-route"
-            attributes="full-path project gaid vendor app category special-type page pagelet section query definition-path content-path integration">
+            attributes="full-path project gaid vendor app category special-type page pagelet section query definition-path content-path integration page-integrations">
   <template>
     <app-location route="{{route}}" query-params="{{query}}"></app-location>
 
     <cube-websocket auto project="[[project]]" vendor="kubex" app="registry"
                     on-message="_appsChanged"></cube-websocket>
-    <cube-resource id="integrationsResource" auto auth url="[[__integrationsPath]]" data="{{__integrations}}"
+    <cube-resource id="integrationsResource" auto auth url="[[pageIntegrationsPath]]" data="{{pageIntegrations}}"
                    ttl="3600"></cube-resource>
   </template>
   <script>
@@ -26,24 +26,24 @@ specialType
       {
         is:         'cubex-route',
         properties: {
-          fullPath:    {type: String, notify: true, value: ''},
-          project:     {type: String, notify: true, value: ''},
-          category:    {type: String, notify: true, value: ''},
-          vendor:      {type: String, notify: true, value: ''},
-          app:         {type: String, notify: true, value: ''},
-          gaid:        {type: String, notify: true, value: ''},
-          specialType: {type: String, notify: true, value: ''},
-          page:        {type: String, notify: true, value: ''},
-          pagelet:     {type: String, notify: true, value: ''},
-          section:     {type: String, notify: true, value: ''},
-          query:       {type: Object, notify: true, value: function () {return {};}},
+          fullPath:         {type: String, notify: true, value: ''},
+          project:          {type: String, notify: true, value: ''},
+          category:         {type: String, notify: true, value: ''},
+          vendor:           {type: String, notify: true, value: ''},
+          app:              {type: String, notify: true, value: ''},
+          gaid:             {type: String, notify: true, value: ''},
+          specialType:      {type: String, notify: true, value: ''},
+          page:             {type: String, notify: true, value: ''},
+          pagelet:          {type: String, notify: true, value: ''},
+          section:          {type: String, notify: true, value: ''},
+          query:            {type: Object, notify: true, value: function () {return {};}},
+          pageIntegrations: {type: Object, notify: true, value: function () {return {};}},
 
           definitionPath: {type: String, notify: true, value: ''},
           contentPath:    {type: String, notify: true, value: ''},
 
           integration:              {type: Object, notify: true, value: function () {return {};}},
-          __integrations:           {type: Object, notify: true, value: function () {return {};}},
-          __integrationsPath:       {
+          pageIntegrationsPath:     {
             type:     String,
             notify:   true,
             value:    '',
@@ -54,7 +54,8 @@ specialType
 
         observers: [
           '_computeValues(route.path,route,route.*)',
-          '_updateIntegration(__integrations,gaid,definitionPath,pagelet,section)'
+          '_updateIntegration(pageIntegrations,gaid,definitionPath,pagelet,section)',
+          '_processIntegrations(pageIntegrations)'
         ],
 
         _computeValues: function (path)
@@ -193,9 +194,9 @@ specialType
                               }
 
                               this.setProperties({
-                                contentPath: contentPath,
-                                integration: integration
-                              });
+                                                   contentPath: contentPath,
+                                                   integration: integration
+                                                 });
                             }
 
       }
