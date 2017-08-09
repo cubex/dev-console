@@ -54,8 +54,7 @@ specialType
 
         observers: [
           '_computeValues(route.path,route,route.*)',
-          '_updateIntegration(pageIntegrations,gaid,definitionPath,pagelet,section)',
-          '_processIntegrations(pageIntegrations)'
+          '_updateIntegration(pageIntegrations,gaid,definitionPath,pagelet,section)'
         ],
 
         _computeValues: function (path)
@@ -156,6 +155,8 @@ specialType
                                   {
                                     items = _integrations.PageMenuItems;
                                   }
+
+                                  //TODO: Need the app definition to get the pagelet path from header items def.
 
                                   if(items)
                                   {

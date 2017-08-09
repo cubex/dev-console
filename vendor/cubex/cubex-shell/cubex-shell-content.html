@@ -74,11 +74,11 @@
           _groupGaid:         {type: String, notify: true, computed: '_computeGroupGaid(_projectData,_gaid,_appData)'},
           _groupData:         {type: Boolean, computed: '_computeGroupData(_projectData,_groupGaid)'},
 
-          _appHeaderMenu:    {type: Object, computed: '_computeAppHeaderMenu(_integrations)'},
-          _appHeaderActions: {type: Object, computed: '_computeAppHeaderActions(_integrations)'},
-          _appPageMenu:      {type: Object, computed: '_computeAppPageMenu(_integrations)'},
-          _appPageActions:   {type: Object, computed: '_computeAppPageActions(_integrations)'},
-          _appPanels:        {type: Object, computed: '_computeAppPanels(_integrations)'},
+          _appHeaderMenu:    {type: Array, computed: '_computeAppHeaderMenu(_integrations, _projectData)'},
+          _appHeaderActions: {type: Array, computed: '_computeAppHeaderActions(_integrations)'},
+          _appPageMenu:      {type: Array, computed: '_computeAppPageMenu(_integrations,_projectData)'},
+          _appPageActions:   {type: Array, computed: '_computeAppPageActions(_integrations)'},
+          _appPanels:        {type: Array, computed: '_computeAppPanels(_integrations)'},
 
           _isDashboard: {type: Boolean, computed: '_computeIsDashboard(vendorId,appId,categoryId)'},
           _isApp:       {type: Boolean, computed: '_computeIsApp(_gaid,_projectData)'},
@@ -202,25 +202,211 @@
 
                                     return navigation;
                                   },
-        _computeAppHeaderMenu:    function (integrations)
+        _computeAppHeaderMenu:    function (integrations, projectData)
                                   {
-                                    return integrations && integrations.HeaderMenuItems ? integrations.HeaderMenuItems : [];
+                                    if(!integrations)
+                                    {
+                                      return [];
+                                    }
+                                    var newMenu = [], headerMenu = integrations.HeaderMenuItems;
+
+                                    if(headerMenu && projectData && projectData.AppSummary)
+                                    {
+                                      headerMenu.sort(
+                                        function (a, b)
+                                        {
+                                          if(a.GlobalAppID === b.GlobalAppID)
+                                          {
+                                            var cA = a.Title, cB = b.Title;
+                                            // if not current app, use category
+                                            if(a.Hook.indexOf(a.GlobalAppID) !== 0 && b.Hook.indexOf(b.GlobalAppID) !== 0)
+                                            {
+                                              cA = projectData.AppSummary[a.GlobalAppID].category;
+                                              cB = projectData.AppSummary[b.GlobalAppID].category;
+                                            }
+                                            // comparisons match, no change
+                                            if(cA === cB)
+                                            {
+                                              return 0;
+                                            }
+                                            // A is less than B, move A up
+                                            return (cA < cB) ? -1 : 1;
+                                          }
+                                          return (a.GlobalAppID === appGaid) ? -1 : 1;
+                                        }
+                                      );
+                                      var categoriesAdded = [];
+                                      for(var i in headerMenu)
+                                      {
+                                        if(headerMenu.hasOwnProperty(i))
+                                        {
+                                          if(headerMenu[i].Hook.indexOf(headerMenu[i].GlobalAppID) === 0)
+                                          {
+                                            newMenu.push(
+                                              {
+                                                Title: headerMenu[i].Title,
+                                                Path:  '/' + headerMenu[i].Hook + '/_/' + headerMenu[i].ID,
+                                                Mode:  'page'
+                                              }
+                                            );
+                                          }
+                                          else if(projectData.AppSummary[headerMenu[i].GlobalAppID])
+                                          {
+                                            var category = projectData.AppSummary[headerMenu[i].GlobalAppID].category;
+                                            if(categoriesAdded.indexOf(category) === -1)
+                                            {
+                                              newMenu.push(
+                                                {
+                                                  Title: this.$.cat.getCategory(category, true),
+                                                  Path:  '/' + headerMenu[i].Hook + '/~/'
+                                                         + 'h-' + category + '-'
+                                                         + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
+                                                  Match: '/' + headerMenu[i].Hook + '/~/h-' + category,
+                                                  Mode:  'page'
+                                                }
+                                              );
+                                              categoriesAdded.push(category);
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+
+                                    return newMenu;
+
                                   },
         _computeAppHeaderActions: function (integrations)
                                   {
-                                    return integrations && integrations.HeaderActions ? integrations.HeaderActions : [];
+                                    if(!integrations || !integrations.HeaderActions)
+                                    {
+                                      return [];
+                                    }
+                                    var newActions = [], headerActions = integrations.HeaderActions;
+                                    if(headerActions)
+                                    {
+                                      for(var j in headerActions)
+                                      {
+                                        if(headerActions.hasOwnProperty(j))
+                                        {
+                                          var action = headerActions[j];
+                                          newActions.push(
+                                            {
+                                              Title:   action.Title,
+                                              Path:    action.Mode === 'dialog'
+                                                         ? '/' + action.GlobalAppID + '/' + action.Path
+                                                         : '/' + action.Hook + '/_/' + action.ID,
+                                              Icon:    action.Icon,
+                                              Mode:    action.Mode,
+                                              Primary: false
+                                            }
+                                          );
+                                        }
+                                      }
+                                    }
+                                    return newActions;
                                   },
-        _computeAppPageMenu:      function (integrations)
+        _computeAppPageMenu:      function (integrations, projectData)
                                   {
-                                    return integrations && integrations.PageMenuItems ? integrations.PageMenuItems : [];
+                                    if(!integrations)
+                                    {
+                                      return [];
+                                    }
+
+                                    var pageMenu = [];
+
+                                    //Specific Page Menu Items should be added first
+                                    if(integrations.PageMenuItems)
+                                    {
+                                      var pmItems = integrations.PageMenuItems;
+                                      for(var j in pmItems)
+                                      {
+                                        if(pmItems.hasOwnProperty(j))
+                                        {
+                                          pageMenus.push(
+                                            {
+                                              Title:       pmItems[j].Title,
+                                              Description: pmItems[j].Description,
+
+                                              //TODO: Calculate Path
+                                              Path: '/~/' + this._hash32(pmItems[j].GlobalAppID + '/' + pmItems[j].ID),
+                                              Mode: 'page'
+                                            }
+                                          );
+                                        }
+                                      }
+                                    }
+
+                                    //TODO: Handle Category from header link
+                                    if('isCategoryHeaderClicked' && projectData && integrations.HeaderMenuItems)
+                                    {
+                                      var headerMenu = integrations.HeaderMenuItems, categoryPush = 0;
+                                      var category = 'business';
+
+                                      for(var i in headerMenu)
+                                      {
+                                        if(headerMenu.hasOwnProperty(i))
+                                        {
+                                          if(projectData.AppSummary[headerMenu[i].GlobalAppID].category === category
+                                            && headerMenu[i].GlobalAppID !== appGaid)
+                                          {
+                                            categoryPush++;
+                                            pageMenus.push(
+                                              {
+                                                Title:       headerMenu[i].Title,
+                                                Description: headerMenu[i].Description,
+                                                //TODO: Build Path Correctly
+                                                Path:        '/~/_' + category + '/'
+                                                             + this._hash32(headerMenu[i].GlobalAppID + '/' + headerMenu[i].ID),
+                                                Mode:        'page'
+                                              }
+                                            );
+                                          }
+                                        }
+                                      }
+
+                                      //If there is only one page menu, and its a category app, then hide the page menu
+                                      if(categoryPush === 1 && pageMenus.length === 1)
+                                      {
+                                        pageMenu = [];
+                                      }
+                                    }
+
+                                    return pageMenu;
+
                                   },
         _computeAppPageActions:   function (integrations)
                                   {
-                                    return integrations && integrations.PageActions ? integrations.PageActions : [];
+                                    if(!integrations || !integrations.PageActions)
+                                    {
+                                      return [];
+                                    }
+                                    var pageActions = [], paItems = integrations.PageActions;
+                                    for(var pa in paItems)
+                                    {
+                                      if(paItems.hasOwnProperty(pa))
+                                      {
+                                        paItems[pa].Path = '/' + paItems[pa].GlobalAppID + '/' + paItems[pa].Path;
+                                        pageActions.push(paItems[pa]);
+                                      }
+                                    }
+                                    return pageActions;
                                   },
         _computeAppPanels:        function (integrations)
                                   {
-                                    return integrations && integrations.Panels ? integrations.Panels : [];
+                                    if(!integrations || !integrations.Panels)
+                                    {
+                                      return [];
+                                    }
+                                    var panels = [], panItems = integrations.Panels;
+                                    for(var pan in panItems)
+                                    {
+                                      if(panItems.hasOwnProperty(pan))
+                                      {
+                                        panItems[pan].Path = '/' + panItems[pan].GlobalAppID + '/' + panItems[pan].Path;
+                                        panels.push(panItems[pan]);
+                                      }
+                                    }
+                                    return panels;
                                   },
 
         behaviors: [
@@ -229,6 +415,7 @@
           Polymer.CubeHashBehavior
         ]
       }
-    );
+    )
+    ;
   </script>
 </dom-module>
