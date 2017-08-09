@@ -3,6 +3,7 @@
 <link rel="import" href="../../cube-list/cube-li.html">
 <link rel="import" href="../../cube-pagelet/cube-pagelet-content.html">
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
+<link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../page-title/page-title.html">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
@@ -61,7 +62,11 @@
       {
         is:         'cubex-shell-content',
         properties: {
-          appNav:     {type: Array, notify: true, computed: '_computeNav(_appData,_groupData,_projectData)'},
+          appNav:     {
+            type:     Array,
+            notify:   true,
+            computed: '_computeNav(_isApp,_appData,_isGroup,_groupData,_isCategory,categoryId,_projectData)'
+          },
           categoryId: {type: String, notify: true},
           vendorId:   {type: String, notify: true},
 
@@ -145,11 +150,13 @@
                              return projectData && projectData.GroupSummary[groupGaid];
                            },
 
-        _computeNav:              function (appData, groupData, projectData)
+        _computeNav:              function (isApp, appData, isGroup, groupData, isCategory, categoryId, projectData)
                                   {
-                                    var navigation = [];
-                                    if(groupData)
+                                    var navigation = [], title = '', idx;
+                                    if((isApp || isGroup) && groupData)
                                     {
+                                      title = groupData.name;
+
                                       // add group
                                       navigation.push(
                                         {
@@ -159,7 +166,7 @@
                                           Name: {en: groupData.name}
                                         });
                                       // add apps
-                                      for(var idx in groupData.apps)
+                                      for(idx in groupData.apps)
                                       {
                                         if(groupData.apps.hasOwnProperty(idx))
                                         {
@@ -175,32 +182,54 @@
                                             });
                                         }
                                       }
-
-                                      // update appData
-                                      if(!appData)
-                                      {
-                                        appData = {};
-                                        appData.AppID = groupData.id;
-                                        appData.VendorID = groupData.vendor_id;
-                                        appData.Name = {en: groupData.name};
-                                        appData.Icon = groupData.icon;
-                                        appData.Category = groupData.category;
-                                        appData.TrustedVendor = true;
-                                      }
-                                      appData.Navigation = navigation;
                                     }
-                                    else if(appData)
+                                    else if(isApp && appData)
                                     {
-                                      navigation = appData.Navigation;
+                                      title = this.i18nResource(appData.Name);
+                                      navigation = appData.Navigation.slice();
                                       navigation.unshift({
-                                                           Path: '/' + appData.VendorID + '/' + appData.AppID,
-                                                           Icon: appData.Icon,
-                                                           ID:   appData.AppID,
-                                                           Name: appData.Name
-                                                         });
+                                        Path: '/' + appData.VendorID + '/' + appData.AppID,
+                                        Icon: appData.Icon,
+                                        ID:   appData.AppID,
+                                        Name: appData.Name
+                                      });
+                                    }
+                                    else if(isCategory && projectData)
+                                    {
+                                      title = categoryId;
+                                      for(idx in projectData.GroupSummary)
+                                      {
+                                        if(projectData.GroupSummary.hasOwnProperty(idx)
+                                          && projectData.GroupSummary[idx].category === categoryId)
+                                        {
+                                          navigation.unshift({
+                                            Path: '/' + projectData.GroupSummary[idx].vendor_id + '/' + projectData.GroupSummary[idx].id,
+                                            Icon: projectData.GroupSummary[idx].icon,
+                                            ID:   projectData.GroupSummary[idx].id,
+                                            Name: {en: projectData.GroupSummary[idx].name}
+                                          });
+                                        }
+                                      }
+                                      for(idx in projectData.AppSummary)
+                                      {
+                                        if(projectData.AppSummary.hasOwnProperty(idx)
+                                          && projectData.AppSummary[idx].category === categoryId
+                                          && (!projectData.AppSummary[idx].group)
+                                          && projectData.AppSummary[idx].app_type === 'kubex.application.project'
+                                          && projectData.AppSummary[idx].ui_mode === 'full'
+                                        )
+                                        {
+                                          navigation.unshift({
+                                            Path: '/' + projectData.AppSummary[idx].vendor_id + '/' + projectData.AppSummary[idx].id,
+                                            Icon: projectData.AppSummary[idx].icon,
+                                            ID:   projectData.AppSummary[idx].id,
+                                            Name: {en: projectData.AppSummary[idx].name}
+                                          });
+                                        }
+                                      }
                                     }
 
-                                    return navigation;
+                                    return {title: title, items: [navigation]};
                                   },
         _computeAppHeaderMenu:    function (integrations, projectData)
                                   {
@@ -412,7 +441,8 @@
         behaviors: [
           Polymer.CubeIteratorBehavior,
           Polymer.CubeServiceBehavior,
-          Polymer.CubeHashBehavior
+          Polymer.CubeHashBehavior,
+          Polymer.CubeI18nBehavior
         ]
       }
     )

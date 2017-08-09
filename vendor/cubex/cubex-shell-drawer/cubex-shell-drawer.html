@@ -263,7 +263,7 @@
     </div>
     <div class="rightAlign">
       <paper-tabs id="menuTab" selected="{{__selectedPanel}}" on-tap="_openParent">
-        <paper-tab>[[appName]]</paper-tab>
+        <paper-tab>[[appNav.title]]</paper-tab>
         <paper-tab>
           <cube-icon icon="communication:business"></cube-icon>
         </paper-tab>
@@ -277,16 +277,18 @@
     <div id="drawerPanelContainer">
       <iron-selector selected="{{__selectedPanel}}" id="drawerPanels">
         <cubex-shell-drawer-panel>
-          <cube-list-menu>
-            <template is="dom-repeat" items="[[appNav]]">
-              <a href="[[item.Path]]">
-                <cube-li compact>
-                  <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
-                  [[i18nResource(item.Name)]]
-                </cube-li>
-              </a>
-            </template>
-          </cube-list-menu>
+          <template is="dom-repeat" items="[[appNav.items]]" as="navMenu">
+            <cube-list-menu>
+              <template is="dom-repeat" items="[[navMenu]]">
+                <a href="[[item.Path]]">
+                  <cube-li compact>
+                    <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
+                    [[i18nResource(item.Name)]]
+                  </cube-li>
+                </a>
+              </template>
+            </cube-list-menu>
+          </template>
         </cubex-shell-drawer-panel>
         <cubex-shell-drawer-panel id="projectsPanel">
           <cube-list-menu show-filter filter-label="{{i18n('filter_projects')}}">
@@ -318,7 +320,7 @@
             <cube-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
               <template is="dom-repeat" items="[[__toArray(_groupedApps)]]" as="category">
                 <cube-list-group>
-                  <a href="/_[[category.name]]" slot="title" class="category-link">
+                  <a href="/_[[category.name]]" slot="title" class="category-link" on-tap="_tapAppLink">
                     <cubex-category key="[[category.name]]"></cubex-category>
                   </a>
                   <template is="dom-repeat" items="[[__toArray(category.apps)]]" as="app">
@@ -449,7 +451,7 @@
               }
             }
           },
-          appNav:               {type: Array},
+          appNav:               {type: Object},
           _projectRegistryData: {type: Object},
           _groupedApps:         {type: Object, computed: '_computeGroupedApps(_projectRegistryData)'},
           appName:              {type: String, computed: '_computeAppName(appNav)'},
@@ -579,35 +581,41 @@
 
         _computeGroupedApps: function (projectRegistry)
                              {
-                               var idx, categories = {}, groups = [];
+                               var appIdx, categories = {}, groups = [];
 
                                if(projectRegistry)
                                {
-                                 for(idx in projectRegistry.AppSummary)
+                                 for(appIdx in projectRegistry.AppSummary)
                                  {
-                                   if(projectRegistry.AppSummary.hasOwnProperty(idx))
+                                   if(projectRegistry.AppSummary.hasOwnProperty(appIdx))
                                    {
-                                     var app = projectRegistry.AppSummary[idx];
+                                     var app = projectRegistry.AppSummary[appIdx];
                                      if(this._filterApps(app))
                                      {
-                                       if(!categories[app.category])
-                                       {
-                                         categories[app.category] = {name: app.category, apps: []};
-                                       }
-                                       var category = categories[app.category];
-
+                                       var toPush = app;
                                        if(app.group)
                                        {
                                          var groupId = app.vendor_id + '/' + app.group;
+                                         var grp = projectRegistry.GroupSummary[groupId];
                                          if(groups.indexOf(groupId) === -1)
                                          {
-                                           category.apps.push(projectRegistry.GroupSummary[groupId]);
+                                           toPush = grp;
                                            groups.push(groupId);
                                          }
+                                         else
+                                         {
+                                           toPush = null;
+                                         }
                                        }
-                                       else
+
+                                       if(toPush)
                                        {
-                                         category.apps.push(app);
+                                         if(!categories[toPush.category])
+                                         {
+                                           categories[toPush.category] = {name: toPush.category, apps: []};
+                                         }
+                                         var category = categories[toPush.category];
+                                         category.apps.push(toPush);
                                        }
                                      }
                                    }
