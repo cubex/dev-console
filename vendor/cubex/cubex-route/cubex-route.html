@@ -139,14 +139,10 @@ specialType
 
                               if(appGaid)
                               {
-                                contentPath = definitionPath;
-
                                 var integration = null;
-
                                 if(_integrations)
                                 {
                                   var items = null;
-
                                   if(pagelet && pagelet[0] === '_')
                                   {
                                     items = _integrations.HeaderMenuItems;
@@ -155,8 +151,6 @@ specialType
                                   {
                                     items = _integrations.PageMenuItems;
                                   }
-
-                                  //TODO: Need the app definition to get the pagelet path from header items def.
 
                                   if(items)
                                   {
@@ -185,7 +179,27 @@ specialType
                                           {
                                             integration = items[i];
                                           }
-                                          contentPath = '/' + items[i].GlobalAppID + '/' + items[i].Path;
+                                          contentPath = '/' + items[i].GlobalAppID
+                                            + '/' + items[i].Path.replace(/^\//, '');
+                                          break;
+                                        }
+                                      }
+                                    }
+                                  }
+
+                                  if((!contentPath) && pagelet && pagelet[0] !== '_')
+                                  {
+                                    items = _integrations.HeaderMenuItems;
+
+                                    for(var idx in items)
+                                    {
+                                      if(items.hasOwnProperty(idx))
+                                      {
+                                        if(items[idx].ID === pagelet)
+                                        {
+                                          integration = items[idx];
+                                          contentPath = '/' + items[idx].GlobalAppID
+                                            + '/' + items[idx].Path.replace(/^\//, '');
                                           break;
                                         }
                                       }
@@ -195,9 +209,9 @@ specialType
                               }
 
                               this.setProperties({
-                                                   contentPath: contentPath,
-                                                   integration: integration
-                                                 });
+                                contentPath: contentPath || definitionPath,
+                                integration: integration
+                              });
                             }
 
       }
