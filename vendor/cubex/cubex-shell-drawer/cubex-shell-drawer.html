@@ -451,7 +451,7 @@
               }
             }
           },
-          appNav:               {type: Object},
+          appNav:               {type: Object, observer: '_tapAppLink'},
           _projectRegistryData: {type: Object},
           _groupedApps:         {type: Object, computed: '_computeGroupedApps(_projectRegistryData)'},
           appName:              {type: String, computed: '_computeAppName(appNav)'},
@@ -555,7 +555,7 @@
                                 // select the first panel and close the drawer (if transient)
                                 this.$.drawerPanels.select(0);
                                 this.parentNode.close();
-                                if(e)
+                                if(e && e.stopPropagation)
                                 {
                                   e.stopPropagation();
                                 }

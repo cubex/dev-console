@@ -18,7 +18,6 @@
 <link rel="import" href="../cubex-app/cubex-app.html">
 <link rel="import" href="../cubex-app/cubex-app-title.html">
 <link rel="import" href="../cubex-app/cubex-app-header.html">
-<link rel="import" href="../cubex-app/cubex-app-menu.html">
 <link rel="import" href="../cubex-app/cubex-app-spinner.html">
 
 <dom-module id="cubex-shell-content" attributes="app-nav">
@@ -156,9 +155,9 @@
                                     if((isApp || isGroup) && groupData)
                                     {
                                       title = groupData.name;
-
+                                      var groupNav = [];
                                       // add group
-                                      navigation.push(
+                                      groupNav.push(
                                         {
                                           Path: '/' + groupData.vendor_id + '/' + groupData.id,
                                           Icon: groupData.icon,
@@ -173,7 +172,7 @@
                                           var
                                             appId = groupData.vendor_id + '/' + groupData.apps[idx],
                                             app = projectData.AppSummary[appId];
-                                          navigation.push(
+                                          groupNav.push(
                                             {
                                               Path: '/' + appId,
                                               Icon: app.icon,
@@ -182,17 +181,30 @@
                                             });
                                         }
                                       }
+                                      navigation = [groupNav];
                                     }
                                     else if(isApp && appData)
                                     {
                                       title = this.i18nResource(appData.Name);
-                                      navigation = appData.Navigation.slice();
-                                      navigation.unshift({
+                                      var appNav = appData.Navigation.slice();
+                                      appNav.unshift({
                                         Path: '/' + appData.VendorID + '/' + appData.AppID,
                                         Icon: appData.Icon,
                                         ID:   appData.AppID,
                                         Name: appData.Name
                                       });
+                                      navigation = [appNav];
+                                      if(appData.AdvancedConfigPath || appData.Config.length > 0)
+                                      {
+                                        navigation.push([
+                                          {
+                                            Path: '/' + appData.VendorID + '/' + appData.AppID + '/_settings',
+                                            Icon: 'icons:settings',
+                                            ID:   'settings',
+                                            Name: {en: 'Settings'}
+                                          }
+                                        ]);
+                                      }
                                     }
                                     else if(isCategory && projectData)
                                     {
@@ -229,7 +241,7 @@
                                       }
                                     }
 
-                                    return {title: title, items: [navigation]};
+                                    return {title: title, items: navigation};
                                   },
         _computeAppHeaderMenu:    function (integrations, projectData)
                                   {
