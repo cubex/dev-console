@@ -209,12 +209,13 @@
                                     else if(isCategory && projectData)
                                     {
                                       title = categoryId;
+                                      var catNav = [];
                                       for(idx in projectData.GroupSummary)
                                       {
                                         if(projectData.GroupSummary.hasOwnProperty(idx)
                                           && projectData.GroupSummary[idx].category === categoryId)
                                         {
-                                          navigation.unshift({
+                                          catNav.unshift({
                                             Path: '/' + projectData.GroupSummary[idx].vendor_id + '/' + projectData.GroupSummary[idx].id,
                                             Icon: projectData.GroupSummary[idx].icon,
                                             ID:   projectData.GroupSummary[idx].id,
@@ -231,7 +232,7 @@
                                           && projectData.AppSummary[idx].ui_mode === 'full'
                                         )
                                         {
-                                          navigation.unshift({
+                                          catNav.unshift({
                                             Path: '/' + projectData.AppSummary[idx].vendor_id + '/' + projectData.AppSummary[idx].id,
                                             Icon: projectData.AppSummary[idx].icon,
                                             ID:   projectData.AppSummary[idx].id,
@@ -239,6 +240,7 @@
                                           });
                                         }
                                       }
+                                      navigation = [catNav];
                                     }
 
                                     return {title: title, items: navigation};
