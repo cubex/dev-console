@@ -183,29 +183,6 @@
                                       }
                                       navigation = [groupNav];
                                     }
-                                    else if(isApp && appData)
-                                    {
-                                      title = this.i18nResource(appData.Name);
-                                      var appNav = appData.Navigation.slice();
-                                      appNav.unshift({
-                                        Path: '/' + appData.VendorID + '/' + appData.AppID,
-                                        Icon: appData.Icon,
-                                        ID:   appData.AppID,
-                                        Name: appData.Name
-                                      });
-                                      navigation = [appNav];
-                                      if(appData.AdvancedConfigPath || appData.Config.length > 0)
-                                      {
-                                        navigation.push([
-                                          {
-                                            Path: '/' + appData.VendorID + '/' + appData.AppID + '/_settings',
-                                            Icon: 'icons:settings',
-                                            ID:   'settings',
-                                            Name: {en: 'Settings'}
-                                          }
-                                        ]);
-                                      }
-                                    }
                                     else if(isCategory && projectData)
                                     {
                                       title = categoryId;
@@ -241,6 +218,29 @@
                                         }
                                       }
                                       navigation = [catNav];
+                                    }
+                                    else if(appData)
+                                    {
+                                      title = this.i18nResource(appData.Name);
+                                      var appNav = appData.Navigation.slice();
+                                      appNav.unshift({
+                                        Path: '/' + appData.VendorID + '/' + appData.AppID,
+                                        Icon: appData.Icon,
+                                        ID:   appData.AppID,
+                                        Name: appData.Name
+                                      });
+                                      navigation = [appNav];
+                                      if(appData.AdvancedConfigPath || appData.Config.length > 0)
+                                      {
+                                        navigation.push([
+                                          {
+                                            Path: '/' + appData.VendorID + '/' + appData.AppID + '/_settings',
+                                            Icon: 'icons:settings',
+                                            ID:   'settings',
+                                            Name: {en: 'Settings'}
+                                          }
+                                        ]);
+                                      }
                                     }
 
                                     return {title: title, items: navigation};
