@@ -19,7 +19,8 @@
 
 <link rel="import" href="../cubex-pinned-apps/cubex-pinned-apps.html">
 <link rel="import" href="../cubex-search/cubex-search.html">
-<link rel="import" href="../cubex-toolbar/cubex-toolbar.html">
+<link rel="import" href="../cubex-quick-actions/cubex-quick-actions.html">
+<link rel="import" href="../cubex-notifications/cubex-notifications.html">
 <link rel="import" href="../cubex-drawer/cubex-drawer.html">
 <link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="../cubex-drawer/cubex-user-drawer.html">
@@ -126,7 +127,7 @@
         @apply --layout-flex;
       }
 
-      cubex-toolbar {
+      #toolbar {
         position: relative;
         overflow: hidden;
         display: flex;
@@ -148,11 +149,7 @@
       :host([focus-search]) #search-shortcut,
       :host([focus-search]) #user-panel-action,
       :host([focus-search]) cubex-pinned-apps,
-      :host([focus-search]) cubex-toolbar,
-      :host([drawer-opened]) #search-shortcut,
-      :host([drawer-opened]) #user-panel-action,
-      :host([drawer-opened]) cubex-search,
-      :host([drawer-opened]) cubex-toolbar {
+      :host([focus-search]) #toolbar {
         display: none;
       }
 
@@ -216,13 +213,15 @@
         <div class="spread"></div>
         <cubex-search id="search" focus-search="[[focusSearch]]"></cubex-search>
         <div class="spread"></div>
-        <div id="search-shortcut">
-          <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
-        </div>
-        <cubex-toolbar>
+        <div id="toolbar">
+          <div id="search-shortcut">
+            <paper-icon-button icon="search" on-tap="_searchFocus"></paper-icon-button>
+          </div>
+          <cubex-notifications></cubex-notifications>
+          <cubex-quick-actions></cubex-quick-actions>
           <cube-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action" size="24"
                        on-tap="_toggleUserDrawer" ripple-center ripple-circle></cube-action>
-        </cubex-toolbar>
+        </div>
       </div>
 
       <div id="contentContainer">

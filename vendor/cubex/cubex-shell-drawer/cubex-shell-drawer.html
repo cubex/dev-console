@@ -343,7 +343,7 @@
               <a id="storeLink" href="/kubex/store" on-tap="_tapAppLink">
                 <cube-li compact>
                   <cube-icon slot="icon" icon="device:widgets"></cube-icon>
-                  App Store
+                  {{i18n('app_store')}}
                 </cube-li>
               </a>
             </cube-list-menu>
@@ -367,13 +367,15 @@
                 <cube-li compact on-tap="_tapProjectInfo">{{i18n('project_info')}}</cube-li>
               </a>
               <cube-li compact on-tap="openKeyboardHelp">{{i18n('keyboard_shortcuts')}}</cube-li>
-            </cube-list-group>
-            <cube-list-group>
               <cube-li compact on-tap="_openSupport">{{i18n('support')}}</cube-li>
-              <cube-li compact on-tap="_openTerms">{{i18n('terms_service')}}</cube-li>
-              <cube-li compact on-tap="_openCustomerAgreement">{{i18n('cust_agree')}}</cube-li>
             </cube-list-group>
             <cube-list-group>
+              <a href="/kubex/store" on-tap="_tapAppLink">
+                <cube-li compact on-tap="_openAppStore">
+                  <cube-icon slot="icon" icon="device:widgets" size="18"></cube-icon>
+                  {{i18n('app_store')}}
+                </cube-li>
+              </a>
               <cube-li compact on-tap="_logout">
                 <cube-icon slot="icon" icon="icons:exit-to-app" size="18"></cube-icon>
                 {{i18n('logout')}}
@@ -413,14 +415,13 @@
             type:  Object,
             value: {
               'en': {
+                'app_store':          'App Store',
                 'filter_apps':        'Filter Applications',
                 'filter_projects':    'Filter Projects',
                 'all_projects':       'All Projects',
                 'project_info':       'Project Information',
                 'keyboard_shortcuts': 'Keyboard Shortcuts',
                 'support':            'Support',
-                'terms_service':      'Terms of Service',
-                'cust_agree':         'Customer Agreement',
                 'logout':             'Logout',
                 'general':            'General',
                 'navigation':         'Navigation',
@@ -432,14 +433,13 @@
                 'open_notifications': 'Open Notifications'
               },
               'fr': {
+                'app_store':          'Magasin d\'applications',
                 'filter_apps':        'Filtre Applications',
                 'filter_projects':    'Filtre les projects',
                 'all_projects':       'Toutes les projects',
                 'keyboard_shortcuts': 'Raccourcis clavier',
                 'project_info':       'Informations du projet',
                 'support':            'Soutien',
-                'terms_service':      'Conditions d\'utilisation',
-                'cust_agree':         'Accord client',
                 'logout':             'Se déconnecter',
                 'general':            'Général',
                 'navigation':         'La navigation',
@@ -640,39 +640,34 @@
                              return idx === panel;
                            },
 
-        openKeyboardHelp:       function ()
-                                {
-                                  this._closeAll();
-                                  this.$.keyhelp.open();
-                                },
-        _openTerms:             function ()
-                                {
-                                  this._closeAll();
-                                  window.open('http://kubex.io/terms');
-                                },
-        _logout:                function ()
-                                {
-                                  this._closeAll();
-                                  window.location = '/logout';
-                                },
-        _openCustomerAgreement: function ()
-                                {
-                                  this._closeAll();
-                                  window.open('http://kubex.io/customer-agreement');
-                                },
-        _tapProjectInfo:        function ()
-                                {
-                                  this._closeAll();
-                                },
-        _openSupport:           function ()
-                                {
-                                  this._closeAll();
-                                  window.open('http://support.kubex.io');
-                                },
-        _closeAll:              function ()
-                                {
-                                  this.$.additional.close();
-                                },
+        openKeyboardHelp: function ()
+                          {
+                            this._closeAdditional();
+                            this.$.keyhelp.open();
+                          },
+        _logout:          function ()
+                          {
+                            this._closeAdditional();
+                            window.location = '/logout';
+                          },
+        _tapProjectInfo:  function ()
+                          {
+                            this._closeAdditional();
+                          },
+        _openSupport:     function ()
+                          {
+                            this._closeAdditional();
+                            window.open('http://support.kubex.io');
+                          },
+        _openAppStore:    function (e)
+                          {
+                            this._closeAdditional();
+                            this._tapAppLink(e);
+                          },
+        _closeAdditional: function ()
+                          {
+                            this.$.additional.close();
+                          },
 
         behaviors: [
           Polymer.IronA11yKeysBehavior,
