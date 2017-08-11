@@ -216,14 +216,19 @@ Example:
           nav:       {
             type: Array, notify: true, value: function ()
             {
-              return [
-                {
-                  Path: '/my-account',
-                  Icon: 'social:person',
-                  ID:   'my-account',
-                  Name: {en: 'My Account'}
-                }
-              ];
+              return {
+                title: 'Account',
+                items: [
+                  [
+                    {
+                      Path: '//' + this.getServiceHost('accounts') + '/user-management',
+                      Icon: 'social:person',
+                      ID:   'my-account',
+                      Name: {en: 'My Account'}
+                    }
+                  ]
+                ]
+              };
             }
           }
         },
