@@ -28,31 +28,39 @@
         height: 100%;
       }
     </style>
-    <cubex-route full-path="{{fullPath}}" gaid="{{_gaid}}" vendor="{{vendorId}}" app="{{appId}}"
-                 category="{{categoryId}}"
+    <cubex-route full-path="{{fullPath}}" category="{{categoryId}}"
+                 project="{{_projectId}}" gaid="{{_gaid}}" vendor="{{vendorId}}" app="{{appId}}"
                  definition-path="{{_definitionPath}}" content-path="{{_contentPath}}"
                  page-integrations="{{_integrations}}"></cubex-route>
     <cubex-registry project-data="{{_projectData}}"></cubex-registry>
 
-    <template restamp is="dom-if" if="[[_isDashboard]]">
-      <cubex-app-definition gaid="kubex/dashboard" app-data="{{_appData}}"></cubex-app-definition>
-      <cubex-app definition-path="/kubex/dashboard" content-path="/kubex/dashboard"
-                 app-data="[[_appData]]"></cubex-app>
-    </template>
     <template restamp is="dom-if" if="[[_isApp]]">
       <cubex-app-definition gaid="[[_appGaid]]" app-data="{{_appData}}"></cubex-app-definition>
       <cubex-app definition-path="[[_appDefinitionPath]]" content-path="[[_appContentPath]]"
                  app-data="[[_appData]]" header-menu="[[_appHeaderMenu]]" header-actions="[[_appHeaderActions]]"
                  page-menu="[[_appPageMenu]]" page-actions="[[_appPageActions]]" panels="[[_appPanels]]"></cubex-app>
     </template>
-    <template restamp is="dom-if" if="[[_isGroup]]">
-      <cubex-group-page group-id="[[_groupGaid]]"></cubex-group-page>
+    <template restamp is="dom-if" if="[[!_isApp]]">
+      <template restamp is="dom-if" if="[[!_projectId]]">
+        <cubex-projects nav="{{_consoleNav}}"></cubex-projects>
+      </template>
     </template>
-    <template restamp is="dom-if" if="[[_isVendor]]">
-      <cubex-vendor-page vendor="[[vendorId]]"></cubex-vendor-page>
-    </template>
-    <template restamp is="dom-if" if="[[_isCategory]]">
-      <cubex-category-page category="[[categoryId]]"></cubex-category-page>
+
+    <template is="dom-if" if="[[_projectId]]">
+      <template restamp is="dom-if" if="[[_isDashboard]]">
+        <cubex-app-definition gaid="kubex/dashboard" app-data="{{_appData}}"></cubex-app-definition>
+        <cubex-app definition-path="/kubex/dashboard" content-path="/kubex/dashboard"
+                   app-data="[[_appData]]"></cubex-app>
+      </template>
+      <template restamp is="dom-if" if="[[_isGroup]]">
+        <cubex-group-page group-id="[[_groupGaid]]"></cubex-group-page>
+      </template>
+      <template restamp is="dom-if" if="[[_isVendor]]">
+        <cubex-vendor-page vendor="[[vendorId]]"></cubex-vendor-page>
+      </template>
+      <template restamp is="dom-if" if="[[_isCategory]]">
+        <cubex-category-page category="[[categoryId]]"></cubex-category-page>
+      </template>
     </template>
   </template>
 
@@ -64,7 +72,7 @@
           appNav:     {
             type:     Array,
             notify:   true,
-            computed: '_computeNav(_isApp,_appData,_isGroup,_groupData,_isCategory,categoryId,_projectData)'
+            computed: '_computeNav(_isApp,_appData,_isGroup,_groupData,_isCategory,categoryId,_projectData,_consoleNav)'
           },
           categoryId: {type: String, notify: true},
           vendorId:   {type: String, notify: true},
@@ -149,8 +157,14 @@
                              return projectData && projectData.GroupSummary[groupGaid];
                            },
 
-        _computeNav:              function (isApp, appData, isGroup, groupData, isCategory, categoryId, projectData)
+        _computeNav:              function (
+          isApp, appData, isGroup, groupData, isCategory, categoryId, projectData, _consoleNav
+        )
                                   {
+                                    if(_consoleNav)
+                                    {
+                                      return _consoleNav;
+                                    }
                                     var navigation = [], title = '', idx;
                                     if((isApp || isGroup) && groupData)
                                     {

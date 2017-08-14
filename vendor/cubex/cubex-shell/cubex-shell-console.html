@@ -232,13 +232,7 @@
             <cubex-user-drawer></cubex-user-drawer>
           </cubex-drawer-content>
 
-          <cubex-route project="{{_projectId}}"></cubex-route>
-          <template is="dom-if" if="[[_projectId]]">
-            <cubex-shell-content app-nav="{{_appNav}}"></cubex-shell-content>
-          </template>
-          <template is="dom-if" if="[[!_projectId]]">
-            <cubex-projects nav="{{_appNav}}"></cubex-projects>
-          </template>
+          <cubex-shell-content app-nav="{{_appNav}}"></cubex-shell-content>
         </cubex-drawer>
       </div>
     </cubex-drawer>
