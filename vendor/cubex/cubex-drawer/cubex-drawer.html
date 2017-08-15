@@ -21,7 +21,7 @@ Example:
 <dom-module id="cubex-drawer" attributes="hover-popout position min-state max-state preferred-state state">
   <template>
     <style>
-      :host {
+       :host {
         display: flex;
         position: relative;
         overflow: hidden;
@@ -29,7 +29,7 @@ Example:
         height: 100vh;
       }
 
-      :host > #sizzler {
+       :host > #sizzler {
         display: none;
         width: var(--cubex-drawer-peek-width, 50px);
         max-width: var(--cubex-drawer-width, 256px);
@@ -61,54 +61,53 @@ Example:
         left: 0;
         right: auto;
         overflow: visible;
-
         background: var(--theme-100-color, white);
       }
 
-      :host([position=right]) #drawerContentContainer > #drawerContent {
+       :host([position=right]) #drawerContentContainer > #drawerContent {
         left: auto;
         right: 0;
       }
 
-      :host([position=right]) #drawerContentContainer {
+       :host([position=right]) #drawerContentContainer {
         order: 9;
       }
 
-      :host([state="0"]) #drawerContentContainer {
+       :host([state="0"]) #drawerContentContainer {
         width: 0;
       }
 
-      :host([is-open]) #drawerContent {
+       :host([is-open]) #drawerContent {
         width: var(--cubex-drawer-width, 256px);
       }
 
-      :host([max-state="1"]:not([state="2"]):not([is-open])) #drawerContentContainer {
+       :host([max-state="1"]:not([state="2"]):not([is-open])) #drawerContentContainer {
         max-width: var(--cubex-drawer-peek-width, 50px);
       }
 
-      :host([state="1"]) #drawerContentContainer {
+       :host([state="1"]) #drawerContentContainer {
         width: var(--cubex-drawer-peek-width, 50px);
       }
 
-      :host #drawerContentContainer > #drawerContent {
+       :host #drawerContentContainer > #drawerContent {
         box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.05);
       }
 
-      :host([transitioning]) #drawerContentContainer > #drawerContent,
-      :host([is-open]:not([state="2"])) #drawerContentContainer > #drawerContent {
+       :host([transitioning]) #drawerContentContainer > #drawerContent,
+       :host([is-open]:not([state="2"])) #drawerContentContainer > #drawerContent {
         box-shadow: 2px 0 2px 0 rgba(0, 0, 0, 0.1);
       }
 
-      :host([position="right"]) #drawerContentContainer > #drawerContent {
+       :host([position="right"]) #drawerContentContainer > #drawerContent {
         box-shadow: -1px 0 2px 0 rgba(0, 0, 0, 0.05);
       }
 
-      :host([position="right"][transitioning]) #drawerContentContainer > #drawerContent,
-      :host([position="right"][is-open]:not([state="2"])) #drawerContentContainer > #drawerContent {
+       :host([position="right"][transitioning]) #drawerContentContainer > #drawerContent,
+       :host([position="right"][is-open]:not([state="2"])) #drawerContentContainer > #drawerContent {
         box-shadow: -2px 0 2px 0 rgba(0, 0, 0, 0.1);
       }
 
-      :host([state="2"]) #drawerContentContainer {
+       :host([state="2"]) #drawerContentContainer {
         width: var(--cubex-drawer-width, 256px);
       }
 
@@ -145,125 +144,161 @@ Example:
 
   <script>
     Polymer(
+    {
+      is: 'cubex-drawer',
+      properties:
       {
-        is:         'cubex-drawer',
-        properties: {
-          position:       {type: String, value: 'left', reflectToAttribute: true},
-          transitioning:  {type: Boolean, value: false, reflectToAttribute: true},
-          isOpen:         {type: Boolean, value: false, reflectToAttribute: true},
-          minState:       {type: Number, value: 0, readOnly: true, reflectToAttribute: true},
-          maxState:       {type: Number, value: 2, readOnly: true, reflectToAttribute: true},
-          state:          {type: Number, value: 0, readOnly: true, notify: true, reflectToAttribute: true},
-          preferredState: {type: Number, value: 0, notify: true}
+        position: { type: String, value: 'left', reflectToAttribute: true },
+        transitioning: { type: Boolean, value: false, reflectToAttribute: true },
+        isOpen:
+        {
+          type: Boolean,
+          notify: true,
+          value: false,
+          reflectToAttribute: true
         },
-        observers:  [
-          'refreshState(minState,maxState,preferredState)',
-          '_stateChanged(state,isOpen)'
-        ],
-
-        attached: function ()
-                  {
-                    document.addEventListener('tap', this._autoClose.bind(this));
-                  },
-
-        _prevent:   function (e)
-                    {
-                      e.stopPropagation();
-                    },
-        _autoClose: function ()
-                    {
-                      this.close();
-                    },
-
-        _getWidth:     function ()
-                       {
-                         return parseInt(getComputedStyle(this.$.drawerContentContainer)['width']);
-                       },
-        _getPeekWidth: function ()
-                       {
-                         return parseInt(getComputedStyle(this.$.sizzler)['width']);
-                       },
-        _getMaxWidth:  function ()
-                       {
-                         return parseInt(getComputedStyle(this.$.sizzler)['maxWidth']);
-                       },
-
-        open:   function ()
-                {
-                  this.toggle(true);
-                },
-        close:  function ()
-                {
-                  this.toggle(false);
-                },
-        toggle: function (state)
-                {
-                  if(state === undefined)
-                  {
-                    state = !this.isOpen;
-                  }
-                  this.isOpen = state;
-                  this.updateStyles();
-                },
-
-        setMinState:  function (value)
-                      {
-                        if(this.minState !== value)
-                        {
-                          this._setMinState(value);
-                        }
-                      },
-        setMaxState:  function (value)
-                      {
-                        if(this.maxState !== value)
-                        {
-                          this._setMaxState(value);
-                        }
-                      },
-        setState:     function (value)
-                      {
-                        if(this.preferredState !== value)
-                        {
-                          this.preferredState = value;
-                        }
-                      },
-        refreshState: function ()
-                      {
-                        //noinspection JSCheckFunctionSignatures
-                        this._setState(Math.min(this.maxState, Math.max(this.minState, this.preferredState)));
-                      },
-
-        _stateChanged:  function ()
-                        {
-                          this.debounce('_dispatchEvent', this._dispatchEvent);
-                        },
-        _dispatchEvent: function ()
-                        {
-                          var offset = 0;
-                          if(this.state === 1)
-                          {
-                            offset = this._getPeekWidth();
-                          }
-                          else if(this.state === 2)
-                          {
-                            offset = this._getMaxWidth();
-                          }
-                          this.fire('cubex-drawer-state-changed', {
-                            drawer:   this,
-                            state:    this.state,
-                            isOpen:   this.isOpen,
-                            position: this.position,
-                            offset:   offset
-                          });
-                        },
-
-        _DRAWER_STATE: {
-          CLOSED: 0,
-          PEEK:   1,
-          LOCKED: 2
+        minState:
+        {
+          type: Number,
+          value: 0,
+          readOnly: true,
+          reflectToAttribute: true
         },
+        maxState:
+        {
+          type: Number,
+          value: 2,
+          readOnly: true,
+          reflectToAttribute: true
+        },
+        state:
+        {
+          type: Number,
+          value: 0,
+          readOnly: true,
+          notify: true,
+          reflectToAttribute: true
+        },
+        preferredState:
+        {
+          type: Number,
+          value: 0,
+          notify: true,
+          reflectToAttribute: true
+        }
+      },
+      observers: [
+        'refreshState(minState,maxState,preferredState)',
+        '_stateChanged(state,isOpen)'
+      ],
 
-        behaviors: [Polymer.CubeTouchEnabledBehavior]
-      });
+      attached: function()
+      {
+        document.addEventListener('tap', this._autoClose.bind(this));
+      },
+
+      _prevent: function(e)
+      {
+        e.stopPropagation();
+      },
+      _autoClose: function()
+      {
+        this.close();
+      },
+
+      _getWidth: function()
+      {
+        return parseInt(getComputedStyle(this.$.drawerContentContainer)[
+          'width']);
+      },
+      _getPeekWidth: function()
+      {
+        return parseInt(getComputedStyle(this.$.sizzler)['width']);
+      },
+      _getMaxWidth: function()
+      {
+        return parseInt(getComputedStyle(this.$.sizzler)['maxWidth']);
+      },
+
+      open: function()
+      {
+        this.toggle(true);
+      },
+      close: function()
+      {
+        this.toggle(false);
+      },
+      toggle: function(state)
+      {
+        if(state === undefined)
+        {
+          state = !this.isOpen;
+        }
+        this.isOpen = state;
+        this.updateStyles();
+      },
+
+      setMinState: function(value)
+      {
+        if(this.minState !== value)
+        {
+          this._setMinState(value);
+        }
+      },
+      setMaxState: function(value)
+      {
+        if(this.maxState !== value)
+        {
+          this._setMaxState(value);
+        }
+      },
+      setState: function(value)
+      {
+        if(this.preferredState !== value)
+        {
+          this.preferredState = value;
+        }
+      },
+      refreshState: function()
+      {
+        //noinspection JSCheckFunctionSignatures
+        this._setState(Math.min(this.maxState, Math.max(this.minState,
+          this.preferredState)));
+      },
+
+      _stateChanged: function()
+      {
+        this.debounce('_dispatchEvent', this._dispatchEvent);
+      },
+      _dispatchEvent: function()
+      {
+        var offset = 0;
+        if(this.state === 1)
+        {
+          offset = this._getPeekWidth();
+        }
+        else if(this.state === 2)
+        {
+          offset = this._getMaxWidth();
+        }
+        this.fire('cubex-drawer-state-changed',
+        {
+          drawer: this,
+          state: this.state,
+          isOpen: this.isOpen,
+          position: this.position,
+          offset: offset
+        });
+      },
+
+      _DRAWER_STATE:
+      {
+        CLOSED: 0,
+        PEEK: 1,
+        LOCKED: 2
+      },
+
+      behaviors: [Polymer.CubeTouchEnabledBehavior]
+    });
   </script>
 </dom-module>

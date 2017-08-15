@@ -48,19 +48,20 @@
 <dom-module id="cubex-shell-console" attributes="drawer-opened focus-search">
   <template>
     <style>
-      :host {
+       :host {
         --app-drawer-width: 280px;
         --cubex-drawer-offset-top: 56px;
         --cubex-drawer-peek-width: 56px;
         --cubex-drawer-width: 280px;
       }
 
-      :host, #flex-toolbar {
+       :host,
+      #flex-toolbar {
         min-width: 280px;
       }
 
       @media screen and (max-width: 320px) {
-        :host {
+         :host {
           --app-drawer-width: 256px;
         }
       }
@@ -74,14 +75,16 @@
         --app-drawer-content-container: {
           @apply --primary-700;
           @apply --shadow-elevation-8dp;
-        };
+        }
+        ;
       }
 
       app-header {
         @apply --primary-800;
       }
 
-      app-header, #flex-toolbar {
+      app-header,
+      #flex-toolbar {
         height: var(--cubex-drawer-offset-top);
       }
 
@@ -104,7 +107,7 @@
         @apply --theme-100;
       }
 
-      :host([drawer-opened]) #flex-toolbar {
+       :host([drawer-opened]) #flex-toolbar {
         @apply --primary-800;
       }
 
@@ -138,7 +141,7 @@
         margin-left: 6px;
       }
 
-      :host([drawer-opened]) cubex-pinned-apps {
+       :host([drawer-opened]) cubex-pinned-apps {
         padding-left: 12px;
       }
 
@@ -146,10 +149,10 @@
         display: none;
       }
 
-      :host([focus-search]) #search-shortcut,
-      :host([focus-search]) #user-panel-action,
-      :host([focus-search]) cubex-pinned-apps,
-      :host([focus-search]) #toolbar {
+       :host([focus-search]) #search-shortcut,
+       :host([focus-search]) #user-panel-action,
+       :host([focus-search]) cubex-pinned-apps,
+       :host([focus-search]) #toolbar {
         display: none;
       }
 
@@ -173,12 +176,12 @@
         top: 18px;
       }
 
-      :host([user-drawer-state="0"]) #user-panel-action:before {
+      #user-panel-action[is-open]:before {
         border-right-color: var(--primary-100-text-color);
         left: -2px;
       }
 
-      :host(:not([user-drawer-state="0"])) #user-panel-action:after {
+      #user-panel-action:not([is-open]):after {
         border-left-color: var(--primary-100-text-color);
         right: -2px;
       }
@@ -195,8 +198,13 @@
         max-height: calc(100vh - var(--cubex-drawer-offset-top));
       }
 
-      #shellDrawerContent, #flex-toolbar {
+      #shellDrawerContent,
+      #flex-toolbar {
         @apply --shadow-elevation-2dp;
+      }
+
+      cubex-drawer[peek-open] {
+        --cubex-drawer-width: var(--cubex-drawer-peek-width);
       }
     </style>
 
@@ -205,10 +213,13 @@
     <iron-media-query query="(max-width: 375px)" query-matches="{{_narrow}}"></iron-media-query>
 
     <cube-preferences name="shellDrawerState" value="{{shellDrawerState}}" live-update></cube-preferences>
-    <cubex-drawer id="shellDrawer" min-state="1" preferred-state="[[shellDrawerState]]" state="{{shellDrawerState}}">
+    <cubex-drawer id="shellDrawer" min-state="1" preferred-state="{{shellDrawerState}}">
       <cubex-shell-drawer id="shellDrawerContent" slot="drawer-content" app-nav="[[_appNav]]"></cubex-shell-drawer>
 
       <div id="flex-toolbar">
+        <template is="dom-if" if="[[_isTouchDevice]]">
+          <cube-action id="burger" slot="actions" icon="icons:menu" on-tap="_toggleDrawer"></cube-action>
+        </template>
         <cubex-pinned-apps hidden="[[_narrow]]" on-tap="_closeDrawer"></cubex-pinned-apps>
         <div class="spread"></div>
         <cubex-search id="search" focus-search="[[focusSearch]]"></cubex-search>
@@ -219,17 +230,18 @@
           </div>
           <cubex-notifications></cubex-notifications>
           <cubex-quick-actions></cubex-quick-actions>
-          <cube-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action" size="24"
-                       on-tap="_toggleUserDrawer" ripple-center ripple-circle></cube-action>
+          <cube-action icon="icons:chrome-reader-mode" hidden="[[_narrow]]" id="user-panel-action"
+              is-open$="[[_userPanelOpen]]" size="24" on-tap="_toggleUserDrawer" ripple-center
+              ripple-circle></cube-action>
         </div>
       </div>
 
       <div id="contentContainer">
         <cube-preferences name="userDrawerState" value="{{userDrawerState}}" live-update></cube-preferences>
-        <cubex-drawer id="userDrawer" swipe-open="[[_touchEnabled()]]" position="right"
-                      state="{{userDrawerState}}" preferred-state="[[userDrawerState]]">
+        <cubex-drawer id="userDrawer" position="right" preferred-state="{{userDrawerState}}"
+            state="{{_actualUserDrawerState}}" peek-open$="[[!_selectedUserApp]]" is-open="{{_userDrawerOpen}}">
           <cubex-drawer-content slot="drawer-content">
-            <cubex-user-drawer></cubex-user-drawer>
+            <cubex-user-drawer selected-app="{{_selectedUserApp}}"></cubex-user-drawer>
           </cubex-drawer-content>
 
           <cubex-shell-content app-nav="{{_appNav}}"></cubex-shell-content>
@@ -240,161 +252,191 @@
   </template>
   <script>
     Polymer(
+    {
+      is: 'cubex-shell-console',
+      properties:
       {
-        is:          'cubex-shell-console',
-        properties:  {
-          drawerOpened:     {type: Boolean, reflectToAttribute: true},
-          focusSearch:      {type: Boolean, reflectToAttribute: true},
-          userDrawerState:  {type: Number, value: 0, reflectToAttribute: true, observer: '_userDrawerStateChanged'},
-          shellDrawerState: {type: Number, value: 1, reflectToAttribute: true, observer: '_shellDrawerStateChanged'}
+        drawerOpened: { type: Boolean, reflectToAttribute: true },
+        focusSearch: { type: Boolean, reflectToAttribute: true },
+        _selectedUserApp: { type: String },
+        _actualUserDrawerState: { type: Number },
+        _userDrawerOpen: { type: Boolean },
+        _userPanelOpen: { type: Boolean, computed: '_computeUserPanelOpen(_actualUserDrawerState,_userDrawerOpen)' },
+        userDrawerState:
+        {
+          type: Number,
+          value: 0,
+          reflectToAttribute: true,
+          observer: '_userDrawerStateChanged'
         },
-        observers:   [
-          '_viewChanged(_peek,_narrow,_isTouchDevice)'
-        ],
-        keyBindings: {
-          '.': '_toggleDrawer',
-          '/': '_launchSearch',
-          '?': '_keyboardHelp'
-        },
+        shellDrawerState:
+        {
+          type: Number,
+          value: 1,
+          reflectToAttribute: true,
+          observer: '_shellDrawerStateChanged'
+        }
+      },
+      observers: [
+        '_viewChanged(_peek,_narrow,_isTouchDevice)'
+      ],
+      keyBindings:
+      {
+        '.': '_toggleDrawer',
+        '/': '_launchSearch',
+        '?': '_keyboardHelp'
+      },
 
-        attached:             function ()
-                              {
-                                this.keyEventTarget = document.body;
-                                window.addEventListener('WebComponentsReady', this._resetLayout.bind(this));
-                                document.addEventListener(
-                                  'cubex-drawer-state-changed', this._debounceResetLayout.bind(this)
-                                );
-                                document.addEventListener(
-                                  'cube-pagelet-content-ready', this._resetLayout.bind(this)
-                                );
-                              },
-        _debounceResetLayout: function ()
-                              {
-                                this.debounce('_resetLayout', this._resetLayout.bind(this), 210);
-                              },
-        _resetLayout:         function ()
-                              {
-                              },
-        _keyboardHelp:        function (e)
-                              {
-                                if(this._isValidKeyPress(e))
-                                {
-                                  this.$.shellDrawer.close();
-                                  this.$.shellDrawerContent.openKeyboardHelp();
-                                  e.preventDefault();
-                                }
-                              },
-        _viewChanged:         function (peek, narrow, touch)
-                              {
-                                var maxTouch = touch ? 1 : 2;
-                                // shell drawer max is always either peek or open
-                                this.$.shellDrawer.setMaxState(maxTouch);
+      attached: function()
+      {
+        this.keyEventTarget = document.body;
+        window.addEventListener('WebComponentsReady', this._resetLayout.bind(
+          this));
+        document.addEventListener(
+          'cubex-drawer-state-changed', this._debounceResetLayout.bind(
+            this)
+        );
+        document.addEventListener(
+          'cube-pagelet-content-ready', this._resetLayout.bind(this)
+        );
+      },
+      _debounceResetLayout: function()
+      {
+        this.debounce('_resetLayout', this._resetLayout.bind(this), 210);
+      },
+      _resetLayout: function() {},
+      _keyboardHelp: function(e)
+      {
+        if(this._isValidKeyPress(e))
+        {
+          this.$.shellDrawer.close();
+          this.$.shellDrawerContent.openKeyboardHelp();
+          e.preventDefault();
+        }
+      },
+      _viewChanged: function(peek, narrow, touch)
+      {
+        var maxTouch = touch ? 0 : 2;
+        // shell drawer max is always either peek or open
+        this.$.shellDrawer.setMaxState(maxTouch);
 
-                                if(narrow)
-                                {
-                                  this.$.userDrawer.setMaxState(0);
-                                }
-                                else
-                                {
-                                  this.$.userDrawer.setMinState(0);
-                                  this.$.userDrawer.setMaxState(maxTouch);
+        if(narrow)
+        {
+          this.$.userDrawer.setMaxState(0);
+        }
+        else
+        {
+          this.$.userDrawer.setMinState(0);
+          this.$.userDrawer.setMaxState(maxTouch);
 
-                                  if(peek && this.$.userDrawer.state === 0)
-                                  {
-                                    this.$.userDrawer.setState(1);
-                                  }
-                                }
-                              },
-        _blurSearch:          function ()
-                              {
-                                this.focusSearch = false;
-                                this.unlisten(this.$.search, 'blur', '_blurSearch');
-                              },
-        _searchFocus:         function ()
-                              {
-                                this.focusSearch = true;
-                                this.$.search.focus();
-                                this.listen(this.$.search, 'blur', '_blurSearch');
-                              },
-        _launchSearch:        function (e)
-                              {
-                                if(this._isValidKeyPress(e))
-                                {
-                                  this.$.shellDrawer.close();
-                                  e.preventDefault();
-                                  if(this.$.search.getComputedStyleValue('display') === 'block')
-                                  {
-                                    this.$.search.focus();
-                                  }
-                                  else
-                                  {
-                                    this._searchFocus();
-                                  }
-                                }
-                              },
-        _toggleDrawer:        function (e)
-                              {
-                                if(this._isValidKeyPress(e))
-                                {
-                                  if(this.$.shellDrawer.state === 2)
-                                  {
-                                    this.$.shellDrawer.setState(1);
-                                  }
-                                  else
-                                  {
-                                    this.$.shellDrawer.setState(2);
-                                  }
-                                  e.preventDefault();
-                                }
-                              },
-        _closeDrawer:         function ()
-                              {
-                                this.$.shellDrawer.close();
-                              },
+          if(peek && this.$.userDrawer.state === 0)
+          {
+            this.$.userDrawer.setState(1);
+          }
+        }
+      },
+      _blurSearch: function()
+      {
+        this.focusSearch = false;
+        this.unlisten(this.$.search, 'blur', '_blurSearch');
+      },
+      _searchFocus: function()
+      {
+        this.focusSearch = true;
+        this.$.search.focus();
+        this.listen(this.$.search, 'blur', '_blurSearch');
+      },
+      _launchSearch: function(e)
+      {
+        if(this._isValidKeyPress(e))
+        {
+          this.$.shellDrawer.close();
+          e.preventDefault();
+          if(this.$.search.getComputedStyleValue('display') === 'block')
+          {
+            this.$.search.focus();
+          }
+          else
+          {
+            this._searchFocus();
+          }
+        }
+      },
+      _toggleDrawer: function(e)
+      {
+        if(this._isValidKeyPress(e))
+        {
+          if(this.$.shellDrawer.state === 2 || this.$.shellDrawer.isOpen)
+          {
+            this.$.shellDrawer.setState(1);
+          }
+          else
+          {
+            this.$.shellDrawer.setState(2);
+            this.$.shellDrawer.toggle();
+          }
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      },
+      _closeDrawer: function()
+      {
+        this.$.shellDrawer.close();
+      },
 
-        _isValidKeyPress:  function (e)
-                           {
-                             if(e && e.detail && e.detail.keyboardEvent)
-                             {
-                               return e.detail.keyboardEvent.target.tagName === 'BODY';
-                             }
-                             return true;
-                           },
-        _toggleUserDrawer: function ()
-                           {
-                             if(this.$.userDrawer.maxState === 0 || this.$.userDrawer.state === 0)
-                             {
-                               this.$.userDrawer.setMaxState(2);
-                               this.$.userDrawer.setState(1);
-                             }
-                             else
-                             {
-                               this.$.userDrawer.setMaxState(0);
-                             }
-                           },
+      _isValidKeyPress: function(e)
+      {
+        if(e && e.detail && e.detail.keyboardEvent)
+        {
+          return e.detail.keyboardEvent.target.tagName === 'BODY';
+        }
+        return true;
+      },
+      _toggleUserDrawer: function(e)
+      {
+        if((this.$.userDrawer.state > 0) || (this.$.userDrawer.isOpen))
+        {
+          this.$.userDrawer.setMaxState(0);
+          this.$.userDrawer.close();
+        }
+        else
+        {
+          if(!this._isTouchDevice)
+          {
+            this.$.userDrawer.setMaxState(2);
+          }
+          this.$.userDrawer.open();
+        }
+        e.preventDefault();
+        e.stopPropagation();
+      },
 
-        _userDrawerStateChanged: function (newState)
-                                 {
-                                   if(newState > this.$.userDrawer.state)
-                                   {
-                                     this.$.userDrawer.setMaxState(2);
-                                   }
-                                 },
+      _computeUserPanelOpen: function(userDrawerState, userDrawerOpen)
+      {
+        return userDrawerState !== 0 || userDrawerOpen;
+      },
 
-        _shellDrawerStateChanged: function (newState)
-                                  {
-                                    if(newState < 1)
-                                    {
-                                      this.$.shellDrawer.setState(1);
-                                    }
-                                  },
+      _userDrawerStateChanged: function(newState)
+      {
+        if(newState > this.$.userDrawer.state && !this._isTouchDevice)
+        {
+          this.$.userDrawer.setMaxState(2);
+        }
+      },
 
-        behaviors: [
-          Polymer.IronA11yKeysBehavior,
-          Polymer.CubeTouchEnabledBehavior,
-          Polymer.CubeIteratorBehavior
-        ]
-      }
-    );
+      _shellDrawerStateChanged: function(newState)
+      {
+        if(newState < 1)
+        {
+          this.$.shellDrawer.setState(1);
+        }
+      },
+
+      behaviors: [
+        Polymer.IronA11yKeysBehavior,
+        Polymer.CubeTouchEnabledBehavior,
+        Polymer.CubeIteratorBehavior
+      ]
+    });
   </script>
 </dom-module>
