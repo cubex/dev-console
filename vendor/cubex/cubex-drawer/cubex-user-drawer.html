@@ -1,25 +1,27 @@
-<link href="../../polymer/polymer.html" rel="import">
-<link href="../../iron-flex-layout/iron-flex-layout.html" rel="import">
-<link href="cubex-user-drawer-items.html" rel="import">
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../cube-nudge/cube-nudge.html">
 <link rel="import" href="../../cube-action/cube-action.html">
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-element-path-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../cube-pagelet/cube-pagelet.html">
-
+<link rel="import" href="../../cube-preferences/cube-preferences.html">
+<link rel="import" href="../cubex-registry/cubex-registry.html">
+<link rel="import" href="../cubex-app/cubex-app-icon.html">
+<link rel="import" href="cubex-user-drawer-items.html">
 
 <dom-module id="cubex-user-drawer">
   <template>
     <style>
-      :host {
+       :host {
         --cube-list-style: {
           background: var(--theme-50-color, white);
           border-bottom: 1px solid var(--cube-list-border-color, rgba(0, 0, 0, 0.06));
         }
       }
 
-      :host > #contentContainer {
+       :host > #contentContainer {
         display: block;
         overflow: hidden;
         padding-right: var(--cubex-drawer-peek-width);
@@ -27,7 +29,7 @@
         background: var(--theme-100-color);
       }
 
-      :host ::slotted(cubex-user-drawer) {
+       :host ::slotted(cubex-user-drawer) {
         position: relative;
         min-width: 100%;
         min-height: 100%;
@@ -48,10 +50,6 @@
         color: white
       }
 
-      cubex-user-drawer-items cube-action {
-        padding: 12px
-      }
-
       #lockUserDrawer[hidden] {
         display: none;
       }
@@ -63,9 +61,14 @@
         color: #FFFFFF;
       }
 
-      :host-context([is-open],[state="2"]) cubex-user-drawer-items cube-action[active] {
+      cubex-user-drawer-items cube-action {
+        padding: 11px
+      }
+
+       :host-context([is-open]) cubex-user-drawer-items cube-action[active],
+       :host-context([state="2"]) cubex-user-drawer-items cube-action[active] {
         background: var(--theme-100-color);
-        color: var(--accent-700-color);
+        --cubex-app-icon-color: var(--accent-700-color);
       }
 
       #pageletContainer {
@@ -78,7 +81,8 @@
         padding-bottom: 47px;
       }
 
-      #lockUserDrawer, #actionsContainer {
+      #lockUserDrawer,
+      #actionsContainer {
         position: absolute;
         bottom: 0;
         left: 0;
@@ -109,12 +113,14 @@
     </style>
 
     <cubex-registry user-data="{{_userRegistryData}}"></cubex-registry>
-
     <cube-preferences name="selectedUserApp" value="{{_selectedApp}}"></cube-preferences>
+
     <cubex-user-drawer-items>
       <template is="dom-repeat" items="[[__appGroups(_userRegistryData)]]" as="app">
-        <cube-action active$="[[_isSelectedApp(app,_selectedApp)]]" icon="[[app.icon]]"
-                     on-tap="_tapDrawerAction" gaid$="[[app.vendor_id]]/[[app.id]]"></cube-action>
+        <cube-action active$="[[_isSelectedApp(app,_selectedApp)]]" on-tap="_tapDrawerAction"
+            gaid$="[[app.vendor_id]]/[[app.id]]">
+          <cubex-app-icon icon="[[app.icon]]"></cubex-app-icon>
+        </cube-action>
       </template>
       <a href="/kubex/store/user-apps">
         <cube-action icon="icons:add" id="addUserAppAction"></cube-action>
@@ -123,124 +129,126 @@
 
     <div id="contentContainer">
       <div id="pageletContainer">
-        <cube-pagelet auto auth id="pagelet" url="[[_getPageletUrl(_selectedApp,_drawerOpen)]]">Loading...
-        </cube-pagelet>
+        <cube-pagelet auto auth id="pagelet" url="[[_getPageletUrl(_selectedApp,_drawerOpen)]]">Loading...</cube-pagelet>
       </div>
       <div id="actionsContainer">
         <cube-action icon="icons:chrome-reader-mode" id="lockUserDrawer" on-tap="_lockUserDrawer"></cube-action>
       </div>
     </div>
   </template>
-  <script>Polymer(
+  <script>
+    Polymer(
     {
-      is:               'cubex-user-drawer',
-      properties:       {
-        _drawer:           {type: Object},
-        _drawerOpen:       {type: Object},
-        _userRegistryData: {type: Object},
-        _selectedApp:      {type: String, observer: '_appChange'}
+      is: 'cubex-user-drawer',
+      properties:
+      {
+        _drawer: { type: Object },
+        _drawerOpen: { type: Object },
+        _userRegistryData: { type: Object },
+        _selectedApp: { type: String, observer: '_appChange' }
       },
-      _isSelectedApp:   function (app, selectedApp)
-                        {
-                          return app.vendor_id + '/' + app.id === selectedApp;
-                        },
-      _getPageletUrl:   function (page)
-                        {
-                          if(page)
-                          {
-                            return '//' + this.getServiceHost('apps') + '/' + page;
-                          }
-                          return undefined;
-                        },
-      attached:         function ()
-                        {
-                          document.addEventListener(
-                            'cubex-drawer-state-changed', function (e)
-                            {
-                              if(this._getDrawer() === e.detail.drawer)
-                              {
-                                if(e.detail.state !== 2 && e.detail.isOpen === false)
-                                {
-                                  this._selectedApp = null;
-                                }
-                              }
-                            }.bind(this)
-                          );
-                        },
-      _getDrawer:       function ()
-                        {
-                          if(!this._drawer)
-                          {
-                            var drawer = null;
-                            this.iterate(
-                              this.getPath(this), function (parent)
-                              {
-                                if(parent.tagName === 'CUBEX-DRAWER')
-                                {
-                                  drawer = parent;
-                                  return true;
-                                }
-                              }
-                            );
-                            this._drawer = drawer;
-                          }
-                          return this._drawer;
-                        },
-      _tapDrawerAction: function (e)
-                        {
-                          if(e.currentTarget.getAttribute('gaid') === this._selectedApp)
-                          {
-                            this._selectedApp = null;
-
-                            if(this._getDrawer().state === 2)
-                            {
-                              this._getDrawer().setMaxState(1);
-                            }
-                          }
-                          else
-                          {
-                            this._selectedApp = e.currentTarget.getAttribute('gaid');
-                          }
-                        },
-      _appChange:       function ()
-                        {
-                          if(this._selectedApp)
-                          {
-                            this._getDrawer().open();
-                          }
-                          else
-                          {
-                            this._getDrawer().close();
-                          }
-                        },
-      _lockUserDrawer:  function ()
-                        {
-                          this._getDrawer().open();
-                          this._getDrawer().setMaxState(this._getDrawer().state === 2 ? 1 : 2);
-                          this._getDrawer().setState(this._getDrawer().maxState);
-                        },
-
-      __appGroups: function (userRegistry)
-                   {
-                     var apps = [];
-                     if(userRegistry)
-                     {
-                       for(var idx in userRegistry.AppSummary)
-                       {
-                         if(userRegistry.AppSummary.hasOwnProperty(idx))
-                         {
-                           apps.push(userRegistry.AppSummary[idx]);
-                         }
-                       }
-                     }
-                     return apps;
-                   },
-
+      _isSelectedApp: function(app, selectedApp)
+      {
+        return app.vendor_id + '/' + app.id === selectedApp;
+      },
+      _getPageletUrl: function(page)
+      {
+        if(page)
+        {
+          return '//' + this.getServiceHost('apps') + '/' +
+            page;
+        }
+        return undefined;
+      },
+      attached: function()
+      {
+        document.addEventListener(
+          'cubex-drawer-state-changed',
+          function(e)
+          {
+            if(this._getDrawer() === e.detail.drawer)
+            {
+              if(e.detail.state !== 2 && e.detail.isOpen === false)
+              {
+                this._selectedApp = null;
+              }
+            }
+          }.bind(this)
+        );
+      },
+      _getDrawer: function()
+      {
+        if(!this._drawer)
+        {
+          var drawer = null;
+          this.iterate(
+            this.getPath(this),
+            function(parent)
+            {
+              if(parent.tagName === 'CUBEX-DRAWER')
+              {
+                drawer = parent;
+                return true;
+              }
+            }
+          );
+          this._drawer = drawer;
+        }
+        return this._drawer;
+      },
+      _tapDrawerAction: function(e)
+      {
+        if(e.currentTarget.getAttribute('gaid') === this._selectedApp)
+        {
+          this._selectedApp = null;
+          if(this._getDrawer().state === 2)
+          {
+            this._getDrawer().setMaxState(1);
+          }
+        }
+        else
+        {
+          this._selectedApp = e.currentTarget.getAttribute('gaid');
+        }
+      },
+      _appChange: function()
+      {
+        if(this._selectedApp)
+        {
+          this._getDrawer().open();
+        }
+        else
+        {
+          this._getDrawer().close();
+        }
+      },
+      _lockUserDrawer: function()
+      {
+        this._getDrawer().open();
+        this._getDrawer().setMaxState(this._getDrawer().state === 2 ? 1 :
+          2);
+        this._getDrawer().setState(this._getDrawer().maxState);
+      },
+      __appGroups: function(userRegistry)
+      {
+        var apps = [];
+        if(userRegistry)
+        {
+          for(var idx in userRegistry.AppSummary)
+          {
+            if(userRegistry.AppSummary.hasOwnProperty(idx))
+            {
+              apps.push(userRegistry.AppSummary[idx]);
+            }
+          }
+        }
+        return apps;
+      },
       behaviors: [
         Polymer.CubeElementPathBehavior,
         Polymer.CubeIteratorBehavior,
         Polymer.CubeServiceBehavior
       ]
-    }
-  )</script>
+    })
+  </script>
 </dom-module>

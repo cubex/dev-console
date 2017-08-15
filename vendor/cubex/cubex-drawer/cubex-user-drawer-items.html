@@ -4,7 +4,7 @@
 <dom-module id="cubex-user-drawer-items">
   <template>
     <style>
-      :host {
+       :host {
         position: absolute;
         top: 0;
         right: 0;
@@ -15,12 +15,10 @@
         color: white;
         @apply --shadow-elevation-2dp;
       }
-
-      :host ::slotted(cube-action) {
-        padding: 12px 16px;
-      }
     </style>
     <slot></slot>
   </template>
-  <script>Polymer({is: 'cubex-user-drawer-items'})</script>
+  <script>
+    Polymer({ is: 'cubex-user-drawer-items' })
+  </script>
 </dom-module>
