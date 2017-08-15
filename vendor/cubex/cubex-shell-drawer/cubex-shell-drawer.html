@@ -9,12 +9,15 @@
 <link href="../../cube-list/cube-list-menu.html" rel="import">
 <link href="../../cube-list/cube-list-group.html" rel="import">
 <link href="../../cube-list/cube-li.html" rel="import">
+<link href="../../cube-action/cube-action.html" rel="import">
+<link href="../../cube-dialog/cube-dialog.html" rel="import">
 <link href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html" rel="import">
 <link href="../../cube-behavior/cube-i18n-behavior.html" rel="import">
 <link href="../../cube-behavior/cube-service-behavior.html" rel="import">
 <link href="../../cube-behavior/cube-touch-enabled-behavior.html" rel="import">
 <link href="../cubex-pinned-apps/cubex-pinned.html" rel="import">
 <link href="../cubex-route/cubex-route.html" rel="import">
+<link href="../cubex-shell-drawer/cubex-shell-drawer-panel.html" rel="import">
 <link href="../../cube-dropdown/cube-dropdown.html" rel="import">
 
 <dom-module id="cubex-shell-drawer" attributes="app-nav">
@@ -325,11 +328,11 @@
             <cube-list-menu show-filter filter-label="{{i18n('filter_apps')}}">
               <template is="dom-repeat" items="[[__toArray(_groupedApps)]]" as="category">
                 <cube-list-group>
-                  <a href="/_[[category.name]]" slot="title" class="category-link" on-tap="_tapAppLink">
+                  <a href="/_[[category.name]]" slot="title" class="category-link">
                     <cubex-category key="[[category.name]]"></cubex-category>
                   </a>
                   <template is="dom-repeat" items="[[__toArray(category.apps)]]" as="app">
-                    <a href="/[[app.vendor_id]]/[[app.id]]" on-tap="_tapAppLink">
+                    <a href="/[[app.vendor_id]]/[[app.id]]">
                       <cube-li compact highlight="[[app.pinned]]">
                         <cubex-pinned vendor="[[app.vendor_id]]" app="[[app.id]]" pinned="{{app.pinned}}"
                             slot="actions"></cubex-pinned>
@@ -344,7 +347,7 @@
             </cube-list-menu>
             <div class="stretch"></div>
             <cube-list-menu>
-              <a id="storeLink" href="/kubex/store" on-tap="_tapAppLink">
+              <a id="storeLink" href="/kubex/store">
                 <cube-li compact>
                   <cube-icon slot="icon" icon="device:widgets"></cube-icon>
                   {{i18n('app_store')}}
@@ -374,7 +377,7 @@
               <cube-li compact on-tap="_openSupport">{{i18n('support')}}</cube-li>
             </cube-list-group>
             <cube-list-group>
-              <a href="/kubex/store" on-tap="_tapAppLink">
+              <a href="/kubex/store">
                 <cube-li compact on-tap="_openAppStore">
                   <cube-icon slot="icon" icon="device:widgets" size="18"></cube-icon>
                   {{i18n('app_store')}}
@@ -461,7 +464,7 @@
             }
           }
         },
-        appNav: { type: Object, observer: '_tapAppLink' },
+        appNav: { type: Object, observer: '__firstPanel' },
         _projectRegistryData: { type: Object },
         _groupedApps: { type: Object, computed: '_computeGroupedApps(_projectRegistryData)' },
         appName: { type: String, computed: '_computeAppName(appNav)' },
@@ -485,23 +488,7 @@
       {
         this.listen(this.parentNode, 'cubex-drawer-state-changed',
           '__parentStateChanged');
-        this.listen(this.$.drawerPanels, 'tap', '_tappedPanelItem');
         this.keyEventTarget = document.body;
-      },
-
-      _tappedPanelItem: function(e)
-      {
-        if(this.parentNode.state !== 2 && this.parentNode.isOpen)
-        {
-          for(var i = 0; i <= e.path.length; i++)
-          {
-            if(e.path[i].tagName === 'A')
-            {
-              this._closeDrawer();
-              break;
-            }
-          }
-        }
       },
 
       keyBindings:
@@ -524,10 +511,17 @@
           this._drawerState = e.detail.state;
           if(e.detail.state !== 2 && e.detail.isOpen === false)
           {
-            this._tapAppLink();
+            this.__firstPanel();
           }
         }
       },
+
+      __firstPanel: function()
+      {
+        this.$.drawerPanels.select(0);
+        if(this.parentNode.state !== 2 && this.parentNode.isOpen) { this._closeDrawer(); }
+      },
+
       _computeBurgerIcon: function(state)
       {
         return state === 2 || this._isTouchDevice ?
@@ -562,16 +556,7 @@
           this._closeDrawer();
         }
       },
-      _tapAppLink: function(e)
-      {
-        // select the first panel and close the drawer (if transient)
-        this.$.drawerPanels.select(0);
-        this.parentNode.close();
-        if(e && e.stopPropagation)
-        {
-          e.stopPropagation();
-        }
-      },
+
       _openParent: function()
       {
         this.parentNode.open();
@@ -678,7 +663,7 @@
       _openAppStore: function(e)
       {
         this._closeAdditional();
-        this._tapAppLink(e);
+        this._closeDrawer();
       },
       _closeAdditional: function()
       {
