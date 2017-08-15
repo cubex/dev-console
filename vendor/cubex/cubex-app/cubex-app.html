@@ -300,7 +300,7 @@ Example:
               <cube-icon slot="header" src="[[_pageData.icon]]"></cube-icon>
             </template>
 
-            <a href="[[pagePath]]" slot="header" id="page-title">
+            <a href="[[definitionPath]]" slot="header" id="page-title">
               <cube-pagelet-content html="[[_pageTitle]]"></cube-pagelet-content>
             </a>
 
@@ -379,7 +379,6 @@ Example:
         },
         _heroHeaderFraction: { type: Boolean, value: 1 },
         backPath: { type: String },
-        pagePath: { type: String },
         _project: { type: String },
         appData: { type: Object, value: null },
         _pageData: { type: Object, computed: '_computePageData(_pageDefXhr)' },
