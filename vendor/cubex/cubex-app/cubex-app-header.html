@@ -8,18 +8,21 @@
 <link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../../cube-behavior/cube-iterator-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
+<link rel="import" href="../../cube-list/cube-list-menu.html">
+<link rel="import" href="../../cube-list/cube-li.html">
+<link rel="import" href="../cubex-link/cubex-link.html">
 <link rel="import" href="../cubex-category/cubex-category.html">
 
 <dom-module id="cubex-app-header" attributes="icon back-path actions menu">
   <template strip-whitespace>
     <style>
-      :host {
+       :host {
         width: 100%;
         display: block;
         transition: background 400ms;
       }
 
-      :host #topHeader {
+       :host #topHeader {
         @apply --layout-horizontal;
         position: relative;
         height: 64px;
@@ -27,17 +30,15 @@
         line-height: 64px;
         overflow: hidden;
         z-index: 3;
-
         transition: background 400ms;
       }
 
       @media (max-width: 375px) {
-        :host #topHeader {
+         :host #topHeader {
           height: 48px;
           padding-left: 16px;
           line-height: 48px;
         }
-
         #actions cube-action,
         #actions #more-actions {
           padding: 7px;
@@ -64,7 +65,7 @@
         display: flex;
       }
 
-      :host cube-action {
+       :host cube-action {
         color: var(--text-color-secondary);
         background: var(--theme-200-color);
         padding: 15px;
@@ -99,53 +100,54 @@
         display: block;
       }
 
-      :host #actions cube-dropdown {
+       :host #actions cube-dropdown {
         --cube-dropdown-style: {
           border-bottom: 1px solid var(--theme-600-color);
           @apply --theme-100;
-        };
+        }
+        ;
       }
 
-      :host #actions cube-dropdown cube-icon {
+       :host #actions cube-dropdown cube-icon {
         padding: 0;
       }
 
-      :host #actions cube-dropdown cube-action[primary-alt] {
+       :host #actions cube-dropdown cube-action[primary-alt] {
         display: none;
       }
 
-      :host #menu cubex-link:hover {
+       :host #menu cubex-link:hover {
         color: var(--accent-400-color);
         @apply --text-primary;
       }
 
-      :host #menu cubex-link:first-child {
+       :host #menu cubex-link:first-child {
         margin-left: 8px;
       }
 
-      :host #menu cubex-link {
+       :host #menu cubex-link {
         display: inline-block;
         @apply --paper-font-body2;
         text-transform: uppercase;
-
         --cubex-link-style: {
           display: block;
           padding: 12px 11px 10px 11px;
           text-decoration: none;
           border-bottom: 2px solid transparent;
-        };
+        }
+        ;
         --cubex-link-active-style: {
           border-bottom: 2px solid var(--accent-400-color);
           color: var(--accent-400-color);
-        };
+        }
+        ;
       }
 
       @media all and (max-width: 700px) {
-        :host cube-action[primary] {
+         :host cube-action[primary] {
           display: none;
         }
-
-        :host #actions cube-dropdown cube-action[primary-alt] {
+         :host #actions cube-dropdown cube-action[primary-alt] {
           display: inline-flex;
         }
       }
@@ -157,7 +159,8 @@
       <div class="flexchild"></div>
       <div id="actions">
         <iron-media-query query="(max-width: 700px)" query-matches="{{_small}}"></iron-media-query>
-        <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,1)}}" sort="_sort" observe="primary">
+        <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,1)}}" sort="_sort"
+            observe="primary">
           <cubex-link href="dialog" mode="[[item.Mode]]" match="[[item.Match]]">
             <cube-action icon="[[item.Icon]]"></cube-action>
           </cubex-link>
@@ -165,7 +168,8 @@
         <cube-dropdown horizontal-align="right" hidden$="[[!_hasDropdownActions(actions,_small,1)}}">
           <cube-action icon="icons:more-vert" slot="trigger" id="more-actions"></cube-action>
           <cube-list-menu>
-            <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,0)}}" sort="_sort" observe="primary">
+            <template is="dom-repeat" items="[[actions]]" filter="{{_filter(_small,0)}}" sort="_sort"
+                observe="primary">
               <cubex-link href="[[item.Path]]" mode="dialog" match="[[item.Match]]">
                 <cube-li>[[item.Title]]</cube-li>
               </cubex-link>
@@ -189,46 +193,50 @@
     </div>
   </template>
 
-  <script>Polymer(
+  <script>
+    Polymer(
     {
-      is:         'cubex-app-header',
-      properties: {
-        actions:  {type: Array, value: function () {return [];}},
-        backPath: {type: String},
-        _small:   {type: Boolean}
+      is: 'cubex-app-header',
+      properties:
+      {
+        actions: { type: Array, value: function() { return []; } },
+        menu: { type: Array, value: function() { return []; } },
+        backPath: { type: String },
+        _small: { type: Boolean }
       },
 
-      _filter: function (small, position)
-               {
-                 small = !!small;
-                 position = !!position;
-                 return function (item)
-                 {
-                   var primary = item.hasOwnProperty('Primary') && item.Primary;
-                   if(position)
-                   { // primary
-                     return (!small) && primary;
-                   }
-                   else
-                   { // secondary
-                     return small || (!primary);
-                   }
-                 }
-               },
+      _filter: function(small, position)
+      {
+        small = !!small;
+        position = !!position;
+        return function(item)
+        {
+          var primary = item.hasOwnProperty('Primary') && item.Primary;
+          if(position)
+          { // primary
+            return(!small) && primary;
+          }
+          else
+          { // secondary
+            return small || (!primary);
+          }
+        }
+      },
 
-      _sort: function (a, b)
-             {
-               return a.primary > b.primary;
-             },
+      _sort: function(a, b)
+      {
+        return a.primary > b.primary;
+      },
 
-      _hasDropdownActions: function (actions, small, primary)
-                           {
-                             if(actions && small !== undefined && primary !== undefined)
-                             {
-                               return actions.slice(0).filter(this._filter(small, 0), this).length > 0;
-                             }
-                             return false;
-                           }
-    }
-  )</script>
+      _hasDropdownActions: function(actions, small, primary)
+      {
+        if(actions && small !== undefined && primary !== undefined)
+        {
+          return actions.slice(0).filter(this._filter(small, 0), this).length >
+            0;
+        }
+        return false;
+      }
+    })
+  </script>
 </dom-module>

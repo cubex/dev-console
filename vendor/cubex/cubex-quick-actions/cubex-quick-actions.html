@@ -12,41 +12,40 @@
   <template>
     <style>
       cube-dropdown cube-list-menu {
-        @apply(--shadow-elevation-4dp);
+        @apply --shadow-elevation-4dp;
       }
 
       cube-list-menu {
-        @apply(--primary-50);
+        @apply --primary-50;
         min-width: 200px;
         opacity: 1;
-
         --cube-li-style: {
           color: var(--theme-2-color);
         }
       }
 
-      :host cube-action[slot="trigger"] {
-        margin: 10px 0;
-      }
-
-      :host cube-action {
+       :host cube-action {
         @apply --primary-100-text-secondary;
       }
 
-      :host cube-action:hover {
+       :host cube-action:hover {
         @apply --primary-100-text;
+      }
+
+      cube-li {
+        @apply --primary-700;
       }
     </style>
 
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/quick-actions/actions.json"
-                   data="{{actions}}" ttl="3600"></cube-resource>
+        data="{{actions}}" ttl="3600"></cube-resource>
 
     <cube-dropdown horizontal-align="right" id="qadrop">
       <template is="dom-if" if="[[actions.Actions]]">
         <cube-action icon="icons:add" slot="trigger"></cube-action>
         <cube-list-menu>
           <template is="dom-repeat" items="[[actions.Actions]]" as="action">
-            <a href="/[[action.GlobalAppID]]/[[action.Path]]" on-tap="_tap">
+            <a href="/[[action.GlobalAppID]][[action.Path]]" on-tap="_tap">
               <cube-li title="[[action.Name]]">
                 <cube-icon slot="icon" icon="[[action.Icon]]"></cube-icon>
                 [[action.Name]]
@@ -60,18 +59,17 @@
 
   <script>
     Polymer(
+    {
+      is: 'cubex-quick-actions',
+
+      _tap: function()
       {
-        is: 'cubex-quick-actions',
+        this.$.qadrop.close();
+      },
 
-        _tap: function ()
-              {
-                this.$.qadrop.close();
-              },
-
-        behaviors: [
-          Polymer.CubeServiceBehavior
-        ]
-      }
-    );
+      behaviors: [
+        Polymer.CubeServiceBehavior
+      ]
+    });
   </script>
 </dom-module>

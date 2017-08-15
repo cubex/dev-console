@@ -21,6 +21,7 @@
 <link rel="import" href="../cubex-hash/cubex-hash.html">
 <link rel="import" href="../cubex-category/cubex-category.html">
 <link rel="import" href="../cubex-configure/cubex-configure-dialog.html">
+<link rel="import" href="../cubex-project/cubex-projects.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -274,14 +275,14 @@ Example:
     </style>
 
     <cube-resource auto auth url="[[definitionPath]]" data="{{_pageDefinition}}" xhr="{{_pageDefXhr}}"
-        headers="[[_definitionHeaders]]" status="{{_pageDefinitionStatus}}"></cube-resource>
+        headers="[[_definitionHeaders]]"></cube-resource>
 
     <iron-media-query query="(max-width: 375px)" query-matches="{{narrow}}"></iron-media-query>
     <iron-media-query query="(max-width: 650px)" query-matches="{{_collapse}}"></iron-media-query>
     <iron-media-query query="(min-width: 1000px)" query-matches="{{_peek}}"></iron-media-query>
     <iron-media-query query="(min-width: 1300px)" query-matches="{{_lock}}"></iron-media-query>
 
-    <cubex-project project="{{project}}"></cubex-project>
+    <cubex-project project="{{_project}}"></cubex-project>
     <cubex-category id="cat"></cubex-category>
 
     <app-header-layout has-scrolling-region id="ahl">
@@ -379,9 +380,10 @@ Example:
         _heroHeaderFraction: { type: Boolean, value: 1 },
         backPath: { type: String },
         pagePath: { type: String },
+        _project: { type: String },
         appData: { type: Object, value: null },
         _pageData: { type: Object, computed: '_computePageData(_pageDefXhr)' },
-        breadcrumbs: { type: Array, notify: true, computed: '_updateCrumbs(_pageData,project,appData)' },
+        breadcrumbs: { type: Array, notify: true, computed: '_updateCrumbs(_pageData,_project,appData)' },
         _pageTitle: { type: String, value: '', computed: '_calculatePageTitle(_pageData.title)' },
         _hasConfig: { type: String, value: '', computed: '_calculateConfigure(appData, appData.*)' },
         _lock: { type: Boolean, value: false },
@@ -392,7 +394,8 @@ Example:
         headerActions: { type: Array },
         pageMenu: { type: Array },
         pageActions: { type: Array },
-        panels: { type: Array }
+        panels: { type: Array },
+        _pageDefXhr: { type: Object }
       },
 
       _computePageData: function(xhr)
