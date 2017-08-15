@@ -4,75 +4,83 @@
 <link rel="import" href="../../cube-card/cube-card.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../cube-card/cube-card-container.html">
+<link rel="import" href="../../cube-pagelet/cube-pagelet.html">
+<link rel="import" href="../cubex-registry/cubex-registry.html">
 
 <dom-module id="cubex-category-page" attributes="category">
   <template>
     <style>
-      :host {
+       :host {
         --cube-carousel-style: {
           overflow: hidden;
           background: var(--theme-400-color);
-        };
+        }
       }
     </style>
 
     <cubex-registry project-data="{{projectData}}"></cubex-registry>
 
     <cube-carousel count="5">
-      <template style="display:none" is="dom-repeat"
-                items="[[_getCategories(projectData.GroupSummary, projectData.AppSummary)]]">
+      <template is="dom-repeat" items="[[_getCategories(projectData.GroupSummary,projectData.AppSummary,category)]]">
         <a href="/[[item.vendor_id]]/[[item.id]]">
           <cube-tile color="[[_getColor(index)]]" icon="[[item.icon]]" heading="[[item.name]]"
-                     text="[[item.description]]"></cube-tile>
+              text="[[item.description]]"></cube-tile>
         </a>
       </template>
     </cube-carousel>
 
     <cube-card-container>
-      <cube-pagelet local auto auth
-                    url="//[[getServiceHost('apps')]]/kubex/dashpanel?category=[[category]]"></cube-pagelet>
-      <cube-pagelet local auto auth
-                    url="//[[getServiceHost('apps')]]/kubex/cardfeed?category=[[category]]"></cube-pagelet>
+      <cube-pagelet local auto auth url="//[[getServiceHost('apps')]]/kubex/dashpanel?category=[[category]]"></cube-pagelet>
+      <cube-pagelet local auto auth url="//[[getServiceHost('apps')]]/kubex/cardfeed?category=[[category]]"></cube-pagelet>
     </cube-card-container>
   </template>
   <script>
     Polymer(
+    {
+      is: 'cubex-category-page',
+      properties:
       {
-        is:             'cubex-category-page',
-        properties:     {
-          category: {type: String},
-          _colors:  {type: Array, value: ['pink', 'orange', 'teal', 'purple', 'light-green', 'red', 'green', 'blue']}
-        },
-        _getCategories: function (groupSummary, appSummaries)
-                        {
-                          var cats = [], groups = [];
-                          for(var idx in appSummaries)
-                          {
-                            if(appSummaries.hasOwnProperty(idx) && appSummaries[idx].category === this.category)
-                            {
-                              if(appSummaries[idx].group)
-                              {
-                                var groupId = appSummaries[idx].vendor_id + '/' + appSummaries[idx].group;
-                                if(groups.indexOf(groupId) === -1)
-                                {
-                                  cats.push(groupSummary[groupId]);
-                                  groups.push(groupId);
-                                }
-                              }
-                              else
-                              {
-                                cats.push(appSummaries[idx]);
-                              }
-                            }
-                          }
-                          return cats;
-                        },
-        _getColor:      function (idx)
-                        {
-                          return this._colors[idx];
-                        },
-        behaviors:      [Polymer.CubeServiceBehavior]
-      }
-    );
+        category: { type: String },
+        _colors:
+        {
+          type: Array,
+          value: ['pink', 'orange', 'teal', 'purple',
+            'light-green', 'red', 'green', 'blue'
+          ]
+        }
+      },
+      _getCategories: function(groupSummary, appSummaries, category)
+      {
+        var cats = [],
+          groups = [];
+        for(var idx in appSummaries)
+        {
+          if(appSummaries.hasOwnProperty(idx) &&
+            appSummaries[idx].category === category)
+          {
+            if(appSummaries[idx].group)
+            {
+              var groupId = appSummaries[idx].vendor_id + '/' +
+                appSummaries[idx].group;
+              if(groups.indexOf(groupId) === -1)
+              {
+                cats.push(groupSummary[groupId]);
+                groups.push(groupId);
+              }
+            }
+            else
+            {
+              cats.push(appSummaries[idx]);
+            }
+          }
+        }
+        return cats;
+      },
+      _getColor: function(idx)
+      {
+        return this._colors[idx];
+      },
+      behaviors: [Polymer.CubeServiceBehavior]
+    });
   </script>
 </dom-module>

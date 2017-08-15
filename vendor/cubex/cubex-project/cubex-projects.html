@@ -3,10 +3,12 @@
 <link rel="import" href="../../cube-icon/cube-icon.html">
 <link rel="import" href="../../cube-list/cube-list.html">
 <link rel="import" href="../../cube-list/cube-li.html">
+<link rel="import" href="../../cube-action/cube-action.html">
 <link rel="import" href="../../paper-styles/paper-styles.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../cubex-distributor/cubex-distributor.html">
+<link rel="import" href="../cubex-link/cubex-link.html">
 <link rel="import" href="cubex-project.html">
 
 <!--
@@ -22,7 +24,7 @@ Example:
 <dom-module id="cubex-projects" attributes="project projects nav">
   <template>
     <style>
-      :host {
+       :host {
         display: block;
         position: relative;
         padding: 40px 20px;
@@ -33,7 +35,7 @@ Example:
       }
 
       @media (max-width: 500px) {
-        :host {
+         :host {
           min-width: 308px;
           margin: 55px 0;
           padding: 40px 0;
@@ -104,7 +106,7 @@ Example:
       }
 
       @media (min-width: 925px) {
-        :host([two-column]) .project-section {
+         :host([two-column]) .project-section {
           max-width: 640px;
         }
       }
@@ -156,13 +158,11 @@ Example:
                   [[item.project.name]]
                   <div slot="secondary">Pending</div>
                   <cube-action slot="actions" title="Accept" style="color:green" icon="icons:thumb-up"
-                               on-tap="_processInvite" data-accept-type="1"
-                               data-accept-id$="[[item.project.id]]"
-                               data-verify$="[[item.status.verification]]"></cube-action>
+                      on-tap="_processInvite" data-accept-type="1" data-accept-id$="[[item.project.id]]"
+                      data-verify$="[[item.status.verification]]"></cube-action>
                   <cube-action slot="actions" title="Reject" style="color:red" icon="icons:thumb-down"
-                               on-tap="_processInvite" data-accept-type="0"
-                               data-accept-id$="[[item.project.id]]"
-                               data-verify$="[[item.status.verification]]"></cube-action>
+                      on-tap="_processInvite" data-accept-type="0" data-accept-id$="[[item.project.id]]"
+                      data-verify$="[[item.status.verification]]"></cube-action>
                 </cube-li>
               </template>
             </cube-list>
@@ -188,7 +188,8 @@ Example:
 
           <template is="dom-if" if="[[!_projects.length]]">
             <h2>Create a Project</h2>
-            <p>Looks like you just created your account and have no projects. Probably time to create one!</p>
+            <p>Looks like you just created your account and have no projects. Probably
+              time to create one!</p>
           </template>
 
           <div id="create-box">
@@ -203,103 +204,116 @@ Example:
 
   <script>
     Polymer(
+    {
+      is: 'cubex-projects',
+      properties:
       {
-        is:         'cubex-projects',
-        properties: {
-          _projects: {type: Array, notify: true},
-          twoColumn: {
-            type:               Boolean,
-            value:              false,
-            reflectToAttribute: true,
-            computed:           '_computeTwoColumn(_projects,_invites)'
-          },
-          nav:       {
-            type: Array, notify: true, value: function ()
+        _projects: { type: Array, notify: true },
+        twoColumn:
+        {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          computed: '_computeTwoColumn(_projects,_invites)'
+        },
+        nav:
+        {
+          type: Array,
+          notify: true,
+          value: function()
+          {
+            return {
+              title: 'Account',
+              items: [
+                [
+                {
+                  Path: '//' + this.getServiceHost('accounts') +
+                    '/user-management',
+                  Icon: 'social:person',
+                  ID: 'my-account',
+                  Name: { en: 'My Account' }
+                },
+                {
+                  Path: '//' + this.getServiceHost('console') +
+                    '/terms',
+                  Icon: 'icons:bookmark-border',
+                  ID: 'terms',
+                  Name: { en: 'Terms of Service' }
+                },
+                {
+                  Path: '//' + this.getServiceHost('console') +
+                    '/privacy-policy',
+                  Icon: 'icons:visibility',
+                  ID: 'privacy-policy',
+                  Name: { en: 'Privacy Policy' }
+                }]
+              ]
+            };
+          }
+        }
+      },
+
+      _computeTwoColumn: function(projects, invites)
+      {
+        if(projects && invites)
+        {
+          return(projects.length + invites.length) > 7;
+        }
+        return false;
+      },
+
+      _processInvite: function(e)
+      {
+        var self = this,
+          actionData = e.target.dataset,
+          xhr = new XMLHttpRequest();
+        xhr.addEventListener(
+          'readystatechange',
+          function()
+          {
+            if(this.readyState === XMLHttpRequest.DONE)
             {
-              return {
-                title: 'Account',
-                items: [
-                  [
+              if(this.status === 200)
+              {
+                for(var i in self._invites)
+                {
+                  if(self._invites.hasOwnProperty(i))
+                  {
+                    if(self._invites[i].project.id === actionData.acceptId)
                     {
-                      Path: '//' + this.getServiceHost('accounts') + '/user-management',
-                      Icon: 'social:person',
-                      ID:   'my-account',
-                      Name: {en: 'My Account'}
-                    },
-                    {
-                      Path: '//' + this.getServiceHost('console') + '/terms',
-                      Icon: 'icons:bookmark-border',
-                      ID:   'terms',
-                      Name: {en: 'Terms of Service'}
-                    },
-                    {
-                      Path: '//' + this.getServiceHost('console') + '/privacy-policy',
-                      Icon: 'icons:visibility',
-                      ID:   'privacy-policy',
-                      Name: {en: 'Privacy Policy'}
+                      self.splice('_invites', i, 1);
+                      break;
                     }
-                  ]
-                ]
-              };
+                  }
+                }
+              }
             }
           }
-        },
+        );
+        if(actionData.acceptType === '1')
+        {
+          xhr.open(
+            'PUT',
+            '//' + this.getServiceHost('apps') +
+            '/kubex/project/approval/' + actionData.acceptId + '/' +
+            actionData.verify
+          );
+        }
+        else if(actionData.acceptType === '0')
+        {
+          xhr.open(
+            'DELETE',
+            '//' + this.getServiceHost('apps') +
+            '/kubex/project/approval/' + actionData.acceptId + '/' +
+            actionData.verify
+          );
+        }
+        xhr.withCredentials = true;
+        xhr.setRequestHeader('X-Requested-By', 'cubex-projects');
+        xhr.send();
+      },
 
-        _computeTwoColumn: function (projects, invites)
-                           {
-                             if(projects && invites)
-                             {
-                               return (projects.length + invites.length) > 7;
-                             }
-                             return false;
-                           },
-
-        _processInvite: function (e)
-                        {
-                          var self = this, actionData = e.target.dataset, xhr = new XMLHttpRequest();
-                          xhr.addEventListener(
-                            'readystatechange', function ()
-                            {
-                              if(this.readyState === XMLHttpRequest.DONE)
-                              {
-                                if(this.status === 200)
-                                {
-                                  for(var i in self._invites)
-                                  {
-                                    if(self._invites.hasOwnProperty(i))
-                                    {
-                                      if(self._invites[i].project.id === actionData.acceptId)
-                                      {
-                                        self.splice('_invites', i, 1);
-                                        break;
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          );
-                          if(actionData.acceptType === '1')
-                          {
-                            xhr.open(
-                              'PUT',
-                              '//' + this.getServiceHost('apps') + '/kubex/project/approval/' + actionData.acceptId + '/' + actionData.verify
-                            );
-                          }
-                          else if(actionData.acceptType === '0')
-                          {
-                            xhr.open(
-                              'DELETE',
-                              '//' + this.getServiceHost('apps') + '/kubex/project/approval/' + actionData.acceptId + '/' + actionData.verify
-                            );
-                          }
-                          xhr.withCredentials = true;
-                          xhr.setRequestHeader('X-Requested-By', 'cubex-projects');
-                          xhr.send();
-                        },
-
-        behaviors: [Polymer.CubeServiceBehavior]
-      }
-    );
+      behaviors: [Polymer.CubeServiceBehavior]
+    });
   </script>
 </dom-module>
