@@ -7,7 +7,6 @@
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../cube-behavior/cube-touch-enabled-behavior.html">
 <link rel="import" href="../../cube-action/cube-action.html">
-<link rel="import" href="../../app-route/app-location.html">
 
 <link rel="import" href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 
@@ -22,7 +21,6 @@
 <link rel="import" href="../cubex-quick-actions/cubex-quick-actions.html">
 <link rel="import" href="../cubex-notifications/cubex-notifications.html">
 <link rel="import" href="../cubex-drawer/cubex-drawer.html">
-<link rel="import" href="../cubex-route/cubex-route.html">
 <link rel="import" href="../cubex-drawer/cubex-user-drawer.html">
 <link rel="import" href="../cubex-drawer/cubex-drawer-content.html">
 <link rel="import" href="../cubex-project/cubex-projects.html">
@@ -176,12 +174,12 @@
         top: 18px;
       }
 
-      #user-panel-action[is-open]:before {
+      #user-panel-action:not([is-open]):before {
         border-right-color: var(--primary-100-text-color);
         left: -2px;
       }
 
-      #user-panel-action:not([is-open]):after {
+      #user-panel-action[is-open]:after {
         border-left-color: var(--primary-100-text-color);
         right: -2px;
       }
@@ -208,7 +206,6 @@
       }
     </style>
 
-    <app-location route="{{route}}"></app-location>
     <iron-media-query query="(min-width: 1000px)" query-matches="{{_peek}}"></iron-media-query>
     <iron-media-query query="(max-width: 375px)" query-matches="{{_narrow}}"></iron-media-query>
 
