@@ -176,7 +176,8 @@
             Path: '/' + groupData.vendor_id + '/' + groupData.id,
             Icon: groupData.icon,
             ID: groupData.id,
-            Name: { en: groupData.name }
+            Name: { en: groupData.name },
+            Strict: false
           });
           // add apps
           for(idx in groupData.apps)
@@ -191,7 +192,8 @@
                 Path: '/' + appId,
                 Icon: app.icon,
                 ID: appId,
-                Name: { en: app.name }
+                Name: { en: app.name },
+                Strict: false
               });
             }
           }
@@ -212,7 +214,8 @@
                   '/' + projectData.GroupSummary[idx].id,
                 Icon: projectData.GroupSummary[idx].icon,
                 ID: projectData.GroupSummary[idx].id,
-                Name: { en: projectData.GroupSummary[idx].name }
+                Name: { en: projectData.GroupSummary[idx].name },
+                Strict: false
               });
             }
           }
@@ -232,7 +235,8 @@
                   '/' + projectData.AppSummary[idx].id,
                 Icon: projectData.AppSummary[idx].icon,
                 ID: projectData.AppSummary[idx].id,
-                Name: { en: projectData.AppSummary[idx].name }
+                Name: { en: projectData.AppSummary[idx].name },
+                Strict: false
               });
             }
           }
@@ -247,7 +251,8 @@
             Path: '/' + appData.VendorID + '/' + appData.AppID,
             Icon: appData.Icon,
             ID: appData.AppID,
-            Name: appData.Name
+            Name: appData.Name,
+            Strict: true
           });
           navigation = [appNav];
           if(appData.AdvancedConfigPath || appData.Config.length > 0)
@@ -258,7 +263,8 @@
                 '/_settings',
               Icon: 'icons:settings',
               ID: 'settings',
-              Name: { en: 'Settings' }
+              Name: { en: 'Settings' },
+              Strict: true
             }]);
           }
         }

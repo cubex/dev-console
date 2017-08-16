@@ -295,7 +295,7 @@
           <template is="dom-repeat" items="[[appNav.items]]" as="navMenu">
             <cube-list-menu>
               <template is="dom-repeat" items="[[navMenu]]">
-                <cubex-link href="[[item.Path]]" strict>
+                <cubex-link href="[[item.Path]]" strict=[[item.Strict]]>
                   <cube-li compact>
                     <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
                     [[i18nResource(item.Name)]]
