@@ -9,7 +9,6 @@
 <link rel="import" href="../../cube-pagelet/cube-pagelet.html">
 <link rel="import" href="../../cube-preferences/cube-preferences.html">
 <link rel="import" href="../cubex-registry/cubex-registry.html">
-<link rel="import" href="../cubex-app/cubex-app-icon.html">
 <link rel="import" href="cubex-user-drawer-items.html">
 
 <dom-module id="cubex-user-drawer" attributes="selected-app">
@@ -64,13 +63,13 @@
 
       cubex-user-drawer-items cube-action {
         padding: 11px;
-        --cubex-app-icon-color: #FFFFFF;
+        --cube-icon-color: #FFFFFF;
       }
 
       cubex-user-drawer-items cube-action[active],
       cubex-user-drawer-items cube-action[active] {
         background: var(--theme-100-color);
-        --cubex-app-icon-color: var(--accent-700-color);
+        --cube-icon-color: var(--accent-700-color);
       }
 
       #pageletContainer {
@@ -120,7 +119,7 @@
       <template is="dom-repeat" items="[[__appGroups(_userRegistryData)]]" as="app">
         <cube-action active$="[[_isSelectedApp(app,selectedApp)]]" on-tap="_tapDrawerAction"
             gaid$="[[app.vendor_id]]/[[app.id]]">
-          <cubex-app-icon icon="[[app.icon]]"></cubex-app-icon>
+          <cube-icon icon="[[app.icon]]"></cube-icon>
         </cube-action>
       </template>
       <a href="/kubex/store/user-apps">
@@ -221,7 +220,7 @@
       },
       _appChange: function()
       {
-        if(this.selectedApp)
+        if(this.selectedApp && (this._getDrawer().state > 0 || this._isTouchDevice))
         {
           this._getDrawer().open();
         }

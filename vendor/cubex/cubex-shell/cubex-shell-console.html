@@ -234,8 +234,10 @@
       </div>
 
       <div id="contentContainer">
-        <cube-preferences name="userDrawerState" value="{{userDrawerState}}" live-update></cube-preferences>
-        <cubex-drawer id="userDrawer" position="right" preferred-state="{{userDrawerState}}"
+        <cube-preferences name="userDrawerPreferredState" value="{{userDrawerPreferredState}}"
+            live-update></cube-preferences>
+        <cube-preferences name="userDrawerState" value="{{_actualUserDrawerState}}" live-update></cube-preferences>
+        <cubex-drawer id="userDrawer" position="right" preferred-state="{{userDrawerPreferredState}}"
             state="{{_actualUserDrawerState}}" peek-open$="[[!_selectedUserApp]]" is-open="{{_userDrawerOpen}}">
           <cubex-drawer-content slot="drawer-content">
             <cubex-user-drawer selected-app="{{_selectedUserApp}}"></cubex-user-drawer>
@@ -256,23 +258,10 @@
         drawerOpened: { type: Boolean, reflectToAttribute: true },
         focusSearch: { type: Boolean, reflectToAttribute: true },
         _selectedUserApp: { type: String },
-        _actualUserDrawerState: { type: Number },
+        _actualUserDrawerState: { type: Number, observer: '_userDrawerStateChanged' },
         _userDrawerOpen: { type: Boolean },
         _userPanelOpen: { type: Boolean, computed: '_computeUserPanelOpen(_actualUserDrawerState,_userDrawerOpen)' },
-        userDrawerState:
-        {
-          type: Number,
-          value: 0,
-          reflectToAttribute: true,
-          observer: '_userDrawerStateChanged'
-        },
-        shellDrawerState:
-        {
-          type: Number,
-          value: 1,
-          reflectToAttribute: true,
-          observer: '_shellDrawerStateChanged'
-        }
+        shellDrawerState: { type: Number, value: 1, observer: '_shellDrawerStateChanged' }
       },
       observers: [
         '_viewChanged(_peek,_narrow,_isTouchDevice)'
@@ -328,7 +317,7 @@
 
           if(peek && this.$.userDrawer.state === 0)
           {
-            this.$.userDrawer.setState(1);
+            //this.$.userDrawer.setState(1);
           }
         }
       },
@@ -415,9 +404,10 @@
 
       _userDrawerStateChanged: function(newState)
       {
-        if(newState > this.$.userDrawer.state && !this._isTouchDevice)
+        if(newState != this.$.userDrawer.state && !this._isTouchDevice)
         {
-          this.$.userDrawer.setMaxState(2);
+          this.$.userDrawer.setMaxState(newState);
+          this.$.userDrawer.setState(newState);
         }
       },
 
