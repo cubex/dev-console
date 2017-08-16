@@ -3,7 +3,9 @@
 <link rel="import" href="../../paper-styles/shadow.html">
 <link rel="import" href="../../iron-dropdown/iron-dropdown.html">
 <link rel="import" href="../../cube-icon/cube-icon.html">
+<link rel="import" href="../../cube-resource/cube-resource.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
+<link rel="import" href="../../cube-list/cube-list-menu.html">
 <link rel="import" href="../../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 <link rel="import" href="../../cube-behavior/cube-i18n-behavior.html">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
@@ -13,24 +15,26 @@
 <dom-module id="cubex-search" attributes="focus-search">
   <template>
     <style>
-      :host {
+       :host {
         margin: 0 12px;
         display: none;
         line-height: 12px;
         --paper-input-container-underline: {
           display: none;
-        };
+        }
+        ;
         --paper-input-container-underline-focus: {
           display: none;
-        };
-
+        }
+        ;
         --iron-overlay-backdrop: {
           top: var(--cubex-drawer-offset-top);
-        };
-
+        }
+        ;
         --iron-overlay-backdrop-opened: {
           display: none;
-        };
+        }
+        ;
         @apply --theme-500;
       }
 
@@ -42,23 +46,24 @@
         text-align: left;
         --paper-input-container: {
           background: rgba(255, 255, 255, 0.1);
-        };
+        }
+        ;
         border-bottom: 2px solid transparent;
       }
 
-      :host(:not([focused])) paper-input {
+       :host(:not([focused])) paper-input {
         --paper-input-container-label: {
           display: none;
         }
       }
 
-      :host([focused]) paper-input {
+       :host([focused]) paper-input {
         @apply --shadow-elevation-2dp;
         border-bottom-color: var(--accent-400-color);
         background: var(--theme-100-color);
       }
 
-      :host([focused]) paper-input cube-icon {
+       :host([focused]) paper-input cube-icon {
         color: var(--theme-text);
       }
 
@@ -68,31 +73,36 @@
         color: var(--theme-text-secondary);
       }
 
-      :host([focus-search]), #results {
+       :host([focus-search]),
+      #results {
         display: block;
         width: 295px
       }
 
       @media screen and (min-width: 530px) {
-        :host([focus-search]), #results {
+         :host([focus-search]),
+        #results {
           width: 512px
         }
       }
 
       @media screen and (min-width: 800px) {
-        :host, #results {
+         :host,
+        #results {
           max-width: 300px;
           display: block;
         }
       }
 
       @media screen and (min-width: 1000px) {
-        :host, #results {
+         :host,
+        #results {
           max-width: 512px;
         }
       }
 
-      :host, input {
+       :host,
+      input {
         width: 100%;
       }
 
@@ -126,24 +136,22 @@
     <cubex-project project-alias="{{_projectAlias}}" projects="{{_projects}}"></cubex-project>
 
     <cube-resource id="appResource" auto auth url="//[[getServiceHost('apps')]]/kubex/registry/project.json"
-                   data="{{_apps}}" ttl="3600"></cube-resource>
+        data="{{_apps}}" ttl="3600"></cube-resource>
     <cube-resource id="searchResource" auto auth url="//[[getServiceHost('apps')]]/kubex/search-actions/search.json"
-                   data="{{_search}}" ttl="3600"></cube-resource>
+        data="{{_search}}" ttl="3600"></cube-resource>
 
-    <cube-websocket auto project="[[_projectAlias]]" vendor="kubex" app="registry"
-                    on-message="_appsChanged"></cube-websocket>
+    <cube-websocket auto project="[[_projectAlias]]" vendor="kubex" app="registry" on-message="_appsChanged"></cube-websocket>
 
     <div id="scrim" hidden="[[!focused]]"></div>
 
     <paper-input no-label-float label="{{i18n('search')}}" id="search" on-keyup="_query"
-                 value="{{searchQuery}}">
+        value="{{searchQuery}}">
       <cube-icon icon="icons:search" slot="prefix"></cube-icon>
     </paper-input>
 
-    <iron-dropdown vertical-align="top" id="results" vertical-offset="45">
+    <iron-dropdown vertical-align="top" id="results" vertical-offset="45" no-auto-focus>
       <cube-list-menu slot="dropdown-content" id="searchmenu" zebra>
-        <template is="dom-repeat"
-                  items="{{_filterActions(searchQuery,_search.Actions,_apps.AppSummary,_projectAlias,_projects)}}">
+        <template is="dom-repeat" items="{{_filterActions(searchQuery,_search.Actions,_apps.AppSummary,_projectAlias,_projects)}}">
           <a class="result-link" href="/[[item.GlobalAppID]]/[[item.Path]]">
             <cube-li compact>
               <template restamp is="dom-if" if="[[item.Icon]]">
@@ -159,262 +167,292 @@
   </template>
   <script>
     Polymer(
+    {
+      is: 'cubex-search',
+      properties:
       {
-        is:         'cubex-search',
-        properties: {
-          searchQuery: {type: String, value: ''},
-          focused:     {type: Boolean, value: false, reflectToAttribute: true},
-          focusSearch: {
-            type:               Boolean,
-            value:              false,
-            reflectToAttribute: true
-          },
-          resources:   {
-            type:  Object,
-            value: {
-              'en': {
-                'search':     'Find products and features',
-                'no_results': 'No results matching'
-              },
-              'fr': {
-                'search':     'Trouver des produits et des fonctionnalités',
-                'no_results': 'Aucun résultat pour'
+        searchQuery: { type: String, value: '' },
+        focused: { type: Boolean, value: false, reflectToAttribute: true },
+        focusSearch:
+        {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        resources:
+        {
+          type: Object,
+          value:
+          {
+            'en':
+            {
+              'search': 'Find products and features',
+              'no_results': 'No results matching'
+            },
+            'fr':
+            {
+              'search': 'Trouver des produits et des fonctionnalités',
+              'no_results': 'Aucun résultat pour'
+            }
+          }
+        }
+      },
+
+      _appsChanged: function(e)
+      {
+        if(e.detail.action === 'install' ||
+          e.detail.action === 'uninstall')
+        {
+          this.$.searchResource.update(true);
+          this.$.appResource.update(true);
+        }
+      },
+
+      keyBindings:
+      {
+        'down': '_cursor',
+        'esc': 'blur',
+        'up': '_cursor'
+      },
+      _cursor: function(e)
+      {
+        this.$.searchmenu.dispatchEvent(e);
+      },
+
+      attached: function()
+      {
+        document.addEventListener('click', this._checkBlur.bind(this));
+        this.addEventListener('blur', this._onBlur.bind(this));
+        this.addEventListener('focus', this._onFocus.bind(this));
+        this.$.searchmenu.addEventListener('keydown', this._recoverFocus.bind(
+          this));
+        this.$.results.sizingTarget = this.$.results;
+      },
+      _onFocus: function()
+      {
+        this.focused = true;
+      },
+
+      _checkBlur: function(e)
+      {
+        for(var i in e.path)
+        {
+          if(e.path.hasOwnProperty(i))
+          {
+            var item = e.path[i];
+            if(item.classList && item.classList.contains('result-link'))
+            {
+              this.blur();
+            }
+          }
+        }
+      },
+
+      _onBlur: function()
+      {
+        this.$.search.value = '';
+        this.$.results.close();
+        this.focused = false;
+      },
+      _recoverFocus: function(e)
+      {
+        var key = e.key || e.detail.keyboardEvent.key;
+        if(key)
+        {
+          if((key !== 'ArrowUp' && key !== 'ArrowDown') ||
+            (key === 'ArrowUp' && this.$.searchmenu.indexOf(this.$.searchmenu
+              .focusedItem) === 0))
+          {
+            if(key === 'Enter' || key == "Escape")
+            {
+              this.$.results.close();
+            }
+            else
+            {
+              // focus element
+              this.focus();
+              var el = this.$.search.inputElement.inputElement,
+                len = el.value.length;
+              // move caret to end
+              el.setSelectionRange(len, len);
+              // deselect dropdown
+              this.$.searchmenu.select(null);
+              // if we have arrowed up into the input, prevent selection
+              if(key === 'ArrowUp')
+              {
+                e.preventDefault();
               }
             }
           }
-        },
+        }
+      },
 
-        _appsChanged: function (e)
-                      {
-                        if(e.detail.action === 'install' || e.detail.action === 'uninstall')
-                        {
-                          this.$.searchResource.update(true);
-                          this.$.appResource.update(true);
-                        }
-                      },
+      _escapeRegExp: function(str)
+      {
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+      },
 
-        keyBindings: {
-          'down': '_cursor',
-          'esc':  'blur',
-          'up':   '_cursor'
-        },
-        _cursor:     function (e)
-                     {
-                       this.$.searchmenu.dispatchEvent(e);
-                     },
+      _filterActions: function(searchQuery, actions, appSummary, projectId,
+        projects)
+      {
+        var filtered = [],
+          matchWords = searchQuery.replace(/[^a-z0-9\s]+/ig, '').toLowerCase()
+          .split(/\s+/),
+          weight, tests;
 
-        attached: function ()
-                  {
-                    document.addEventListener('click', this._checkBlur.bind(this));
-                    this.addEventListener('blur', this._onBlur.bind(this));
-                    this.addEventListener('focus', this._onFocus.bind(this));
-                    this.$.searchmenu.addEventListener('keydown', this._recoverFocus.bind(this));
-                    this.$.results.sizingTarget = this.$.results;
-                  },
-        _onFocus: function ()
-                  {
-                    this.focused = true;
-                  },
+        if(projectId)
+        {
+          if(searchQuery)
+          {
+            // iterate AppSummary
+            for(var appGaid in appSummary)
+            {
+              if(appSummary.hasOwnProperty(appGaid))
+              {
+                weight = 0;
+                var app = appSummary[appGaid];
+                tests = [app.name, app.description];
 
-        _checkBlur: function (e)
-                    {
-                      for(var i in e.path)
-                      {
-                        if(e.path.hasOwnProperty(i))
-                        {
-                          var item = e.path[i];
-                          if(item.classList && item.classList.contains('result-link'))
-                          {
-                            this.blur();
-                          }
-                        }
-                      }
-                    },
+                weight = this.__getWeight(matchWords, tests);
+                if(weight > 0)
+                {
+                  filtered.push(this.__getItem(
+                    app.name,
+                    app.icon,
+                    app.description,
+                    weight,
+                    appGaid
+                  ));
+                }
+              }
+            }
 
-        _onBlur:       function ()
-                       {
-                         this.$.search.value = '';
-                         this.$.results.close();
-                         this.focused = false;
-                       },
-        _recoverFocus: function (e)
-                       {
-                         if(e.key)
-                         {
-                           if((e.key !== 'ArrowUp' && e.key !== 'ArrowDown')
-                             || (e.key === 'ArrowUp' && this.$.searchmenu.indexOf(this.$.searchmenu.focusedItem) === 0))
-                           {
-                             this.focus();
-                             var len = this.$.search.inputElement.inputElement.value.length;
-                             this.$.search.inputElement.inputElement.setSelectionRange(len, len);
-                             this.$.searchmenu.select(null);
-                             if(e.key === 'ArrowUp')
-                             {
-                               e.preventDefault();
-                             }
-                             else if(e.key === 'Enter')
-                             {
-                               this.$.results.close();
-                             }
-                           }
-                         }
-                       },
+            // iterate searchActions
+            for(var actionIdx in actions)
+            {
+              if(actions.hasOwnProperty(actionIdx))
+              {
+                var action = actions[actionIdx];
+                tests = [action.Name, action.Description];
+                Array.prototype.push.apply(tests, action.Tokens || []);
 
-        _escapeRegExp: function (str)
-                       {
-                         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-                       },
+                weight = this.__getWeight(matchWords, tests);
+                if(weight > 0)
+                {
+                  filtered.push(this.__getItem(
+                    action.Name,
+                    action.Icon,
+                    action.Description,
+                    weight,
+                    action.GlobalAppID,
+                    action.Path
+                  ));
+                }
+              }
+            }
+          }
+        }
+        else
+        {
+          for(var i in projects)
+          {
+            if(projects.hasOwnProperty(i))
+            {
+              filtered.push(this.__getItem(
+                projects[i].name,
+                null,
+                'Project',
+                this.__getWeight(matchWords, [projects[i].name]),
+                null,
+                '//' + window.location.host.replace(/^[^\.]+/,
+                  projects[i].alias)
+              ));
+            }
+          }
+        }
 
-        _filterActions: function (searchQuery, actions, appSummary, projectId, projects)
-                        {
-                          var filtered = [],
-                            matchWords = searchQuery.replace(/[^a-z0-9\s]+/ig, '').toLowerCase().split(/\s+/),
-                            weight, tests;
+        if(filtered.length <= 0)
+        {
+          filtered.push(this.__getItem(this.i18n('no_results') + ' "' +
+            searchQuery + '"'));
+        }
 
-                          if(projectId)
-                          {
-                            if(searchQuery)
-                            {
-                              // iterate AppSummary
-                              for(var appGaid in appSummary)
-                              {
-                                if(appSummary.hasOwnProperty(appGaid))
-                                {
-                                  weight = 0;
-                                  var app = appSummary[appGaid];
-                                  tests = [app.name, app.description];
+        return filtered.sort(function(a, b) { return a.Weight < b.Weight; });
+      },
 
-                                  weight = this.__getWeight(matchWords, tests);
-                                  if(weight > 0)
-                                  {
-                                    filtered.push(this.__getItem(
-                                      app.name,
-                                      app.icon,
-                                      app.description,
-                                      weight,
-                                      appGaid
-                                    ));
-                                  }
-                                }
-                              }
+      _query: function()
+      {
+        this.debounce('runQuery', this.runQuery, 20);
+      },
+      runQuery: function()
+      {
+        var query = this.searchQuery;
+        if(!query || query.length === 0)
+        {
+          this.$.results.close();
+        }
+        else
+        {
+          this.$.results.open();
+        }
+      },
+      focus: function()
+      {
+        this.$.search.inputElement.inputElement.focus();
+      },
 
-                              // iterate searchActions
-                              for(var actionIdx in actions)
-                              {
-                                if(actions.hasOwnProperty(actionIdx))
-                                {
-                                  var action = actions[actionIdx];
-                                  tests = [action.Name, action.Description];
-                                  Array.prototype.push.apply(tests, action.Tokens || []);
+      __getWeight: function(matchWords, tests)
+      {
+        var weight = 0;
+        for(var matchIdx in matchWords)
+        {
+          if(matchWords.hasOwnProperty(matchIdx) && matchWords[matchIdx].length >
+            0)
+          {
+            var word = matchWords[matchIdx],
+              fullTest = new RegExp('\\b' + this._escapeRegExp(word) +
+                '\\b', 'i'),
+              partialTest = new RegExp('\\b' + this._escapeRegExp(word),
+                'i');
 
-                                  weight = this.__getWeight(matchWords, tests);
-                                  if(weight > 0)
-                                  {
-                                    filtered.push(this.__getItem(
-                                      action.Name,
-                                      action.Icon,
-                                      action.Description,
-                                      weight,
-                                      action.GlobalAppID,
-                                      action.Path
-                                    ));
-                                  }
-                                }
-                              }
-                            }
-                          }
-                          else
-                          {
-                            for(var i in projects)
-                            {
-                              if(projects.hasOwnProperty(i))
-                              {
-                                filtered.push(this.__getItem(
-                                  projects[i].name,
-                                  null,
-                                  'Project',
-                                  this.__getWeight(matchWords, [projects[i].name]),
-                                  null,
-                                  '//' + window.location.host.replace(/^[^\.]+/, projects[i].alias)
-                                ));
-                              }
-                            }
-                          }
+            for(var testIdx in tests)
+            {
+              if(tests.hasOwnProperty(testIdx))
+              {
+                var test = tests[testIdx] || '';
+                if(fullTest.test(test.replace(/[^a-z0-9\s]+/ig, '')))
+                {
+                  weight += 2;
+                }
+                else if(partialTest.test(test.replace(/[^a-z0-9\s]+/ig,
+                    '')))
+                {
+                  weight += 1;
+                }
+              }
+            }
+          }
+        }
+        return weight;
+      },
 
-                          if(filtered.length <= 0)
-                          {
-                            filtered.push(this.__getItem(this.i18n('no_results') + ' "' + searchQuery + '"'));
-                          }
+      __getItem: function(name, icon, description, weight, gaid, path)
+      {
+        return {
+          Name: name,
+          Icon: icon || '',
+          Description: description || '',
+          Weight: weight || 0,
+          GlobalAppID: gaid,
+          Path: path
+        };
+      },
 
-                          return filtered.sort(function (a, b) {return a.Weight < b.Weight;});
-                        },
-
-        _query:   function ()
-                  {
-                    this.debounce('runQuery', this.runQuery, 20);
-                  },
-        runQuery: function ()
-                  {
-                    var query = this.searchQuery;
-                    if(!query || query.length === 0)
-                    {
-                      this.$.results.close();
-                    }
-                    else
-                    {
-                      this.$.results.open();
-                    }
-                  },
-        focus:    function ()
-                  {
-                    this.$.search.inputElement.inputElement.focus();
-                  },
-
-        __getWeight: function (matchWords, tests)
-                     {
-                       var weight = 0;
-                       for(var matchIdx in matchWords)
-                       {
-                         if(matchWords.hasOwnProperty(matchIdx) && matchWords[matchIdx].length > 0)
-                         {
-                           var word = matchWords[matchIdx],
-                             fullTest = new RegExp('\\b' + this._escapeRegExp(word) + '\\b', 'i'),
-                             partialTest = new RegExp('\\b' + this._escapeRegExp(word), 'i');
-
-                           for(var testIdx in tests)
-                           {
-                             if(tests.hasOwnProperty(testIdx))
-                             {
-                               var test = tests[testIdx] || '';
-                               if(fullTest.test(test.replace(/[^a-z0-9\s]+/ig, '')))
-                               {
-                                 weight += 2;
-                               }
-                               else if(partialTest.test(test.replace(/[^a-z0-9\s]+/ig, '')))
-                               {
-                                 weight += 1;
-                               }
-                             }
-                           }
-                         }
-                       }
-                       return weight;
-                     },
-
-        __getItem: function (name, icon, description, weight, gaid, path)
-                   {
-                     return {
-                       Name:        name, Icon: icon || '', Description: description || '', Weight: weight || 0,
-                       GlobalAppID: gaid, Path: path
-                     };
-                   },
-
-        behaviors: [
-          Polymer.IronA11yKeysBehavior,
-          Polymer.CubeI18nBehavior,
-          Polymer.CubeServiceBehavior
-        ]
-      }
-    );
+      behaviors: [
+        Polymer.IronA11yKeysBehavior,
+        Polymer.CubeI18nBehavior,
+        Polymer.CubeServiceBehavior
+      ]
+    });
   </script>
 </dom-module>
