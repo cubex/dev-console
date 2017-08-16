@@ -148,9 +148,29 @@
         _drawer: { type: Object },
         _drawerOpen: { type: Object },
         _userRegistryData: { type: Object },
-        selectedApp: { type: String, notify: true, observer: '_appChange' },
+        selectedApp:
+        {
+          type: String,
+          notify: true,
+          observer: '_appChange',
+          reflectToAttribute: true
+        },
         active: { type: Boolean, reflectToAttribute: true, computed: '_hasApp(selectedApp)' }
       },
+
+      attached: function()
+      {
+        this.listen(this._getDrawer(), 'cubex-drawer-state-changed',
+          '_ch');
+      },
+      _ch: function(e)
+      {
+        if(e.detail.state === 1 && !e.detail.isOpen)
+        {
+          this.selectedApp = null;
+        }
+      },
+
       _isSelectedApp: function(app, selectedApp)
       {
         return app.vendor_id + '/' + app.id === selectedApp;
@@ -193,10 +213,6 @@
         if(e.currentTarget.getAttribute('gaid') === this.selectedApp)
         {
           this.selectedApp = null;
-          if(this._getDrawer().state === 2)
-          {
-            this._getDrawer().setMaxState(1);
-          }
         }
         else
         {
