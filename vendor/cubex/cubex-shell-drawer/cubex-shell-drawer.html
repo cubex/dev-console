@@ -18,6 +18,7 @@
 <link href="../cubex-pinned-apps/cubex-pinned.html" rel="import">
 <link href="../cubex-route/cubex-route.html" rel="import">
 <link href="../cubex-shell-drawer/cubex-shell-drawer-panel.html" rel="import">
+<link href="../cubex-link/cubex-link.html" rel="import">
 <link href="../../cube-dropdown/cube-dropdown.html" rel="import">
 
 <dom-module id="cubex-shell-drawer" attributes="app-nav">
@@ -248,6 +249,14 @@
           background: var(--theme-2-color);
         }
       }
+
+      #drawerPanelContainer cubex-link[active] cube-li {
+        @apply --primary-600;
+      }
+
+      #drawerPanelContainer cubex-link[active] cube-icon {
+        color: var(--primary-800-text-color);
+      }
     </style>
 
     <cubex-route project="{{_projectAlias}}"></cubex-route>
@@ -286,12 +295,12 @@
           <template is="dom-repeat" items="[[appNav.items]]" as="navMenu">
             <cube-list-menu>
               <template is="dom-repeat" items="[[navMenu]]">
-                <a href="[[item.Path]]">
+                <cubex-link href="[[item.Path]]" strict>
                   <cube-li compact>
                     <cube-icon slot="icon" icon="[[item.Icon]]"></cube-icon>
                     [[i18nResource(item.Name)]]
                   </cube-li>
-                </a>
+                </cubex-link>
               </template>
             </cube-list-menu>
           </template>
@@ -302,13 +311,13 @@
           <cube-list-menu show-filter filter-label="{{i18n('filter_projects')}}">
             <cube-list-group title="{{i18n('all_projects')}}">
               <template is="dom-repeat" items="[[_projects]]">
-                <a href="//[[getServiceHost(item.alias)]]">
+                <cubex-link href="//[[getServiceHost(item.alias)]]">
                   <cube-li compact>
                     <cube-icon slot="icon" icon="communication:business"></cube-icon>
                     [[item.name]]
                     <div slot="secondary">[[item.alias]]</div>
                   </cube-li>
-                </a>
+                </cubex-link>
               </template>
             </cube-list-group>
           </cube-list-menu>
@@ -332,7 +341,7 @@
                     <cubex-category key="[[category.name]]"></cubex-category>
                   </a>
                   <template is="dom-repeat" items="[[__toArray(category.apps)]]" as="app">
-                    <a href="/[[app.vendor_id]]/[[app.id]]">
+                    <cubex-link href="/[[app.vendor_id]]/[[app.id]]" alt-href="[[_getAltHref(app)]]">
                       <cube-li compact highlight="[[app.pinned]]">
                         <cubex-pinned vendor="[[app.vendor_id]]" app="[[app.id]]" pinned="{{app.pinned}}"
                             slot="actions"></cubex-pinned>
@@ -340,7 +349,7 @@
                         [[app.name]]
                         <span slot="secondary" class="app-vendor">by [[app.vendor_id]]</span>
                       </cube-li>
-                    </a>
+                    </cubex-link>
                   </template>
                 </cube-list-group>
               </template>
@@ -370,19 +379,19 @@
           <cube-action icon="icons:more-horiz" slot="trigger" ripple-center ripple-circle></cube-action>
           <cube-list-menu border>
             <cube-list-group>
-              <a href="/kubex/project">
+              <cubex-link href="/kubex/project">
                 <cube-li compact on-tap="_tapProjectInfo">{{i18n('project_info')}}</cube-li>
-              </a>
+              </cubex-link>
               <cube-li compact on-tap="openKeyboardHelp">{{i18n('keyboard_shortcuts')}}</cube-li>
               <cube-li compact on-tap="_openSupport">{{i18n('support')}}</cube-li>
             </cube-list-group>
             <cube-list-group>
-              <a href="/kubex/store">
+              <cubex-link href="/kubex/store">
                 <cube-li compact on-tap="_openAppStore">
                   <cube-icon slot="icon" icon="device:widgets" size="18"></cube-icon>
                   {{i18n('app_store')}}
                 </cube-li>
-              </a>
+              </cubex-link>
               <cube-li compact on-tap="_logout">
                 <cube-icon slot="icon" icon="icons:exit-to-app" size="18"></cube-icon>
                 {{i18n('logout')}}
@@ -520,6 +529,20 @@
       {
         this.$.drawerPanels.select(0);
         if(this.parentNode.state !== 2 && this.parentNode.isOpen) { this._closeDrawer(); }
+      },
+
+      _getAltHref: function(app)
+      {
+        var hrefs = [];
+        if(app.apps)
+        {
+          var keys = Object.keys(app.apps);
+          for(var i = 0; i < keys.length; i++)
+          {
+            hrefs.push('/' + app.vendor_id + '/' + app.apps[keys[i]]);
+          }
+        }
+        return hrefs;
       },
 
       _computeBurgerIcon: function(state)

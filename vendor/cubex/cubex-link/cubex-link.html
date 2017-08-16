@@ -3,23 +3,23 @@
 <link rel="import" href="../../cube-dialog/cube-dialog.html">
 <link rel="import" href="../../paper-ripple/paper-ripple.html">
 
-<dom-module id="cubex-link" attributes="mode href match">
+<dom-module id="cubex-link" attributes="mode strict href alt-href">
   <template>
     <style>
-      :host {
+       :host {
         display: inline;
         position: relative;
       }
 
-      :host a {
+       :host a {
         @apply --cubex-link-style;
       }
 
-      :host([active]) a {
+       :host([active]) a {
         @apply --cubex-link-active-style;
       }
 
-      :host(:hover) a {
+       :host(:hover) a {
         @apply --cubex-link-hover-style;
       }
 
@@ -50,76 +50,77 @@
   </template>
   <script>
     Polymer(
+    {
+      is: 'cubex-link',
+      properties:
       {
-        is:         'cubex-link',
-        properties: {
-          active:   {type: Boolean, reflectToAttribute: true, value: false},
-          match:    {type: Boolean, value: false},
-          mode:     {type: String, value: 'page'},
-          href:     {type: String},
-          _dlg:     {type: Object},
-          _pagelet: {type: Object}
+        active:
+        {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: false,
+          computed: '_activeState(__path,__query,__hash,href,altHref,mode,strict)'
         },
+        href: { type: String },
+        altHref: { type: Array, value: function() { return []; } },
+        mode: { type: String, value: 'page' },
+        strict: { type: Boolean, value: false },
+        _dlg: { type: Object },
+        _pagelet: { type: Object }
+      },
 
-        observers: [
-          '_activeState(__path,__query,__hash,href,mode,match)',
-        ],
+      _activeState: function(path, query, urlHash, href, altHref, mode,
+        strict)
+      {
+        if(mode == 'page' && path !== undefined && query !== undefined &&
+          urlHash !== undefined && href !== undefined)
+        {
+          var concat = window.location.origin +
+            (path ? path : '') +
+            (query ? '?' + query : '') +
+            (urlHash ? '#' + urlHash : '');
 
-        _activeState: function (path, query, urlHash)
-                      {
-                        if(this.mode == 'page')
-                        {
-                          var concat = (path ? path : '') + (query ? '?' + query : '') + (urlHash ? '#' + urlHash : '');
-                          if(concat.indexOf(this.match) == 0)
-                          {
-                            this.active = true;
-                          }
-                          else if(this.href == concat)
-                          {
-                            this.active = true;
-                          }
-                          else if(this.href == '#' + urlHash)
-                          {
-                            this.active = true;
-                          }
-                          else if(this.href == '?' + query)
-                          {
-                            this.active = true;
-                          }
-                          else if(this.href && concat.indexOf(this.href) == 0)
-                          {
-                            this.active = true;
-                          }
-                          else
-                          {
-                            this.active = false;
-                          }
-                        }
-                        else
-                        {
-                          this.active = false;
-                        }
-                      },
+          var tests = ((altHref && altHref.slice()) || []);
+          tests.splice(0, 0, href);
+          for(var i = 0; i <= tests.length; i++)
+          {
+            var compare = tests[i];
+            if(/^\/\//.test(compare))
+            {
+              compare = window.location.protocol + compare;
+            }
+            else if(!/^https?:\/\//.test(compare))
+            {
+              compare = window.location.origin + compare;
+            }
+            if((strict && concat === compare) ||
+              (!strict && concat.indexOf(compare) === 0))
+            {
+              return true;
+            }
+          }
+        }
+        return false;
+      },
 
-        _isMode: function (test, mode)
-                 {
-                   return test === mode;
-                 },
+      _isMode: function(test, mode)
+      {
+        return test === mode;
+      },
 
-        _tapDialog:   function ()
-                      {
-                        if(!this._pagelet)
-                        {
-                          this._pagelet = this.$$('#dialog').query('#pagelet');
-                        }
-                        this.$$('#dialog').open();
-                        this._pagelet.update();
-                      },
-        _refitDialog: function ()
-                      {
-                        this.$$('#dialog').refit();
-                      }
+      _tapDialog: function()
+      {
+        if(!this._pagelet)
+        {
+          this._pagelet = this.$$('#dialog').query('#pagelet');
+        }
+        this.$$('#dialog').open();
+        this._pagelet.update();
+      },
+      _refitDialog: function()
+      {
+        this.$$('#dialog').refit();
       }
-    );
+    });
   </script>
 </dom-module>
