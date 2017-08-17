@@ -8,7 +8,7 @@
   <template>
     <cubex-route project="{{_projectAlias}}"></cubex-route>
     <cubex-project project-alias="[[_projectAlias]]" project="{{_project}}" projects="{{_projects}}"
-                   invites="{{_invites}}" subscribed="{{_projectReady}}"></cubex-project>
+        invites="{{_invites}}" subscribed="{{_projectReady}}"></cubex-project>
     <template is="dom-if" if="[[_showConsole]]">
       <cubex-shell-console></cubex-shell-console>
     </template>
@@ -19,32 +19,44 @@
 
   <script>
     Polymer(
+    {
+      is: 'cubex-shell',
+      properties:
       {
-        is:                  'cubex-shell',
-        properties:          {
-          _projectReady: {type: Boolean},
-          _project:      {type: String},
-          _projects:     {type: Array},
-          _invites:      {type: Array},
-          _showConsole:  {
-            type:     Boolean,
-            value:    false,
-            computed: '_computeShowConsole(_project,_projects,_invites,_projectReady)'
-          },
-          _showSignup:   {
-            type:     Boolean,
-            value:    false,
-            computed: '_computeShowSignup(_project,_projects,_invites,_projectReady)'
-          }
+        _projectReady: { type: Boolean, observer: '_observeReady' },
+        _project: { type: String },
+        _projects: { type: Array },
+        _invites: { type: Array },
+        _showConsole:
+        {
+          type: Boolean,
+          value: false,
+          computed: '_computeShowConsole(_project,_projects,_invites,_projectReady)'
         },
-        _computeShowConsole: function (project, projects, invites, ready)
-                             {
-                               return ready && (project || ((projects.length || 0) + (invites.length || 0) > 0));
-                             },
-        _computeShowSignup:  function (project, projects, invites, ready)
-                             {
-                               return ready && ((!project) && ((projects.length || 0) + (invites.length || 0) <= 0));
-                             }
-      });
+        _showSignup:
+        {
+          type: Boolean,
+          value: false,
+          computed: '_computeShowSignup(_project,_projects,_invites,_projectReady)'
+        }
+      },
+      _observeReady: function(ready)
+      {
+        if(ready)
+        {
+          document.body.removeAttribute('kubex-waiting');
+        }
+      },
+      _computeShowConsole: function(project, projects, invites, ready)
+      {
+        return ready && (project || ((projects.length || 0) + (invites.length ||
+          0) > 0));
+      },
+      _computeShowSignup: function(project, projects, invites, ready)
+      {
+        return ready && ((!project) && ((projects.length || 0) + (invites
+          .length || 0) <= 0));
+      }
+    });
   </script>
 </dom-module>
