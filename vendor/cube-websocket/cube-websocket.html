@@ -12,252 +12,279 @@ Example:
 @hero hero.svg
 -->
 
-<dom-module id="cube-websocket"
-            attributes="project vendor app url protocol auto subscribe-payload on-subscribe on-close on-message on-error subscribed meta action-count message-count">
+<dom-module id="cube-websocket" attributes="project vendor app url protocol auto subscribe-payload on-subscribe on-close on-message on-error subscribed meta action-count message-count">
   <script>
     Polymer(
+    {
+      is: 'cube-websocket',
+      behaviors: [Polymer.CubeServiceBehavior],
+      properties:
       {
-        is:         'cube-websocket',
-        behaviors:  [Polymer.CubeServiceBehavior],
-        properties: {
-          project:          {type: String},
-          vendor:           {type: String},
-          app:              {type: String},
-          url:              {
-            type:               String,
-            value:              function ()
-                                {
-                                  var protocol = 'ws:';
-                                  if(window.location.protocol === 'https:')
-                                  {
-                                    protocol = 'wss:'
-                                  }
-                                  return protocol + '//' + this.getServiceHost('conduit');
-                                },
-            reflectToAttribute: true
+        project: { type: String },
+        vendor: { type: String },
+        app: { type: String },
+        url:
+        {
+          type: String,
+          value: function()
+          {
+            var protocol = 'ws:';
+            if(window.location.protocol === 'https:')
+            {
+              protocol = 'wss:'
+            }
+            return protocol + '//' + this.getServiceHost('conduit');
           },
-          protocol:         {type: String},
-          subscribed:       {type: Boolean, notify: true},
-          subscribePayload: {type: String},
-          auto:             {type: Boolean, value: false},
-          meta:             {type: Object, value: function () {return {}}, notify: true},
-          actionCount:      {type: Object, value: function () {return {}}, notify: true},
-          messageCount:     {type: Number, value: 0, notify: true},
-          _subscribeUrl:    {type: String},
-          __eventBus:       {type: Object, value: document.createElement(null)},
-          __sockets:        {type: Object, value: {}}
+          reflectToAttribute: true
         },
-
-        _doSubscribe: function ()
-                      {
-                        // http request to subscribe to this app
-                        if(this._socket && this._socket.subscribes[this._subscribeUrl])
-                        {
-                          if(this._socket.subscribes[this._subscribeUrl] !== true)
-                          {
-                            this._handleSubscribe(this._socket.subscribes[this._subscribeUrl]);
-                          }
-                        }
-                        else
-                        {
-                          var self = this, xmlHttp = new XMLHttpRequest();
-                          self._socket.subscribes[this._subscribeUrl] = true;
-
-                          xmlHttp.onreadystatechange = function ()
-                          {
-                            if(xmlHttp.readyState === XMLHttpRequest.DONE)
-                            {
-                              self._socket.subscribes[self._subscribeUrl] = {
-                                hash:         self._socketHash + self._subscribeUrl,
-                                status:       xmlHttp.status,
-                                statusText:   xmlHttp.statusText,
-                                responseText: xmlHttp.responseText
-                              };
-                              self.__eventBus.dispatchEvent(
-                                new CustomEvent(
-                                  'cube-websocket-subscribed',
-                                  {detail: self._socket.subscribes[self._subscribeUrl]}
-                                )
-                              );
-                            }
-                          };
-
-                          xmlHttp.withCredentials = true;
-                          xmlHttp.open("POST", this._subscribeUrl, true);
-                          xmlHttp.setRequestHeader('X-Requested-By', 'cube-websocket');
-
-                          //noinspection JSCheckFunctionSignatures
-                          xmlHttp.send(this.subscribePayload);
-                        }
-                      },
-
-        _handleSubscribe: function (response)
-                          {
-                            if(response.hash === this._socketHash + this._subscribeUrl)
-                            {
-                              if(response.status === 200)
-                              {
-                                this.subscribed = true;
-                                this.fire('subscribe', response.responseText);
-                              }
-                              else
-                              {
-                                this.fire(
-                                  'error',
-                                  'Failed to subscribe to ' + this.app + '. Status [' + response.status + '] ' + response.statusText
-                                );
-                              }
-                            }
-                          },
-
-        _onClose:         function ()
-                          {
-                            this.subscribed = false;
-                            this._socket.startTime = Math.floor(Date.now() / 1000);
-                            this._socket.reconnectTime = 1;
-                            this._tryConnect(true);
-                            this.fire('close');
-                          },
-        _onError:         function (error)
-                          {
-                            this.fire('error', error);
-                            this._tryConnect();
-                          },
-        _tryConnect:      function (now)
-                          {
-                            if(now)
-                            {
-                              this.open();
-                            }
-                            else
-                            {
-                              var self = this;
-                              if(Math.floor(Date.now() / 1000) - this._socket.startTime > 300)
-                              {
-                                this.fire('message', 'Socket connection failed after 5 minutes');
-                              }
-                              else
-                              {
-                                this._socket.reconnectHnd = setTimeout(
-                                  function () {self.open()},
-                                  this._socket.reconnectTime * 1000
-                                );
-                                this._socket.reconnectTime = Math.min(this._socket.reconnectTime * 2, 30)
-                              }
-                            }
-                          },
-        _onMessage:       function (event)
-                          {
-                            var message = JSON.parse(event.data);
-                            if(message.app === 'conduit')
-                            {
-                              if(message.channel === '_conduit' && message.action === 'session-id')
-                              {
-                                this._socket.sessionId = message.payload;
-                                this._setSubscribeUrl(this._socket.sessionId);
-
-                                // socket is only open when we have received the sessionId
-                                this._doSubscribe();
-                              }
-                            }
-                            else if(message.app === this.vendor + '/' + this.app)
-                            {
-                              this.messageCount++;
-                              this.set(['actionCount', message.action], (this.actionCount[message.action] || 0) + 1);
-                              if(message.meta)
-                              {
-                                for(var mIdx in message.meta)
-                                {
-                                  if(message.meta.hasOwnProperty(mIdx))
-                                  {
-                                    this.meta[mIdx] = message.meta[mIdx];
-                                  }
-                                }
-                              }
-                              this.fire('message', message);
-                            }
-                          },
-        _onOpen:          function ()
-                          {
-                            this._socket.socket.addEventListener('close', this._onClose.bind(this));
-                          },
-        _setSubscribeUrl: function (sessionID)
-                          {
-                            this._subscribeUrl = '/' + this.vendor + '/' + this.app + '/_socket/subscribe/' + sessionID
-                          },
-
-        ready: function ()
-               {
-                 this.__eventBus.addEventListener(
-                   'cube-websocket-subscribed',
-                   function (e) {this._handleSubscribe(e.detail)}.bind(this)
-                 );
-
-                 this.async(
-                   function ()
-                   {
-                     this.auto && this.open();
-                   }
-                 );
-               },
-
-        open: function ()
-              {
-                if(!this.url)
-                {
-                  console.error('No URL specified for socket');
-                }
-                else if(!this.app)
-                {
-                  console.error('No app specified for socket');
-                }
-                else
-                {
-                  if(undefined === this._socket)
-                  {
-                    this._socket = {reconnectTime: 1, startTime: Math.floor(Date.now() / 1000), subscribes: {}};
-                  }
-
-                  if(undefined === this._socket.socket || this._socket.socket.readyState === WebSocket.CLOSED)
-                  {
-                    try
-                    {
-                      this._socket.socket = new WebSocket(this.url, this.protocol);
-                    }
-                    catch(e)
-                    {
-                      console.error(e);
-                    }
-                  }
-                  this._socket.socket.addEventListener('open', this._onOpen.bind(this));
-                  this._socket.socket.addEventListener('error', this._onError.bind(this));
-                  this._socket.socket.addEventListener('message', this._onMessage.bind(this));
-                  if(this._socket.sessionId)
-                  {
-                    this._setSubscribeUrl(this._socket.sessionId);
-                    this._doSubscribe();
-                  }
-                }
-              },
-        send: function (message)
-              {
-                this._socket.socket.send(JSON.stringify({type: this.app, payload: message}));
-              },
-
-        get _socket()
+        protocol: { type: String },
+        subscribed: { type: Boolean, notify: true },
+        subscribePayload: { type: String },
+        auto: { type: Boolean, value: false, observer: '_autoChanged' },
+        meta: { type: Object, value: function() { return {} }, notify: true },
+        actionCount:
         {
-          return this.__sockets[this._socketHash];
+          type: Object,
+          value: function() { return {} },
+          notify: true
         },
-        set _socket(socket)
-        {
-          this.__sockets[this._socketHash] = socket;
-        },
+        messageCount: { type: Number, value: 0, notify: true },
+        _subscribeUrl: { type: String },
+        __eventBus: { type: Object, value: document.createElement(null) },
+        __sockets: { type: Object, value: {} }
+      },
 
-        get _socketHash()
+      _doSubscribe: function()
+      {
+        // http request to subscribe to this app
+        if(this._socket && this._socket.subscribes[this._subscribeUrl])
         {
-          return JSON.stringify([this.url, this.protocol]);
+          if(this._socket.subscribes[this._subscribeUrl] !== true)
+          {
+            this._handleSubscribe(this._socket.subscribes[this._subscribeUrl]);
+          }
         }
+        else
+        {
+          var self = this,
+            xmlHttp = new XMLHttpRequest();
+          self._socket.subscribes[this._subscribeUrl] = true;
+
+          xmlHttp.onreadystatechange = function()
+          {
+            if(xmlHttp.readyState === XMLHttpRequest.DONE)
+            {
+              self._socket.subscribes[self._subscribeUrl] = {
+                hash: self._socketHash + self._subscribeUrl,
+                status: xmlHttp.status,
+                statusText: xmlHttp.statusText,
+                responseText: xmlHttp.responseText
+              };
+              self.__eventBus.dispatchEvent(
+                new CustomEvent(
+                  'cube-websocket-subscribed',
+                  {
+                    detail: self._socket
+                      .subscribes[self._subscribeUrl]
+                  }
+                )
+              );
+            }
+          };
+
+          xmlHttp.withCredentials = true;
+          xmlHttp.open("POST", this._subscribeUrl, true);
+          xmlHttp.setRequestHeader('X-Requested-By', 'cube-websocket');
+
+          //noinspection JSCheckFunctionSignatures
+          xmlHttp.send(this.subscribePayload);
+        }
+      },
+
+      _handleSubscribe: function(response)
+      {
+        if(response.hash === this._socketHash + this._subscribeUrl)
+        {
+          if(response.status === 200)
+          {
+            this.subscribed = true;
+            this.fire('subscribe', response.responseText);
+          }
+          else
+          {
+            this.fire(
+              'error',
+              'Failed to subscribe to ' + this.app + '. Status [' +
+              response.status + '] ' + response.statusText
+            );
+          }
+        }
+      },
+
+      _onClose: function()
+      {
+        this.subscribed = false;
+        this._socket.startTime = Math.floor(Date.now() / 1000);
+        this._socket.reconnectTime = 1;
+        this._tryConnect(true);
+        this.fire('close');
+      },
+      _onError: function(error)
+      {
+        this.fire('error', error);
+        this._tryConnect();
+      },
+      _tryConnect: function(now)
+      {
+        if(now)
+        {
+          this.open();
+        }
+        else
+        {
+          var self = this;
+          if(Math.floor(Date.now() / 1000) - this._socket.startTime > 300)
+          {
+            this.fire('message',
+              'Socket connection failed after 5 minutes');
+          }
+          else
+          {
+            this._socket.reconnectHnd = setTimeout(
+              function() { self.open() },
+              this._socket.reconnectTime * 1000
+            );
+            this._socket.reconnectTime = Math.min(this._socket.reconnectTime *
+              2, 30)
+          }
+        }
+      },
+      _onMessage: function(event)
+      {
+        var message = JSON.parse(event.data);
+        if(message.app === 'conduit')
+        {
+          if(message.channel === '_conduit' && message.action ===
+            'session-id')
+          {
+            this._socket.sessionId = message.payload;
+            this._setSubscribeUrl(this._socket.sessionId);
+
+            // socket is only open when we have received the sessionId
+            this._doSubscribe();
+          }
+        }
+        else if(message.app === this.vendor + '/' + this.app)
+        {
+          this.messageCount++;
+          this.set(['actionCount', message.action], (this.actionCount[
+            message.action] || 0) + 1);
+          if(message.meta)
+          {
+            for(var mIdx in message.meta)
+            {
+              if(message.meta.hasOwnProperty(mIdx))
+              {
+                this.meta[mIdx] = message.meta[mIdx];
+              }
+            }
+          }
+          this.fire('message', message);
+        }
+      },
+      _onOpen: function()
+      {
+        this._socket.socket.addEventListener(
+          'close', this._onClose.bind(this)
+        );
+      },
+      _setSubscribeUrl: function(sessionID)
+      {
+        this._subscribeUrl = '/' + this.vendor + '/' + this.app +
+          '/_socket/subscribe/' + sessionID
+      },
+
+      ready: function()
+      {
+        this.__eventBus.addEventListener(
+          'cube-websocket-subscribed',
+          function(e) { this._handleSubscribe(e.detail) }.bind(this)
+        );
+      },
+
+      _autoChanged: function(auto)
+      {
+        if(auto)
+        {
+          this.open();
+        }
+      },
+
+      open: function()
+      {
+        if(!this.url)
+        {
+          console.error('No URL specified for socket');
+        }
+        else if(!this.app)
+        {
+          console.error('No app specified for socket');
+        }
+        else
+        {
+          if(undefined === this._socket)
+          {
+            this._socket = {
+              reconnectTime: 1,
+              startTime: Math.floor(Date.now() / 1000),
+              subscribes: {}
+            };
+          }
+
+          if(undefined === this._socket.socket ||
+            this._socket.socket.readyState === WebSocket.CLOSED)
+          {
+            try
+            {
+              this._socket.socket = new WebSocket(this.url, this.protocol);
+            }
+            catch(e)
+            {
+              console.error(e);
+            }
+          }
+          this._socket.socket.addEventListener(
+            'open', this._onOpen.bind(this));
+          this._socket.socket.addEventListener(
+            'error', this._onError.bind(this));
+          this._socket.socket.addEventListener(
+            'message', this._onMessage.bind(this));
+
+          if(this._socket.sessionId)
+          {
+            this._setSubscribeUrl(this._socket.sessionId);
+            this._doSubscribe();
+          }
+        }
+      },
+      send: function(message)
+      {
+        this._socket.socket.send(JSON.stringify({ type: this.app, payload: message }));
+      },
+
+      get _socket()
+      {
+        return this.__sockets[this._socketHash];
+      },
+      set _socket(socket)
+      {
+        this.__sockets[this._socketHash] = socket;
+      },
+
+      get _socketHash()
+      {
+        return JSON.stringify([this.url, this.protocol]);
       }
-    );
+    });
   </script>
 </dom-module>
