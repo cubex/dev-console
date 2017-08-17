@@ -156,7 +156,7 @@ Example:
                 <cube-li>
                   <cube-icon icon="icons:add-circle-outline" slot="icon"></cube-icon>
                   [[item.project.name]]
-                  <div slot="secondary">Pending</div>
+                  <div slot="secondary">[[item.project.alias]]</div>
                   <cube-action slot="actions" title="Accept" style="color:green" icon="icons:thumb-up"
                       on-tap="_processInvite" data-accept-type="1" data-accept-id$="[[item.project.id]]"
                       data-verify$="[[item.status.verification]]"></cube-action>
