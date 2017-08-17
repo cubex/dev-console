@@ -220,9 +220,12 @@
       },
       _appChange: function()
       {
-        if(this.selectedApp && (this._getDrawer().state > 0 || this._isTouchDevice))
+        if(this.selectedApp)
         {
-          this._getDrawer().open();
+          if(this._getDrawer().state > 0)
+          {
+            this._getDrawer().open();
+          }
         }
         else
         {
@@ -231,8 +234,8 @@
       },
       _lockUserDrawer: function()
       {
-        this._getDrawer().setMaxState(this._getDrawer().state === 2 ? 1 :
-          2);
+        this._getDrawer().setMaxState(
+          this._getDrawer().state === 2 ? 1 : 2);
         this._getDrawer().setState(this._getDrawer().maxState);
         this._getDrawer().open();
       },
