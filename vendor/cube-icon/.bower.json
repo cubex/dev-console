@@ -29,11 +29,11 @@
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
     "web-component-tester": "^6.0.0"
   },
-  "_release": "df56e58084",
+  "_release": "bce6c7f0ef",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "df56e58084f11d45bda191a84ad8b9e8b6ecebcf"
+    "commit": "bce6c7f0eff1e928732c5ea8543224f9cf80aaf6"
   },
   "_source": "https://github.com/CubexElements/cube-icon.git",
   "_target": "*",
