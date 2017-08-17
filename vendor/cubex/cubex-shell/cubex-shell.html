@@ -8,7 +8,7 @@
   <template>
     <cubex-route project="{{_projectAlias}}"></cubex-route>
     <cubex-project project-alias="[[_projectAlias]]" project="{{_project}}" projects="{{_projects}}"
-        invites="{{_invites}}" subscribed="{{_projectReady}}"></cubex-project>
+        invites="{{_invites}}" projects-ready="{{_projectsReady}}"></cubex-project>
     <template is="dom-if" if="[[_showConsole]]">
       <cubex-shell-console></cubex-shell-console>
     </template>
@@ -23,7 +23,7 @@
       is: 'cubex-shell',
       properties:
       {
-        _projectReady: { type: Boolean, observer: '_observeReady' },
+        _projectsReady: { type: Boolean, observer: '_observeReady' },
         _project: { type: String },
         _projects: { type: Array },
         _invites: { type: Array },
@@ -31,13 +31,13 @@
         {
           type: Boolean,
           value: false,
-          computed: '_computeShowConsole(_project,_projects,_invites,_projectReady)'
+          computed: '_computeShowConsole(_project,_projects,_invites,_projectsReady)'
         },
         _showSignup:
         {
           type: Boolean,
           value: false,
-          computed: '_computeShowSignup(_project,_projects,_invites,_projectReady)'
+          computed: '_computeShowSignup(_project,_projects,_invites,_projectsReady)'
         }
       },
       _observeReady: function(ready)

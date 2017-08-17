@@ -13,88 +13,130 @@ Example:
 @demo demo/index.html
 -->
 
-<dom-module id="cubex-project" attributes="project-alias project projects invites subscribed">
+<dom-module id="cubex-project" attributes="project-alias project projects invites projects-ready">
   <template>
-    <cube-websocket auto project="[[projectAlias]]" vendor="kubex" app="project"
-                    on-subscribe="_projectSubscribed" on-message="_projectUpdate"></cube-websocket>
+    <cube-websocket auto=[[_enableSocket]] project="[[projectAlias]]" vendor="kubex"
+        app="project" on-subscribe="_projectSubscribed" on-message="_projectUpdate"></cube-websocket>
+    <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/project/projects.json"
+        data="{{_projectsResource}}"></cube-resource>
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/project/invites.json"
-                   data="{{_invites}}"></cube-resource>
+        data="{{_invites}}"></cube-resource>
   </template>
   <script>
     Polymer(
+    {
+      is: 'cubex-project',
+      properties:
       {
-        is:                 'cubex-project',
-        properties:         {
-          subscribed:      {type: Boolean, value: false, notify: true},
-          project:         {type: Object, notify: true, readOnly: true},
-          projects:        {
-            type:  Array, notify: true, readOnly: true,
-            value: function () {return [];}
-          },
-          invites:         {
-            type:  Array, notify: true, readOnly: true,
-            value: function () {return [];}, computed: '_computeInvites(_invites)'
-          },
-          _invites:        {type: Object, value: function () {return {};}},
-          _projectsObject: {type: Object, value: function () {return {};}}
+        projectsReady: { type: Boolean, value: false, notify: true },
+        project: { type: Object, notify: true, readOnly: true },
+        projects:
+        {
+          type: Array,
+          notify: true,
+          readOnly: true,
+          value: function() { return []; }
         },
-        observers:          ['_projectChanged(_projectsObject,projectAlias)'],
-        _computeInvites:    function (invites)
-                            {
-                              if(invites && invites.Invites)
-                              {
-                                return invites.Invites;
-                              }
-                              return [];
-                            },
-        _projectSubscribed: function (e, message)
-                            {
-                              var projects = JSON.parse(message).projects || [];
-                              this._projectsObject = projects;
-                              this._setProjects(Object.keys(projects).map(function (i) {return projects[i];}));
-                              this.subscribed = true;
-                            },
-        _projectUpdate:     function (e, message)
-                            {
-                              var projects = this.projects;
-                              if(message.action === 'create' || message.action === 'join')
-                              {
-                                this.push('projects', message.payload);
-                              }
-                              else if(message.action === 'leave')
-                              {
-                                for(var i in this.projects)
-                                {
-                                  if(this.projects.hasOwnProperty(i))
-                                  {
-                                    if(this.projects[i].id === message.payload.id)
-                                    {
-                                      this.splice('projects', i, 1);
-                                      break;
-                                    }
-                                  }
-                                }
-                              }
-                            },
-        _projectChanged:    function (projects, alias)
-                            {
-                              if(projects && alias)
-                              {
-                                if(this.subscribed && !projects[alias])
-                                {
-                                  window.location = '//' + this.getServiceHost('console');
-                                }
-                                else
-                                {
-                                  this._setProject(projects[alias]);
-                                }
-                              }
-                            },
-        behaviors:          [
-          Polymer.CubeServiceBehavior,
-          Polymer.CubexProjectBehavior
-        ]
-      }
-    );
+        invites:
+        {
+          type: Array,
+          notify: true,
+          readOnly: true,
+          value: function() { return []; },
+          computed: '_computeInvites(_invites)'
+        },
+        _invites: { type: Object, value: function() { return {}; } },
+        _projectsResource:
+        {
+          type: Object,
+          observer: '_updateProjects'
+        },
+        _projectsObject: { type: Object, value: function() { return {}; } }
+      },
+      observers: ['_projectChanged(_projectsObject,projectAlias)'],
+      _computeInvites: function(invites)
+      {
+        if(invites && invites.Invites)
+        {
+          return invites.Invites;
+        }
+        return [];
+      },
+      _projectSubscribed: function(e, message)
+      {
+        var projects = JSON.parse(message).projects || [];
+        this._addProjects(projects);
+      },
+      _projectUpdate: function(e, message)
+      {
+        var projects = this.projects;
+        if(message.action === 'create' || message.action === 'join')
+        {
+          this._addProject(message.payload);
+        }
+        else if(message.action === 'leave')
+        {
+          for(var i in this.projects)
+          {
+            if(this.projects.hasOwnProperty(i))
+            {
+              if(this.projects[i].id === message.payload.id)
+              {
+                delete this._projectsObject[this.projects[i].id];
+                this.splice('projects', i, 1);
+                break;
+              }
+            }
+          }
+        }
+      },
+      _projectChanged: function(projects, alias)
+      {
+        if(projects && alias)
+        {
+          if(this.subscribed && !projects[alias])
+          {
+            window.location = '//' + this.getServiceHost('console');
+          }
+          else
+          {
+            this._setProject(projects[alias]);
+          }
+        }
+      },
+
+      _addProject: function(project)
+      {
+        if(!this._projectsObject[project.id])
+        {
+          this._projectsObject[project.id] = project;
+          this.push('projects', project);
+        }
+      },
+      _addProjects: function(projects)
+      {
+        for(var i in projects)
+        {
+          if(projects.hasOwnProperty(i))
+          {
+            this._addProject(projects[i]);
+          }
+        }
+      },
+
+      _updateProjects: function(projects)
+      {
+        if(projects.projects)
+        {
+          this._addProjects(projects.projects);
+        }
+        this.projectsReady = true;
+      },
+
+      behaviors: [
+        Polymer.CubeServiceBehavior,
+        Polymer.CubexProjectBehavior
+      ]
+    });
   </script>
 </dom-module>
