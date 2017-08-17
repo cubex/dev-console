@@ -1,4 +1,5 @@
 <link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../cube-resource/cube-resource.html">
 <link rel="import" href="../../cube-websocket/cube-websocket.html">
 <link rel="import" href="../../cube-behavior/cube-service-behavior.html">
 <link rel="import" href="cubex-project-behavior.html">
@@ -15,12 +16,10 @@ Example:
 
 <dom-module id="cubex-project" attributes="project-alias project projects invites projects-ready">
   <template>
-    <cube-websocket auto=[[_enableSocket]] project="[[projectAlias]]" vendor="kubex"
+    <cube-websocket auto=[[projectsReady]] project="[[projectAlias]]" vendor="kubex"
         app="project" on-subscribe="_projectSubscribed" on-message="_projectUpdate"></cube-websocket>
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/project/projects.json"
         data="{{_projectsResource}}"></cube-resource>
-    <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/project/invites.json"
-        data="{{_invites}}"></cube-resource>
   </template>
   <script>
     Polymer(
@@ -42,10 +41,8 @@ Example:
           type: Array,
           notify: true,
           readOnly: true,
-          value: function() { return []; },
-          computed: '_computeInvites(_invites)'
+          value: function() { return []; }
         },
-        _invites: { type: Object, value: function() { return {}; } },
         _projectsResource:
         {
           type: Object,
@@ -129,6 +126,10 @@ Example:
         if(projects.projects)
         {
           this._addProjects(projects.projects);
+        }
+        if(projects.invites)
+        {
+          this._setInvites(projects.invites);
         }
         this.projectsReady = true;
       },
