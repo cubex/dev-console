@@ -1,4 +1,12 @@
 {
+  "entrypoint": "index.html",
+  "shell": "vendor/cubex/cubex-shell/cubex-shell.html",
+  "extraDependencies": [
+    "vendor/webcomponentsjs/webcomponents-lite.js",
+    "vendor/cube-color/styles/cubex-charcoal-primary.html",
+    "vendor/cube-color/styles/cubex-teal-accent.html",
+    "vendor/cubex/cubex-theme/styles/light-theme.html"
+  ],
   "lint": {
     "rules": [
       "polymer-2"

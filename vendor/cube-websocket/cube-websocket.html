@@ -145,8 +145,7 @@ Example:
           var self = this;
           if(Math.floor(Date.now() / 1000) - this._socket.startTime > 300)
           {
-            this.fire('message',
-              'Socket connection failed after 5 minutes');
+            this.fire('error', 'Socket connection failed after 5 minutes');
           }
           else
           {
@@ -154,8 +153,8 @@ Example:
               function() { self.open() },
               this._socket.reconnectTime * 1000
             );
-            this._socket.reconnectTime = Math.min(this._socket.reconnectTime *
-              2, 30)
+            this._socket.reconnectTime = Math.min(
+              this._socket.reconnectTime * 2, 30)
           }
         }
       },
@@ -177,8 +176,8 @@ Example:
         else if(message.app === this.vendor + '/' + this.app)
         {
           this.messageCount++;
-          this.set(['actionCount', message.action], (this.actionCount[
-            message.action] || 0) + 1);
+          this.set(['actionCount', message.action],
+            (this.actionCount[message.action] || 0) + 1);
           if(message.meta)
           {
             for(var mIdx in message.meta)

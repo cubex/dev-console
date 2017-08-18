@@ -16,8 +16,8 @@ Example:
 
 <dom-module id="cubex-project" attributes="project-alias project projects invites projects-ready">
   <template>
-    <cube-websocket auto=[[projectsReady]] project="[[projectAlias]]" vendor="kubex"
-        app="project" on-message="_projectUpdate"></cube-websocket>
+    <cube-websocket auto=[[projectsReady]] vendor="kubex" app="project" project="[[projectAlias]]"
+        on-message="_projectUpdate"></cube-websocket>
     <cube-resource auto auth url="//[[getServiceHost('apps')]]/kubex/project/projects.json"
         data="{{_projectsResource}}"></cube-resource>
   </template>
@@ -51,14 +51,7 @@ Example:
         _projectsObject: { type: Object, value: function() { return {}; } }
       },
       observers: ['_projectChanged(_projectsObject,projectAlias)'],
-      _computeInvites: function(invites)
-      {
-        if(invites && invites.Invites)
-        {
-          return invites.Invites;
-        }
-        return [];
-      },
+
       _projectUpdate: function(e, message)
       {
         var projects = this.projects;
@@ -80,6 +73,10 @@ Example:
               }
             }
           }
+        }
+        else if(message.action === 'invite')
+        {
+          this.push('invites', message.payload);
         }
       },
       _projectChanged: function(projects, alias)
@@ -120,11 +117,11 @@ Example:
       {
         if(projects.projects)
         {
-          this._addProjects(projects.projects);
+          this._addProjects(projects.projects.slice());
         }
         if(projects.invites)
         {
-          this._setInvites(projects.invites);
+          this._setInvites(projects.invites.slice());
         }
         this.projectsReady = true;
       },
