@@ -48,9 +48,11 @@ Example:
           type: Object,
           observer: '_updateProjects'
         },
-        _projectsObject: { type: Object, value: function() { return {}; } }
+        _projectsObject: { type: Object, notify: true, value: function() { return {}; } }
       },
-      observers: ['_projectChanged(_projectsObject,projectAlias)'],
+      observers: [
+        '_projectChanged(_projectsObject,projectAlias,projectsReady)'
+      ],
 
       _projectUpdate: function(e, message)
       {
@@ -79,11 +81,11 @@ Example:
           this.push('invites', message.payload);
         }
       },
-      _projectChanged: function(projects, alias)
+      _projectChanged: function(projects, alias, projectsReady)
       {
-        if(projects && alias)
+        if(projects && alias && projectsReady)
         {
-          if(this.subscribed && !projects[alias])
+          if(!projects[alias])
           {
             window.location = '//' + this.getServiceHost('console');
           }
@@ -96,9 +98,9 @@ Example:
 
       _addProject: function(project)
       {
-        if(!this._projectsObject[project.id])
+        if(!this._projectsObject[project.alias])
         {
-          this._projectsObject[project.id] = project;
+          this.set(['_projectsObject', project.alias], project);
           this.push('projects', project);
         }
       },
@@ -117,7 +119,7 @@ Example:
       {
         if(projects.projects)
         {
-          this._addProjects(projects.projects.slice());
+          this._addProjects(projects.projects);
         }
         if(projects.invites)
         {
