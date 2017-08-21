@@ -5,7 +5,8 @@
     "vendor/webcomponentsjs/webcomponents-lite.js",
     "vendor/cube-color/styles/cubex-charcoal-primary.html",
     "vendor/cube-color/styles/cubex-teal-accent.html",
-    "vendor/cubex/cubex-theme/styles/light-theme.html"
+    "vendor/cubex/cubex-theme/styles/light-theme.html",
+    "vendor/cube-hero/polygon.svg"
   ],
   "lint": {
     "rules": [
