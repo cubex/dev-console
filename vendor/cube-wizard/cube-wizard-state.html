@@ -8,9 +8,9 @@
 @demo demo/index.html
 -->
 
-<dom-module id="cube-wizard-state" attributes="key value default">
+<dom-module id="cube-wizard-state" attributes="key value default-value">
   <template>
-    <cube-meta key="[[key]]" value="{{value}}" default="[[default]]"></cube-meta>
+    <cube-meta key="[[key]]" value="{{value}}" default-value="[[defaultValue]]"></cube-meta>
   </template>
   <script>
     Polymer(
@@ -19,7 +19,7 @@
         properties: {
           key:     {type: String, notify: true},
           value:   {type: String, notify: true},
-          default: {type: String, notify: true}
+          defaultValue: {type: String, notify: true}
         }
       });
   </script>

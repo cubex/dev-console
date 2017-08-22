@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<dom-module id="cube-meta" attributes="key value default">
+<dom-module id="cube-meta" attributes="key value default-value">
   <script>
     Polymer(
       {
@@ -8,7 +8,7 @@
         properties: {
           key:     {type: String, notify: true, observer: '_keyChange'},
           value:   {type: String, notify: true},
-          default: {type: String},
+          defaultValue: {type: String},
 
           _meta:          {type: Object, value: {}},
           _registrations: {type: Object, value: {}}
@@ -32,7 +32,7 @@
                       }
                       else if(this.key && this.value === undefined)
                       {
-                        this.value = this.default;
+                        this.value = this.defaultValue;
                       }
                     }
                   },

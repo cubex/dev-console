@@ -23,17 +23,18 @@
     "polymer": "Polymer/polymer#1.9 - 2",
     "iron-icon": "PolymerElements/iron-icon#1 - 2",
     "paper-tooltip": "PolymerElements/paper-tooltip#1.9 - 2",
-    "cube-behavior": "CubexElements/cube-behavior"
+    "cube-behavior": "CubexElements/cube-behavior",
+    "cube-pagelet": "CubexElements/cube-pagelet"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
     "web-component-tester": "^6.0.0"
   },
-  "_release": "3063e69d84",
+  "_release": "242c4c36c5",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "3063e69d84366ed62376b2a10dacb2b90086ba3f"
+    "commit": "242c4c36c5e02ce021958199c2bf867410122dd5"
   },
   "_source": "https://github.com/CubexElements/cube-icon.git",
   "_target": "*",
