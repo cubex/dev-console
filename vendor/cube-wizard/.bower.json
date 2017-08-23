@@ -18,11 +18,11 @@
     "cube-input": "CubexElements/cube-input"
   },
   "homepage": "https://github.com/CubexElements/cube-wizard",
-  "_release": "576a10b48f",
+  "_release": "97dd530695",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "576a10b48f5720917ee044de3732f65562e77199"
+    "commit": "97dd5306959ad9060bad5e54cf8dd124a032ad06"
   },
   "_source": "https://github.com/CubexElements/cube-wizard.git",
   "_target": "*",
