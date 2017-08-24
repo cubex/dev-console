@@ -268,8 +268,7 @@ Example:
         text-shadow: 0 0 9px rgba(0, 0, 0, 0.45);
       }
     </style>
-
-    <cube-resource auto auth url="[[definitionPath]]" data="{{_pageDefinition}}" xhr="{{_pageDefXhr}}"
+    <cube-resource auto auth url="/_pd[[definitionPath]]" data="{{_pageDefinition}}" xhr="{{_pageDefXhr}}"
                    headers="[[_definitionHeaders]]"></cube-resource>
 
     <iron-media-query query="(max-width: 375px)" query-matches="{{narrow}}"></iron-media-query>
@@ -342,7 +341,7 @@ Example:
           </div>
 
           <div id="app-content-main">
-            <cube-pagelet auth auto url="[[contentPath]]"></cube-pagelet>
+            <cube-pagelet auth auto url="/_pc[[contentPath]]"></cube-pagelet>
           </div>
 
           <div style="clear:both"></div>
