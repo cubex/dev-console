@@ -3,184 +3,195 @@
 <dom-module id="cube-resource" attributes="auto auth url data headers ttl xhr status no-request-by">
   <script>
     Polymer(
+    {
+      is: 'cube-resource',
+      properties:
       {
-        is:         'cube-resource',
-        properties: {
-          auto:           {type: Boolean, value: false},
-          auth:           {type: Boolean, value: false},
-          noRequestBy:    {type: Boolean, value: false},
-          /**
-           * ttl: time to live (in seconds)
-           */
-          ttl:            {type: Number, value: 0},
-          url:            {type: String},
-          headers:        {type: Object, value: function () {return {};}},
-          data:           {type: String, readOnly: true, notify: true},
-          xhr:            {type: String, readOnly: true, notify: true},
-          status:         {type: Number, value: -1, notify: true},
-          /**
-           * resource cache, shared object between instances (value not wrapped with function)
-           */
-          _resourceCache: {type: Object, value: {}},
-          _headers:       {type: Object, computed: '_refreshHeaders(headers)'}
-        },
-        observers:  ['_updateResource(auto,ttl,url,headers)'],
-        attached:   function ()
-                    {
-                      document.addEventListener(this._NOTIFY_EVENT_NAME, this._resourceUpdated.bind(this));
-                    },
+        auto: { type: Boolean, value: false },
+        auth: { type: Boolean, value: false },
+        noRequestBy: { type: Boolean, value: false },
+        /**
+         * ttl: time to live (in seconds)
+         */
+        ttl: { type: Number, value: 2 },
+        url: { type: String },
+        headers: { type: Object, value: function() { return {}; } },
+        data: { type: String, readOnly: true, notify: true },
+        xhr: { type: String, readOnly: true, notify: true },
+        status: { type: Number, value: -1, notify: true },
+        /**
+         * resource cache, shared object between instances (value not wrapped with function)
+         */
+        _resourceCache: { type: Object, value: {} },
+        _headers: { type: Object, computed: '_refreshHeaders(headers)' }
+      },
+      observers: ['_updateResource(auto,ttl,url,headers)'],
+      attached: function()
+      {
+        document.addEventListener(this._NOTIFY_EVENT_NAME, this._resourceUpdated
+          .bind(this));
+      },
 
-        _refreshHeaders: function (headers)
-                         {
-                           if(!this.noRequestBy)
-                           {
-                             headers['X-Requested-By'] = 'cube-resource';
-                           }
-                           return headers;
-                         },
+      _refreshHeaders: function(headers)
+      {
+        if(!this.noRequestBy)
+        {
+          headers['X-Requested-By'] = 'cube-resource';
+        }
+        return headers;
+      },
 
-        _resourceUpdated: function (e)
-                          {
-                            var key = this._cacheKey();
-                            if(key && e.detail && e.detail.key === key)
-                            {
-                              this._setExportsFromStruct(e.detail);
-                            }
-                          },
+      _resourceUpdated: function(e)
+      {
+        var key = this._cacheKey();
+        if(key && e.detail && e.detail.key === key)
+        {
+          this._setExportsFromStruct(e.detail);
+        }
+      },
 
-        update: function (ignoreCache)
-                {
-                  this._updateResource(true, ignoreCache ? 0 : this.ttl);
-                },
+      update: function(ignoreCache)
+      {
+        this._updateResource(true, ignoreCache ? 0 : this.ttl);
+      },
 
-        _setExportsFromStruct: function (dataStruct)
-                               {
-                                 this._setPendingProperty(
-                                   'status',
-                                   dataStruct.status !== undefined ? dataStruct.status : -1,
-                                   true
-                                 );
+      _setExportsFromStruct: function(dataStruct)
+      {
+        this._setPendingProperty(
+          'status',
+          dataStruct.status !== undefined ? dataStruct.status : -1,
+          true
+        );
 
-                                 if(this.xhr !== dataStruct.xhr)
-                                 {
-                                   this._setPendingProperty('xhr', dataStruct.xhr, true);
-                                 }
+        if(this.xhr !== dataStruct.xhr)
+        {
+          this._setPendingProperty('xhr', dataStruct.xhr, true);
+        }
 
-                                 if(this.data !== dataStruct.data)
-                                 {
-                                   this._setPendingProperty('data', dataStruct.data, true);
-                                 }
+        if(this.data !== dataStruct.data)
+        {
+          this._setPendingProperty('data', dataStruct.data, true);
+        }
 
-                                 this._invalidateProperties();
-                               },
+        this._invalidateProperties();
+      },
 
-        _updateResource: function (request, ttl)
-                         {
-                           if(request && this.url)
-                           {
-                             var key = this._cacheKey();
-                             if(ttl && this._resourceCache[key] && this._resourceCache[key].expires > Date.now())
-                             {
-                               this._setExportsFromStruct(this._resourceCache[key]);
-                             }
-                             else
-                             {
-                               this._triggerRequest();
-                             }
-                           }
-                           else
-                           {
-                             this._setExportsFromStruct(this._makeCache(null));
-                           }
-                         },
+      _updateResource: function(request, ttl)
+      {
+        if(request && this.url)
+        {
+          var key = this._cacheKey();
+          if(ttl && this._resourceCache[key] && this._resourceCache[key].expires >
+            Date.now())
+          {
+            this._setExportsFromStruct(this._resourceCache[key]);
+          }
+          else
+          {
+            this._triggerRequest();
+          }
+        }
+        else
+        {
+          this._setExportsFromStruct(this._makeCache());
+        }
+      },
 
-        _dispatchCached: function ()
-                         {
-                           document.dispatchEvent(
-                             new CustomEvent(
-                               this._NOTIFY_EVENT_NAME, {detail: this._resourceCache[this._cacheKey()]}
-                             )
-                           );
-                         },
+      _dispatchCached: function()
+      {
+        document.dispatchEvent(
+          new CustomEvent(
+            this._NOTIFY_EVENT_NAME,
+            {
+              detail: this._resourceCache[this
+                ._cacheKey()]
+            }
+          )
+        );
+      },
 
-        _triggerRequest: function ()
-                         {
-                           var self = this, key = self._cacheKey(), oReq = new XMLHttpRequest();
-                           if(!this._resourceCache[key])
-                           {
-                             this._resourceCache[key] = this._makeCache(key, null, null, true);
-                           }
-                           else if(this._resourceCache[key].pending)
-                           {
-                             // request already pending
-                             return;
-                           }
-                           else
-                           {
-                             this._resourceCache[key].status = -1;
-                             this._resourceCache[key].pending = true;
-                           }
-                           this._dispatchCached();
+      _triggerRequest: function()
+      {
+        var self = this,
+          key = self._cacheKey(),
+          oReq = new XMLHttpRequest();
+        if(!this._resourceCache[key])
+        {
+          this._resourceCache[key] =
+            this._makeCache(key, undefined, undefined, true);
+        }
+        else if(this._resourceCache[key].pending)
+        {
+          // request already pending
+          return;
+        }
+        else
+        {
+          this._resourceCache[key].status = -1;
+          this._resourceCache[key].pending = true;
+        }
+        this._dispatchCached();
 
-                           oReq.addEventListener(
-                             "readystatechange", function ()
-                             {
-                               if(this.readyState === XMLHttpRequest.DONE)
-                               {
-                                 var data = null;
-                                 switch(this.getResponseHeader('content-type'))
-                                 {
-                                   case 'application/json':
-                                     data = JSON.parse(this.responseText);
-                                     break;
-                                   default:
-                                     data = this.responseText;
-                                     break;
-                                 }
-                                 self._resourceCache[key] = self._makeCache(key, this, data, false);
-                                 self._resourceCache[key].status = this.status;
-                                 self._dispatchCached();
-                               }
-                             }
-                           );
-                           oReq.open('GET', this.url);
-                           if(this._headers)
-                           {
-                             var keys = Object.keys(this._headers);
-                             for(var idx in keys)
-                             {
-                               if(keys.hasOwnProperty(idx))
-                               {
-                                 oReq.setRequestHeader(keys[idx], this._headers[keys[idx]]);
-                               }
-                             }
-                           }
-                           oReq.withCredentials = Boolean(this.auth);
-                           oReq.send();
-                         },
+        oReq.addEventListener(
+          "readystatechange",
+          function()
+          {
+            if(this.readyState === XMLHttpRequest.DONE)
+            {
+              var data = undefined;
+              switch(this.getResponseHeader('content-type'))
+              {
+                case 'application/json':
+                  data = JSON.parse(this.responseText);
+                  break;
+                default:
+                  data = this.responseText;
+                  break;
+              }
+              self._resourceCache[key] =
+                self._makeCache(key, this, data, false);
+              self._resourceCache[key].status = this.status;
+              self._dispatchCached();
+            }
+          }
+        );
+        oReq.open('GET', this.url);
+        if(this._headers)
+        {
+          var keys = Object.keys(this._headers);
+          for(var idx in keys)
+          {
+            if(keys.hasOwnProperty(idx))
+            {
+              oReq.setRequestHeader(keys[idx], this._headers[keys[idx]]);
+            }
+          }
+        }
+        oReq.withCredentials = Boolean(this.auth);
+        oReq.send();
+      },
 
-        _cacheKey: function ()
-                   {
-                     if(this.url)
-                     {
-                       return JSON.stringify([this.url, this._headers]);
-                     }
-                     return null;
-                   },
+      _cacheKey: function()
+      {
+        if(this.url)
+        {
+          return JSON.stringify([this.url, this._headers]);
+        }
+        return undefined;
+      },
 
-        _makeCache: function (key, xhr, data, pending)
-                    {
-                      return {
-                        key:     key,
-                        xhr:     xhr,
-                        data:    data,
-                        pending: pending,
-                        expires: (this.ttl * 1000) + Date.now()
-                      };
-                    },
+      _makeCache: function(key, xhr, data, pending)
+      {
+        return {
+          key: key ? key : undefined,
+          xhr: xhr ? xhr : undefined,
+          data: data ? data : undefined,
+          pending: pending ? pending : undefined,
+          expires: (this.ttl * 1000) + Date.now()
+        };
+      },
 
-        _NOTIFY_EVENT_NAME: 'cubex-resource-updated'
-      }
-    );
+      _NOTIFY_EVENT_NAME: 'cubex-resource-updated'
+    });
   </script>
 </dom-module>
