@@ -21,6 +21,7 @@
   ],
   "dependencies": {
     "cube-resource": "CubexElements/cube-resource",
+    "cube-table": "CubexElements/cube-table",
     "cube-time": "CubexElements/cube-time",
     "cube-behavior": "CubexElements/cube-behavior",
     "cube-pagelet": "CubexElements/cube-pagelet",
@@ -52,11 +53,11 @@
     "iron-ajax": "1.9 - 2",
     "webcomponentsjs": "^v1.0.0"
   },
-  "_release": "1168ac4d29",
+  "_release": "fca7b8e2a6",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "1168ac4d296ecf92ba7921aaa6ae4b8718c9e99e"
+    "commit": "fca7b8e2a612311f2d6549844f86ce235bd6978d"
   },
   "_source": "https://github.com/CubexElements/cube-elements.git",
   "_target": "*",
