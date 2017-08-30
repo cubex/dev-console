@@ -1,0 +1,399 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/mixins/gesture-event-listeners.html">
+<link rel="import" href="../cube-resource/cube-resource.html">
+<link rel="import" href="../cube-action/cube-action.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+
+<dom-module id="cube-table">
+  <template>
+    <style>
+       :host {
+        position: relative;
+        display: block;
+        width: 100%;
+        @apply --theme-100;
+      }
+
+      table {
+        width: 100%;
+        border-spacing: 0;
+        border-collapse: separate;
+      }
+
+      th,
+      td {
+        box-sizing: border-box;
+        text-align: left;
+        white-space: nowrap;
+        padding: 0 28px;
+        border-bottom: 1px solid var(--divider-secondary-color, #e0e0e0);
+        @apply --text-secondary;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      td {
+        line-height: 55px;
+      }
+
+      th {
+        line-height: 47px;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        position: relative;
+        font-weight: normal;
+        @apply --theme-600;
+        @apply --text-primary;
+        font-size: 12px;
+      }
+
+      th:not([sort]):not(:hover) cube-icon {
+        display: none;
+      }
+
+      th cube-icon {
+        position: absolute;
+        left: 7px;
+        top: 14px;
+        pointer-events: none;
+        padding: 0;
+        width: 18px;
+        height: 18px;
+      }
+
+      th[sort] {
+        color: var(--accent-400-color, #303030);
+      }
+
+      th[sort="desc"] cube-icon {
+        transform: scaleY(-1)
+      }
+
+      tr[no-results-row] td {
+        text-align: center;
+      }
+
+       :host #wrapper {
+        overflow-y: visible;
+        overflow-x: auto;
+      }
+
+       :host([fixed]) #wrapper {
+        display: flex;
+      }
+
+       :host([fixed]) #spacer {
+        width: 25%;
+        min-width: 200px;
+        flex: none;
+      }
+
+       :host([fixed]) table {
+        width: 75%;
+      }
+
+       :host([fixed]) tr td:first-of-type,
+       :host([fixed]) tr th:first-of-type {
+        min-width: 200px;
+        width: 25%;
+      }
+
+       :host([fixed]) tr td:first-of-type,
+       :host([fixed]) tr th:first-of-type {
+        position: absolute;
+        z-index: 1;
+        left: 0;
+        top: auto;
+        border-right: 1px solid var(--divider-secondary-color, #e0e0e0);
+      }
+
+       :host([fixed]) tr td:first-of-type {
+        @apply --theme-100;
+        @apply --text-primary;
+      }
+
+       :host tr td:first-of-type,
+       :host tr th:first-of-type {
+        padding-left: 24px;
+      }
+
+       :host tr td:last-of-type,
+       :host tr th:last-of-type {
+        padding-right: 24px;
+      }
+    </style>
+
+    <template is="dom-if" if="[[_dataUrl]]">
+      <cube-resource auto url="[[_dataUrl]]" data="{{data}}" ttl="60">
+    </template>
+
+    <div id="wrapper">
+      <div id="spacer"></div>
+      <table>
+        <thead>
+          <tr>
+            <template is="dom-repeat" items="[[columns]]">
+              <th on-tap="_updateSort" item="[[item]]" sort$="[[_isSorted(item.key,sort,sort.*)]]">
+                [[_columnTitle(item)]]
+                <cube-icon icon="arrow-downward"></cube-icon>
+              </th>
+            </template>
+          </tr>
+        </thead>
+        <tbody>
+          <template is="dom-if" if="[[isValid]]">
+            <template is="dom-repeat" items="[[_rows]]" as="row">
+              <tr>
+                <template is="dom-repeat" items="[[columns]]" as="col">
+                  <td>[[_rowValue(row,col.key)]]</td>
+                </template>
+              </tr>
+            </template>
+          </template>
+          <template is="dom-if" if="[[!_rowCount]]">
+            <tr no-results-row>
+              <td colspan$="[[_columnCount]]">[[noResults]]</td>
+            </tr>
+          </template>
+        </tbody>
+        <tfoot>
+        </tfoot>
+      </table>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * `cube-table`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class CubeTable extends Polymer.GestureEventListeners(Polymer.Element)
+    {
+      static get is() { return 'cube-table'; }
+      static get properties()
+      {
+        return {
+          isValid: { type: Boolean, value: false, computed: '__validate(columns,data)' },
+          localProcess: { type: Boolean, value: false },
+
+          sort: { type: Array, value: function() { return []; } },
+          count: { type: Number, value: 10 },
+          page: { type: Number, value: 1 },
+
+          fixed: { type: Boolean, value: false, reflectToAttrubte: true },
+
+          columns: { type: Array },
+          _columnCount: { type: Number, computed: '_computeColumnCount(columns)' },
+
+          data: { type: Array },
+          dataUrl: { type: String },
+          _dataUrl: { type: String, computed: '_computeDataUrl(dataUrl,localProcess,sort,count,page)' },
+          _rows: { type: Number, value: function() { return [] } },
+          _rowCount: { type: Number, computed: '_computeRowCount(data)' },
+          noResults: { type: String, value: 'No results found' }
+        };
+      }
+
+      static get observers()
+      {
+        return [
+          '_computeColumns(data)',
+          '_checkUrl(data,dataUrl,localProcess)',
+          '_checkData(data,dataUrl,localProcess,sort.*,count,page)'
+        ]
+      }
+
+      _computeDataUrl(dataUrl, localProcess, sort, count, page)
+      {
+        if(dataUrl && !localProcess)
+        {
+          var attrs = [];
+          if(sort && sort.length)
+          {
+            attrs.push('sort=' + encodeURIComponent(btoa(sort)));
+          }
+          if(count)
+          {
+            attrs.push('count=' + count);
+          }
+          if(page)
+          {
+            attrs.push('page=' + page);
+          }
+
+          if(dataUrl.indexOf('?') > -1)
+          {
+            return dataUrl + '&' + attrs.join('&');
+          }
+          else
+          {
+            return dataUrl + '?' + attrs.join('&');
+          }
+        }
+        return dataUrl;
+      }
+
+      _columnTitle(item)
+      {
+        return item.title ||
+          item.key
+          .replace(/[_-]/, ' ')
+          .replace(/[a-z][A-Z0-9]/g, function(r) { return r[0] + ' ' + r[1]; })
+          .replace(/\b[a-z]/g, function(r) { return r.toUpperCase(); });
+      }
+      _computeColumns(data)
+      {
+        if(data && data.length &&
+          (!this.columns || this.columns.length <= 0))
+        {
+          this.set('columns', Object.keys(data[0]).map(function(k) { return { key: k } }));
+        }
+      }
+      _computeColumnCount(columns)
+      {
+        return columns.length;
+      }
+
+      _checkUrl(data, dataUrl, localProcess)
+      {
+        if(data && dataUrl && !localProcess)
+        {
+          this._rows = data;
+        }
+      }
+      _checkData(data, dataUrl, localProcess, sort, count, page)
+      {
+        if(data && (!dataUrl || localProcess) &&
+          (sort !== undefined && count !== undefined && page !== undefined)
+        )
+        {
+          // copy data
+          data = data.slice();
+          
+          // sort it
+          sort = this.sort;
+          if(sort && sort.length)
+          {
+            data.sort(function(a, b)
+            {
+              for(var sortIdx = 0; sortIdx < sort.length; sortIdx++)
+              {
+                var k = sort[sortIdx];
+                var neg = false;
+                if(k[0] === '-')
+                {
+                  neg = true;
+                  k = k.slice(1);
+                }
+                if(a[k] > b[k]) return neg ? -1 : 1;
+                if(a[k] < b[k]) return neg ? 1 : -1;
+              }
+              return 0;
+            });
+          }
+
+          var offset = (page - 1) * count;
+          this._rows = data.slice(offset, offset + count);
+        }
+      }
+
+      _computeRowCount(rows)
+      {
+        if(rows !== undefined)
+        {
+          return rows.length;
+        }
+        return 0;
+      }
+      _rowValue(row, key)
+      {
+        return row[key];
+      }
+
+      __validate(cols, data)
+      {
+        return true;
+      }
+
+      _updateSort(e)
+      {
+        var item = e.target.item,
+          newVal = item.key,
+          pos = null;
+
+        for(var i in this.sort)
+        {
+          switch(this.sort[i])
+          {
+            case item.key:
+              pos = i;
+              newVal = '-' + item.key;
+              break;
+            case '-' + item.key:
+              pos = i;
+              newVal = null;
+              break;
+          }
+        }
+
+        /* if(newVal == null && pos)
+        {
+          this.splice('sort', pos, 1);
+        }
+        else  */
+        if(e.detail.sourceEvent.shiftKey)
+        {
+          if(pos !== null)
+          {
+            if(newVal === null)
+            {
+              this.splice('sort', pos, 1);
+            }
+            else
+            {
+              this.set(['sort', pos], newVal);
+            }
+          }
+          else
+          {
+            this.push('sort', newVal);
+          }
+        }
+        else
+        {
+          if(newVal === null)
+          {
+            this.set('sort', []);
+          }
+          else
+          {
+            this.set('sort', [newVal]);
+          }
+        }
+      }
+      _isSorted(key, sort)
+      {
+        if(sort.indexOf(key) > -1)
+        {
+          return 'asc'
+        }
+        if(sort.indexOf('-' + key) > -1)
+        {
+          return 'desc'
+        }
+        return null;
+      }
+    }
+
+    window.customElements.define(CubeTable.is, CubeTable);
+  </script>
+</dom-module>

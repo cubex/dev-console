@@ -13,11 +13,11 @@
     "polymer": "^2.0.0"
   },
   "homepage": "https://github.com/CubexElements/cube-color",
-  "_release": "8168b03596",
+  "_release": "be0e5beaf0",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "8168b0359673f97ea849aa52266be9a6cc1c2c42"
+    "commit": "be0e5beaf0764326f8441979d8fd5055bb945d08"
   },
   "_source": "https://github.com/CubexElements/cube-color.git",
   "_target": "*",

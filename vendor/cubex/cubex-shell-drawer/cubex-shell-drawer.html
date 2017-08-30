@@ -266,7 +266,7 @@
     <div class="rightAlign">
       <div id="user-view">
         <cube-li compact>
-          <img slot="icon" src="[[avatar]]">
+          <img slot="icon" src="[[whoami.Avatar]]">
           <strong>[[whoami.FirstName]] [[whoami.LastName]]</strong>
           <span slot="secondary">[[whoami.Username]]</span>
           <cube-action id="burger" slot="actions" icon="[[_burgerIcon]]" on-tap="_toggleDrawer"></cube-action>
@@ -472,14 +472,6 @@
           _burgerIcon:          {type: String, computed: '_computeBurgerIcon(_drawerState)'},
           project:              {type: Object},
           _drawerState:         {type: Number},
-          avatar:               {
-            type:  String,
-            value: function ()
-                   {
-                     return '//' + this.getServiceHost('static-console') +
-                       '/resources/images/avatar/default-64.png';
-                   }
-          },
           __selectedPanel:      {type: Number, value: 0},
           __logoUrl:            {type: String, computed: '__computeLogoUrl()'}
         },
