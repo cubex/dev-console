@@ -13,11 +13,11 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "homepage": "https://github.com/CubexElements/cube-table",
-  "_release": "1420edff20",
+  "_release": "73887b733a",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "1420edff20d9afa307c8819440d9257a27cdf7b0"
+    "commit": "73887b733a3bb1feef5b96febeb8add1b72d507f"
   },
   "_source": "https://github.com/CubexElements/cube-table.git",
   "_target": "*",
