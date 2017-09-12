@@ -159,7 +159,7 @@
       }
 
       #user-panel-action {
-        --cube-icon-color: var(--primary-100-text-color);
+        --cube-icon-color: var(--theme-text);
         @apply --text-secondary;
         position: relative;
         margin: 6px;
@@ -175,12 +175,12 @@
       }
 
       #user-panel-action:not([is-open]):before {
-        border-right-color: var(--primary-100-text-color);
+        border-right-color: var(--theme-text);
         left: -2px;
       }
 
       #user-panel-action[is-open]:after {
-        border-left-color: var(--primary-100-text-color);
+        border-left-color: var(--theme-text);
         right: -2px;
       }
 
@@ -260,6 +260,7 @@
         _selectedUserApp: { type: String },
         _actualUserDrawerState: { type: Number, observer: '_userDrawerStateChanged' },
         _userDrawerOpen: { type: Boolean },
+        _peek: { type: Boolean },
         _userPanelOpen: { type: Boolean, computed: '_computeUserPanelOpen(_actualUserDrawerState,_userDrawerOpen)' },
         shellDrawerState: { type: Number, value: 1, observer: '_shellDrawerStateChanged' }
       },

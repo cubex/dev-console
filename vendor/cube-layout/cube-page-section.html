@@ -1,0 +1,43 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="cube-page-section">
+  <template>
+    <style>
+       :host {
+        display: block;
+        flex-basis: 100%;
+      }
+
+       :host([wide]) {
+        flex-basis: 200%;
+      }
+    </style>
+
+    <slot></slot>
+  </template>
+
+  <script>
+    /**
+     * `cube-page-section`
+     * Page layout element for Kubex
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class CubePageSection extends Polymer.Element
+    {
+      static get is() { return 'cube-page-section'; }
+      static get properties()
+      {
+        return {
+          title: { type: String },
+          icon: { type: String },
+          badge: { type: String },
+        }
+      }
+    }
+
+    window.customElements.define(CubePageSection.is, CubePageSection);
+  </script>
+</dom-module>

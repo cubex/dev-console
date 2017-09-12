@@ -9,25 +9,25 @@
 <dom-module id="cubex-pinned-apps">
   <template>
     <style>
-      :host {
+       :host {
         display: flex;
         align-items: center;
       }
 
       a {
         display: inline-flex;
-        @apply(--primary-100-text-secondary);
+        color: var(--theme-text);
+        @apply --text-secondary;
       }
 
       a:hover {
-        @apply(--primary-100-text);
+        @apply --text-primary;
       }
 
       paper-tooltip {
         margin-top: 35px;
         pointer-events: none;
         border-radius: 5px;
-
         --paper-tooltip-text-color: var(--primary-800-text-color);
         --paper-tooltip-background: var(--primary-800-color);
         --paper-tooltip: {
@@ -44,8 +44,8 @@
       <cube-action icon="icons:home" ripple-center ripple-circle></cube-action>
     </a>
 
-    <cube-websocket auto project="[[projectAlias]]" vendor="kubex" app="pinned"
-                    on-subscribe="_pinnedSub" on-message="_pinnedMsg"></cube-websocket>
+    <cube-websocket auto project="[[projectAlias]]" vendor="kubex" app="pinned" on-subscribe="_pinnedSub"
+        on-message="_pinnedMsg"></cube-websocket>
     <template is="dom-repeat" items="[[pinnedApps]]">
       <a href="/[[item.GlobalAppID]]">
         <cube-action id="pinned-[[item.ID]]" icon="[[item.Icon]]" ripple-center ripple-circle></cube-action>
@@ -57,21 +57,21 @@
   </template>
   <script>
     Polymer(
+    {
+      is: 'cubex-pinned-apps',
+      behaviors: [Polymer.CubexProjectBehavior],
+      properties:
       {
-        is:         'cubex-pinned-apps',
-        behaviors:  [Polymer.CubexProjectBehavior],
-        properties: {
-          pinnedApps: {type: Array, value: function () {return [];}}
-        },
-        _pinnedSub: function (e, msg)
-                    {
-                      this.set('pinnedApps', Object.values(JSON.parse(msg).Apps));
-                    },
-        _pinnedMsg: function (e, msg)
-                    {
-                      this.set('pinnedApps', Object.values(msg.payload.Apps));
-                    }
+        pinnedApps: { type: Array, value: function() { return []; } }
+      },
+      _pinnedSub: function(e, msg)
+      {
+        this.set('pinnedApps', Object.values(JSON.parse(msg).Apps));
+      },
+      _pinnedMsg: function(e, msg)
+      {
+        this.set('pinnedApps', Object.values(msg.payload.Apps));
       }
-    );
+    });
   </script>
 </dom-module>

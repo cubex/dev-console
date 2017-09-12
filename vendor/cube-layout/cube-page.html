@@ -1,0 +1,49 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="cube-page">
+  <template>
+    <style>
+       :host {
+        display: flex;
+      }
+
+       :host ::slotted(cube-page-section) {
+        flex-grow: 1;
+        flex-shrink: 1;
+      }
+    </style>
+
+    <slot></slot>
+  </template>
+
+  <script>
+    /**
+     * `cube-page`
+     * Page layout element for Kubex
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class CubePage extends Polymer.Element
+    {
+      static get is() { return 'cube-page'; }
+      static get properties()
+      {
+        return {
+          menu: { type: Array }
+        }
+      }
+
+      connectedCallback()
+      {
+        super.connectedCallback();
+        let sections = (this.querySelectorAll('cube-page-section'));
+
+        console.log(sections);
+      }
+    }
+
+    window.customElements.define(CubePage.is, CubePage);
+  </script>
+</dom-module>

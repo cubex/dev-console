@@ -83,9 +83,9 @@
         _appContentPath: { type: String, computed: '_computeAppPath(_gaid,_projectData,_contentPath)' },
         _groupGaid: { type: String, notify: true, computed: '_computeGroupGaid(_projectData,_gaid,_appData)' },
         _groupData: { type: Boolean, computed: '_computeGroupData(_projectData,_groupGaid)' },
-        _appHeaderMenu: { type: Array, computed: '_computeAppHeaderMenu(_integrations, _projectData)' },
+        _appHeaderMenu: { type: Array, computed: '_computeAppHeaderMenu(_integrations,_projectData,_appGaid)' },
         _appHeaderActions: { type: Array, computed: '_computeAppHeaderActions(_integrations)' },
-        _appPageMenu: { type: Array, computed: '_computeAppPageMenu(_integrations,_projectData)' },
+        _appPageMenu: { type: Array, computed: '_computeAppPageMenu(_integrations,_projectData,_appGaid)' },
         _appPageActions: { type: Array, computed: '_computeAppPageActions(_integrations)' },
         _appPanels: { type: Array, computed: '_computeAppPanels(_integrations)' },
         _isDashboard: { type: Boolean, computed: '_computeIsDashboard(vendorId,appId,categoryId)' },
@@ -270,7 +270,7 @@
         }
         return { title: title, items: navigation };
       },
-      _computeAppHeaderMenu: function(integrations, projectData)
+      _computeAppHeaderMenu: function(integrations, projectData, appGaid)
       {
         if(!integrations)
         {
@@ -376,7 +376,7 @@
         }
         return newActions;
       },
-      _computeAppPageMenu: function(integrations, projectData)
+      _computeAppPageMenu: function(integrations, projectData, appGaid)
       {
         if(!integrations)
         {
@@ -391,7 +391,7 @@
           {
             if(pmItems.hasOwnProperty(j))
             {
-              pageMenus.push(
+              pageMenu.push(
               {
                 Title: pmItems[j].Title,
                 Description: pmItems[j].Description,
@@ -418,7 +418,7 @@
                 headerMenu[i].GlobalAppID !== appGaid)
               {
                 categoryPush++;
-                pageMenus.push(
+                pageMenu.push(
                 {
                   Title: headerMenu[i].Title,
                   Description: headerMenu[i].Description,
@@ -432,7 +432,7 @@
             }
           }
           //If there is only one page menu, and its a category app, then hide the page menu
-          if(categoryPush === 1 && pageMenus.length === 1)
+          if(categoryPush === 1 && pageMenu.length === 1)
           {
             pageMenu = [];
           }

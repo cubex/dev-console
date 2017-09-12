@@ -36,11 +36,10 @@ Example:
 @hero hero.svg
 -->
 
-<dom-module id="cubex-app"
-            attributes="app-data definition-path content-path page-data header-menu header-actions page-menu page-actions panels back-path page-path hero-header">
+<dom-module id="cubex-app" attributes="app-data definition-path content-path page-data header-menu header-actions page-menu page-actions panels back-path page-path hero-header">
   <template>
     <style>
-      :host {
+       :host {
         display: block;
         height: 100%;
       }
@@ -54,21 +53,27 @@ Example:
         @apply --shadow-elevation-2dp;
       }
 
-      :host([narrow]) app-header-layout {
+       :host([narrow]) app-header-layout {
         @apply --shadow-none;
       }
 
+      #app-container,
+      #app-content,
+      #app-content-main {
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+        flex-shrink: 0;
+      }
+
       #app-container {
+        min-height: 100%;
         overflow: hidden;
       }
 
       #app-content {
-        overflow: hidden;
         min-height: 50px;
-      }
-
-      #app-content-main {
-        display: block;
+        overflow: hidden;
       }
 
       #app-sidebar {
@@ -78,11 +83,11 @@ Example:
         flex-direction: column;
       }
 
-      :host([has-sidebar]) #app-sidebar {
+       :host([has-sidebar]) #app-sidebar {
         display: flex;
       }
 
-      :host([has-sidebar]) #app-content-main {
+       :host([has-sidebar]) #app-content-main {
         margin-left: 224px;
       }
 
@@ -91,7 +96,7 @@ Example:
         color: var(--theme-text);
       }
 
-      :host([narrow]) cubex-breadcrumb {
+       :host([narrow]) cubex-breadcrumb {
         margin: 0;
         padding: 8px;
         height: 48px;
@@ -101,16 +106,16 @@ Example:
         }
       }
 
-      :host app-toolbar {
+       :host app-toolbar {
         padding: 0;
         height: auto;
       }
 
-      :host app-header {
+       :host app-header {
         transition: left ease 0.2s, right ease 0.2s !important;
       }
 
-      :host #hero {
+       :host #hero {
         position: relative;
         display: flex;
         flex-wrap: wrap;
@@ -157,22 +162,26 @@ Example:
         --cube-li-content-style: {
           @apply --paper-font-body2;
           @apply --text-secondary;
-        };
+        }
+        ;
       }
 
       #app-page-menu cubex-link {
         --cubex-link-style: {
           @apply --text-secondary;
           color: var(--theme-text);
-        };
+        }
+        ;
         --cubex-link-active-style: {
           @apply --text-primary;
           color: var(--accent-400-color);
-        };
+        }
+        ;
         --cubex-link-hover-style: {
           @apply --text-primary;
           color: var(--accent-400-color);
-        };
+        }
+        ;
       }
 
       #app-page-menu cubex-link[active] {
@@ -180,7 +189,8 @@ Example:
         --cube-list-double-border-color: transparent;
         --cube-li-style: {
           background: var(--accent-50-color) !important;
-        };
+        }
+        ;
         --cube-li-content-style: {
           @apply --paper-font-body2;
           @apply --text-primary;
@@ -191,11 +201,12 @@ Example:
         --cube-li-content-style: {
           @apply --text-primary;
           @apply --paper-font-body2;
-        };
+        }
+        ;
       }
 
       @media (max-width: 1000px) {
-        :host([has-sidebar]) #app-content-main {
+         :host([has-sidebar]) #app-content-main {
           margin-left: 212px;
         }
       }
@@ -210,7 +221,7 @@ Example:
         padding: 15px;
       }
 
-      :host([narrow]) #app-back cube-action {
+       :host([narrow]) #app-back cube-action {
         padding: 7px;
       }
 
@@ -227,7 +238,7 @@ Example:
         color: var(--accent-700-color);
       }
 
-      :host([narrow]) #page-title {
+       :host([narrow]) #page-title {
         line-height: 48px;
       }
 
@@ -255,21 +266,21 @@ Example:
         overflow: visible;
       }
 
-      :host(:not([hero-header])) cubex-app-header,
+       :host(:not([hero-header])) cubex-app-header,
       app-header[shadow] cubex-app-header {
         @apply --theme-500;
         border-bottom: 1px solid var(--theme-700-color);
       }
 
-      :host([hero-header]) app-header:not([shadow]) #app-back,
-      :host([hero-header]) app-header:not([shadow]) #page-title,
-      :host([hero-header]) app-header:not([shadow]) #app-heading a {
+       :host([hero-header]) app-header:not([shadow]) #app-back,
+       :host([hero-header]) app-header:not([shadow]) #page-title,
+       :host([hero-header]) app-header:not([shadow]) #app-heading a {
         color: white;
         text-shadow: 0 0 9px rgba(0, 0, 0, 0.45);
       }
     </style>
-    <cube-resource auto auth url="/_pd[[definitionPath]]" data="{{_pageDefinition}}" xhr="{{_pageDefXhr}}"
-                   headers="[[_definitionHeaders]]"></cube-resource>
+    <cube-resource auto auth url="/_pd[[definitionPath]]" data="{{_pageDefinition}}"
+        xhr="{{_pageDefXhr}}" headers="[[_definitionHeaders]]"></cube-resource>
 
     <iron-media-query query="(max-width: 375px)" query-matches="{{narrow}}"></iron-media-query>
     <iron-media-query query="(max-width: 650px)" query-matches="{{_collapse}}"></iron-media-query>
@@ -281,7 +292,7 @@ Example:
 
     <app-header-layout has-scrolling-region id="ahl">
       <app-header id="ah" slot="header" fixed="[[!narrow]]" reveals="[[narrow]]" condenses
-                  effects="waterfall">
+          effects="waterfall">
         <app-toolbar>
           <cubex-app-header actions="[[headerActions]]" menu="[[headerMenu]]">
             <template is="dom-if" if="[[backPath]]" strip-whitespace>
@@ -341,7 +352,7 @@ Example:
           </div>
 
           <div id="app-content-main">
-            <cube-pagelet auth auto url="/_pc[[contentPath]]"></cube-pagelet>
+            <cube-pagelet local auth auto url="/_pc[[contentPath]]"></cube-pagelet>
           </div>
 
           <div style="clear:both"></div>
@@ -352,232 +363,235 @@ Example:
   </template>
   <script>
     Polymer(
+    {
+      is: 'cubex-app',
+      properties:
       {
-        is:         'cubex-app',
-        properties: {
-          definitionPath:      {type: String},
-          contentPath:         {type: String},
-          hasSidebar:          {
-            type:               Boolean,
-            reflectToAttribute: true,
-            computed:           '_computeHasSidebar(pageMenu,pageActions,panels)'
-          },
-          heroHeader:          {
-            type:               Boolean,
-            reflectToAttribute: true,
-            value:              false
-          },
-          _heroHeaderFraction: {type: Boolean, value: 1},
-          _pageDefinition:     {type: String},
-          backPath:            {type: String},
-          _project:            {type: String},
-          appData:             {type: Object, value: null},
-          _pageData:           {type: Object, computed: '_computePageData(_pageDefXhr)'},
-          breadcrumbs:         {type: Array, notify: true, computed: '_updateCrumbs(_pageData,_project,appData)'},
-          _pageTitle:          {type: String, value: '', computed: '_calculatePageTitle(_pageData.title)'},
-          _hasConfig:          {type: String, value: '', computed: '_calculateConfigure(appData, appData.*)'},
-          _lock:               {type: Boolean, value: false},
-          _peek:               {type: Boolean, value: false},
-          _collapse:           {type: Boolean, value: false},
-          _definitionHeaders:  {type: Object, value: {'x-cube-resource-type': 'page-definition'}},
-          headerMenu:          {type: Array},
-          headerActions:       {type: Array},
-          pageMenu:            {type: Array},
-          pageActions:         {type: Array},
-          panels:              {type: Array},
-          _pageDefXhr:         {type: Object}
+        definitionPath: { type: String },
+        contentPath: { type: String },
+        hasSidebar:
+        {
+          type: Boolean,
+          reflectToAttribute: true,
+          computed: '_computeHasSidebar(pageMenu,pageActions,panels)'
         },
-        observers:  ['_computeHeroHeader(_pageDefinition,_heroHeaderFraction)'],
+        heroHeader:
+        {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: false
+        },
+        _heroHeaderFraction: { type: Boolean, value: 1 },
+        _pageDefinition: { type: String },
+        backPath: { type: String },
+        _project: { type: String },
+        appData: { type: Object, value: null },
+        _pageData: { type: Object, computed: '_computePageData(_pageDefXhr)' },
+        breadcrumbs: { type: Array, notify: true, computed: '_updateCrumbs(_pageData,_project,appData)' },
+        _pageTitle: { type: String, value: '', computed: '_calculatePageTitle(_pageData.title)' },
+        _hasConfig: { type: String, value: '', computed: '_calculateConfigure(appData, appData.*)' },
+        _lock: { type: Boolean, value: false },
+        _peek: { type: Boolean, value: false },
+        _collapse: { type: Boolean, value: false },
+        _definitionHeaders: { type: Object, value: { 'x-cube-resource-type': 'page-definition' } },
+        headerMenu: { type: Array },
+        headerActions: { type: Array },
+        pageMenu: { type: Array },
+        pageActions: { type: Array },
+        panels: { type: Array },
+        _pageDefXhr: { type: Object }
+      },
+      observers: ['_computeHeroHeader(_pageDefinition,_heroHeaderFraction)'],
 
-        _computePageData: function (xhr)
-                          {
-                            var cubeHeaderRegex = /^x-cube-([a-z\-]+):\s*(.*)$/gmi,
-                              headers = {},
-                              matches;
-                            if(xhr)
-                            {
-                              var fn = function (_, v) { return v.toUpperCase(); };
-                              while(matches = cubeHeaderRegex.exec(xhr.getAllResponseHeaders()))
-                              {
-                                headers[matches[1].toLowerCase().replace(/-([a-z])/i, fn)] =
-                                  matches[2];
-                              }
-                            }
-                            return headers;
-                          },
+      _computePageData: function(xhr)
+      {
+        var cubeHeaderRegex = /^x-cube-([a-z\-]+):\s*(.*)$/gmi,
+          headers = {},
+          matches;
+        if(xhr)
+        {
+          var fn = function(_, v) { return v.toUpperCase(); };
+          while(matches = cubeHeaderRegex.exec(xhr.getAllResponseHeaders()))
+          {
+            headers[matches[1].toLowerCase().replace(/-([a-z])/i, fn)] =
+              matches[2];
+          }
+        }
+        return headers;
+      },
 
-        keyBindings: {'f': '_alertFid'},
-        _alertFid:   function (e)
-                     {
-                       if(e.detail.keyboardEvent.shiftKey && e.detail.keyboardEvent.target
-                           .tagName === 'BODY' &&
-                         this._pageData && this._pageData.pageFid)
-                       {
-                         prompt('You are viewing an entity with a FID of:', this._pageData
-                           .pageFid);
-                       }
-                     },
+      keyBindings: { 'f': '_alertFid' },
+      _alertFid: function(e)
+      {
+        if(e.detail.keyboardEvent.shiftKey && e.detail.keyboardEvent.target
+          .tagName === 'BODY' &&
+          this._pageData && this._pageData.pageFid)
+        {
+          prompt('You are viewing an entity with a FID of:', this._pageData
+            .pageFid);
+        }
+      },
 
-        ready: function ()
-               {
-                 this.keyEventTarget = document.body;
-               },
+      ready: function()
+      {
+        this.keyEventTarget = document.body;
+      },
 
-        _computeHeroHeader: function (html, fraction)
-                            {
-                              if(html && html.indexOf('<cube-hero') > -1)
-                              {
-                                if(fraction < 1)
-                                {
-                                  this.updateStyles({'--cube-app-header-background': 'white'});
-                                  this.heroHeader = false;
-                                }
-                                else
-                                {
-                                  this.updateStyles({'--cube-app-header-background': null});
-                                  this.heroHeader = true;
-                                }
-                              }
-                              else
-                              {
-                                this.heroHeader = false;
-                              }
-                            },
+      _computeHeroHeader: function(html, fraction)
+      {
+        if(html && html.indexOf('<cube-hero') > -1)
+        {
+          if(fraction < 1)
+          {
+            this.updateStyles({ '--cube-app-header-background': 'white' });
+            this.heroHeader = false;
+          }
+          else
+          {
+            this.updateStyles({ '--cube-app-header-background': null });
+            this.heroHeader = true;
+          }
+        }
+        else
+        {
+          this.heroHeader = false;
+        }
+      },
 
-        _computeHasSidebar: function (pageMenu, pageActions, panels)
-                            {
-                              var items = 0;
-                              if(pageMenu)
-                              {
-                                items += pageMenu.length;
-                              }
-                              if(pageActions)
-                              {
-                                items += pageActions.length;
-                              }
-                              if(panels)
-                              {
-                                items += panels.length;
-                              }
-                              return items > 0;
-                            },
+      _computeHasSidebar: function(pageMenu, pageActions, panels)
+      {
+        var items = 0;
+        if(pageMenu)
+        {
+          items += pageMenu.length;
+        }
+        if(pageActions)
+        {
+          items += pageActions.length;
+        }
+        if(panels)
+        {
+          items += panels.length;
+        }
+        return items > 0;
+      },
 
-        _updateCrumbs: function (pageData, project, appData)
-                       {
-                         var bc = [];
-                         if(pageData && pageData.breadcrumb)
-                         {
-                           bc = typeof(pageData.breadcrumb) === 'string' ?
-                             JSON.parse(pageData.breadcrumb) :
-                             pageData.breadcrumb.slice(0);
-                         }
+      _updateCrumbs: function(pageData, project, appData)
+      {
+        var bc = [];
+        if(pageData && pageData.breadcrumb)
+        {
+          bc = typeof(pageData.breadcrumb) === 'string' ?
+            JSON.parse(pageData.breadcrumb) :
+            pageData.breadcrumb.slice(0);
+        }
 
-                         if(appData && pageData && project)
-                         {
-                           var prefix = '/' + appData.VendorID + '/' + appData.AppID;
-                           for(var i in bc)
-                           {
-                             if(bc.hasOwnProperty(i))
-                             {
-                               bc[i].Url = prefix + '/' + bc[i].Url.replace(/^\//, '');
-                             }
-                           }
+        if(appData && pageData && project)
+        {
+          var prefix = '/' + appData.VendorID + '/' + appData.AppID;
+          for(var i in bc)
+          {
+            if(bc.hasOwnProperty(i))
+            {
+              bc[i].Url = prefix + '/' + bc[i].Url.replace(/^\//, '');
+            }
+          }
 
-                           if(!(appData.VendorID === 'kubex' && appData.AppID ===
-                             'dashboard'))
-                           {
-                             // prepend app
-                             bc.unshift(
-                               {
-                                 Title: this.i18nResource(appData.Name),
-                                 Url:   prefix
-                               });
-                             // prepend group
-                             if(appData.GroupID)
-                             {
-                               bc.unshift(
-                                 {
-                                   Title: appData.GroupID,
-                                   Url:   '/' + appData.VendorID + '/' + appData.GroupID
-                                 });
-                             }
-                             // prepend category
-                             if(appData.Category)
-                             {
-                               bc.unshift(
-                                 {
-                                   Title: this.$.cat.getCategory(appData.Category, true),
-                                   Url:   '/_' + appData.Category
-                                 });
-                             }
-                           }
-                         }
-                         return bc;
-                       },
+          if(!(appData.VendorID === 'kubex' && appData.AppID ===
+              'dashboard'))
+          {
+            // prepend app
+            bc.unshift(
+            {
+              Title: this.i18nResource(appData.Name),
+              Url: prefix
+            });
+            // prepend group
+            if(appData.GroupID)
+            {
+              bc.unshift(
+              {
+                Title: appData.GroupID,
+                Url: '/' + appData.VendorID + '/' + appData.GroupID
+              });
+            }
+            // prepend category
+            if(appData.Category)
+            {
+              bc.unshift(
+              {
+                Title: this.$.cat.getCategory(appData.Category, true),
+                Url: '/_' + appData.Category
+              });
+            }
+          }
+        }
+        return bc;
+      },
 
-        _calculatePageTitle: function (pageTitle)
-                             {
-                               if(!pageTitle)
-                               {
-                                 return '';
-                               }
-                               var title = '<h1 id="app-heading">',
-                                 closeEm = false,
-                                 previous = '',
-                                 current = '';
-                               for(var i = 0; i < pageTitle.length; i++)
-                               {
-                                 current = pageTitle[i];
-                                 if(current === '*')
-                                 {
-                                   if(previous === '*')
-                                   {
-                                     if(closeEm)
-                                     {
-                                       title += '</em>';
-                                       closeEm = false;
-                                     }
-                                     else
-                                     {
-                                       title += '<em>';
-                                       closeEm = true;
-                                     }
-                                     current = '';
-                                   }
-                                 }
-                                 else if(previous === '*')
-                                 {
-                                   title += previous + current;
-                                 }
-                                 else
-                                 {
-                                   title += current;
-                                 }
-                                 previous = current;
-                               }
-                               if(closeEm)
-                               {
-                                 title += '</em>';
-                               }
-                               return title + '</h1>';
-                             },
+      _calculatePageTitle: function(pageTitle)
+      {
+        if(!pageTitle)
+        {
+          return '';
+        }
+        var title = '<h1 id="app-heading">',
+          closeEm = false,
+          previous = '',
+          current = '';
+        for(var i = 0; i < pageTitle.length; i++)
+        {
+          current = pageTitle[i];
+          if(current === '*')
+          {
+            if(previous === '*')
+            {
+              if(closeEm)
+              {
+                title += '</em>';
+                closeEm = false;
+              }
+              else
+              {
+                title += '<em>';
+                closeEm = true;
+              }
+              current = '';
+            }
+          }
+          else if(previous === '*')
+          {
+            title += previous + current;
+          }
+          else
+          {
+            title += current;
+          }
+          previous = current;
+        }
+        if(closeEm)
+        {
+          title += '</em>';
+        }
+        return title + '</h1>';
+      },
 
-        _calculateConfigure: function (appData)
-                             {
-                               return appData && appData.Config && appData.Config.length > 0;
-                             },
-        _openCfg:            function ()
-                             {
-                               this.$.configDlg.open();
-                             },
+      _calculateConfigure: function(appData)
+      {
+        return appData && appData.Config && appData.Config.length > 0;
+      },
+      _openCfg: function()
+      {
+        this.$.configDlg.open();
+      },
 
-        behaviors: [
-          Polymer.IronA11yKeysBehavior,
-          Polymer.CubeTouchEnabledBehavior,
-          Polymer.CubeServiceBehavior,
-          Polymer.CubeI18nBehavior,
-          Polymer.CubeHashBehavior
-        ]
-      });
+      behaviors: [
+        Polymer.IronA11yKeysBehavior,
+        Polymer.CubeTouchEnabledBehavior,
+        Polymer.CubeServiceBehavior,
+        Polymer.CubeI18nBehavior,
+        Polymer.CubeHashBehavior
+      ]
+    });
   </script>
 </dom-module>

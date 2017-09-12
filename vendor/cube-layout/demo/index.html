@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>cube-layout demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../cube-page.html">
+    <link rel="import" href="../cube-page-section.html">
+
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles"></style>
+    </custom-style>
+  </head>
+  <body>
+    <div class="vertical-section-container ">
+      <h3>Basic cube-page demo</h3>
+      <demo-snippet>
+        <template>
+          <cube-page>
+            <cube-page-section title="Activity" icon="icons:add">
+              Some Activity
+            </cube-page-section>
+            <cube-page-section title="Details" icon="icons:menu" wide>
+              Details
+            </cube-page-section>
+          </cube-page>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>

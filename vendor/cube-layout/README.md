@@ -1,5 +1,21 @@
-_[Demo and API docs](https://elements.cubex.io/elements/cube-layout)_
+# \<cube-layout\>
 
-##&lt;cube-layout&gt;
+Layout elements for Kubex
 
-An element for displaying stuff in Cubex
+## Install the Polymer-CLI
+
+First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your element locally.
+
+## Viewing Your Element
+
+```
+$ polymer serve
+```
+
+## Running Tests
+
+```
+$ polymer test
+```
+
+Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.

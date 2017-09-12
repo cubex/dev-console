@@ -14,7 +14,7 @@ specialType
 <dom-module id="cubex-route"
             attributes="full-path project gaid vendor app category special-type page pagelet section query definition-path content-path integration page-integrations">
   <template>
-    <app-location route="{{route}}" query-params="{{query}}"></app-location>
+    <app-location route="{{_route}}" query-params="{{query}}"></app-location>
 
     <cube-websocket auto project="[[project]]" vendor="kubex" app="registry"
                     on-message="_appsChanged"></cube-websocket>
@@ -26,6 +26,7 @@ specialType
       {
         is:         'cubex-route',
         properties: {
+          _route:           {type:Object},
           fullPath:         {type: String, notify: true, value: ''},
           project:          {type: String, notify: true, value: ''},
           category:         {type: String, notify: true, value: ''},
@@ -53,7 +54,7 @@ specialType
         },
 
         observers: [
-          '_computeValues(route.path,route,route.*)',
+          '_computeValues(_route.path,_route,_route.*)',
           '_updateIntegration(pageIntegrations,gaid,definitionPath,pagelet,section)'
         ],
 
@@ -65,13 +66,13 @@ specialType
 
                           var changes = {
                             project:     project === 'console' ? '' : project,
-                            fullPath:    this.route.path,
+                            fullPath:    this._route.path,
                             category:    matches && matches[3] ? matches[3] : '',
                             vendor:      matches && matches[4] ? matches[4] : '',
                             app:         matches && matches[6] ? matches[6] : '',
                             gaid:        '',
                             specialType: matches && matches[8] ? matches[8] : '',
-                            page:        matches && matches[9] ? matches[9] : '',
+                            page:        matches && matches[9] ? matches[9].replace(/\/$/,'') : '',
                             pagelet:     matches && matches[11] ? matches[11] : '',
                             section:     matches && matches[13] ? matches[13] : ''
                           };
@@ -98,7 +99,7 @@ specialType
                                       }
                                       if(page)
                                       {
-                                        integrationPath += '/' + page;
+                                        integrationPath += page;
                                       }
                                       if(pagelet)
                                       {

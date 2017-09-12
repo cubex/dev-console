@@ -16,22 +16,23 @@
 <dom-module id="cubex-notifications">
   <template>
     <style>
-      :host {
+       :host {
         --paper-spinner-color: var(--accent-700-color);
         --paper-spinner-stroke-width: 3px;
         --app-drawer-width: 360px;
         --app-drawer-scrim-background: transparent;
       }
 
-      :host #trigger {
-        @apply --primary-100-text-secondary;
+       :host #trigger {
+        color: var(--theme-text);
+        @apply --text-secondary;
       }
 
-      :host #trigger:hover {
-        @apply --primary-100-text;
+       :host #trigger:hover {
+        @apply --text-primary;
       }
 
-      :host #trigger paper-spinner-lite {
+       :host #trigger paper-spinner-lite {
         position: absolute;
         left: 7px;
         top: 8px;
@@ -39,11 +40,7 @@
         height: 29px;
       }
 
-      :host #trigger[unread] cube-icon {
-        color: white;
-      }
-
-      :host #trigger[unread] cube-icon:before {
+       :host #trigger[unread] cube-icon:before {
         content: '';
         display: none;
         position: absolute;
@@ -59,27 +56,27 @@
         pointer-events: none;
       }
 
-      :host #trigger[running][unread] cube-icon:before {
+       :host #trigger[running][unread] cube-icon:before {
         top: 0;
         right: 0;
       }
 
-      :host #trigger[running] cube-icon {
+       :host #trigger[running] cube-icon {
         width: 20px;
         height: 20px;
         margin: 2px;
       }
 
-      :host cube-list-menu#content cube-action {
+       :host cube-list-menu#content cube-action {
         margin-right: -10px;
         margin-left: 10px;
       }
 
-      :host app-drawer {
+       :host app-drawer {
         z-index: 9999;
       }
 
-      :host app-toolbar {
+       :host app-toolbar {
         @apply --accent-400;
         height: 56px;
       }
@@ -91,7 +88,8 @@
       cubex-notification {
         --cube-li-style: {
           @apply --theme-50;
-        };
+        }
+        ;
       }
 
       .drawer-contents {
@@ -106,7 +104,8 @@
         flex-grow: 1;
       }
 
-      .drawer-contents cube-list-menu:nth-of-type(2), .drawer-contents cube-list-menu:nth-of-type(2) a {
+      .drawer-contents cube-list-menu:nth-of-type(2),
+      .drawer-contents cube-list-menu:nth-of-type(2) a {
         flex-grow: 0;
         @apply --primary-100;
         text-align: center;
@@ -121,11 +120,11 @@
       }
     </style>
 
-    <cube-websocket auto project="[[projectAlias]]" vendor="kubex" app="notify"
-                    on-subscribe="_notificationSubscribe" on-message="_notificationMessage"></cube-websocket>
+    <cube-websocket auto project="[[projectAlias]]" vendor="kubex" app="notify" on-subscribe="_notificationSubscribe"
+        on-message="_notificationMessage"></cube-websocket>
 
-    <cube-action id="trigger" on-tap="_openDrawer" running$="[[_running]]" unread$="[[_unread]]" size="24"
-                 ripple-circle ripple-center>
+    <cube-action id="trigger" on-tap="_openDrawer" running$="[[_running]]" unread$="[[_unread]]"
+        size="24" ripple-circle ripple-center>
       <paper-spinner-lite active="[[_running]]"></paper-spinner-lite>
       <cube-icon icon="social:notifications"></cube-icon>
     </cube-action>
@@ -136,11 +135,11 @@
           <cube-action icon="icons:arrow-forward" on-tap="_closeDrawer"></cube-action>
           <div id="title" main-title>Notifications</div>
 
-          <cube-action id="settings" on-tap="__openCfg" size="20" icon="icons:settings"
-                       ripple-circle ripple-center></cube-action>
+          <cube-action id="settings" on-tap="__openCfg" size="20" icon="icons:settings" ripple-circle
+              ripple-center></cube-action>
           <cubex-configure-dialog id="configDlg" gaid="kubex/notify"></cubex-configure-dialog>
           <cube-action on-tap="_markRead" icon="icons:done-all" disabled$="[[!_notifications.length]]"
-                       ripple-circle ripple-center></cube-action>
+              ripple-circle ripple-center></cube-action>
         </app-toolbar>
 
         <template is="dom-if" if="[[_notifications.length]]">
@@ -173,217 +172,219 @@
 
   <script>
     Polymer(
+    {
+      is: 'cubex-notifications',
+      properties:
       {
-        is:          'cubex-notifications',
-        properties:  {
-          _running:             {type: Boolean, computed: '__hasRunning(_notifications,_notifications.*)'},
-          _unread:              {type: Boolean, computed: '__hasUnread(_notifications,_notifications.*)'},
-          _notifications:       {type: Array, notify: true, value: function () {return [];}},
-          _notificationIndexes: {type: Object, notify: true, value: function () {return {};}},
-          _isReady:             {type: Boolean, value: false}
-        },
-        keyBindings: {
-          '\\': '_toggleDrawer'
-        },
-        attached:    function ()
-                     {
-                       this.keyEventTarget = document.body;
-                       var
-                         elements = this.root.querySelectorAll('.can-disable'),
-                         fn = function (e)
-                         {
-                           if(this.hasAttribute('disabled'))
-                           {
-                             e.preventDefault();
-                           }
-                         };
+        _running: { type: Boolean, computed: '__hasRunning(_notifications,_notifications.*)' },
+        _unread: { type: Boolean, computed: '__hasUnread(_notifications,_notifications.*)' },
+        _notifications: { type: Array, notify: true, value: function() { return []; } },
+        _notificationIndexes: { type: Object, notify: true, value: function() { return {}; } },
+        _isReady: { type: Boolean, value: false }
+      },
+      keyBindings:
+      {
+        '\\': '_toggleDrawer'
+      },
+      attached: function()
+      {
+        this.keyEventTarget = document.body;
+        var
+          elements = this.root.querySelectorAll('.can-disable'),
+          fn = function(e)
+          {
+            if(this.hasAttribute('disabled'))
+            {
+              e.preventDefault();
+            }
+          };
 
-                       for(var i in elements)
-                       {
-                         if(elements.hasOwnProperty(i))
-                         {
-                           var ele = elements[i];
-                           ele.addEventListener('tap', fn.bind(ele));
-                         }
-                       }
-                     },
+        for(var i in elements)
+        {
+          if(elements.hasOwnProperty(i))
+          {
+            var ele = elements[i];
+            ele.addEventListener('tap', fn.bind(ele));
+          }
+        }
+      },
 
-        _notificationSubscribe: function (e)
-                                {
-                                  if(e.detail)
-                                  {
-                                    var notes = JSON.parse(e.detail);
-                                    if(notes)
-                                    {
-                                      for(var i in notes)
-                                      {
-                                        if(notes.hasOwnProperty(i))
-                                        {
-                                          this._updateNotification(notes[i]);
-                                        }
-                                      }
-                                      this._invalidateProperties();
-                                    }
-                                  }
-                                  this._isReady = true;
-                                },
-        _notificationMessage:   function (e)
-                                {
-                                  if(!this._isReady)
-                                  {
-                                    return setTimeout(function () {this._notificationMessage(e);}.bind(this), 500);
-                                  }
+      _notificationSubscribe: function(e)
+      {
+        if(e.detail)
+        {
+          var notes = JSON.parse(e.detail);
+          if(notes)
+          {
+            for(var i in notes)
+            {
+              if(notes.hasOwnProperty(i))
+              {
+                this._updateNotification(notes[i]);
+              }
+            }
+            this._invalidateProperties();
+          }
+        }
+        this._isReady = true;
+      },
+      _notificationMessage: function(e)
+      {
+        if(!this._isReady)
+        {
+          return setTimeout(function() { this._notificationMessage(e); }.bind(
+            this), 500);
+        }
 
-                                  if(e.detail.action === 'send')
-                                  {
-                                    this._updateNotification(e.detail.payload);
-                                  }
-                                  else if(e.detail.action === 'update')
-                                  {
-                                    this._updateNotification(e.detail.payload);
-                                  }
-                                  else if(e.detail.action === 'read')
-                                  {
-                                    this._updateNotification(
-                                      {notification_uid: e.detail.payload, read: true}
-                                    );
-                                  }
-                                  else if(e.detail.action === 'readall')
-                                  {
-                                    for(var i in this._notifications)
-                                    {
-                                      if(this._notifications.hasOwnProperty(i))
-                                      {
-                                        var note = this._notifications[i];
-                                        if(
-                                          (!note.read)
-                                          && ((!note.last_update) || (note.last_update <= e.detail.payload.timestamp))
-                                        )
-                                        {
-                                          this.set(['_notifications', i, 'read'], true);
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
+        if(e.detail.action === 'send')
+        {
+          this._updateNotification(e.detail.payload);
+        }
+        else if(e.detail.action === 'update')
+        {
+          this._updateNotification(e.detail.payload);
+        }
+        else if(e.detail.action === 'read')
+        {
+          this._updateNotification({ notification_uid: e.detail.payload,
+            read: true });
+        }
+        else if(e.detail.action === 'readall')
+        {
+          for(var i in this._notifications)
+          {
+            if(this._notifications.hasOwnProperty(i))
+            {
+              var note = this._notifications[i];
+              if(
+                (!note.read) &&
+                ((!note.last_update) || (note.last_update <= e.detail.payload
+                  .timestamp))
+              )
+              {
+                this.set(['_notifications', i, 'read'], true);
+              }
+            }
+          }
+        }
+      },
 
-        _updateNotification: function (newState)
-                             {
-                               var idx = this._notificationIndexes[newState.notification_uid];
-                               if(!idx)
-                               {
-                                 // no index, push notification
-                                 this._notificationIndexes[newState.notification_uid]
-                                   = this.push('_notifications', newState) - 1;
-                               }
-                               else if((!newState.last_update)
-                                 || this._notifications[idx].last_update < newState.last_update)
-                               {
-                                 for(var key in newState)
-                                 {
-                                   if(newState.hasOwnProperty(key))
-                                   {
-                                     this.set(['_notifications', idx, key], newState[key], false);
-                                   }
-                                 }
-                               }
-                             },
+      _updateNotification: function(newState)
+      {
+        var idx = this._notificationIndexes[newState.notification_uid];
+        if(!idx)
+        {
+          // no index, push notification
+          this._notificationIndexes[newState.notification_uid] = this.push(
+            '_notifications', newState) - 1;
+        }
+        else if((!newState.last_update) ||
+          this._notifications[idx].last_update < newState.last_update)
+        {
+          for(var key in newState)
+          {
+            if(newState.hasOwnProperty(key))
+            {
+              this.set(['_notifications', idx, key], newState[key], false);
+            }
+          }
+        }
+      },
 
-        __sortNotifications: function (a, b)
-                             {
-                               if(a.percentage < b.percentage)
-                               {
-                                 return -1;
-                               }
-                               if(a.percentage > b.percentage)
-                               {
-                                 return 1;
-                               }
+      __sortNotifications: function(a, b)
+      {
+        if(a.percentage < b.percentage)
+        {
+          return -1;
+        }
+        if(a.percentage > b.percentage)
+        {
+          return 1;
+        }
 
-                               if(a.last_update > b.last_update)
-                               {
-                                 return -1;
-                               }
-                               if(a.last_update < b.last_update)
-                               {
-                                 return 1;
-                               }
-                               return 0;
-                             },
+        if(a.last_update > b.last_update)
+        {
+          return -1;
+        }
+        if(a.last_update < b.last_update)
+        {
+          return 1;
+        }
+        return 0;
+      },
 
-        __hasRunning: function (notifications)
-                      {
-                        for(var i = 0; i < notifications.length; i++)
-                        {
-                          if(notifications[i].percentage < 100)
-                          {
-                            return true;
-                          }
-                        }
-                        return false;
-                      },
-        __hasUnread:  function (notifications)
-                      {
-                        for(var i = 0; i < notifications.length; i++)
-                        {
-                          if(notifications[i].percentage >= 100 && !notifications[i].read)
-                          {
-                            return true;
-                          }
-                        }
-                        return false;
-                      },
+      __hasRunning: function(notifications)
+      {
+        for(var i = 0; i < notifications.length; i++)
+        {
+          if(notifications[i].percentage < 100)
+          {
+            return true;
+          }
+        }
+        return false;
+      },
+      __hasUnread: function(notifications)
+      {
+        for(var i = 0; i < notifications.length; i++)
+        {
+          if(notifications[i].percentage >= 100 && !notifications[i].read)
+          {
+            return true;
+          }
+        }
+        return false;
+      },
 
-        _getStatus: function (id)
-                    {
-                      return this._notificationIndexes[id];
-                    },
+      _getStatus: function(id)
+      {
+        return this._notificationIndexes[id];
+      },
 
-        _markRead: function ()
-                   {
-                     var xhr = new XMLHttpRequest();
-                     xhr.open(
-                       'PUT',
-                       '//' + this.getServiceHost('apps') + '/kubex/notify/read/all'
-                     );
-                     xhr.setRequestHeader('x-requested-by', 'cubex-notifications');
-                     xhr.withCredentials = true;
-                     xhr.send();
-                   },
+      _markRead: function()
+      {
+        var xhr = new XMLHttpRequest();
+        xhr.open(
+          'PUT',
+          '//' + this.getServiceHost('apps') + '/kubex/notify/read/all'
+        );
+        xhr.setRequestHeader('x-requested-by', 'cubex-notifications');
+        xhr.withCredentials = true;
+        xhr.send();
+      },
 
-        __openCfg:     function ()
-                       {
-                         this.$.configDlg.open();
-                       },
-        _openDrawer:   function ()
-                       {
-                         this.$.notifyDrawer.open();
-                       },
-        _closeDrawer:  function ()
-                       {
-                         this.$.notifyDrawer.close();
-                       },
-        _toggleDrawer: function (e)
-                       {
-                         if(e && e.detail && e.detail.keyboardEvent)
-                         {
-                           console.log(e.detail.keyboardEvent.target);
-                           if(e.detail.keyboardEvent.target.tagName === 'BODY')
-                           {
-                             this.$.notifyDrawer.toggle();
-                           }
-                         }
-                         else
-                         {
-                           this.$.notifyDrawer.toggle();
-                         }
-                       },
-        behaviors:     [
-          Polymer.IronA11yKeysBehavior,
-          Polymer.CubeServiceBehavior,
-          Polymer.CubexProjectBehavior
-        ]
-      }
-    );
+      __openCfg: function()
+      {
+        this.$.configDlg.open();
+      },
+      _openDrawer: function()
+      {
+        this.$.notifyDrawer.open();
+      },
+      _closeDrawer: function()
+      {
+        this.$.notifyDrawer.close();
+      },
+      _toggleDrawer: function(e)
+      {
+        if(e && e.detail && e.detail.keyboardEvent)
+        {
+          console.log(e.detail.keyboardEvent.target);
+          if(e.detail.keyboardEvent.target.tagName === 'BODY')
+          {
+            this.$.notifyDrawer.toggle();
+          }
+        }
+        else
+        {
+          this.$.notifyDrawer.toggle();
+        }
+      },
+      behaviors: [
+        Polymer.IronA11yKeysBehavior,
+        Polymer.CubeServiceBehavior,
+        Polymer.CubexProjectBehavior
+      ]
+    });
   </script>
 </dom-module>
