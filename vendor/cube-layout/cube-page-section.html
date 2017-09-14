@@ -6,10 +6,16 @@
        :host {
         display: block;
         flex-basis: 100%;
+        padding: 10px;
       }
 
        :host([wide]) {
         flex-basis: 200%;
+      }
+
+       :host(:not([wide])) {
+        @apply --theme-100;
+        @apply --shadow-elevation-2dp;
       }
     </style>
 

@@ -14,11 +14,11 @@
     "polymer": "^2.0.0"
   },
   "homepage": "https://github.com/CubexElements/cube-layout",
-  "_release": "c1d713b389",
+  "_release": "7f8576da91",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "c1d713b389e028de90c4bccce66a8dc395be137d"
+    "commit": "7f8576da917a1b04c21a3c4745d9976f7b1ca8d2"
   },
   "_source": "https://github.com/CubexElements/cube-layout.git",
   "_target": "*",
